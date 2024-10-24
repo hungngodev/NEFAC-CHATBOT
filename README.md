@@ -2,7 +2,7 @@
 
 A full-stack Retrieval Augmented Generation (RAG) application using React, TypeScript, Flask, and Claude.
 
-## Project Structure
+## Project Structure - NEEDS UPDATING
 ```
 rag-project/
 ├── backend/
@@ -24,7 +24,7 @@ rag-project/
 ### Backend Setup
 1. Create and activate virtual environment:
 ```bash
-cd backend
+
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
@@ -34,7 +34,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-3. Configure environment variables:
+3. Configure environment variables: # NEEDS UPDATING
 ```bash
 cp .env.template .env
 # Edit .env with your actual API keys and configuration
@@ -46,39 +46,27 @@ flask run
 ```
 
 ### Frontend Setup
-1. Install dependencies:
+1. Install dependencies: # UPDATE
 ```bash
 cd frontend
 npm install
 ```
 
-2. Start the development server:
-```bash
-npm start
-```
-
 ## Development Guidelines
 
-1. Always activate the virtual environment before working on the backend:
+1. Always activate the virtual environment:
 ```bash
 cd backend
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
-
-2. After installing new Python packages:
-```bash
-pip freeze > requirements.txt
-```
-
-3. Never commit sensitive data or API keys
-4. Keep the .env.template updated with any new environment variables
-5. Update this README when adding new features or changing setup requirements
+2. Never commit sensitive data or API keys
+3. Update this README when adding new features or changing setup requirements
 
 ## Contributing
-1. Create a feature branch
+1. Create a new branch
 2. Make your changes
 3. Test thoroughly
-4. Submit a pull request
+4. Make a branch merge request
 
 ## License
 MIT
