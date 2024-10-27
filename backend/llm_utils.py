@@ -9,7 +9,7 @@ from langchain_community.document_loaders import DirectoryLoader
 from langchain.docstore.in_memory import InMemoryDocstore
 from langchain.retrievers.multi_query import MultiQueryRetriever
 import os
-os.environ["OPENAI_API_KEY"] = "***REMOVED***proj-ZgUd8FueNfx1eQIRN3DVPANdIE8A2FVm30BrP462qqDf6yFl3h3h564kmoy2G1AyfKSq7CH2ztT3BlbkFJmkXmn297HbW3YbiBSiSSDDNzYvaHVOiwoJmn5PlyMvKAMne2vd5jEDQmhR5HPxGHmQoOay7ZkA"
+os.environ["OPENAI_API_KEY"] = ""
 # Initialize embeddings and FAISS vector store
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-large")
 # Initialize docstore
