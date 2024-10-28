@@ -34,15 +34,9 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-3. Configure environment variables: # NEEDS UPDATING
+3. Start the backend server:
 ```bash
-cp .env.template .env
-# Edit .env with your actual API keys and configuration
-```
-
-4. Start the Flask server:
-```bash
-flask run
+uvicorn app:app --reload
 ```
 
 ### Frontend Setup
@@ -56,17 +50,29 @@ npm install
 
 1. Always activate the virtual environment:
 ```bash
-cd backend
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 2. Never commit sensitive data or API keys
 3. Update this README when adding new features or changing setup requirements
 
 ## Contributing
-1. Create a new branch
-2. Make your changes
-3. Test thoroughly
-4. Make a branch merge request
+1. Pull new code
+```bash
+git fetch
+git pull
+```
+2. Create a new branch
+```bash
+git checkout -b "new branch name"
+```  
+3. Make your changes
+```bash
+git add <file name>
+git commit -m "new commit message"
+git push origin <branch name>
+```  
+4. Test thoroughly
+5. Make a branch merge request
 
 ## License
 MIT
