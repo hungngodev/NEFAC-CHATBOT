@@ -53,7 +53,7 @@ def resolve_retrieve_documents(_, info, query):
 @mutation.field("addDocuments")
 async def resolve_add_documents(_, info, documents):
     try:
-        add_documents_to_store(documents)
+        add_documents_to_store(_, info, documents)
         print("Documents added!")
         return "Documents added!"
     except Exception as e:
