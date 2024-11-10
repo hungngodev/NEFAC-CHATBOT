@@ -22,20 +22,25 @@ rag-project/
 ## Setup Instructions
 
 ### Backend Setup
-1. Create and activate virtual environment:
+1. Make sure you have correct Python version - should be <3.13:
+   ```bash
+python --version or python<version> -- version
+```
+2. Create and activate virtual environment:
 ```bash
 
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-2. Install dependencies:
+3. Install dependencies (Python version <3.13) :
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Start the backend server:
+4. Start the backend server:
 ```bash
+cd backend
 uvicorn app:app --reload
 ```
 
