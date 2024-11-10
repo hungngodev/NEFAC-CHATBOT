@@ -73,16 +73,16 @@ async def ask_llm(_, info, query):
 
     prompt = ChatPromptTemplate.from_messages([("human", message)])
 
-    # rag_chain = {"context": retriever, "question": RunnablePassthrough()} | prompt | llm
+    rag_chain = {"context": retriever, "question": RunnablePassthrough()} | prompt | llm
 
-    # response = rag_chain.invoke(query)
-
+    response = rag_chain.invoke(query)
+    print(response)
     # print(response) 
 
-    docs = retrieve_documents(query)
+    # docs = retrieve_documents(query)
     
-    print(docs)
+    # print(docs)
 
-    return docs
-    #return response
+    # return docs
+    return response
     
