@@ -18,11 +18,18 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers; you can restrict this to specific headers if desired
 )
 
+
+
 # GraphQL Type Definitions
 type_defs = gql("""
+                
+    interface Document {
+        page_content: String
+    }
+            
     type Query {
         askLlm(prompt: String!): String!
-        retrieveDocuments(query: String!): String!
+        retrieveDocuments(query: String!): [Document]
     }
 
     type Mutation {
