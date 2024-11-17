@@ -9,13 +9,17 @@ from langchain_community.document_loaders import DirectoryLoader
 from langchain.docstore.in_memory import InMemoryDocstore
 from langchain.retrievers.multi_query import MultiQueryRetriever
 import os
+import glob
 from langchain_core.prompts import PromptTemplate
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain.chains import StuffDocumentsChain ,LLMChain
 
-os.environ["OPENAI_API_KEY"] = "***REMOVED***proj-feC-Sb7M_q5Nb2SfVLKKoAoIIfEU44xgJsv2NEWQe8-6GY9qvWXZ_iyAxFjv84IQn8OdQQqCVrT3BlbkFJMWobBnRpaNjmX76ApxdRLbYPdgi-cJq314_ySz1-3Kqyf_qWF49jKD0ZKmxlmtds_LUDuS6z4A"
+from langchain_community.document_loaders import PyPDFLoader
+
+
+os.environ["OPENAI_API_KEY"] = ""
 # Initialize embeddings and FAISS vector store
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
 # Initialize docstore -- MAKE PERMANENT FILE
@@ -25,8 +29,10 @@ all_docs = []
 
 # Add documents to the FAISS vector store
 def add_documents_to_store(_, info, documents):
+
     # convert doc paths to Doc objects
-    new_docs = load_documents_from_directory()
+    #new_docs = load_documents_from_directory()
+    new_docs = pdfLoader()
     chunked_docs = chunk_documents(new_docs)
     vector_store.add_documents(documents = chunked_docs)
     return new_docs
@@ -73,6 +79,7 @@ async def ask_llm(_, info, query):
     response = await custom_QA(_, info, query)
     
     return response['result']
+    
 
 
 async def custom_QA(_, info, query):
@@ -86,6 +93,7 @@ async def custom_QA(_, info, query):
         2. Exclude the sources that are irrelevant to the final answer.
         3. Format the response as follows:
             Source: "path to the source"
+            Page: "page number"
             Description: "quick description of the source"
         4. Do not use any external sources other than the ones provided.
         Sources:
@@ -96,13 +104,13 @@ async def custom_QA(_, info, query):
 
     retriever = vector_store.as_retriever(
     search_type="similarity",
-    search_kwargs={"k": 1},
+    search_kwargs={"k": 2},
     )
     QA_CHAIN_PROMPT = PromptTemplate.from_template(prompt_template) # prompt_template defined above
     llm_chain = LLMChain(llm=OpenAI(temperature = 0), prompt=QA_CHAIN_PROMPT, callbacks=None, verbose=True)
     document_prompt = PromptTemplate(
-        input_variables=["page_content", "source"],
-        template="Context:\ncontent:{page_content}\nsource:{source}",
+        input_variables=["page_content", "source", "page"],
+        template="Context:\ncontent:{page_content}\nsource:{source}\npage:{page}\n",
     )
     combine_documents_chain = StuffDocumentsChain(
         llm_chain=llm_chain,
@@ -121,3 +129,20 @@ async def custom_QA(_, info, query):
 
     print(response)
     return response
+
+def pdfLoader():
+    # Load all PDF documents from the directory "docs/"
+    all_docs_path = "docs/legal_docs/*"
+    all_docs = glob.glob(all_docs_path)
+    all_pages = []
+    print(all_docs)
+    for idx, doc in enumerate(all_docs):
+        loader = PyPDFLoader(doc)
+        pages = loader.load_and_split()
+        all_pages.extend(pages)
+
+    return all_pages
+
+    
+
+    
