@@ -16,7 +16,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain.chains import StuffDocumentsChain ,LLMChain
 
-os.environ["OPENAI_API_KEY"] = "***REMOVED***proj-feC-Sb7M_q5Nb2SfVLKKoAoIIfEU44xgJsv2NEWQe8-6GY9qvWXZ_iyAxFjv84IQn8OdQQqCVrT3BlbkFJMWobBnRpaNjmX76ApxdRLbYPdgi-cJq314_ySz1-3Kqyf_qWF49jKD0ZKmxlmtds_LUDuS6z4A"
+os.environ["OPENAI_API_KEY"] = ""
 
 # Initialize embeddings and FAISS vector store
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")

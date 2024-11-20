@@ -47,7 +47,6 @@ mutation = MutationType()
 async def resolve_ask_llm(_, info, prompt):
     try:
         response = await ask_llm(_, info, prompt)
-        
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
