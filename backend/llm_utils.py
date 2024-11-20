@@ -16,7 +16,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain.chains import StuffDocumentsChain ,LLMChain
 
-os.environ["OPENAI_API_KEY"] = ""
+os.environ["OPENAI_API_KEY"] = "***REMOVED***proj-feC-Sb7M_q5Nb2SfVLKKoAoIIfEU44xgJsv2NEWQe8-6GY9qvWXZ_iyAxFjv84IQn8OdQQqCVrT3BlbkFJMWobBnRpaNjmX76ApxdRLbYPdgi-cJq314_ySz1-3Kqyf_qWF49jKD0ZKmxlmtds_LUDuS6z4A"
 
 # Initialize embeddings and FAISS vector store
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
@@ -28,7 +28,7 @@ all_docs = []
 # Add documents to the FAISS vector store
 def add_documents_to_store(_, info, documents):
     # convert doc paths to Doc objects
-    new_docs = load_documents_from_directory()
+    new_docs = [Document(page_content=doc) for doc in documents]
     chunked_docs = chunk_documents(new_docs)
     vector_store.add_documents(documents = chunked_docs)
     return new_docs
@@ -81,8 +81,9 @@ async def custom_QA(_, info, query):
 
     prompt_template = """Use the following pieces of context to answer the question at the end. Please follow the following rules:
         1. If the question is to request links, please only return the source links with no answer.
-        2. If you don't know the answer, don't try to make up an answer. Just say **I can't find the final answer but you may want to check the following links** and add the source links as a list.
-        3. If you find the answer, write the answer in a concise way and add the list of sources that are **directly** used to derive the answer. Exclude the sources that are irrelevant to the final answer.
+        2. If you don't know the answer, don't try to make up an answer or start a conversation. Just say **I can't find the final answer but you may want to check the following links** and add the source links as a list.
+        3. If you find the answer, write the answer in a concise way of summary as a search engine result (who what when why how) and add the list of sources that are **directly** used to derive the answer. Exclude the sources that are irrelevant to the final answer.
+        4. Summarize the content of the retrieved documents to provide a comprehensive answer.
 
         {context}
 
@@ -91,7 +92,7 @@ async def custom_QA(_, info, query):
 
     retriever = vector_store.as_retriever(
     search_type="similarity",
-    search_kwargs={"k": 1},
+    search_kwargs={"k": 3},
     )
     QA_CHAIN_PROMPT = PromptTemplate.from_template(prompt_template) # prompt_template defined above
     llm_chain = LLMChain(llm=OpenAI(), prompt=QA_CHAIN_PROMPT, callbacks=None, verbose=True)
@@ -117,3 +118,12 @@ async def custom_QA(_, info, query):
     print(response)
     
     return response
+
+def load_documents_on_startup():
+    # Load documents from the persistent storage
+    new_docs = load_documents_from_directory()
+    chunked_docs = chunk_documents(new_docs)
+    vector_store.add_documents(documents=chunked_docs)
+
+# Call this function when the application starts
+load_documents_on_startup()

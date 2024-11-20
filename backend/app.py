@@ -46,7 +46,9 @@ mutation = MutationType()
 @query.field("askLlm")
 async def resolve_ask_llm(_, info, prompt):
     try:
-        return await ask_llm(_, info, prompt)
+        response = await ask_llm(_, info, prompt)
+        
+        return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
