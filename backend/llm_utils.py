@@ -145,3 +145,5 @@ def youtubeLoader():
     print("youtubeLoader")
     print("\n\n".join(map(repr, loader.load())))
     return loader.load()
+
+add_documents_to_store(" ", "info", " ")
