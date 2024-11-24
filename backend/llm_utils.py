@@ -9,15 +9,20 @@ from langchain_community.document_loaders import DirectoryLoader
 from langchain.docstore.in_memory import InMemoryDocstore
 from langchain.retrievers.multi_query import MultiQueryRetriever
 import os
-
+import glob
 from langchain_core.prompts import PromptTemplate
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain.chains import StuffDocumentsChain ,LLMChain
 
-os.environ["OPENAI_API_KEY"] = ""
+# loaders
+from langchain_community.document_loaders import PyPDFLoader, YoutubeLoader
+from langchain_community.document_loaders.youtube import TranscriptFormat
 
+
+
+os.environ["OPENAI_API_KEY"] = ""
 # Initialize embeddings and FAISS vector store
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
 # Initialize docstore -- MAKE PERMANENT FILE
@@ -27,41 +32,28 @@ all_docs = []
 
 # Add documents to the FAISS vector store
 def add_documents_to_store(_, info, documents):
-    # convert doc paths to Doc objects
-    new_docs = load_documents_from_directory()
-    chunked_docs = chunk_documents(new_docs)
-    vector_store.add_documents(documents = chunked_docs)
-    return new_docs
 
-# Delete documents from the FAISS vector store
-# def delete_documents_from_store():
+    # convert doc paths to Doc objects
+    #new_docs = load_documents_from_directory()
+    new_docs = pdfLoader()
+    new_vids = youtubeLoader()
+    # set vids "start_seconds" to page number
+    for vid in new_vids:
+        vid.metadata['page'] = vid.metadata['start_seconds']
+    chunked_docs = chunk_documents(new_docs)
+    chunked_vids = chunk_documents(new_vids)
+
+    all_doc_types = chunked_docs + chunked_vids
+    vector_store.add_documents(documents = all_doc_types)
+    return all_doc_types
 
 # TODO: NEEDS IMPLEMENTATION
 def load_documents_from_directory():
-    loader = DirectoryLoader("docs/")
-    docs = loader.load()
-    print(docs)
-    new_docs = []
-    for doc in docs:
-        if doc not in all_docs:
-            print(f"Adding document: {doc}")
-            new_docs.append(doc)
-            all_docs.append(doc)
-    print(f"Loaded {len(new_docs)} new documents")
-    print(f"Total documents: {len(all_docs)}")
-    return new_docs
+    # Load all new documents from the directory "docs/" of all types
+    pass
 
-# Retrieve documents from the FAISS vector store
 def retrieve_documents(query):
-
-    # TODO: NEEDS REVISING?
-
-    docs = vector_store.similarity_search(query=query, k=20)
-    print(docs)
-    #docs = [Document(page_content=doc.page_content) for doc in docs]
-    docs = [{"page_content": doc.page_content, "metadata": doc.metadata} for doc in docs if doc.page_content is not None]
-    
-    return docs
+    pass
 
 # Function to chunk documents
 def chunk_documents(docs):
@@ -75,36 +67,41 @@ async def ask_llm(_, info, query):
     response = await custom_QA(_, info, query)
     
     return response['result']
+    
 
 
 async def custom_QA(_, info, query):
 
     prompt_template = """
 
-        Your purpose it to act as a search engine. Given a search query, you need to retrieve the most relevant sources.
+        Answer the question provided by the user. USE THE MOST RELEVANT SOURCES FROM THE CONTEXT TO ANSWER THE QUESTION.
         
         Please follow the following rules:
-        1. For each search query, you must provide the source itself as well as a quick description of the source.
+        1. For each question, answer the question and provide a source.
         2. Exclude the sources that are irrelevant to the final answer.
-        3. Format the response as follows:
-            Source: "path to the source"
-            Description: "quick description of the source"
+        3. Include sources and page numbers in the answer.
         4. Do not use any external sources other than the ones provided.
+        5. Do not provide any false information.
+        6. Do not provide any information that is not supported by the sources.
+        7. Do not provide any information that is not relevant to the question.
+        8. Do not hallucinate or make up any information.
         Sources:
             {context}
 
-        Search Query: {question}
+        Question: {question}
+
+        Helpful answer:
         """
 
     retriever = vector_store.as_retriever(
     search_type="similarity",
-    search_kwargs={"k": 1},
+    search_kwargs={"k": 20},
     )
     QA_CHAIN_PROMPT = PromptTemplate.from_template(prompt_template) # prompt_template defined above
     llm_chain = LLMChain(llm=OpenAI(temperature = 0), prompt=QA_CHAIN_PROMPT, callbacks=None, verbose=True)
     document_prompt = PromptTemplate(
-        input_variables=["page_content", "source"],
-        template="Context:\ncontent:{page_content}\nsource:{source}",
+        input_variables=["page_content", "source", "page"],
+        template="Context:\ncontent:{page_content}\nsource:{source}\npage:{page}\n",
     )
     combine_documents_chain = StuffDocumentsChain(
         llm_chain=llm_chain,
@@ -122,5 +119,31 @@ async def custom_QA(_, info, query):
     response = qa(query)
 
     print(response)
-    
     return response
+
+def pdfLoader():
+    # Load all PDF documents from the directory "docs/"
+    all_docs_path = "docs/legal_docs/*"
+    all_docs = glob.glob(all_docs_path)
+    all_pages = []
+    print(all_docs)
+    for idx, doc in enumerate(all_docs):
+        loader = PyPDFLoader(doc)
+        pages = loader.load_and_split()
+        all_pages.extend(pages)
+
+    return all_pages
+
+def youtubeLoader():
+
+    loader = YoutubeLoader.from_youtube_url(
+        "https://www.youtube.com/watch?v=0oMe5k7MPxs",
+        add_video_info=False, # Set to True to include video metadata
+        transcript_format=TranscriptFormat.CHUNKS,
+        chunk_size_seconds=30,
+    )
+    print("youtubeLoader")
+    print("\n\n".join(map(repr, loader.load())))
+    return loader.load()
+
+add_documents_to_store(" ", "info", " ")
