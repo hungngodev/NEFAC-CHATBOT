@@ -74,7 +74,7 @@ const SearchBar = () => {
         </form>
       </div>
 
-      <div className="w-full max-w-lg mb-20 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 150px' }}>
+      <div className="w-full max-w-lg mb-20 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 150px)' }}>
         {conversation.map((msg, index) => (
           <React.Fragment key={index}>
             <div className={`p-4 my-2 rounded-lg ${msg.type === 'user' ? 'text-2xl' : 'bg-gray-100 text-base'}`}>
