@@ -1,7 +1,39 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Send } from 'react-feather';
 
+interface UserRole {
+  id: string;
+  title: string;
+  description: string;
+}
+
+
+const userRoles:UserRole[]= [
+  {
+    id: 'educator',
+    title: 'Educator',
+    description: 'Teachers, professors, and education professionals'
+  },
+  {
+    id: 'lawyer',
+    title: 'Lawyer',
+    description: 'Legal professionals and law practitioners'
+  },
+  {
+    id: 'student',
+    title: 'Student',
+    description: 'Students at any educational level'
+  },
+  {
+    id: 'government',
+    title: 'Government Worker',
+    description: 'Public sector and government employees'
+  }
+];
+
+
 const SearchBar = () => {
+  const [userRole, setUserRole] = useState('');
   const [inputValue, setInputValue] = useState('');
   const [conversation, setConversation] = useState<{ type: string; content: string; source?: string }[]>([]);
   const conversationEndRef = useRef<HTMLDivElement>(null);
@@ -52,13 +84,34 @@ const SearchBar = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen ">
+      {/* Have a screen with 4 boxes that each allow you to pick a role (educator, student, lawyer, government worker) */}
+      {userRole==""?
+        <div className="flex flex-col items-center justify-center">
+          <h1 className="text-3xl font-bold mb-4">Choose your role</h1>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {userRoles.map((role) => (
+              <button
+                key={role.id}
+                onClick={() => setUserRole(role.id)}
+                className="p-4 border border-gray-300 rounded-lg text-center hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
+                <h2 className="text-xl font-semibold">{role.title}</h2>
+                <p className="text-sm text-gray-500">{role.description}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+      :null}
+      
       {/* Exit button "Set conversation to empty" */}
-      {conversation.length > 0? 
+      {conversation.length > 0 ? 
         <button onClick={() => {setConversation([])}} className='fixed top-10 left-10 border border-gray-950 p-2 rounded-xl w-auto'>
           Exit
         </button>: null
       }
-      <div 
+      
+      {/* Display the search bar */}
+      {userRole!==""?<div 
         className={`flex flex-col border border-neutral-300 items-center rounded-2xl justify-center w-auto bg-white shadow-md p-4 transition-all duration-500 ease-in-out mb-5 ${conversation.length > 0 ? 'fixed bottom-0' : 'relative top-1/2 transform -translate-y-1/2'}`}>
         <form onSubmit={handleSearch} className="flex gap-2 mb-1">
           <input
@@ -72,9 +125,10 @@ const SearchBar = () => {
             <Send className="inline-block h-5 w-5" />
           </button>
         </form>
-      </div>
-
-      <div className="w-full max-w-lg mb-20 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 150px)' }}>
+      </div>:null}
+      
+      {/* Display the conversation */}
+      <div className="w-full max-w-lg mb-20 overflow-y-auto" style={{ maxHeight: `calc(100vh - 130px)` }}>
         {conversation.map((msg, index) => (
           <React.Fragment key={index}>
             <div className={`p-4 my-2 rounded-lg ${msg.type === 'user' ? 'text-2xl' : 'bg-gray-100 text-base'}`}>
