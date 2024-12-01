@@ -74,7 +74,7 @@ const SearchBar = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen ">
       {/* Choose your role */} {
-        userRole=="" ?
+        userRole=="" && (
           <div className="flex flex-col items-center justify-center">
             <h1 className="text-3xl font-bold mb-4">Choose your role</h1>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -90,27 +90,27 @@ const SearchBar = () => {
               ))}
             </div>
           </div>
-        : null
+        )
       }
        
       {/* Exit button "Set conversation to empty" */} {
-        conversation.length>0 && userRole!="" ? 
+        conversation.length>0 && userRole!="" && (
           <button onClick={() => {setConversation([])}} className='fixed top-10 left-10 border border-gray-950 p-2 rounded-xl w-auto'>
             Exit
           </button>
-        : null
+        )
       }
       
       {/* Edit role button" */} { 
-        userRole!="" ? 
+        userRole!="" && (
           <button onClick={() => {setUserRole("")}} className='fixed top-10 right-10 border border-gray-950 p-2 rounded-xl w-auto'>
             Edit User Role
           </button>
-        : null
+        ) 
       }
 
       {/* Display the search bar */} {
-        userRole!=="" ?
+        userRole!=="" && (
           <div className={`flex flex-col border border-neutral-300 items-center rounded-2xl justify-center w-auto bg-white shadow-md p-4 transition-all duration-500 ease-in-out mb-5 ${conversation.length > 0 ? 'fixed bottom-0' : 'relative top-1/2 transform -translate-y-1/2'}`}>
             <form onSubmit={handleSearch} className="flex gap-2 mb-1">
               <input
@@ -125,17 +125,17 @@ const SearchBar = () => {
               </button>
             </form>
           </div>
-        : null
+        )
       }
       
       {/* Display the conversation */} {
-        userRole!="" ? 
+        userRole!="" && (
           <div className="w-full max-w-lg mb-20 overflow-y-auto" style={{ maxHeight: `calc(100vh - 130px` }}>
             { conversation.map((msg, index) => (
               <React.Fragment key={index}>
                 <div className={`p-4 my-2 rounded-lg ${msg.type === 'user' ? 'text-2xl' : 'bg-gray-100 text-base'}`}>
                   <p>{msg.content}</p>
-                  { msg.source && (
+                  {msg.source && (
                     <p className="text-sm text-blue-500">
                       Source: <a href={msg.source} target="_blank" rel="noopener noreferrer">{msg.source}</a>
                     </p>
@@ -146,7 +146,7 @@ const SearchBar = () => {
             ))}
             <div ref={conversationEndRef} />
           </div>
-        : null
+        )
       }
     </div>
   );
