@@ -104,12 +104,19 @@ const SearchBar = () => {
       :null}
       
       {/* Exit button "Set conversation to empty" */}
-      {conversation.length > 0 ? 
+      {userRole!="" && conversation.length>0 ? 
         <button onClick={() => {setConversation([])}} className='fixed top-10 left-10 border border-gray-950 p-2 rounded-xl w-auto'>
           Exit
         </button>: null
       }
       
+      {/* Edit role button" */}
+      {userRole!="" ? 
+        <button onClick={() => {setUserRole("")}} className='fixed top-10 right-10 border border-gray-950 p-2 rounded-xl w-auto'>
+          Edit User Role
+        </button>: null
+      }
+
       {/* Display the search bar */}
       {userRole!==""?<div 
         className={`flex flex-col border border-neutral-300 items-center rounded-2xl justify-center w-auto bg-white shadow-md p-4 transition-all duration-500 ease-in-out mb-5 ${conversation.length > 0 ? 'fixed bottom-0' : 'relative top-1/2 transform -translate-y-1/2'}`}>
@@ -128,7 +135,8 @@ const SearchBar = () => {
       </div>:null}
       
       {/* Display the conversation */}
-      <div className="w-full max-w-lg mb-20 overflow-y-auto" style={{ maxHeight: `calc(100vh - 130px)` }}>
+      {userRole!="" ? <div
+       className="w-full max-w-lg mb-20 overflow-y-auto" style={{ maxHeight: `calc(100vh - 130px` }}>
         {conversation.map((msg, index) => (
           <React.Fragment key={index}>
             <div className={`p-4 my-2 rounded-lg ${msg.type === 'user' ? 'text-2xl' : 'bg-gray-100 text-base'}`}>
@@ -143,7 +151,7 @@ const SearchBar = () => {
           </React.Fragment>
         ))}
         <div ref={conversationEndRef} />
-      </div>
+      </div>:null}
     </div>
   );
 };
