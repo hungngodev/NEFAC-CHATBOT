@@ -19,10 +19,11 @@ from langchain.chains import StuffDocumentsChain ,LLMChain
 # loaders
 from langchain_community.document_loaders import PyPDFLoader, YoutubeLoader
 from langchain_community.document_loaders.youtube import TranscriptFormat
+from dotenv import load_dotenv
 
+load_dotenv()
 
-
-os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KET")
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 # Initialize embeddings and FAISS vector store
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
 # Initialize docstore -- MAKE PERMANENT FILE
