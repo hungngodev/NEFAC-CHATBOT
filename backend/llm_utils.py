@@ -28,6 +28,8 @@ from langchain_community.document_loaders.youtube import TranscriptFormat
 from langchain_core.documents import Document
 from langchain_community.document_loaders import DirectoryLoader
 from langchain.retrievers.multi_query import MultiQueryRetriever
+
+>>>>>>> feat/dorianBG
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 
@@ -40,6 +42,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 # Initialize embeddings and FAISS vector store
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
 # Initialize docstore -- MAKE PERMANENT FILE
@@ -49,7 +52,7 @@ all_docs = []
 
 # Add documents to the FAISS vector store
 def add_documents_to_store(_, info, documents):
-
+  
     new_docs, new_vids = load_all_documents()
 
     logger.info("new_docs: ", new_docs)
@@ -61,8 +64,7 @@ def add_documents_to_store(_, info, documents):
     vector_store.add_documents(documents = all_doc_types)
 
     return all_doc_types
-
-
+  
 # TODO: NEEDS IMPLEMENTATION
 def load_documents_from_directory():
     # Load all new documents from the directory "docs/" of all types
@@ -83,31 +85,30 @@ async def ask_llm(_, info, query):
     response = await custom_QA(_, info, query)
     
     return response
-    
 
 
 async def custom_QA(_, info, query):
 
-    prompt_template = """
+#     prompt_template = """
 
-        Answer the question provided by the user. USE THE MOST RELEVANT SOURCES FROM THE CONTEXT TO ANSWER THE QUESTION.
+#         Answer the question provided by the user. USE THE MOST RELEVANT SOURCES FROM THE CONTEXT TO ANSWER THE QUESTION.
         
-        Please follow the following rules:
-        1. For each question, answer the question and provide the source.
-        2. Exclude the sources that are irrelevant to the final answer.
-        3. Include sources and page numbers in the answer.
-        4. Do not use any external sources other than the ones provided.
-        5. Do not provide any false information.
-        6. Do not provide any information that is not supported by the sources.
-        7. Do not provide any information that is not relevant to the question.
-        8. Do not hallucinate or make up any information.
-        Sources:
-            {context}
+#         Please follow the following rules:
+#         1. For each question, answer the question and provide the source.
+#         2. Exclude the sources that are irrelevant to the final answer.
+#         3. Include sources and page numbers in the answer.
+#         4. Do not use any external sources other than the ones provided.
+#         5. Do not provide any false information.
+#         6. Do not provide any information that is not supported by the sources.
+#         7. Do not provide any information that is not relevant to the question.
+#         8. Do not hallucinate or make up any information.
+#         Sources:
+#             {context}
 
-        Question: {question}
+#         Question: {question}
 
-        Helpful answer:
-        """
+#         Helpful answer:
+#         """
     
     prompt_template = """
     
@@ -136,7 +137,7 @@ async def custom_QA(_, info, query):
     }}
     Question: {question}
     """
-
+    
     retriever = vector_store.as_retriever(
     search_type="similarity",
     search_kwargs={"k": 20},
