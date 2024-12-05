@@ -22,7 +22,7 @@ from langchain_community.document_loaders.youtube import TranscriptFormat
 
 
 
-os.environ["OPENAI_API_KEY"] = ""
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KET")
 # Initialize embeddings and FAISS vector store
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
 # Initialize docstore -- MAKE PERMANENT FILE
