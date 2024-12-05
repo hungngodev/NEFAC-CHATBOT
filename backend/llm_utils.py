@@ -1,33 +1,45 @@
-import faiss
-from langchain.embeddings import OpenAIEmbeddings  # Replace with Bedrock embeddings if using AWS Bedrock
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.chains import RetrievalQA
-from langchain.llms import OpenAI  # Replace with Claude integration
-from langchain_community.vectorstores import FAISS
-from langchain_core.documents import Document
-from langchain_community.document_loaders import DirectoryLoader
-from langchain.docstore.in_memory import InMemoryDocstore
-from langchain.retrievers.multi_query import MultiQueryRetriever
+
+# general
 import os
 import glob
-from langchain_core.prompts import PromptTemplate
+import json
+from dotenv import load_dotenv
+import logging
 
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnablePassthrough
+# vector store + embeddings
+import faiss
+from langchain_community.vectorstores import FAISS
+from langchain_community.embeddings import OpenAIEmbeddings 
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.docstore.in_memory import InMemoryDocstore
+
+
+# retrieval chains + llm
+from langchain.chains import RetrievalQA
+from langchain_core.prompts import PromptTemplate
 from langchain.chains import StuffDocumentsChain ,LLMChain
+from langchain_community.llms import OpenAI
 
 # loaders
 from langchain_community.document_loaders import PyPDFLoader, YoutubeLoader
 from langchain_community.document_loaders.youtube import TranscriptFormat
 
+# extras - potentially not needed
+from langchain_core.documents import Document
+from langchain_community.document_loaders import DirectoryLoader
+from langchain.retrievers.multi_query import MultiQueryRetriever
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnablePassthrough
 
-# dotend
-from dotenv import load_dotenv
-
+# config
 load_dotenv()
-
-
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+
+# Initialize logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
 # Initialize embeddings and FAISS vector store
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
 # Initialize docstore -- MAKE PERMANENT FILE
@@ -38,23 +50,18 @@ all_docs = []
 # Add documents to the FAISS vector store
 def add_documents_to_store(_, info, documents):
 
-    # convert doc paths to Doc objects
-    #new_docs = load_documents_from_directory()
-    # new_docs = pdfLoader()
-    # new_vids = youtubeLoader()
-    # set vids "start_seconds" to page number
-    # for vid in new_vids:
-    #     vid.metadata['page'] = vid.metadata['start_seconds']
-
     new_docs, new_vids = load_all_documents()
-    print("new_docs", new_docs)
-    print("new_vids", new_vids)
+
+    logger.info("new_docs: ", new_docs)
+    logger.info("new_vids: ", new_vids)
+
     chunked_docs = chunk_documents(new_docs)
     chunked_vids = chunk_documents(new_vids)
-
     all_doc_types = chunked_docs + chunked_vids
     vector_store.add_documents(documents = all_doc_types)
+
     return all_doc_types
+
 
 # TODO: NEEDS IMPLEMENTATION
 def load_documents_from_directory():
@@ -101,22 +108,54 @@ async def custom_QA(_, info, query):
 
         Helpful answer:
         """
+    
+    prompt_template = """
+    
+    Use the following context to answer the query.
+    
+    Sources:
+    {context}
+    Instructions:
+    - Generate a list of unique relevant sources from the context.
+    - Provide the actual titles and links of the sources.
+    - Summarize each source content in a way that answers the query.
+    - Do not include duplicate sources or sources that are not relevant to the query.
+    - Format the output as JSON in the following structure:
+    {{
+        "results": [
+            {{
+                "title": "Title of the source content",
+                "link": "source_link",
+                "summary": " Details answering to the query with full context (who what when why where how)",
+                "citations": [
+                    {{"id": "1", "context": "relevant quote/text use in summary"}},
+                ]
+            }},
+            ...
+        ]
+    }}
+    Question: {question}
+    """
 
     retriever = vector_store.as_retriever(
     search_type="similarity",
     search_kwargs={"k": 20},
     )
+
     QA_CHAIN_PROMPT = PromptTemplate.from_template(prompt_template) # prompt_template defined above
+    
     llm_chain = LLMChain(llm=OpenAI(temperature = 0), prompt=QA_CHAIN_PROMPT, callbacks=None, verbose=True)
+    
     document_prompt = PromptTemplate(
         input_variables=["page_content", "source", "page", "nefac_category", "resource_type", "audience"], # How to setup optional variables?
         template="Context:\ncontent:{page_content}\nsource:{source}\npage:{page}\nnefac_category:{nefac_category}\nresource_type:{resource_type}\naudience:{audience}\n",
     )
+
     combine_documents_chain = StuffDocumentsChain(
         llm_chain=llm_chain,
         document_variable_name="context",
         document_prompt=document_prompt,
-        callbacks=None,
+        callbacks=None,     
     )
     qa = RetrievalQA(
         combine_documents_chain=combine_documents_chain,
@@ -127,9 +166,53 @@ async def custom_QA(_, info, query):
     )
     response = qa(query)
 
-    print(response)
+    try:
+        response = parse_llm_response(query, response)
+    except Exception as e:
+        logger.error(f"Error parsing the LLM response: {e}")
+
     return response
 
+def parse_llm_response(query, response):
+
+    # Parse the LLM's JSON response
+    try:
+        result = json.loads(response['result'])
+        logger.info(f"Parsed LLM response: {result}")
+        return result
+    except Exception as e:
+        logger.error(f"Error parsing the LLM response: {e}")
+        # Fallback logic
+        formatted_response = {
+            "results": []
+        }
+        unique_titles = set()
+        for i, doc in enumerate(response.get('source_documents', [])):
+            title = doc.metadata.get("title", f"Source {i+1}")
+            if title in unique_titles:
+                continue
+            unique_titles.add(title)
+            # Generate a summary relevant to the query
+            llm = OpenAI(temperature=0)
+            summary_prompt = f"Based on the following content, provide a concise summary that answers the query: '{query}'\n\nContent:\n{doc.page_content}"
+            try:
+                summary = llm(summary_prompt).strip()
+            except Exception as summ_err:
+                logger.error(f"Error generating summary: {summ_err}")
+                summary = "Summary unavailable."
+            formatted_response["results"].append({
+                "title": title,
+                "link": doc.metadata.get("source", "#"),
+                "summary": summary,
+                "citations": [
+                    {
+                        "id": str(i+1),
+                        "context": doc.page_content
+                    }
+                ]
+            })
+        return formatted_response["results"]
+    
 def pdfLoader(path, existing_docs):
     # Load all PDF documents from the directory "docs/"
     all_docs_path = glob.glob(path+"/*")
@@ -215,10 +298,10 @@ def load_all_documents():
             vid.metadata["title"] = vid.metadata["source"].split('=')[1][:-2]
             vid.metadata["audience"] = audience_folder.split("/")[-1]
             vid.metadata["page"] = vid.metadata["start_seconds"]
-            if 'nefac_category' not in page.metadata:
-                page.metadata['nefac_category'] = ""
-            if 'resource_type' not in page.metadata:
-                page.metadata['resource_type'] = ""
+            if 'nefac_category' not in vid.metadata:
+                vid.metadata['nefac_category'] = ""
+            if 'resource_type' not in vid.metadata:
+                vid.metadata['resource_type'] = ""
 
         for dup_doc in dup_docs:
             for existing_page in all_pdf_pages:
@@ -267,10 +350,10 @@ def load_all_documents():
             vid.metadata["resource_type"] = resource_folder.split("/")[-1]
             vid.metadata["page"] = vid.metadata["start_seconds"]
 
-            if 'nefac_category' not in page.metadata:
-                page.metadata['nefac_category'] = ""
-            if 'audience' not in page.metadata:
-                page.metadata['audience'] = ""
+            if 'nefac_category' not in vid.metadata:
+                vid.metadata['nefac_category'] = ""
+            if 'audience' not in vid.metadata:
+                vid.metadata['audience'] = ""
 
         for dup_doc in dup_docs:
             for existing_page in all_pdf_pages:
@@ -318,10 +401,10 @@ def load_all_documents():
             vid.metadata["nefac_category"] = content_folder.split("/")[-1]
             vid.metadata["page"] = vid.metadata["start_seconds"]
 
-            if 'resource_type' not in page.metadata:
-                page.metadata['resource_type'] = ""
-            if 'audience' not in page.metadata:
-                page.metadata['audience'] = ""
+            if 'resource_type' not in vid.metadata:
+                vid.metadata['resource_type'] = ""
+            if 'audience' not in vid.metadata:
+                vid.metadata['audience'] = ""
 
         for dup_doc in dup_docs:
             for existing_page in all_pdf_pages:
