@@ -2,50 +2,51 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, Send } from 'react-feather';
 
 const SearchBar = () => {
-  
-  const [userRole, setUserRole] = useState('');
-  const [inputValue, setInputValue] = useState('');
-  const [conversation, setConversation] = useState<{ type: string; content: string; source?: string }[]>([]);
-  const conversationEndRef = useRef<HTMLDivElement>(null);
 
-  const userRoles = [
-    {
-      id: 'citizen',
-      title: 'Private Citizens',
-      description: 'Explore the foundations of free speech, press freedom, assembly, and petition rights. Understand how these rights affect your daily life and learn how to engage with them effectively.'
-    },
-    {
-      id: 'educator',
-      title: 'Educators',
-      description: 'Assist in teaching the nuances of the First Amendment. Access historical documents, court decisions, and educational resources to enhance curriculum on civil liberties and constitutional rights.'
-    },
-    {
-      id: 'journalist',
-      title: 'Journalists',
-      description: 'Dive into case studies, legal interpretations, and landmark decisions concerning freedom of the press. Use this tool to investigate how journalism is protected and what boundaries exist within First Amendment law.'
-    },
-    {
-      id: 'lawyer',
-      title: 'Lawyers',
-      description: 'Navigate through precedents, legal arguments, and current issues related to First Amendment cases. Utilize this bot for quick legal research, client counseling, or preparing for litigation involving free speech, religion, or assembly rights.'
-    }
-  ];
+      const [userRole, setUserRole] = useState('');
+      const [inputValue, setInputValue] = useState('');
+      const [conversation, setConversation] = useState<{ type: string; content: string; source?: string }[]>([]);
+      const conversationEndRef = useRef<HTMLDivElement>(null);
+
+      const userRoles = [
+        {
+          id: 'citizen',
+          title: 'Private Citizens',
+          description: 'Explore the foundations of free speech, press freedom, assembly, and petition rights. Understand how these rights affect your daily life and learn how to engage with them effectively.'
+        },
+        {
+          id: 'educator',
+          title: 'Educators',
+          description: 'Assist in teaching the nuances of the First Amendment. Access historical documents, court decisions, and educational resources to enhance curriculum on civil liberties and constitutional rights.'
+        },
+        {
+          id: 'journalist',
+          title: 'Journalists',
+          description: 'Dive into case studies, legal interpretations, and landmark decisions concerning freedom of the press. Use this tool to investigate how journalism is protected and what boundaries exist within First Amendment law.'
+        },
+        {
+          id: 'lawyer',
+          title: 'Lawyers',
+          description: 'Navigate through precedents, legal arguments, and current issues related to First Amendment cases. Utilize this bot for quick legal research, client counseling, or preparing for litigation involving free speech, religion, or assembly rights.'
+        }
+      ];
   
+    
   useEffect(() => {
     if (conversationEndRef.current) {
       conversationEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [conversation]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-  };
-
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setInputValue(e.target.value);
+    };
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (inputValue.trim().length === 0) return; 
     setConversation(prev => [...prev, { type: 'user', content: inputValue }]);
     setInputValue('');
+    console.log(inputValue);
+    
     try {
       const response = await fetch('http://127.0.0.1:8000/graphql', {
         method: 'POST',
@@ -61,17 +62,18 @@ const SearchBar = () => {
         }),
       });
       const result = await response.json();
-      const { data } = result;
-      const { askLlm } = data;
+      
+      const { data } = result; // Destructure result
+      const { askLlm } = data; // Destructure data
 
       setConversation(prev => [...prev, { type: 'ai', content: askLlm }]);
     } catch (e) {
-      console.error(e);
+      console.log(e);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white" style={{ backgroundImage: "linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,0.8))", backgroundSize: 'cover' }}>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-white" style={{ backgroundImage: "linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,0.8))", backgroundSize: 'cover' }}>
       {/* Role Selection */}
       {userRole === "" && (
         <div className="flex flex-col items-center justify-center px-4 md:px-6 lg:px-8" style={{ minHeight: '100vh' }}>
@@ -104,43 +106,37 @@ const SearchBar = () => {
         </button>
       )}
 
-      {/* Search Bar */}
-      {userRole !== "" && (
-        <div className={`flex flex-col items-center justify-center w-full mb-5 transition-all duration-500 ease-in-out ${conversation.length > 0 ? 'fixed bottom-0' : 'relative top-1/2 transform -translate-y-1/2'}`}>
-          <form onSubmit={handleSearch} className="flex gap-2 w-full max-w-md">
+      <div className={` flex flex-col border border-neutral-300 items-center rounded-2xl justify-center w-auto bg-white shadow-md p-4 transition-all duration-500 ease-in-out mb-5 ${conversation.length > 0 ? 'fixed bottom-0' : 'relative top-1/2 transform -translate-y-1/2'}`}>
+        <form onSubmit={handleSearch} className="flex gap-2 mb-1">
           <input
             type="search"
-            placeholder={conversation.length > 0 ? "Ask follow-up" : "Search"}
+            placeholder={conversation.length > 0? "Ask follow-up" : "Search"}
             value={inputValue}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white shadow-sm"
+            className="w-96 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <button type="submit" className="px-4 py-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 focus:outline-none shadow-sm">
-            <Send className="h-5 w-5" />
+          <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            <Send className="inline-block  h-5 w-5" />
           </button>
         </form>
-        </div>
-      )}
+      </div>
 
-      {/* Conversation Display */}
-      {userRole !== "" && (
-        <div className="w-full max-w-lg mb-20 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 150px)',  backdropFilter: 'blur(5px)' }}>
-          {conversation.map((msg, index) => (
-            <React.Fragment key={index}>
-              <div className={`p-4 my-2 rounded-lg ${msg.type === 'user' ? 'bg-blue-100 text-right' : 'bg-white'}`}>
-                <p className={`${msg.type === 'user' ? 'text-black-800' : 'text-black-800'}`}>{msg.content}</p>
-                {msg.source && (
-                  <p className="text-xs text-blue-500">
-                    Source: <a href={msg.source} target="_blank" rel="noopener noreferrer" className="underline">{msg.source}</a>
-                  </p>
-                )}
-              </div>
-              {msg.type === 'ai' && index < conversation.length - 1 && <hr className="my-4 border-t border-gray-300" />}
-            </React.Fragment>
-          ))}
-          <div ref={conversationEndRef} />
-        </div>
-      )}
+      <div className="w-full max-w-lg mb-20">
+        {conversation.map((msg, index) => (
+          <React.Fragment key={index}>
+            <div className={`p-4 my-2 rounded-lg ${msg.type === 'user' ? ' text-2xl ' : 'bg-gray-100 text-base'}`}>
+              <p>{msg.content}</p>
+              {msg.source && (
+                <p className="text-sm text-blue-500">
+                  Source: <a href={msg.source} target="_blank" rel="noopener noreferrer">{msg.source}</a>
+                </p>
+              )}
+            </div>
+            {msg.type === 'ai' && index < conversation.length - 1 && <hr className="my-4 border-t border-gray-300" />}
+          </React.Fragment>
+        ))}
+      </div>
+      <div ref={conversationEndRef} />
     </div>
   );
 };
