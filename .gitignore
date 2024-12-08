@@ -124,3 +124,9 @@ Thumbs.db
 *.key
 *.cert
 *.crt
+
+# Node modules
+node_modules/
+
+# Vite build output
+dist/
