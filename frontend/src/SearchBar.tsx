@@ -210,58 +210,60 @@ const SearchBar = () => {
       </div> )
     }
 
-  {/* Results */}
-  {!isLoading && results.length > 0 && (<div className="space-y-6" >
-    {results.map((result, index) => (
-      <div key={index} className="border rounded-lg p-6 hover:shadow-lg transition-shadow">
-        <h2 className="text-xl font-semibold mb-2">
-          <a
-            href={result.link}
-            className="text-blue-600 hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {result.title}
-          </a>
-        </h2>
-        <p className="text-gray-700">
-          {result.summary}
-          {result.citations.map(citation => (
-            <span
-              key={citation.id}
-              className="inline-block mx-1 cursor-help relative group"
+    {/* Results */}
+    {!isLoading && results.length > 0 && (<div className="space-y-6" >
+      {results.map((result, index) => (
+        <div key={index} className="border rounded-lg p-6 hover:shadow-lg transition-shadow">
+          <h2 className="text-xl font-semibold mb-2">
+            <a
+              href={result.link}
+              className="text-blue-600 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <span className="text-blue-500">[{citation.id}]</span>
-              <span className="invisible group-hover:visible absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white text-sm rounded p-2 w-64">
-                {citation.context}
+              {result.title}
+            </a>
+          </h2>
+          <p className="text-gray-700">
+            {result.summary}
+            {result.citations.map(citation => (
+              <span
+                key={citation.id}
+                className="inline-block mx-1 cursor-help relative group"
+              >
+                <span className="text-blue-500">[{citation.id}]</span>
+                <span className="invisible group-hover:visible absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white text-sm rounded p-2 w-64">
+                  {citation.context}
+                </span>
               </span>
-            </span>
-          ))}
-        </p>
-      </div>
-    ))}
-  </div>)}
+            ))}
+          </p>
+        </div>
+      ))}
+    </div>)}
 
-  {/* Search Bar */}
-  <div className="fixed bottom-0 left-0 right-0 flex justify-center items-end h-20 bg-white z-10">
-    <form onSubmit={handleSearch} className="w-full max-w-md mb-4">
-      <div className="flex items-end justify-center">
-        <input
-          type="search"
-          placeholder="Search"
-          value={inputValue}
-          onChange={handleInputChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          type="submit"
-          className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
-          Search
-        </button>
-      </div>
-    </form>
-  </div>
+    {/* Search Bar */}
+    { userRole!="" && (
+    <div className="fixed bottom-0 left-0 right-0 flex justify-center items-end h-20 bg-white z-10">
+      <form onSubmit={handleSearch} className="w-full max-w-md mb-4">
+        <div className="flex items-end justify-center">
+          <input
+            type="search"
+            placeholder="Search"
+            value={inputValue}
+            onChange={handleInputChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            type="submit"
+            className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            Search
+          </button>
+        </div>
+      </form>
+    </div> )
+    }
   </div>
   );
 };
