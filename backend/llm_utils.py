@@ -20,6 +20,9 @@ from langchain_core.prompts import PromptTemplate
 from langchain.chains import StuffDocumentsChain ,LLMChain
 from langchain_community.llms import OpenAI
 
+# validation
+from langchain_core.pydantic_v1 import BaseModel, Field, validator
+
 # loaders
 from langchain_community.document_loaders import PyPDFLoader, YoutubeLoader
 from langchain_community.document_loaders.youtube import TranscriptFormat
@@ -29,7 +32,6 @@ from langchain_core.documents import Document
 from langchain_community.document_loaders import DirectoryLoader
 from langchain.retrievers.multi_query import MultiQueryRetriever
 
->>>>>>> feat/dorianBG
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 
@@ -41,10 +43,11 @@ os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+
 # Initialize embeddings and FAISS vector store
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
+
 # Initialize docstore -- MAKE PERMANENT FILE
 docstore = InMemoryDocstore({})
 vector_store = FAISS(embedding_function=embedding_model, index = faiss.IndexFlatL2(1536), docstore = docstore, index_to_docstore_id={})  # 768 is the embedding dimension size
@@ -80,14 +83,14 @@ def chunk_documents(docs):
     return chunked_docs
 
 # Function to ask the LLM
-async def ask_llm(_, info, query):
+async def ask_llm(_, info, query, roleFilter=None):
 
-    response = await custom_QA(_, info, query)
+    response = await custom_QA(_, info, query, roleFilter)
     
     return response
 
 
-async def custom_QA(_, info, query):
+async def custom_QA(_, info, query, roleFilter=None):
 
 #     prompt_template = """
 
@@ -118,15 +121,15 @@ async def custom_QA(_, info, query):
     {context}
     Instructions:
     - Generate a list of unique relevant sources from the context.
-    - Provide the actual titles and links of the sources.
+    - Provide the actual sources of the documents. Titles can be slightly modified for readability. Do not hallucianate or make up any information. All sources start with 'docs/by_...'. Put the path of the source in the 'link' field.
     - Summarize each source content in a way that answers the query.
     - Do not include duplicate sources or sources that are not relevant to the query.
-    - Format the output as JSON in the following structure:
+    - Format the output as JSON in the following structure: 
     {{
         "results": [
             {{
-                "title": "Title of the source content",
-                "link": "source_link",
+                "title": "Title of the source",
+                "link": "source path",
                 "summary": " Details answering to the query with full context (who what when why where how)",
                 "citations": [
                     {{"id": "1", "context": "relevant quote/text use in summary"}},
@@ -135,21 +138,35 @@ async def custom_QA(_, info, query):
             ...
         ]
     }}
+
+     - Return the JSON object as the final answer.
+     - Format the response as valid JSON. Do not include any text outside the JSON object. Ensure the JSON is properly structured with double quotes and no extraneous characters like newlines or escaped sequences unless necessary for content.
+     - Do not include any new lines
+
     Question: {question}
+
+    Helpful answer:
+
     """
     
-    retriever = vector_store.as_retriever(
-    search_type="similarity",
-    search_kwargs={"k": 20},
-    )
+    if roleFilter is None:
+        retriever = vector_store.as_retriever(
+            search_type="similarity",
+            search_kwargs={"k": 10, "lambda_mult": 0.25},
+        )
+    else:
+        retriever = vector_store.as_retriever(
+            search_type="similarity",
+            search_kwargs={"k": 10, "lambda_mult": 0.25, "filter": {"audience": roleFilter}},
+        )
 
     QA_CHAIN_PROMPT = PromptTemplate.from_template(prompt_template) # prompt_template defined above
     
     llm_chain = LLMChain(llm=OpenAI(temperature = 0), prompt=QA_CHAIN_PROMPT, callbacks=None, verbose=True)
     
     document_prompt = PromptTemplate(
-        input_variables=["page_content", "source", "page", "nefac_category", "resource_type", "audience"], # How to setup optional variables?
-        template="Context:\ncontent:{page_content}\nsource:{source}\npage:{page}\nnefac_category:{nefac_category}\nresource_type:{resource_type}\naudience:{audience}\n",
+        input_variables=["page_content", "source", "page", "title", "nefac_category", "resource_type", "audience"], # How to setup optional variables?
+        template="Context:\ncontent:{page_content}\nsource:{source}\npage:{page}\ntitle:{title}\nnefac_category:{nefac_category}\nresource_type:{resource_type}\naudience:{audience}\n",
     )
 
     combine_documents_chain = StuffDocumentsChain(
@@ -166,11 +183,11 @@ async def custom_QA(_, info, query):
         return_source_documents = True,
     )
     response = qa(query)
-
+    print(response)
     try:
         response = parse_llm_response(query, response)
     except Exception as e:
-        logger.error(f"Error parsing the LLM response: {e}")
+        logger.error(f"Error parsing the LLM response: {e} \n\n llm response: {response}")
 
     return response
 
@@ -182,7 +199,53 @@ def parse_llm_response(query, response):
         logger.info(f"Parsed LLM response: {result}")
         return result
     except Exception as e:
+        # try fixing the response with a fallback logic
         logger.error(f"Error parsing the LLM response: {e}")
+        llm = OpenAI(temperature=0)
+        summary_prompt = f"""Fix the following json response such that it will be parsed correctly using json.loads(). 
+        
+        Format the output as JSON in the following structure:
+        
+        {{
+        "results": [
+            {{
+                "title": "Title of the source",
+                "link": "source path",
+                "summary": " Details answering to the query with full context (who what when why where how)",
+                "citations": [
+                    {{"id": "1", "context": "relevant quote/text use in summary"}},
+                ]
+            }},
+            ...
+            ]
+        }}
+
+
+        Return the JSON object as the final answer. Format the response as valid JSON. Do not include any text outside the JSON object. Ensure the JSON is properly structured with double quotes and no extraneous characters like newlines or escaped sequences unless necessary for content. Do not include any new lines. 
+        
+        Response: '{response}'
+        Previous error: {e}
+
+        Helpful answer:
+
+        """
+
+        try:
+            new_response = llm(summary_prompt).strip()
+            print("Fixed response: ", new_response)
+            
+        except Exception as summ_err:
+            logger.error(f"Error generating summary: {summ_err}")
+            new_response = "reprompting unavailable."
+        
+        try:
+            fixed_response = json.loads(new_response['result'])
+            logger.info(f"Fixed LLM response: {fixed_response}")
+            return fixed_response
+        
+        except Exception as fix_err:
+            logger.error(f"Error parsing the fixed LLM response: {fix_err}")
+
         # Fallback logic
         formatted_response = {
             "results": []
@@ -213,7 +276,20 @@ def parse_llm_response(query, response):
                 ]
             })
         return formatted_response["results"]
-    
+
+def filter_docs(all_docs, audience=None, resource_type=None, nefac_category=None):
+    filtered_docs = []
+    for doc in all_docs:
+        if audience is not None and doc.metadata.get("audience") != audience:
+            continue
+        if resource_type is not None and doc.metadata.get("resource_type") != resource_type:
+            continue
+        if nefac_category is not None and doc.metadata.get("nefac_category") != nefac_category:
+            continue
+        filtered_docs.append(doc)
+    return filtered_docs
+
+
 def pdfLoader(path, existing_docs):
     # Load all PDF documents from the directory "docs/"
     all_docs_path = glob.glob(path+"/*")
@@ -288,7 +364,7 @@ def load_all_documents():
         all_yt_vid_chunks.extend(new_yt_chunks)
 
         for page in new_pages:
-            page.metadata['title'] = page.metadata['source'].split('/')[-1]
+            page.metadata['title'] = page.metadata['source'].split('/')[-1].split(".")[0]
             page.metadata["audience"] = audience_folder.split("/")[-1]
             if 'nefac_category' not in page.metadata:
                 page.metadata['nefac_category'] = ""
@@ -432,3 +508,5 @@ def load_all_documents():
     return all_pdf_pages, all_yt_vid_chunks
 
 add_documents_to_store(" ", "info", " ")
+
+

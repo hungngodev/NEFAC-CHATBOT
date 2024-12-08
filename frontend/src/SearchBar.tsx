@@ -1,6 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Send } from 'react-feather';
 
+interface Citation {
+  id: string;
+  context: string;
+}
+interface SearchResult {
+  title: string;
+  link: string;
+  summary: string;
+  citations: Citation[];
+}
+
+
 const SearchBar = () => {
 
       const [userRole, setUserRole] = useState('');
@@ -8,6 +20,9 @@ const SearchBar = () => {
       const [conversation, setConversation] = useState<{ type: string; content: string; source?: string }[]>([]);
       const conversationEndRef = useRef<HTMLDivElement>(null);
 
+      const [results, setResults] = useState<SearchResult[]>([]);
+      const [isLoading, setIsLoading] = useState(false);
+      
       const userRoles = [
         {
           id: 'citizen',
@@ -41,36 +56,45 @@ const SearchBar = () => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(e.target.value);
     };
-  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setConversation(prev => [...prev, { type: 'user', content: inputValue }]);
-    setInputValue('');
-    console.log(inputValue);
-    
-    try {
-      const response = await fetch('http://127.0.0.1:8000/graphql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: `
-            query {
-              askLlm(prompt: "${inputValue}")
+  
+    const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      setIsLoading(true);
+      try {
+        const response = await fetch('http://127.0.0.1:8000/graphql', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `
+            query Search($prompt: String!) {
+              askLlm(prompt: $prompt, roleFilter: "${userRole}") {
+                title
+                link
+                summary
+                citations {
+                  id
+                  context
+                }
+              }
             }
-          `,
-        }),
-      });
-      const result = await response.json();
-      
-      const { data } = result; // Destructure result
-      const { askLlm } = data; // Destructure data
+            `,
+            variables: {
+              prompt: inputValue
+            }
+          }),
+        });
 
-      setConversation(prev => [...prev, { type: 'ai', content: askLlm }]);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+        const data = await response.json();
+        setResults(data.data.askLlm);
+        setInputValue('');
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false); // Set loading to false
+      }
+    };
 
   return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-white" style={{ backgroundImage: "linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,0.8))", backgroundSize: 'cover' }}>
@@ -106,22 +130,24 @@ const SearchBar = () => {
         </button>
       )}
 
-      <div className={` flex flex-col border border-neutral-300 items-center rounded-2xl justify-center w-auto bg-white shadow-md p-4 transition-all duration-500 ease-in-out mb-5 ${conversation.length > 0 ? 'fixed bottom-0' : 'relative top-1/2 transform -translate-y-1/2'}`}>
-        <form onSubmit={handleSearch} className="flex gap-2 mb-1">
-          <input
-            type="search"
-            placeholder={conversation.length > 0? "Ask follow-up" : "Search"}
-            value={inputValue}
-            onChange={handleInputChange}
-            className="w-96 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-            <Send className="inline-block  h-5 w-5" />
-          </button>
-        </form>
-      </div>
+    {/* Search Form */}
+    <form onSubmit={handleSearch} className="flex gap-2 mb-4">
+      <input
+        type="search"
+        placeholder="Search"
+        value={inputValue}
+        onChange={handleInputChange}
+        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <button
+        type="submit"
+        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      >
+        Search
+      </button>
+    </form>
 
-      <div className="w-full max-w-lg mb-20">
+      {/* <div className="w-full max-w-lg mb-20">
         {conversation.map((msg, index) => (
           <React.Fragment key={index}>
             <div className={`p-4 my-2 rounded-lg ${msg.type === 'user' ? ' text-2xl ' : 'bg-gray-100 text-base'}`}>
@@ -134,10 +160,68 @@ const SearchBar = () => {
             </div>
             {msg.type === 'ai' && index < conversation.length - 1 && <hr className="my-4 border-t border-gray-300" />}
           </React.Fragment>
-        ))}
+        ))} */}
+            {/* Results Listing */}
+
+    {/* Loading Indicator */}
+    {isLoading && (
+      <div className="flex justify-center items-center my-4">
+        <svg
+          className="animate-spin h-8 w-8 text-blue-500"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v8H4z"
+          ></path>
+        </svg>
+        <span className="ml-2 text-blue-500">Searching...</span>
       </div>
-      <div ref={conversationEndRef} />
+) }
+{/* Results */}
+{!isLoading && results.length > 0 && (<div className="space-y-6" >
+  {results.map((result, index) => (
+    <div key={index} className="border rounded-lg p-6 hover:shadow-lg transition-shadow">
+      <h2 className="text-xl font-semibold mb-2">
+        <a
+          href={result.link}
+          className="text-blue-600 hover:underline"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {result.title}
+        </a>
+      </h2>
+      <p className="text-gray-700">
+        {result.summary}
+        {result.citations.map(citation => (
+          <span
+            key={citation.id}
+            className="inline-block mx-1 cursor-help relative group"
+          >
+            <span className="text-blue-500">[{citation.id}]</span>
+            <span className="invisible group-hover:visible absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white text-sm rounded p-2 w-64">
+              {citation.context}
+            </span>
+          </span>
+        ))}
+      </p>
     </div>
+  ))}
+</div>)}
+
+</div>
   );
 };
 
