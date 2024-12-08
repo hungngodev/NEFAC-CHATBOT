@@ -16,6 +16,8 @@ interface SearchResult {
 const SearchBar = () => {
 
       const [userRole, setUserRole] = useState('');
+      const [contentType, setContentType] = useState('');
+      const [resourceType, setResourceType] = useState('');
       const [inputValue, setInputValue] = useState('');
       const [conversation, setConversation] = useState<{ type: string; content: string; source?: string }[]>([]);
       const conversationEndRef = useRef<HTMLDivElement>(null);
@@ -69,7 +71,7 @@ const SearchBar = () => {
           body: JSON.stringify({
             query: `
             query Search($prompt: String!) {
-              askLlm(prompt: $prompt, roleFilter: "${userRole}") {
+              askLlm(prompt: $prompt, roleFilter: "${userRole}", contentType: "${contentType}", resourceType: "${resourceType}") {
                 title
                 link
                 summary
@@ -97,7 +99,7 @@ const SearchBar = () => {
     };
 
   return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-white" style={{ backgroundImage: "linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,0.8))", backgroundSize: 'cover' }}>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white" style={{ backgroundImage: "linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,0.8))", backgroundSize: 'cover' }}>
       {/* Role Selection */}
       {userRole === "" && (
         <div className="flex flex-col items-center justify-center px-4 md:px-6 lg:px-8" style={{ minHeight: '100vh' }}>
@@ -114,38 +116,56 @@ const SearchBar = () => {
             </button>
           ))}
         </div>
-      </div>
-      )}
+      </div> )
+      }
       
-      {/* Exit and Edit Role Buttons */}
-      {conversation.length > 0 && userRole !== "" && (
-        <button onClick={() => setConversation([])} className="fixed top-10 left-10 bg-white text-blue-500 border-2 border-blue-500 px-4 py-2 rounded-full shadow-lg hover:bg-blue-500 hover:text-white transition-colors duration-200">
-          Exit
-        </button>
-      )}
-
+    {/* Edit Role and Dropdowns */}
+      {/* First Dropdown */}
       {userRole !== "" && (
-        <button onClick={() => setUserRole("")} className="fixed top-10 right-10 bg-white text-blue-500 border-2 border-blue-500 px-4 py-2 rounded-full shadow-lg hover:bg-blue-500 hover:text-white transition-colors duration-200">
+        <div className="fixed top-10 right-10 flex items-center space-x-4">
+        <select 
+        className="bg-white text-blue-500 border-2 border-blue-500 px-4 py-2 rounded-full shadow-lg hover:bg-blue-500 hover:text-white transition-colors duration-200"
+        onChange={(e) => {
+            setResourceType(e.target.value);
+        }}
+        >
+          <option value="">Select Resource Type</option>
+          <option value="option1">Guides</option>
+          <option value="option2">Lessons</option>
+          <option value="option3">Multimedia</option>
+        </select>
+
+        {/* Second Dropdown */}
+        <select 
+            className="bg-white text-blue-500 border-2 border-blue-500 px-4 py-2 rounded-full shadow-lg hover:bg-blue-500 hover:text-white transition-colors duration-200"
+            onChange={(e) => {
+            setContentType(e.target.value);
+          }}
+        >
+          <option value="">Select Content Type </option>
+          <option value="option1">Advocacy</option>
+          <option value="option2">Civic Education</option>
+          <option value="option3">Community Outreach</option>
+          <option value="option4">First Amendment Rights</option>
+          <option value="option5">Government Transparency</option>
+          <option value="option6">Investigative Journalism</option>
+          <option value="option7">Media Law</option>
+          <option value="option8">Mentorship</option>
+          <option value="option9">Open Meeting Law</option>
+          <option value="option10">Public Records Law</option>
+          <option value="option11">Skill Building</option>
+          <option value="option12">Workshops</option>
+        </select>
+
+        {/* Edit Role Button */}
+        <button 
+          onClick={() => setUserRole("")} 
+          className="bg-white text-blue-500 border-2 border-blue-500 px-4 py-2 rounded-md shadow-lg hover:bg-blue-500 hover:text-white transition-colors duration-200"
+        >
           Edit Role
         </button>
-      )}
-
-    {/* Search Form */}
-    <form onSubmit={handleSearch} className="flex gap-2 mb-4">
-      <input
-        type="search"
-        placeholder="Search"
-        value={inputValue}
-        onChange={handleInputChange}
-        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <button
-        type="submit"
-        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-      >
-        Search
-      </button>
-    </form>
+      </div> )
+      }
 
       {/* <div className="w-full max-w-lg mb-20">
         {conversation.map((msg, index) => (
@@ -187,41 +207,62 @@ const SearchBar = () => {
           ></path>
         </svg>
         <span className="ml-2 text-blue-500">Searching...</span>
-      </div>
-) }
-{/* Results */}
-{!isLoading && results.length > 0 && (<div className="space-y-6" >
-  {results.map((result, index) => (
-    <div key={index} className="border rounded-lg p-6 hover:shadow-lg transition-shadow">
-      <h2 className="text-xl font-semibold mb-2">
-        <a
-          href={result.link}
-          className="text-blue-600 hover:underline"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {result.title}
-        </a>
-      </h2>
-      <p className="text-gray-700">
-        {result.summary}
-        {result.citations.map(citation => (
-          <span
-            key={citation.id}
-            className="inline-block mx-1 cursor-help relative group"
-          >
-            <span className="text-blue-500">[{citation.id}]</span>
-            <span className="invisible group-hover:visible absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white text-sm rounded p-2 w-64">
-              {citation.context}
-            </span>
-          </span>
-        ))}
-      </p>
-    </div>
-  ))}
-</div>)}
+      </div> )
+    }
 
-</div>
+  {/* Results */}
+  {!isLoading && results.length > 0 && (<div className="space-y-6" >
+    {results.map((result, index) => (
+      <div key={index} className="border rounded-lg p-6 hover:shadow-lg transition-shadow">
+        <h2 className="text-xl font-semibold mb-2">
+          <a
+            href={result.link}
+            className="text-blue-600 hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {result.title}
+          </a>
+        </h2>
+        <p className="text-gray-700">
+          {result.summary}
+          {result.citations.map(citation => (
+            <span
+              key={citation.id}
+              className="inline-block mx-1 cursor-help relative group"
+            >
+              <span className="text-blue-500">[{citation.id}]</span>
+              <span className="invisible group-hover:visible absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white text-sm rounded p-2 w-64">
+                {citation.context}
+              </span>
+            </span>
+          ))}
+        </p>
+      </div>
+    ))}
+  </div>)}
+
+  {/* Search Bar */}
+  <div className="fixed bottom-0 left-0 right-0 flex justify-center items-end h-20 bg-white z-10">
+    <form onSubmit={handleSearch} className="w-full max-w-md mb-4">
+      <div className="flex items-end justify-center">
+        <input
+          type="search"
+          placeholder="Search"
+          value={inputValue}
+          onChange={handleInputChange}
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <button
+          type="submit"
+          className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Search
+        </button>
+      </div>
+    </form>
+  </div>
+  </div>
   );
 };
 
