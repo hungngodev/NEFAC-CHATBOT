@@ -63,6 +63,7 @@ async def resolve_ask_llm(_, info, prompt, roleFilter=None):
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+        return []
 
 @query.field("retrieveDocuments")
 def resolve_retrieve_documents(_, info, query):
