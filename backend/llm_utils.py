@@ -21,7 +21,8 @@ from langchain.chains import StuffDocumentsChain ,LLMChain
 from langchain_community.llms import OpenAI
 
 # validation
-from langchain_core.pydantic_v1 import BaseModel, Field, validator
+from validation import SearchResponse
+from pydantic import BaseModel, ValidationError
 
 # loaders
 from langchain_community.document_loaders import PyPDFLoader, YoutubeLoader
@@ -111,7 +112,7 @@ def create_vectorstore_filter(roleFilter=None, contentType=None, resourceType=No
 
 # Function to chunk documents
 def chunk_documents(docs):
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=250, chunk_overlap=25)
     chunked_docs = text_splitter.split_documents(docs)
     return chunked_docs
 
@@ -120,6 +121,8 @@ async def ask_llm(_, info, query, roleFilter=None, contentType=None, resourceTyp
 
     response = await custom_QA(_, info, query, roleFilter, contentType, resourceType)
     
+    if response is None:
+        return ['error']
     return response
 
 
@@ -147,45 +150,49 @@ async def custom_QA(_, info, query, roleFilter=None, contentType=None, resourceT
 #         """
     
     prompt_template = """
-    
-    Use the following context to answer the query.
-    
-    Sources:
-    {context}
-    Instructions:
-    - Generate a list of unique relevant sources from the context.
-    - Provide the actual sources of the documents. Titles can be slightly modified for readability. Do not hallucianate or make up any information. All sources start with 'docs/by_...'. Put the path of the source in the 'link' field.
-    - Summarize each source content in a way that answers the query.
-    - Do not include duplicate sources or sources that are not relevant to the query.
-    - Format the output as JSON in the following structure: 
-    {{
-        "results": [
-            {{
-                "title": "Title of the source",
-                "link": "source path",
-                "summary": " Details answering to the query with full context (who what when why where how)",
-                "citations": [
-                    {{"id": "1", "context": "relevant quote/text use in summary"}},
-                ]
-            }},
-            ...
-        ]
-    }}
+        Use the following context to answer the query.
 
-     - Return the JSON object as the final answer.
-     - Format the response as valid JSON. Do not include any text outside the JSON object. Ensure the JSON is properly structured with double quotes and no extraneous characters like newlines or escaped sequences unless necessary for content.
-     - Do not include any new lines
+        Sources:
+        {context}
 
-    Question: {question}
+        Instructions:
+        - You are an AI search engine for NEFAC, new england first amendment coalition.
+        - You are an expert in the providing relevant NEFAC only resources.
+        - Generate a list of unique relevant sources from the context as a search engine.
+        - If the source is not relevant to the query, do not include it in the list.
+        - Titles can be slightly modified for readability. 
+        - If the query is searching for a person, mentor, or people, mention specific names of people with expertise in the relevant areas.
+        - If the query regards a specific state, find sources relevant to that specific state.
+        - Do not hallucianate or make up any information. 
+        - Summarize each source content in a way that answers the query.
+        - Do not include duplicate resources.
+        - Sources should be unique.
+        - Source links must match exactly the original source links.
+        - Put the path of the source in the 'link' field.
+        - If no sources are given, return an empty list.
+        - Format the output as JSON in the following structure: 
 
-    Helpful answer:
+        {{
+            "results": [
+                {{
+                    "title": "Title of the source",
+                    "link": "source path",
+                    "summary": "Details answering the query.",
+                    "citations": [
+                        {{"id": "1", "context": "Relevant quote used in summary"}}
+                    ]
+                }},
+                ...
+            ]
+        }}
 
+        Question: {question}
     """
     
     if roleFilter is None and contentType is None and resourceType is None:
         retriever = vector_store.as_retriever(
             search_type="similarity",
-            search_kwargs={"k": 10, "lambda_mult": 0.25},
+            search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
         )
     else:
         filter_func = create_vectorstore_filter(roleFilter, contentType, resourceType)  
@@ -194,13 +201,13 @@ async def custom_QA(_, info, query, roleFilter=None, contentType=None, resourceT
             search_kwargs={
                 "k": 10,
                 "lambda_mult": 0.25,
-                "filter": filter_func,
+                "filter": filter_func
             },
         )
 
     QA_CHAIN_PROMPT = PromptTemplate.from_template(prompt_template) # prompt_template defined above
     
-    llm_chain = LLMChain(llm=OpenAI(temperature = 0), prompt=QA_CHAIN_PROMPT, callbacks=None, verbose=True)
+    llm_chain = LLMChain(llm=OpenAI(temperature = 0.1), prompt=QA_CHAIN_PROMPT, callbacks=None, verbose=True)
     
     document_prompt = PromptTemplate(
         input_variables=["page_content", "source", "page", "title", "nefac_category", "resource_type", "audience"], # How to setup optional variables?
@@ -221,112 +228,78 @@ async def custom_QA(_, info, query, roleFilter=None, contentType=None, resourceT
         return_source_documents = True,
     )
     response = qa(query)
-    print(response)
     try:
         response = parse_llm_response(query, response)
     except Exception as e:
         logger.error(f"Error parsing the LLM response: {e} \n\n llm response: {response}")
-
+        
     return response
 
-def parse_llm_response(query, response):
-
-    # Parse the LLM's JSON response
-    try:
-        result = json.loads(response['result'])
-        logger.info(f"Parsed LLM response: {result}")
-        return result
-    except Exception as e:
-        # try fixing the response with a fallback logic
-        logger.error(f"Error parsing the LLM response: {e}")
-        llm = OpenAI(temperature=0.1)
-        summary_prompt = f"""Fix the following json response such that it will be parsed correctly using json.loads(). 
-        
-        Format the output as JSON in the following structure:
-        
-        {{
-        "results": [
-            {{
-                "title": "Title of the source",
-                "link": "source path",
-                "summary": " Details answering to the query with full context (who what when why where how)",
-                "citations": [
-                    {{"id": "1", "context": "relevant quote/text use in summary"}},
-                ]
-                
-            }},
-            ...
+def fix_malformed_json(malformed_json):
+    llm = OpenAI(temperature=0, max_tokens=2000)
+    fix_prompt = """Fix this malformed JSON to match:
+        {
+            "results": [
+                {
+                    "title": "string",
+                    "link": "string", 
+                    "summary": "string",
+                    "citations": [{"id": "string", "context": "string"}]
+                }
             ]
-        }}
-
-
-        Return the JSON object as the final answer. Format the response as valid JSON. Do not include any text outside the JSON object. Ensure the JSON is properly structured with double quotes and no extraneous characters like newlines or escaped sequences unless necessary for content. Do not include any new lines. 
-        
-        Response: '{response}'
-        Previous error: {e}
-
-        Helpful answer:
-
-        """
-
-        try:
-            new_response = llm(summary_prompt).strip()
-            print("Fixed response: ", new_response)
-            
-        except Exception as summ_err:
-            logger.error(f"Error generating summary: {summ_err}")
-            new_response = "reprompting unavailable."
-        
-        try:
-            fixed_response = json.loads(new_response['result'])
-            logger.info(f"Fixed LLM response: {fixed_response}")
-            return fixed_response
-        
-        except Exception as fix_err:
-            logger.error(f"Error parsing the fixed LLM response: {fix_err}")
-
-        # Fallback logic
-        formatted_response = {
-            "results": []
         }
-        unique_titles = set()
-        for i, doc in enumerate(response.get('source_documents', [])):
-            title = doc.metadata.get("title", f"Source {i+1}")
-            if title in unique_titles:
-                continue
-            unique_titles.add(title)
-            # Generate a summary relevant to the query
-            llm = OpenAI(temperature=0)
-            summary_prompt = f"Based on the following content, provide a concise summary that answers the query: '{query}'\n\nContent:\n{doc.page_content}"
-            try:
-                summary = llm(summary_prompt).strip()
-            except Exception as summ_err:
-                logger.error(f"Error generating summary: {summ_err}")
-                summary = "Summary unavailable."
-            formatted_response["results"].append({
-                "title": title,
-                "link": doc.metadata.get("source", "#"),
-                "summary": summary,
-                "citations": [
-                    {
-                        "id": str(i+1),
-                        "context": doc.page_content
-                    }
-                ]
-            })
-        return formatted_response["results"]
 
-def filter_docs(all_docs, audience=None, resource_type=None, nefac_category=None):
-    filtered_docs = []
-    for doc in all_docs:
-        if audience is not None and audience not in doc.metadata.get("audience"):
-            continue
-        if resource_type is not None and resource_type not in doc.metadata.get("resource_type"):
-            continue
-        if nefac_category is not None and nefac_category not in doc.metadata.get("nefac_category"):
-            continue
-        filtered_docs.append(doc)
-    return filtered_docs
+        Malformed JSON:
+        %s
+
+        Instructions:
+            - Return only valid JSON.
+            - Do not make up any information.
+            - Do not hallucinate any information.
+            - Do not include any information that is not in the original JSON.
+            - Do not include any information that is not relevant to the JSON structure.
+            - Do not include any information that is not supported by the JSON structure.
+            - Do not include duplicate resources.
+            - Sources should be unique.
+            - Source links must match the original source links.
+            - Titles can be slightly modified for readability, but must be concise.
+            - The summary should be a short paragraph.
+            - The citations should be relevant quotes from the source.
+
+        Output:
+        """ % malformed_json
+    fixed_json = llm(fix_prompt).strip()
+    print("fixed mal json: ", fixed_json)
+    try:
+        result = json.loads(fixed_json)
+        validated_response = SearchResponse(**result)
+        return validated_response.results
+    except Exception as e:
+        logger.error(f"Could not fix JSON: {e}")
+        # Return a valid empty response
+        return [{"title": "Error", "link": "", "summary": "No results found", "citations": []}]
+    
+def parse_llm_response(query, response):
+    # Clean up the response
+    json_response = response['result'].strip()
+    print("parsing json_response: ", json_response)
+    try:
+        # Find the last complete JSON structure
+        last_brace = json_response.rfind('}')
+        if last_brace != -1:
+            json_response = json_response[:last_brace + 1]
+        
+        # Try to parse as JSON
+        result = json.loads(json_response)
+        validated_response = SearchResponse(**result)
+        return validated_response.results
+        
+    except (json.JSONDecodeError, ValidationError) as e:
+        logger.error(f"Error parsing LLM response: {e}")
+        fixed_json = fix_malformed_json(json_response)
+        return fixed_json
+
+
 
 
 def pdfLoader(path, existing_docs):
