@@ -75,6 +75,39 @@ def load_documents_from_directory():
 
 def retrieve_documents(query):
     pass
+def create_vectorstore_filter(roleFilter=None, contentType=None, resourceType=None):
+    """
+    Creates a metadata filter function for vector store retriever that checks if single target values
+    exist in corresponding metadata arrays.
+    
+    Args:
+        roleFilter (str, optional): Target audience value to match
+        contentType (str, optional): Target nefac_category value to match
+        resourceType (str, optional): Target resource_type value to match
+        
+    Returns:
+        function: A filter function that can be used with vectorstore.as_retriever()
+    """
+    def filter_func(metadata):
+        # Check audience/roleFilter
+        if roleFilter is not None:
+            if roleFilter not in metadata['audience']:
+                return False
+                
+        # Check nefac_category/contentType
+        if contentType is not None:
+            if contentType not in metadata['nefac_category']:
+                return False
+                
+        # Check resource_type/resourceType
+        if resourceType is not None:
+            if resourceType not in metadata['resource_type']:
+                return False
+                
+        # If all specified filters pass, return True
+        return True
+    
+    return filter_func
 
 # Function to chunk documents
 def chunk_documents(docs):
@@ -83,14 +116,14 @@ def chunk_documents(docs):
     return chunked_docs
 
 # Function to ask the LLM
-async def ask_llm(_, info, query, roleFilter=None):
+async def ask_llm(_, info, query, roleFilter=None, contentType=None, resourceType=None):
 
-    response = await custom_QA(_, info, query, roleFilter)
+    response = await custom_QA(_, info, query, roleFilter, contentType, resourceType)
     
     return response
 
 
-async def custom_QA(_, info, query, roleFilter=None):
+async def custom_QA(_, info, query, roleFilter=None, contentType=None, resourceType=None):
 
 #     prompt_template = """
 
@@ -149,15 +182,20 @@ async def custom_QA(_, info, query, roleFilter=None):
 
     """
     
-    if roleFilter is None:
+    if roleFilter is None and contentType is None and resourceType is None:
         retriever = vector_store.as_retriever(
             search_type="similarity",
             search_kwargs={"k": 10, "lambda_mult": 0.25},
         )
     else:
+        filter_func = create_vectorstore_filter(roleFilter, contentType, resourceType)  
         retriever = vector_store.as_retriever(
             search_type="similarity",
-            search_kwargs={"k": 10, "lambda_mult": 0.25, "filter": {"audience": roleFilter}},
+            search_kwargs={
+                "k": 10,
+                "lambda_mult": 0.25,
+                "filter": filter_func,
+            },
         )
 
     QA_CHAIN_PROMPT = PromptTemplate.from_template(prompt_template) # prompt_template defined above
@@ -201,7 +239,7 @@ def parse_llm_response(query, response):
     except Exception as e:
         # try fixing the response with a fallback logic
         logger.error(f"Error parsing the LLM response: {e}")
-        llm = OpenAI(temperature=0)
+        llm = OpenAI(temperature=0.1)
         summary_prompt = f"""Fix the following json response such that it will be parsed correctly using json.loads(). 
         
         Format the output as JSON in the following structure:
@@ -215,6 +253,7 @@ def parse_llm_response(query, response):
                 "citations": [
                     {{"id": "1", "context": "relevant quote/text use in summary"}},
                 ]
+                
             }},
             ...
             ]
@@ -280,11 +319,11 @@ def parse_llm_response(query, response):
 def filter_docs(all_docs, audience=None, resource_type=None, nefac_category=None):
     filtered_docs = []
     for doc in all_docs:
-        if audience is not None and doc.metadata.get("audience") != audience:
+        if audience is not None and audience not in doc.metadata.get("audience"):
             continue
-        if resource_type is not None and doc.metadata.get("resource_type") != resource_type:
+        if resource_type is not None and resource_type not in doc.metadata.get("resource_type"):
             continue
-        if nefac_category is not None and doc.metadata.get("nefac_category") != nefac_category:
+        if nefac_category is not None and nefac_category not in doc.metadata.get("nefac_category"):
             continue
         filtered_docs.append(doc)
     return filtered_docs
@@ -299,7 +338,7 @@ def pdfLoader(path, existing_docs):
     for idx, doc in enumerate(all_docs_path):
         doc_title = doc.split("/")[-1]
         if doc_title in existing_docs:
-            duplicate_docs.append(doc_title)
+            duplicate_docs.append(doc_title.split(".")[0])
         elif doc.endswith(".pdf") and doc_title not in new_docs:
             new_docs.append(doc_title)
             loader = PyPDFLoader(doc)
@@ -330,7 +369,7 @@ def youtubeLoader(path, existing_vids):
                 url,
                 add_video_info=False, # Set to True to include video metadata
                 transcript_format=TranscriptFormat.CHUNKS,
-                chunk_size_seconds=30,
+                chunk_size_seconds=60,
             )
             new_vids.append(url_title)
             new_vids_chunks.extend(loader.load())
@@ -365,42 +404,42 @@ def load_all_documents():
 
         for page in new_pages:
             page.metadata['title'] = page.metadata['source'].split('/')[-1].split(".")[0]
-            page.metadata["audience"] = audience_folder.split("/")[-1]
+            page.metadata["audience"] = [audience_folder.split("/")[-1]]
             if 'nefac_category' not in page.metadata:
-                page.metadata['nefac_category'] = ""
+                page.metadata['nefac_category'] = []
             if 'resource_type' not in page.metadata:
-                page.metadata['resource_type'] = ""
+                page.metadata['resource_type'] = []
         
         for vid in new_yt_chunks:
             vid.metadata["title"] = vid.metadata["source"].split('=')[1][:-2]
-            vid.metadata["audience"] = audience_folder.split("/")[-1]
+            vid.metadata["audience"] = [audience_folder.split("/")[-1]]
             vid.metadata["page"] = vid.metadata["start_seconds"]
             if 'nefac_category' not in vid.metadata:
-                vid.metadata['nefac_category'] = ""
+                vid.metadata['nefac_category'] = []
             if 'resource_type' not in vid.metadata:
-                vid.metadata['resource_type'] = ""
+                vid.metadata['resource_type'] = []
 
         for dup_doc in dup_docs:
             for existing_page in all_pdf_pages:
                 if existing_page.metadata["title"] == dup_doc:
-                    if 'audience' not in existing_page.metadata or existing_page.metadata['audience'] == "":
-                        existing_page.metadata["audience"] = audience_folder.split("/")[-1]
+                    if 'audience' not in existing_page.metadata or existing_page.metadata['audience'] == [] or audience_folder.split("/")[-1] not in existing_page.metadata['audience']:
+                        existing_page.metadata["audience"].append(audience_folder.split("/")[-1])
                     if 'nefac_category' not in existing_page.metadata:
-                        existing_page.metadata['nefac_category'] = ""
+                        existing_page.metadata['nefac_category'] = []
                     if 'resource_type' not in existing_page.metadata:
-                        existing_page.metadata['resource_type'] = ""
+                        existing_page.metadata['resource_type'] = []
         
         for dup_vid in dup_vids:
             for existing_vid in all_yt_vid_chunks:
                 if existing_vid.metadata["title"] == dup_vid:
                     if 'page' not in existing_vid.metadata or existing_vid.metadata['page'] == "":
                         existing_vid.metadata["page"] = existing_vid.metadata["start_seconds"]
-                    if 'audience' not in existing_vid.metadata or existing_vid.metadata['audience'] == "":
-                        existing_vid.metadata["audience"] = audience_folder.split("/")[-1]
+                    if 'audience' not in existing_vid.metadata or existing_vid.metadata['audience'] == [] or audience_folder.split("/")[-1] not in existing_vid.metadata['audience']:
+                        existing_vid.metadata["audience"].append(audience_folder.split("/")[-1])
                     if 'nefac_category' not in existing_vid.metadata:
-                        existing_vid.metadata['nefac_category'] = ""
+                        existing_vid.metadata['nefac_category'] = []
                     if 'resource_type' not in existing_vid.metadata:
-                        existing_vid.metadata['resource_type'] = ""
+                        existing_vid.metadata['resource_type'] = []
             
 
     for idx, resource_folder in enumerate(all_resources):
@@ -414,33 +453,33 @@ def load_all_documents():
 
         for page in new_pages:
             page.metadata['title'] = page.metadata['source'].split('/')[-1]
-            page.metadata["resource_type"] = resource_folder.split("/")[-1]
+            page.metadata["resource_type"] = [resource_folder.split("/")[-1]]
 
             if 'nefac_category' not in page.metadata:
-                page.metadata['nefac_category'] = ""
+                page.metadata['nefac_category'] = []
             if 'audience' not in page.metadata:
-                page.metadata['audience'] = ""
+                page.metadata['audience'] = []
 
         # set vids "start_seconds" to page number
         for vid in new_yt_chunks:
             vid.metadata["title"] = vid.metadata["source"].split('=')[1][:-2]
-            vid.metadata["resource_type"] = resource_folder.split("/")[-1]
+            vid.metadata["resource_type"] = [resource_folder.split("/")[-1]]
             vid.metadata["page"] = vid.metadata["start_seconds"]
 
             if 'nefac_category' not in vid.metadata:
-                vid.metadata['nefac_category'] = ""
+                vid.metadata['nefac_category'] = []
             if 'audience' not in vid.metadata:
-                vid.metadata['audience'] = ""
+                vid.metadata['audience'] = []
 
         for dup_doc in dup_docs:
             for existing_page in all_pdf_pages:
                 if existing_page.metadata["title"] == dup_doc:
                     if 'audience' not in existing_page.metadata:
-                        existing_page.metadata["audience"] = ""
+                        existing_page.metadata["audience"] = []
                     if 'nefac_category' not in existing_page.metadata:
-                        existing_page.metadata['nefac_category'] = ""
-                    if 'resource_type' not in existing_page.metadata or existing_page.metadata['resource_type'] == "":
-                        existing_page.metadata['resource_type'] = resource_folder.split("/")[-1]
+                        existing_page.metadata['nefac_category'] = []
+                    if 'resource_type' not in existing_page.metadata or existing_page.metadata['resource_type'] == [] or resource_folder.split("/")[-1] not in existing_page.metadata['resource_type']:
+                        existing_page.metadata['resource_type'].append(resource_folder.split("/")[-1])
         
         for dup_vid in dup_vids:
             for existing_vid in all_yt_vid_chunks:
@@ -448,11 +487,11 @@ def load_all_documents():
                     if 'page' not in existing_vid.metadata or existing_vid.metadata['page'] == "":
                         existing_vid.metadata["page"] = existing_vid.metadata["start_seconds"]
                     if 'audience' not in existing_vid.metadata:
-                        existing_vid.metadata["audience"] = ""
+                        existing_vid.metadata["audience"] = []
                     if 'nefac_category' not in existing_vid.metadata:
-                        existing_vid.metadata['nefac_category'] = ""
-                    if 'resource_type' not in existing_vid.metadata or existing_vid.metadata['resource_type'] == "":
-                        existing_vid.metadata['resource_type'] = resource_folder.split("/")[-1]
+                        existing_vid.metadata['nefac_category'] = []
+                    if 'resource_type' not in existing_vid.metadata or existing_vid.metadata['resource_type'] == [] or resource_folder.split("/")[-1] not in existing_vid.metadata['resource_type']:
+                        existing_vid.metadata['resource_type'].append(resource_folder.split("/")[-1])
             
     for idx, content_folder in enumerate(all_content_types):
         new_pages, new_docs, dup_docs = pdfLoader(content_folder, all_pdfs)
@@ -466,32 +505,32 @@ def load_all_documents():
 
         for page in new_pages:
             page.metadata['title'] = page.metadata['source'].split('/')[-1]
-            page.metadata["nefac_category"] = content_folder.split("/")[-1]
+            page.metadata["nefac_category"] = [content_folder.split("/")[-1]]
             if 'resource_type' not in page.metadata:
-                page.metadata['resource_type'] = ""
+                page.metadata['resource_type'] = []
             if 'audience' not in page.metadata:
-                page.metadata['audience'] = ""
+                page.metadata['audience'] = []
 
         # set vids "start_seconds" to page number
         for vid in new_yt_chunks:
             vid.metadata["title"] = vid.metadata["source"].split('=')[1][:-2]
-            vid.metadata["nefac_category"] = content_folder.split("/")[-1]
+            vid.metadata["nefac_category"] = [content_folder.split("/")[-1]]
             vid.metadata["page"] = vid.metadata["start_seconds"]
 
             if 'resource_type' not in vid.metadata:
-                vid.metadata['resource_type'] = ""
+                vid.metadata['resource_type'] = []
             if 'audience' not in vid.metadata:
-                vid.metadata['audience'] = ""
+                vid.metadata['audience'] = []
 
         for dup_doc in dup_docs:
             for existing_page in all_pdf_pages:
                 if existing_page.metadata["title"] == dup_doc:
                     if 'audience' not in existing_page.metadata:
-                        existing_page.metadata["audience"] = ""
-                    if 'nefac_category' not in existing_page.metadata or existing_page.metadata['nefac_category'] == "":
-                        existing_page.metadata['nefac_category'] = content_folder.split("/")[-1]
+                        existing_page.metadata["audience"] = []
+                    if 'nefac_category' not in existing_page.metadata or existing_page.metadata['nefac_category'] == [] or content_folder.split("/")[-1] not in existing_page.metadata['nefac_category']:
+                        existing_page.metadata['nefac_category'].append(content_folder.split("/")[-1])
                     if 'resource_type' not in existing_page.metadata:
-                        existing_page.metadata['resource_type'] = ""
+                        existing_page.metadata['resource_type'] = []
         
         for dup_vid in dup_vids:
             for existing_vid in all_yt_vid_chunks:
@@ -499,11 +538,11 @@ def load_all_documents():
                     if 'page' not in existing_vid.metadata or existing_vid.metadata['page'] == "":
                         existing_vid.metadata["page"] = existing_vid.metadata["start_seconds"]
                     if 'audience' not in existing_vid.metadata:
-                        existing_vid.metadata["audience"] = ""
-                    if 'nefac_category' not in existing_vid.metadata or existing_vid.metadata['nefac_category'] == "":
-                        existing_vid.metadata['nefac_category'] = content_folder.split("/")[-1]
+                        existing_vid.metadata["audience"] = []
+                    if 'nefac_category' not in existing_vid.metadata or existing_vid.metadata['nefac_category'] == [] or content_folder.split("/")[-1] not in existing_vid.metadata['nefac_category']:
+                        existing_vid.metadata['nefac_category'].append(content_folder.split("/")[-1])
                     if 'resource_type' not in existing_vid.metadata:
-                        existing_vid.metadata['resource_type'] = ""
+                        existing_vid.metadata['resource_type'] = []
 
     return all_pdf_pages, all_yt_vid_chunks
 
