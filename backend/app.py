@@ -40,7 +40,7 @@ type_defs = gql("""
     }
             
     type Query {
-        askLlm(prompt: String!, roleFilter: String): [SearchResult!]!
+        askLlm(prompt: String!, convoHistory: String, roleFilter: String): [SearchResult!]!
         retrieveDocuments(query: String!): [Document]
     }
 
@@ -56,10 +56,10 @@ mutation = MutationType()
 
 # Define the resolvers
 @query.field("askLlm")
-async def resolve_ask_llm(_, info, prompt, roleFilter=None):
+async def resolve_ask_llm(_, info, prompt, convoHistory, roleFilter=None):
     try:
-        print("Role Filter: ", roleFilter)
-        response = await ask_llm(_, info, prompt, roleFilter)
+        print("convoHistory: ", convoHistory)
+        response = await ask_llm(_, info, prompt, convoHistory, roleFilter)
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
