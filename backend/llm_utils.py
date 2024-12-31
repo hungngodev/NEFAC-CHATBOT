@@ -17,8 +17,11 @@ from langchain_community.docstore.in_memory import InMemoryDocstore
 # retrieval chains + llm
 from langchain.chains import RetrievalQA
 from langchain_core.prompts import PromptTemplate
-from langchain.chains import StuffDocumentsChain ,LLMChain
+from langchain.chains import StuffDocumentsChain ,LLMChain, create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_community.llms import OpenAI
+from langchain_openai import ChatOpenAI
+from langchain_core.output_parsers import StrOutputParser
 
 # validation
 from validation import SearchResponse
@@ -117,37 +120,27 @@ def chunk_documents(docs):
     return chunked_docs
 
 # Function to ask the LLM
-async def ask_llm(_, info, query, roleFilter=None, contentType=None, resourceType=None):
+async def ask_llm(_, info, query, convoHistory= "",roleFilter=None, contentType=None, resourceType=None):
 
-    response = await custom_QA(_, info, query, roleFilter, contentType, resourceType)
-    
+    conversation_response = await middleware_qa(_, info, query, convoHistory, roleFilter, contentType, resourceType)
+    if conversation_response == "1":
+        response = await custom_QA_structured(_, info, query, roleFilter, contentType, resourceType)
+    else:
+        response = [{
+            "title": "follow-up",
+            "link": "",
+            "summary": conversation_response,
+            "citations": [{"id": "1", "context": "Follow-up question"}]
+
+        }]
     if response is None:
         return ['error']
     return response
 
+def format_docs(docs):
+    return "\n\n".join(f"content:{doc.page_content}\nsource:{doc.metadata['source']}\npage:{doc.metadata['page']}\ntitle:{doc.metadata['title']}\nnefac_category:{doc.metadata['nefac_category']}\nresource_type:{doc.metadata['resource_type']}\naudience:{doc.metadata['audience']}\n" for doc in docs)
 
-async def custom_QA(_, info, query, roleFilter=None, contentType=None, resourceType=None):
-
-#     prompt_template = """
-
-#         Answer the question provided by the user. USE THE MOST RELEVANT SOURCES FROM THE CONTEXT TO ANSWER THE QUESTION.
-        
-#         Please follow the following rules:
-#         1. For each question, answer the question and provide the source.
-#         2. Exclude the sources that are irrelevant to the final answer.
-#         3. Include sources and page numbers in the answer.
-#         4. Do not use any external sources other than the ones provided.
-#         5. Do not provide any false information.
-#         6. Do not provide any information that is not supported by the sources.
-#         7. Do not provide any information that is not relevant to the question.
-#         8. Do not hallucinate or make up any information.
-#         Sources:
-#             {context}
-
-#         Question: {question}
-
-#         Helpful answer:
-#         """
+async def custom_QA_structured(_, info, query, roleFilter=None, contentType=None, resourceType=None):
     
     prompt_template = """
         Use the following context to answer the query.
@@ -156,20 +149,20 @@ async def custom_QA(_, info, query, roleFilter=None, contentType=None, resourceT
         {context}
 
         Instructions:
-        - You are an AI search engine for NEFAC, new england first amendment coalition.
+        - You are an AI search engine for NEFAC, new england first amendment coalition. Sometimes NEFAC gets mistaken with Kneefact in youtube transcripts, so be aware.
         - You are an expert in the providing relevant NEFAC only resources.
         - Generate a list of unique relevant sources from the context as a search engine.
         - If the source is not relevant to the query, do not include it in the list.
         - Titles can be slightly modified for readability. 
         - If the query is searching for a person, mentor, or people, mention specific names of people with expertise in the relevant areas.
         - If the query regards a specific state, find sources relevant to that specific state.
-        - Do not hallucianate or make up any information. 
-        - Summarize each source content in a way that answers the query.
+        - If the query is not state-specific or regards a general resource, find general resources.
+        - Do not hallucianate or make up any resources that arent explicitely given to you above. 
+        - Summarize each returned source content in a way that answers the query.
         - Do not include duplicate resources.
         - Sources should be unique.
         - Source links must match exactly the original source links.
         - Put the path of the source in the 'link' field.
-        - If no sources are given, return an empty list.
         - Format the output as JSON in the following structure: 
 
         {{
@@ -206,34 +199,90 @@ async def custom_QA(_, info, query, roleFilter=None, contentType=None, resourceT
         )
 
     QA_CHAIN_PROMPT = PromptTemplate.from_template(prompt_template) # prompt_template defined above
-    
-    llm_chain = LLMChain(llm=OpenAI(temperature = 0.1), prompt=QA_CHAIN_PROMPT, callbacks=None, verbose=True)
-    
-    document_prompt = PromptTemplate(
-        input_variables=["page_content", "source", "page", "title", "nefac_category", "resource_type", "audience"], # How to setup optional variables?
-        template="Context:\ncontent:{page_content}\nsource:{source}\npage:{page}\ntitle:{title}\nnefac_category:{nefac_category}\nresource_type:{resource_type}\naudience:{audience}\n",
-    )
+    model = ChatOpenAI(model='gpt-4o')
+    structured_llm = model.with_structured_output(SearchResponse)
 
-    combine_documents_chain = StuffDocumentsChain(
-        llm_chain=llm_chain,
-        document_variable_name="context",
-        document_prompt=document_prompt,
-        callbacks=None,     
-    )
-    qa = RetrievalQA(
-        combine_documents_chain=combine_documents_chain,
-        callbacks=None,
-        verbose=True,
-        retriever=retriever,
-        return_source_documents = True,
-    )
-    response = qa(query)
-    try:
-        response = parse_llm_response(query, response)
-    except Exception as e:
-        logger.error(f"Error parsing the LLM response: {e} \n\n llm response: {response}")
+    qa_chain = (
+        {
+            "context": retriever | format_docs,
+            "question": RunnablePassthrough(),
+        }
+        | QA_CHAIN_PROMPT
+        | structured_llm
         
-    return response
+    )
+    response = qa_chain.invoke(query)
+        
+    return response.results
+
+async def middleware_qa(_, info, query, convoHistory, roleFilter=None, contentType=None, resourceType=None):
+    print("convo history: ", convoHistory)  
+    prompt_template = """
+
+        Role: You are an AI chatbot for NEFAC, new england first amendment coalition. You are an expert in providing relevant NEFAC only resources.
+       
+        Task: 
+        Given retrieved NEFAC resources, your task is to determine whether you have enough information, or too much confusing information, to answer the query. 
+        If not enough resources were found, ask the user for more information.
+        If a lot of unrelated resources were found, ask the user to specify the type of resource they are looking for.
+        If you seem comfortable with the information, return the number 1.
+        Generally speaking, here are some examples of information you might want to ask the user for:
+            - Is the user looking for specific resources, or general resources?
+            - Is the user looking for information regarding a specific US state?
+            - Is the user looking for information regarding a specific law or court case?
+
+        For example, if the user is looking for mentors, you would want to ask the user about the specific area of expertise or state the user is looking for.
+
+        Sources:
+        {context}
+
+        Conversation History:
+        {convoHistory}
+
+        Instructions:
+        - If you have enough information to answer the query, simply return the number 1.
+        - If you need more information to answer the query, ask the user relevant follow up questions to aid in your response.
+        - If you have too much conflicting information to answer the query, ask the user to specify the type of resource they are looking for.
+        - If you are unsure, ask the user for more information.
+        - Use the conversation history to guide your response.
+        - Do not ask more than 2 follow up questions. Therefore, if you already asked 2 questions (as shown in conversation history), return the number 1.
+
+
+        Question: {question}
+    """
+    
+    if roleFilter is None and contentType is None and resourceType is None:
+        retriever = vector_store.as_retriever(
+            search_type="similarity",
+            search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
+        )
+    else:
+        filter_func = create_vectorstore_filter(roleFilter, contentType, resourceType)  
+        retriever = vector_store.as_retriever(
+            search_type="similarity",
+            search_kwargs={
+                "k": 10,
+                "lambda_mult": 0.25,
+                "filter": filter_func
+            },
+        )
+
+    QA_CHAIN_PROMPT = PromptTemplate.from_template(prompt_template) # prompt_template defined above
+    model = ChatOpenAI(model='o1-mini')
+
+    qa_chain = (
+        {
+            "context": retriever | format_docs,
+            "question": RunnablePassthrough(),
+            "convoHistory": RunnablePassthrough(),
+        }
+        | QA_CHAIN_PROMPT
+        | model
+        
+    )
+    response = qa_chain.invoke(query)
+    print("chat response: ", response)
+    return response.content
 
 def fix_malformed_json(malformed_json):
     llm = OpenAI(temperature=0, max_tokens=2000)
