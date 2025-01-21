@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-
 import { Send } from 'lucide-react';
-
 
 // Types and Interfaces
 interface Citation {
@@ -15,7 +13,6 @@ interface SearchResult {
   summary: string;
   citations: Citation[];
 }
-
 
 interface Message {
   type: 'user' | 'assistant';
@@ -173,7 +170,6 @@ const SearchBar = () => {
   };
 
   // Effects
-
   useEffect(() => {
     if (conversationEndRef.current) {
       conversationEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -182,11 +178,9 @@ const SearchBar = () => {
 
 
   // Event Handlers
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
-
 
   const performSearch = async (searchText: string) => {
     if (!searchText.trim()) return;
@@ -197,7 +191,6 @@ const SearchBar = () => {
 
     try {
       // Make API request
-
       const response = await fetch('http://127.0.0.1:8000/graphql', {
         method: 'POST',
         headers: {
@@ -404,7 +397,6 @@ const SearchBar = () => {
           </span>
         ))}
       </p>
-
     </div>
   );
 
