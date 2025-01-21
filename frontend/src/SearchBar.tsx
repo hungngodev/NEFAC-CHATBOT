@@ -38,6 +38,8 @@ interface UserRole {
 const SearchBar = () => {
   // State Management
   const [userRole, setUserRole] = useState('');
+  const [contentType, setContentType] = useState('');
+  const [resourceType, setResourceType] = useState('');
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [conversation, setConversation] = useState<Message[]>([{
@@ -73,6 +75,63 @@ const SearchBar = () => {
     }
   ];
 
+  const popularDocumentsByRole: {
+    [key: string]: Array<{
+      title: string;
+      link: string;
+      summary: string;
+    }>;
+  } = {
+    'citizen': [
+      {
+        title: "NEFAC Mentors",
+        link: "/docs/by_audience/citizen/NEFAC_Mentors.pdf",
+        summary: "NEFAC Mentors"
+      },
+      {
+        title: "NEFAC Mentors",
+        link: "/docs/by_audience/citizen/NEFAC_Mentors.pdf",
+        summary: "NEFAC Mentors"
+      }
+    ],
+    'educator': [
+      {
+        title: "NEFAC Mentors",
+        link: "/docs/by_audience/citizen/NEFAC_Mentors.pdf",
+        summary: "NEFAC Mentors"
+      },
+      {
+        title: "NEFAC Mentors",
+        link: "/docs/by_audience/citizen/NEFAC_Mentors.pdf",
+        summary: "NEFAC Mentors"
+      }
+    ],
+    'journalist': [
+      {
+        title: "Federal FOIA Video Tutorials",
+        link: "/docs/by_audience/journalist/Federal_FOIA_%20Video_Tutorials.pdf",
+        summary: "Federal FOIA Video Tutorials"
+      },
+      {
+        title: "Massachusetts FOI Guide",
+        link: "/docs/by_audience/journalist/Massachusetts_FOI_Guide.pdf",
+        summary: "Massachusetts FOI Guide"
+      }
+    ],
+    'lawyer': [
+      {
+        title: "NEFAC Mentors",
+        link: "/docs/by_audience/citizen/NEFAC_Mentors.pdf",
+        summary: "NEFAC Mentors"
+      },
+      {
+        title: "NEFAC Mentors",
+        link: "/docs/by_audience/citizen/NEFAC_Mentors.pdf",
+        summary: "NEFAC Mentors"
+      }
+    ]
+  };
+
   const suggestionsByRole: {
     [key: string]: string[];
     citizen: string[];
@@ -81,31 +140,31 @@ const SearchBar = () => {
     lawyer: string[];
   } = {
     'citizen': [
+      "Popular Document: "+popularDocumentsByRole['citizen'][0].title,
+      "Popular Document: "+popularDocumentsByRole['citizen'][1].title,
       "What are my rights under the First Amendment?",
-      "How can I protect my free speech rights?",
-      "Popular Document: Guide to Free Speech",
-      "Popular Document: Citizen's Rights Handbook"
+      "How can I protect my free speech rights?"
     ],
     'educator': [
+      "Popular Document: "+popularDocumentsByRole['educator'][0].title,
+      "Popular Document: "+popularDocumentsByRole['citizen'][1].title,
       "How can I teach First Amendment rights in school?",
-      "What resources exist for teaching about free speech?",
-      "Popular Document: Educator's Guide to the First Amendment",
-      "Popular Document: Teaching Freedom of Expression"
+      "What resources exist for teaching about free speech?"
     ],
     'journalist': [
+      "Popular Document: "+popularDocumentsByRole['journalist'][0].title,
+      "Popular Document: "+popularDocumentsByRole['journalist'][1].title,
       "What are the legal protections for journalists?",
-      "How can I protect my sources?",
-      "Popular Document: Journalists' Legal Rights",
-      "Popular Document: Press Freedom in Practice"
+      "How can I protect my sources?"
     ],
     'lawyer': [
+      "Popular Document: "+popularDocumentsByRole['lawyer'][0].title,
+      "Popular Document: "+popularDocumentsByRole['lawyer'][1].title,
       "What are the latest First Amendment case precedents?",
-      "How do I defend First Amendment rights in court?",
-      "Popular Document: Landmark First Amendment Cases",
-      "Popular Document: Legal Strategies for Free Speech Defense"
+      "How do I defend First Amendment rights in court?"
     ]
   };
-  
+
   // Helper Functions
   const reformatConvoHistory = (history: ConversationHistory[]): string => {
     return history
@@ -116,7 +175,6 @@ const SearchBar = () => {
   // Effects
 
   useEffect(() => {
-    // Auto-scroll to the latest message
     if (conversationEndRef.current) {
       conversationEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
@@ -132,7 +190,7 @@ const SearchBar = () => {
 
   const performSearch = async (searchText: string) => {
     if (!searchText.trim()) return;
-
+    
     // Update UI to show user message
     setConversation(prev => [...prev, { type: 'user', content: searchText }]);
     setIsLoading(true);
@@ -147,8 +205,8 @@ const SearchBar = () => {
         },
         body: JSON.stringify({
           query: `
-            query Search($prompt: String!, $convoHistory: String!, $roleFilter: String!) {
-              askLlm(prompt: $prompt, convoHistory: $convoHistory, roleFilter: $roleFilter) {
+            query Search($prompt: String!, $convoHistory: String!, $roleFilter: String!, $contentType: String, $resourceType: String) {
+              askLlm(prompt: $prompt, convoHistory: $convoHistory, roleFilter: $roleFilter, contentType: $contentType, resourceType: $resourceType) {
                 title
                 link
                 summary
@@ -211,8 +269,30 @@ const SearchBar = () => {
     await performSearch(inputValue);
   };
 
-  const handleSuggestionClick = async (suggestion: string) => {
-    await performSearch(suggestion);
+  const handleSuggestionClick = async (suggestion: string, index:number) => {
+    if (suggestion.startsWith("Popular Document:")) {
+      setConversation(prev => [
+        ...prev,
+        { 
+          type: 'user', 
+          content: suggestion 
+        },
+        { 
+          type: 'assistant', 
+          content: "Here's what I found:", 
+          results: [
+            {
+              title: popularDocumentsByRole[userRole][index].title,
+              link: "http://localhost:5173"+popularDocumentsByRole[userRole][index].link,
+              summary: popularDocumentsByRole[userRole][index].summary,
+              citations: []
+            }
+          ]
+        }
+      ]);
+    } else {
+      await performSearch(suggestion);
+    }
   };
 
   // UI Components
@@ -239,6 +319,48 @@ const SearchBar = () => {
       </div>
     </div>
   );
+
+  // Suggestion Button Component
+  const SuggestionButton = ({ suggestion, index }: { suggestion: string; index: number  }) => {    
+    return (
+      <button
+        onClick={() => handleSuggestionClick(suggestion, index)}
+        className="
+          w-64
+          h-16
+          px-6
+          py-3
+          bg-white/20 
+          backdrop-blur-sm
+          border
+          border-white/30
+          text-blue-600
+          rounded-xl
+          transition-all
+          duration-200
+          hover:bg-white/30
+          hover:border-white/50
+          hover:transform
+          hover:scale-105
+          focus:outline-none
+          focus:ring-2
+          focus:ring-blue-400
+          focus:ring-opacity-50
+          shadow-lg
+          text-sm
+          font-medium
+          whitespace-normal
+          line-clamp-2
+          flex
+          items-center
+          justify-center
+          text-center
+        "
+      >
+        {suggestion}
+      </button>
+    );
+  };
 
   const MessageBubble = ({ msg }: { msg: Message }) => (
     <div className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -288,13 +410,54 @@ const SearchBar = () => {
 
   // Main Render
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       {userRole === "" ? (
         <RoleSelection />
       ) : (
-        <>
+        <div>
+          {/* Edit Role and Dropdowns */}
+          <div className="fixed top-4 right-4 flex flex-col items-end space-y-2">
+            <button 
+              onClick={() => setUserRole("")} 
+              className="bg-blue-500 text-white border-2 border-blue-500 px-4 py-2 rounded-md shadow-lg hover:shadow-xl"
+            >
+              Edit Role
+            </button>
+            <select 
+              className="bg-white text-blue-500 border-2 border-blue-500 px-4 py-2 rounded-full shadow-lg focus:bg-white focus:text-blue-500"
+              onChange={(e) => {
+                setResourceType(e.target.value);
+              }}
+            >
+              <option value="">Select Resource Type</option>
+              <option value="option1">Guides</option>
+              <option value="option2">Lessons</option>
+              <option value="option3">Multimedia</option>
+            </select>
+            <select 
+              className="bg-white text-blue-500 border-2 border-blue-500 px-4 py-2 rounded-full shadow-lg focus:bg-white focus:text-blue-500"
+              onChange={(e) => {
+                setContentType(e.target.value);
+              }}
+            >
+              <option value="">Select Content Type</option>
+              <option value="option1">Advocacy</option>
+              <option value="option2">Civic Education</option>
+              <option value="option3">Community Outreach</option>
+              <option value="option4">First Amendment Rights</option>
+              <option value="option5">Government Transparency</option>
+              <option value="option6">Investigative Journalism</option>
+              <option value="option7">Media Law</option>
+              <option value="option8">Mentorship</option>
+              <option value="option9">Open Meeting Law</option>
+              <option value="option10">Public Records Law</option>
+              <option value="option11">Skill Building</option>
+              <option value="option12">Workshops</option>
+            </select>
+          </div>
+
           {/* Conversation Container */}
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto p-4" style={{ marginBottom: '80px' }}>
             <div className="max-w-4xl mx-auto space-y-4">
               {conversation.map((msg, index) => (
                 <MessageBubble key={index} msg={msg} />
@@ -302,24 +465,18 @@ const SearchBar = () => {
   
               {/* Initial suggestions */}
               {conversation.length === 1 && (
-                <div className="flex justify-center space-x-4 flex-wrap">
-                  {suggestionsByRole[userRole] && suggestionsByRole[userRole].map((suggestion, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSuggestionClick(suggestion.startsWith('Popular Document:') ? suggestion.slice('Popular Document:'.length) : suggestion)}
-                      className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 mb-2"
-                    >
-                      {suggestion}
-                    </button>
+                <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-full max-w-3xl px-4 py-6 flex flex-wrap justify-center gap-4 z-10">
+                  {suggestionsByRole[userRole]?.map((suggestion, index) => (
+                    <SuggestionButton suggestion={suggestion} index={index} />
                   ))}
                 </div>
               )}
               <div ref={conversationEndRef} />
-            </div>
+              </div>
           </div>
   
           {/* Search Input */}
-          <div className="p-4 border-t bg-white">
+          <div className="p-4 border-t bg-white fixed bottom-0 w-full z-20">
             <form onSubmit={handleSearch} className="max-w-4xl mx-auto flex gap-2">
               <input
                 type="text"
@@ -342,10 +499,10 @@ const SearchBar = () => {
               </button>
             </form>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
-  };
-  
-  export default SearchBar;
+};
+
+export default SearchBar;

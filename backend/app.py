@@ -40,7 +40,7 @@ type_defs = gql("""
     }
             
     type Query {
-        askLlm(prompt: String!, convoHistory: String, roleFilter: String): [SearchResult!]!
+        askLlm(prompt: String!, convoHistory: String, roleFilter: String, contentType: String, resourceType: String): [SearchResult!]!
         retrieveDocuments(query: String!): [Document]
     }
 
