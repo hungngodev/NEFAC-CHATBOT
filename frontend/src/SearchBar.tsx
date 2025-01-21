@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
+
 import { Send } from 'lucide-react';
+
 
 // Types and Interfaces
 interface Citation {
@@ -13,6 +15,7 @@ interface SearchResult {
   summary: string;
   citations: Citation[];
 }
+
 
 interface Message {
   type: 'user' | 'assistant';
@@ -111,6 +114,7 @@ const SearchBar = () => {
   };
 
   // Effects
+
   useEffect(() => {
     // Auto-scroll to the latest message
     if (conversationEndRef.current) {
@@ -118,10 +122,13 @@ const SearchBar = () => {
     }
   }, [conversation]);
 
+
   // Event Handlers
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
+
 
   const performSearch = async (searchText: string) => {
     if (!searchText.trim()) return;
@@ -132,6 +139,7 @@ const SearchBar = () => {
 
     try {
       // Make API request
+
       const response = await fetch('http://127.0.0.1:8000/graphql', {
         method: 'POST',
         headers: {
@@ -152,7 +160,9 @@ const SearchBar = () => {
             }
           `,
           variables: {
+
             prompt: searchText,
+
             convoHistory: reformatConvoHistory(convoHistory),
             roleFilter: userRole
           }
@@ -178,14 +188,17 @@ const SearchBar = () => {
         // Handle search results
         setConversation(prev => [
           ...prev,
+
           { type: 'assistant', content: "Here's what I found:", results }
         ]);
       }
       setInputValue('');
     } catch (error) {
       console.error(error);
+
       setConversation(prev => [
         ...prev,
+
         { type: 'assistant', content: "Sorry, I encountered an error while searching." }
       ]);
     } finally {
@@ -269,6 +282,7 @@ const SearchBar = () => {
           </span>
         ))}
       </p>
+
     </div>
   );
 
