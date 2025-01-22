@@ -56,10 +56,10 @@ mutation = MutationType()
 
 # Define the resolvers
 @query.field("askLlm")
-async def resolve_ask_llm(_, info, prompt, convoHistory, roleFilter=None):
+async def resolve_ask_llm(_, info, prompt, convoHistory, roleFilter=None,contentType=None,resourceType=None):
     try:
         print("convoHistory: ", convoHistory)
-        response = await ask_llm(_, info, prompt, convoHistory, roleFilter)
+        response = await ask_llm(_, info, prompt, convoHistory, roleFilter,contentType,resourceType)
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

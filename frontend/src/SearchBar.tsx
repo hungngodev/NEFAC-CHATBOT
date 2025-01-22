@@ -213,11 +213,11 @@ const SearchBar = () => {
             }
           `,
           variables: {
-
             prompt: searchText,
-
             convoHistory: reformatConvoHistory(convoHistory),
-            roleFilter: userRole
+            roleFilter: userRole,
+            contentType: contentType,
+            resourceType: resourceType
           }
         }),
       });
