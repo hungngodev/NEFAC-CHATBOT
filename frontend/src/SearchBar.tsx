@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
+import './SearchBar.css';
 
 // Types and Interfaces
 interface Citation {
@@ -44,6 +45,7 @@ const SearchBar = () => {
     content: `Welcome to the New England First Amendment Coalition, the region's leading defender of First Amendment freedoms and government transparency. How can I help you?`
   }]);
   const [convoHistory, setConvoHistory] = useState<ConversationHistory[]>([]);
+  const prevLength = useRef(conversation.length);
 
   // Refs
   const conversationEndRef = useRef<HTMLDivElement>(null);
@@ -174,6 +176,34 @@ const SearchBar = () => {
     ]
   };
 
+  const contentAndResourceTypes = [
+    {
+      options: [
+        { value: "", label: "Select Resource Type" },
+        { value: "Guides", label: "Guides" },
+        { value: "Lessons", label: "Lessons" },
+        { value: "Multimedia", label: "Multimedia" }
+      ]
+    },
+    {
+      options: [
+        { value: "", label: "Select Content Type" },
+        { value: "Advocacy", label: "Advocacy" },
+        { value: "Civic Education", label: "Civic Education" },
+        { value: "Community Outreach", label: "Community Outreach" },
+        { value: "First Amendment Rights", label: "First Amendment Rights" },
+        { value: "Government Transparency", label: "Government Transparency" },
+        { value: "Investigative Journalism", label: "Investigative Journalism" },
+        { value: "Media Law", label: "Media Law" },
+        { value: "Mentorship", label: "Mentorship" },
+        { value: "Open Meeting Law", label: "Open Meeting Law" },
+        { value: "Public Records Law", label: "Public Records Law" },
+        { value: "Skill Building", label: "Skill Building" },
+        { value: "Workshops", label: "Workshops" }
+      ]
+    }
+  ];
+
   // Helper Functions
   const reformatConvoHistory = (history: ConversationHistory[]): string => {
     return history
@@ -261,8 +291,8 @@ const SearchBar = () => {
     await performSearch(toSearch);
   };
 
-  const handleSuggestionClick = async (suggestion: string, index:number) => {
-    if (suggestion.startsWith("Popular Document:")) {
+  const handleSuggestionClick = async (suggestion: string, index:number, type:string) => {
+    if (type=="document") {
       setConversation(prev => [
         ...prev,
         { type: 'user', content: suggestion },
@@ -305,10 +335,10 @@ const SearchBar = () => {
     </div>
   );
 
-  const SuggestionButton = ({ suggestion, index }: { suggestion: string; index: number  }) => {    
+  const SuggestionButton = ({ suggestion, index, type }: { suggestion: string; index: number; type: string  }) => {    
     return (
       <button
-        onClick={() => handleSuggestionClick(suggestion, index)}
+        onClick={() => handleSuggestionClick(suggestion, index, type)}
         className="
           w-64
           h-16
@@ -346,25 +376,63 @@ const SearchBar = () => {
     );
   };
 
-  const MessageBubble = ({ msg }: { msg: Message }) => (
-    <div className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-      <div className={`max-w-[80%] rounded-lg ${
-        msg.type === 'user' ? 'bg-blue-500 text-white' : 'bg-white shadow-md'
-      } p-4`}>
-        <p className="text-base">{msg.content}</p>
-        {msg.results && (
-          <div className="mt-4 space-y-4">
-            {msg.results.map((result, idx) => (
-              <SearchResultItem key={idx} result={result} isUserMessage={msg.type === 'user'} />
-            ))}
-          </div>
-        )}
+  // make it so that the content section of a message that returns sources doesnt get animated.
+  const MessageBubble = ({ msg, index, totalMessages }: { msg: Message; index: number; totalMessages: number }) => {
+    const isUser = msg.type === 'user';
+    const isLatestMessage = index === totalMessages - 1;
+    const shouldAnimate = isLatestMessage && conversation.length > prevLength.current;
+    
+    useEffect(() => {
+      prevLength.current = conversation.length;
+    }, [conversation.length]);
+  
+    return (
+      <div 
+        className={`flex ${isUser ? 'justify-end' : 'justify-start'} my-2`}
+      >
+        <div 
+          className={`
+            max-w-[80%] rounded-2xl p-4
+            ${isUser ? 
+              'bg-blue-500 text-white mr-2 rounded-br-sm' : 
+              'bg-gray-50 shadow-sm border border-gray-100 ml-2 rounded-bl-sm'
+            }
+            transition-all duration-200
+            hover:shadow-md
+            ${shouldAnimate ? 'animate-once-messageIn' : ''}
+          `}
+        >
+          <p className={`
+            text-base leading-relaxed
+            ${isUser ? 'text-white' : 'text-gray-800'}
+          `}>
+            {msg.content}
+          </p>
+          
+          {msg.results && (
+            <div className={`mt-4 space-y-4 `}>
+              {msg.results.map((result, idx) => (
+                <div
+                  key={idx}
+                >
+                  <SearchResultItem 
+                    result={result} 
+                    isUserMessage={isUser}
+                    shouldAnimate={shouldAnimate}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
-  const SearchResultItem = ({ result, isUserMessage }: { result: SearchResult; isUserMessage: boolean }) => (
-    <div className="border-t border-gray-200 pt-4">
+  const SearchResultItem = ({ result, isUserMessage, shouldAnimate }: { result: SearchResult; isUserMessage: boolean; shouldAnimate:boolean }) => (
+    <div 
+    className={`border-t border-gray-200 pt-4 ${shouldAnimate?'animate-once-messageIn':''}`} 
+    >
       <h3 className="font-medium">
         <a
           href={result.link}
@@ -400,88 +468,115 @@ const SearchBar = () => {
         <div>
           {/* Edit Role and Dropdowns */}
           <div className="fixed top-4 right-4 flex flex-col items-end space-y-2">
-            <button 
-              onClick={() => setUserRole("")} 
-              className="bg-blue-500 text-white border-2 border-blue-500 px-4 py-2 rounded-md shadow-lg hover:shadow-xl"
+      <button 
+        onClick={() => setUserRole("")} 
+        className="bg-blue-500 text-white border-2 border-blue-500 px-4 py-2 rounded-md shadow-lg 
+          transition-all duration-200 ease-in-out
+          hover:bg-blue-600 hover:border-blue-600 hover:shadow-xl 
+          active:bg-blue-700 active:scale-95
+          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      >
+        Edit Role
+      </button>
+      
+      {contentAndResourceTypes.map((select, index) => (
+        <select 
+          key={index}
+          className="bg-white text-blue-500 border-2 border-blue-500 px-4 py-2 rounded-full shadow-lg
+            transition-all duration-200 ease-in-out
+            hover:border-blue-600 hover:text-blue-600 hover:shadow-xl
+            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+            cursor-pointer"
+          onChange={e => index === 0 ? setResourceType(e.target.value) : setContentType(e.target.value)}
+        >
+          {select.options.map((option, optIndex) => (
+            <option 
+              key={optIndex} 
+              value={option.value}
+              className="text-gray-800 bg-white hover:bg-blue-50"
             >
-              Edit Role
-            </button>
-            <select 
-              className="bg-white text-blue-500 border-2 border-blue-500 px-4 py-2 rounded-full shadow-lg focus:bg-white focus:text-blue-500"
-              onChange={(e) => {
-                setResourceType(e.target.value);
-              }}
-            >
-              <option value="">Select Resource Type</option>
-              <option value="option1">Guides</option>
-              <option value="option2">Lessons</option>
-              <option value="option3">Multimedia</option>
-            </select>
-            <select 
-              className="bg-white text-blue-500 border-2 border-blue-500 px-4 py-2 rounded-full shadow-lg focus:bg-white focus:text-blue-500"
-              onChange={(e) => {
-                setContentType(e.target.value);
-              }}
-            >
-              <option value="">Select Content Type</option>
-              <option value="option1">Advocacy</option>
-              <option value="option2">Civic Education</option>
-              <option value="option3">Community Outreach</option>
-              <option value="option4">First Amendment Rights</option>
-              <option value="option5">Government Transparency</option>
-              <option value="option6">Investigative Journalism</option>
-              <option value="option7">Media Law</option>
-              <option value="option8">Mentorship</option>
-              <option value="option9">Open Meeting Law</option>
-              <option value="option10">Public Records Law</option>
-              <option value="option11">Skill Building</option>
-              <option value="option12">Workshops</option>
-            </select>
-          </div>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      ))}
+    </div>
 
           {/* Conversation Container */}
           <div className="flex-1 overflow-y-auto p-4" style={{ marginBottom: '80px' }}>
             <div className="max-w-4xl mx-auto space-y-4">
-              {conversation.map((msg, index) => (
-                <MessageBubble key={index} msg={msg} />
-              ))}
+            {conversation.map((msg, index) => (
+              <MessageBubble 
+                key={index} 
+                msg={msg} 
+                index={index}
+                totalMessages={conversation.length}
+              />
+            ))}
   
               {/* Initial suggestions */}
               {conversation.length === 1 && (
-                <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-full max-w-3xl px-4 py-6 flex flex-wrap justify-center gap-4 z-10">
-                  {suggestionsByRole[userRole]?.map((suggestion, index) => (
-                    <SuggestionButton suggestion={suggestion} index={index} />
+              <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-full max-w-3xl px-4 py-6 flex flex-col items-center gap-4 z-10">
+              {/* Popular Documents */}
+              <div className="text-center">
+                <h3 className="text-lg font-semibold mb-2 text-black">Popular Documents for {userRole.charAt(0).toUpperCase() + userRole.slice(1)}s:</h3>
+                <div className="flex flex-wrap justify-center gap-4">
+                  {suggestionsByRole[userRole]?.filter(suggestion => suggestion.startsWith("Popular Document:")).map((suggestion, index) => (
+                    <SuggestionButton key={index} suggestion={suggestion} index={index} type={"document"} />
                   ))}
                 </div>
-              )}
+              </div>
+          
+              {/* General Questions */}
+              <div className="mt-4 text-center">
+                <h3 className="text-lg font-semibold mb-2 text-black">Common Discussions:</h3>
+                <div className="flex flex-wrap justify-center gap-4">
+                  {suggestionsByRole[userRole]?.filter(suggestion => !suggestion.startsWith("Popular Document:")).map((suggestion, index) => (
+                    <SuggestionButton key={index} suggestion={suggestion} index={index} type={"discussion"} />
+                  ))}
+                </div>
+              </div>
+            </div>
+            )}
               <div ref={conversationEndRef} />
               </div>
           </div>
   
           {/* Search Input */}
-          <div className="p-4 border-t bg-white fixed bottom-0 w-full z-20">
-            <form onSubmit={handleSearch} className="max-w-4xl mx-auto flex gap-2">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={handleInputChange}
-                placeholder="Ask a question..."
-                className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                disabled={isLoading}
-              />
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
-              >
-                {isLoading ? (
-                  <div className="w-6 h-6 border-t-2 border-white rounded-full animate-spin" />
-                ) : (
-                  <Send className="w-6 h-6" />
-                )}
-              </button>
-            </form>
-          </div>
+    <div className="p-4 border-t bg-white fixed bottom-0 w-full z-20 shadow-lg">
+      <form onSubmit={handleSearch} className="max-w-4xl mx-auto flex gap-2">
+        <input
+          type="text"
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder="Ask a question..."
+          className="flex-1 p-2 border rounded-lg
+            transition-all duration-200 ease-in-out
+            focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:outline-none
+            hover:border-blue-300 hover:shadow-sm
+            disabled:opacity-50 disabled:cursor-not-allowed
+            placeholder:text-gray-400"
+          disabled={isLoading}
+        />
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg 
+            transition-all duration-200 ease-in-out
+            hover:bg-blue-600 hover:shadow-md
+            active:scale-95
+            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+            disabled:opacity-50 disabled:cursor-not-allowed
+            disabled:hover:bg-blue-500 disabled:hover:shadow-none disabled:active:scale-100"
+        >
+          {isLoading ? (
+            <div className="w-6 h-6 border-t-2 border-white rounded-full animate-spin" />
+          ) : (
+            <Send className="w-6 h-6 transition-transform group-hover:scale-105" />
+          )}
+        </button>
+      </form>
+    </div>
         </div>
       )}
     </div>
