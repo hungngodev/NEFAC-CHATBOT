@@ -241,7 +241,6 @@ const SearchBar = () => {
         // Handle search results
         setConversation(prev => [
           ...prev,
-
           { type: 'assistant', content: "Here's what I found:", results }
         ]);
       }
@@ -251,7 +250,6 @@ const SearchBar = () => {
 
       setConversation(prev => [
         ...prev,
-
         { type: 'assistant', content: "Sorry, I encountered an error while searching." }
       ]);
     } finally {
@@ -268,22 +266,15 @@ const SearchBar = () => {
     if (suggestion.startsWith("Popular Document:")) {
       setConversation(prev => [
         ...prev,
-        { 
-          type: 'user', 
-          content: suggestion 
-        },
-        { 
-          type: 'assistant', 
-          content: "Here's what I found:", 
-          results: [
-            {
-              title: popularDocumentsByRole[userRole][index].title,
-              link: "http://localhost:5173"+popularDocumentsByRole[userRole][index].link,
-              summary: popularDocumentsByRole[userRole][index].summary,
-              citations: []
-            }
-          ]
-        }
+        { type: 'user', content: suggestion },
+        { type: 'assistant', content: "Here's what I found:",  results: [
+          {
+            title: popularDocumentsByRole[userRole][index].title,
+            link: "http://localhost:5173"+popularDocumentsByRole[userRole][index].link,
+            summary: popularDocumentsByRole[userRole][index].summary,
+            citations: []
+          }
+        ]}
       ]);
     } else {
       await performSearch(suggestion);
