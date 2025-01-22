@@ -48,6 +48,18 @@ const SearchBar = () => {
   // Refs
   const conversationEndRef = useRef<HTMLDivElement>(null);
 
+  // Effects
+  useEffect(() => {
+    if (conversationEndRef.current) {
+      conversationEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [conversation]);
+
+  // Event Handlers
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
   // Constants
   const userRoles: UserRole[] = [
     {
@@ -83,48 +95,48 @@ const SearchBar = () => {
       {
         title: "NEFAC Mentors",
         link: "/docs/by_audience/citizen/NEFAC_Mentors.pdf",
-        summary: "NEFAC Mentors"
+        summary: "The New England First Amendment Coalition offers a mentorship program designed for journalists in the six New England states, connecting them with seasoned professionals for guidance in various journalism skills. Mentors, who commit to at least an hour per month for six months and cover areas from investigative journalism to career development and community storytelling."
       },
       {
         title: "NEFAC Mentors",
         link: "/docs/by_audience/citizen/NEFAC_Mentors.pdf",
-        summary: "NEFAC Mentors"
+        summary: "The New England First Amendment Coalition offers a mentorship program designed for journalists in the six New England states, connecting them with seasoned professionals for guidance in various journalism skills. Mentors, who commit to at least an hour per month for six months and cover areas from investigative journalism to career development and community storytelling."
       }
     ],
     'educator': [
       {
         title: "NEFAC Mentors",
         link: "/docs/by_audience/citizen/NEFAC_Mentors.pdf",
-        summary: "NEFAC Mentors"
+        summary: "The New England First Amendment Coalition offers a mentorship program designed for journalists in the six New England states, connecting them with seasoned professionals for guidance in various journalism skills. Mentors, who commit to at least an hour per month for six months and cover areas from investigative journalism to career development and community storytelling."
       },
       {
         title: "NEFAC Mentors",
         link: "/docs/by_audience/citizen/NEFAC_Mentors.pdf",
-        summary: "NEFAC Mentors"
+        summary: "The New England First Amendment Coalition offers a mentorship program designed for journalists in the six New England states, connecting them with seasoned professionals for guidance in various journalism skills. Mentors, who commit to at least an hour per month for six months and cover areas from investigative journalism to career development and community storytelling."
       }
     ],
     'journalist': [
       {
         title: "Federal FOIA Video Tutorials",
         link: "/docs/by_audience/journalist/Federal_FOIA_%20Video_Tutorials.pdf",
-        summary: "Federal FOIA Video Tutorials"
+        summary: "Learn about the Freedom of Information Act with video lessons led by experts like Michael Morisy of MuckRock and Erin Siegal McIntyre. These tutorials cover everything from FOIA basics to appealing denied requests, offering practical insights for journalists and researchers."
       },
       {
-        title: "Massachusetts FOI Guide",
-        link: "/docs/by_audience/journalist/Massachusetts_FOI_Guide.pdf",
-        summary: "Massachusetts FOI Guide"
+        title: "FOI Access to State Courts",
+        link: "/docs/by_audience/journalist/FOI_Access_to_State_Courts.pdf",
+        summary: "Explore how to navigate Massachusetts state courts with our video series. Featuring educators like Ruth Bourquin from the ACLU, Bob Ambrogi from the Massachusetts Newspaper Publishers Association, and Todd Wallack from WBUR, these lessons guide you through accessing court documents, understanding court hearings, and using online judicial resources."
       }
     ],
     'lawyer': [
       {
         title: "NEFAC Mentors",
         link: "/docs/by_audience/citizen/NEFAC_Mentors.pdf",
-        summary: "NEFAC Mentors"
+        summary: "The New England First Amendment Coalition offers a mentorship program designed for journalists in the six New England states, connecting them with seasoned professionals for guidance in various journalism skills. Mentors, who commit to at least an hour per month for six months and cover areas from investigative journalism to career development and community storytelling."
       },
       {
         title: "NEFAC Mentors",
         link: "/docs/by_audience/citizen/NEFAC_Mentors.pdf",
-        summary: "NEFAC Mentors"
+        summary: "The New England First Amendment Coalition offers a mentorship program designed for journalists in the six New England states, connecting them with seasoned professionals for guidance in various journalism skills. Mentors, who commit to at least an hour per month for six months and cover areas from investigative journalism to career development and community storytelling."
       }
     ]
   };
@@ -162,6 +174,8 @@ const SearchBar = () => {
     ]
   };
 
+
+
   // Helper Functions
   const reformatConvoHistory = (history: ConversationHistory[]): string => {
     return history
@@ -169,18 +183,6 @@ const SearchBar = () => {
       .join('\n\n');
   };
 
-  // Effects
-  useEffect(() => {
-    if (conversationEndRef.current) {
-      conversationEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [conversation]);
-
-
-  // Event Handlers
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-  };
 
   const performSearch = async (searchText: string) => {
     if (!searchText.trim()) return;
@@ -313,7 +315,6 @@ const SearchBar = () => {
     </div>
   );
 
-  // Suggestion Button Component
   const SuggestionButton = ({ suggestion, index }: { suggestion: string; index: number  }) => {    
     return (
       <button
