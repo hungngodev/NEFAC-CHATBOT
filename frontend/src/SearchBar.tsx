@@ -174,15 +174,12 @@ const SearchBar = () => {
     ]
   };
 
-
-
   // Helper Functions
   const reformatConvoHistory = (history: ConversationHistory[]): string => {
     return history
       .map(item => `Previous ${item.role} question: ${item.question}\nPrevious Follow Up Question: ${item.llm_response}`)
       .join('\n\n');
   };
-
 
   const performSearch = async (searchText: string) => {
     if (!searchText.trim()) return;
@@ -224,7 +221,7 @@ const SearchBar = () => {
 
       const data = await response.json();
       const results = data.data.askLlm;
-
+      
       // Handle response based on type
       if (results[0]?.title === "follow-up") {
         // Handle follow-up response
@@ -259,7 +256,9 @@ const SearchBar = () => {
 
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await performSearch(inputValue);
+    const toSearch=inputValue;
+    setInputValue('');
+    await performSearch(toSearch);
   };
 
   const handleSuggestionClick = async (suggestion: string, index:number) => {
