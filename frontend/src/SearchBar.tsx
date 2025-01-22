@@ -376,7 +376,6 @@ const SearchBar = () => {
     );
   };
 
-  // make it so that the content section of a message that returns sources doesnt get animated.
   const MessageBubble = ({ msg, index, totalMessages }: { msg: Message; index: number; totalMessages: number }) => {
     const isUser = msg.type === 'user';
     const isLatestMessage = index === totalMessages - 1;
