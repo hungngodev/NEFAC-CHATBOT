@@ -1,0 +1,2 @@
+https://serverlessland.com/patterns/s3-sqs-lambda?ref=search
+https://github.com/aws-samples/serverless-patterns/tree/main
