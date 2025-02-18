@@ -1,6 +1,6 @@
 import glob
-from pdf_loader import pdfLoader
-from youtube_loader import youtubeLoader
+from document.pdf_loader import pdfLoader
+from document.youtube_loader import youtubeLoader
 
 # TODO: implement for txt files, images, etc. save vector store to disk. add optional filter params for each category (audience, resource_type, nefac_category) retrieved from frontend
 

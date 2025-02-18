@@ -1,4 +1,4 @@
-from chain import middleware_qa, custom_QA_structured
+from llm.chain import middleware_qa, custom_QA_structured
 # Function to ask the LLM
 async def ask_llm(_, info, query, convoHistory= "",roleFilter=None, contentType=None, resourceType=None):
 
