@@ -5,7 +5,8 @@ from langchain_openai import ChatOpenAI
 from validation import SearchResponse
 from langchain_core.runnables import RunnablePassthrough
 
-from vector.utils import create_vectorstore_filter, vector_store, format_docs
+from vector.utils import create_vectorstore_filter, vector_store
+from llm.utils import format_docs
 
 async def custom_QA_structured(_, info, query, roleFilter=None, contentType=None, resourceType=None):
     

@@ -1,19 +1,21 @@
 # general
-from dotenv import load_dotenv
 import logging
+import os
 
 import faiss
-from langchain_community.vectorstores import FAISS
-from langchain_community.embeddings import OpenAIEmbeddings 
+from document.loader import load_all_documents
+from dotenv import load_dotenv
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.docstore.in_memory import InMemoryDocstore
+from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.vectorstores import FAISS
 
-from document.loader import load_all_documents
+load_dotenv()
 
-# Initialize logging
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 # Initialize embeddings and FAISS vector store
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
