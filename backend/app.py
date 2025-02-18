@@ -1,11 +1,23 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from ariadne import QueryType, MutationType, make_executable_schema, gql
-from ariadne.asgi import GraphQL
-from pydantic import BaseModel
+import logging
+import os
 from typing import List
 
-from llm_utils import add_documents_to_store, retrieve_documents, ask_llm
+from ariadne import MutationType, QueryType, gql, make_executable_schema
+from ariadne.asgi import GraphQL
+from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from llm.main import ask_llm
+from pydantic import BaseModel
+from vector.utils import add_documents_to_store, retrieve_documents
+
+# config
+load_dotenv()
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+
+# Initialize logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -17,8 +29,6 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all methods; you can restrict this to specific methods if desired
     allow_headers=["*"],  # Allows all headers; you can restrict this to specific headers if desired
 )
-
-
 
 # GraphQL Type Definitions
 type_defs = gql("""
