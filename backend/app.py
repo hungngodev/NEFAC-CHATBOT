@@ -10,11 +10,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from llm.main import ask_llm_stream
 from pydantic import BaseModel
-from vector.utils import add_documents_to_store, retrieve_documents
+from vector.utils import retrieve_documents
+from vector.load import add_documents_to_store
 
 # config
 load_dotenv()
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+os.environ["LANGSMITH_TRACING"] = os.getenv("LANGSMITH_TRACING")
+os.environ["LANGSMITH_ENDPOINT"] = os.getenv("LANGSMITH_ENDPOINT")
+os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGSMITH_API_KEY")
+os.environ["LANGSMITH_PROJECT"] = os.getenv("LANGSMITH_PROJECT")
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO)
@@ -59,16 +64,17 @@ mutation = MutationType()
     
 @app.get("/a***REMOVED***llm")
 async def ask_llm(
-    prompt: str,
+    query: str,
     convoHistory: str = "",
     roleFilter: str = None,
     contentType: str = None,
     resourceType: str = None,
 ):
+    
     try:        
         # Return the stream as a response using StreamingResponse
         return StreamingResponse(
-            ask_llm_stream(None, prompt, convoHistory, roleFilter, contentType, resourceType),
+            ask_llm_stream(None, query, convoHistory, roleFilter, contentType, resourceType),
             media_type="text/event-stream",
         )
     except Exception as e:

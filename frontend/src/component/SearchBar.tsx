@@ -241,7 +241,7 @@ const SearchBar = () => {
 
     const fetchData = async () => {
       await fetchEventSource(
-        "http://127.0.0.1:8000/a***REMOVED***llm?prompt=" +
+        "http://127.0.0.1:8000/a***REMOVED***llm?query=" +
           encodeURIComponent(searchText) +
           "&convoHistory=" +
           encodeURIComponent(reformatConvoHistory(convoHistory)) +

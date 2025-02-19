@@ -1,23 +1,101 @@
-from langchain_core.prompts import PromptTemplate
-from langchain_openai import ChatOpenAI
-from langchain_core.runnables import RunnablePassthrough
-from validation import SearchResponse
-from vector.utils import create_vectorstore_filter, vector_store
-from llm.utils import format_docs
 import json
 import logging
+
+from langchain.vectorstores import FAISS
+from langchain_community.chat_message_histories import ChatMessageHistory
+from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_core.chat_history import BaseChatMessageHistory
+from langchain_core.messages import AIMessageChunk
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import (ChatPromptTemplate, MessagesPlaceholder,
+                                    PromptTemplate)
+from langchain_core.runnables import RunnablePassthrough
+from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_openai import ChatOpenAI
+from llm.utils import format_docs
+from validation import SearchResponse
+from vector.utils import create_vectorstore_filter
+import os 
+from dotenv import load_dotenv
+
+load_dotenv()
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+os.environ["LANGSMITH_TRACING"] = os.getenv("LANGSMITH_TRACING")
+os.environ["LANGSMITH_ENDPOINT"] = os.getenv("LANGSMITH_ENDPOINT")
+os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGSMITH_API_KEY")
+os.environ["LANGSMITH_PROJECT"] = os.getenv("LANGSMITH_PROJECT")
+
+embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
+vector_store = FAISS.load_local("faiss_store", embedding_model, allow_dangerous_deserialization=True)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# For custom_QA_structured to support streaming
-async def custom_QA_structured(_, info, query, roleFilter=None, contentType=None, resourceType=None):
-    prompt_template = """
-        Use the following context to answer the query.
+
+store = {}
+
+def get_session_history(session_id: str) -> BaseChatMessageHistory:
+    if session_id not in store:
+        store[session_id] = ChatMessageHistory()
+    return store[session_id]
+
+def serialize_aimessagechunk(chunk):
+    """
+    Custom serializer for AIMessageChunk objects.
+    Convert the AIMessageChunk object to a serializable format.
+    """
+    if isinstance(chunk, AIMessageChunk):
+        return chunk.content
+    else:
+        raise TypeError(
+            f"Object of type {type(chunk).__name__} is not correctly formatted for serialization"
+        )
+# For middleware_qa to support streaming
+async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, resourceType=None):
+    model = ChatOpenAI(model='gpt-4o', streaming=True)  # Enable streaming here
+    
+    contextualize_q_system_prompt = """Given a chat history and the latest user question \
+    which might reference context in the chat history, formulate a standalone question \
+    which can be understood without the chat history. Do NOT answer the question, \
+    just reformulate it if needed and otherwise return it as is."""
+    
+    contextualize_q_prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", contextualize_q_system_prompt),
+            MessagesPlaceholder(variable_name="chat_history"),
+            ("human", "{question}"),
+        ]
+    )
+    contextualize_q_chain = (contextualize_q_prompt | model | StrOutputParser()).with_config(
+        tags=["contextualize_q_chain"]
+    )
+
+    qa_system_prompt = """
+        Role: You are an AI chatbot for NEFAC, new england first amendment coalition. You are an expert in providing relevant NEFAC only resources.
+
+        Task: 
+        Given retrieved NEFAC resources, your task is to determine whether you have enough information, or too much confusing information, to answer the query. 
+        If not enough resources were found, ask the user for more information.
+        If a lot of unrelated resources were found, ask the user to specify the type of resource they are looking for.
+        If you seem comfortable with the information, answer the query with the relevant resources.
+        Generally speaking, here are some examples of information you might want to ask the user for:
+            - Is the user looking for specific resources, or general resources?
+            - Is the user looking for information regarding a specific US state?
+            - Is the user looking for information regarding a specific law or court case?
+
+        For example, if the user is looking for mentors, you would want to ask the user about the specific area of expertise or state the user is looking for.
+
         Sources:
         {context}
 
         Instructions:
+        - If you need more information to answer the query, ask the user relevant follow up questions to aid in your response.
+        - If you have too much conflicting information to answer the query, ask the user to specify the type of resource they are looking for.
+        - If you are unsure, ask the user for more information.
+        - Use the conversation history to guide your response.
+        - Do not ask more than 2 follow up questions. Therefore, if you already asked 2 questions (as shown in conversation history), answer the query with the information you have so far and the below structure.
+        
+        IF YOU HAVE ENOUGH INFORMATION TO ANSWER THE QUERY WITH THE FOLLOWING CRITERIA:
         - You are an AI search engine for NEFAC, new england first amendment coalition. Sometimes NEFAC gets mistaken with Kneefact in youtube transcripts, so be aware.
         - You are an expert in the providing relevant NEFAC only resources.
         - Generate a list of unique relevant sources from the context as a search engine.
@@ -32,30 +110,21 @@ async def custom_QA_structured(_, info, query, roleFilter=None, contentType=None
         - Sources should be unique.
         - Source links must match exactly the original source links.
         - Put the path of the source in the 'link' field.
-        - Format the output as JSON in the following structure: 
-
-        {{
-            "results": [
-                {{
-                    "title": "Title of the source",
-                    "link": "source path",
-                    "summary": "Details answering the query.",
-                    "citations": [
-                        {{"id": "1", "context": "Relevant quote used in summary"}}
-                    ]
-                }},
-                ...
-            ]
-        }}
-
-        Question: {question}
     """
-
+    
+    qa_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", qa_system_prompt),
+        MessagesPlaceholder(variable_name="chat_history"),
+        ("human", "{question}"),
+    ])
+    
+    
     if roleFilter is None and contentType is None and resourceType is None:
         retriever = vector_store.as_retriever(
             search_type="similarity",
             search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
-        )
+        ).with_config(tags=["retriever"])
     else:
         filter_func = create_vectorstore_filter(roleFilter, contentType, resourceType)
         retriever = vector_store.as_retriever(
@@ -65,89 +134,81 @@ async def custom_QA_structured(_, info, query, roleFilter=None, contentType=None
                 "lambda_mult": 0.25,
                 "filter": filter_func
             },
-        )
-
-    QA_CHAIN_PROMPT = PromptTemplate.from_template(prompt_template)
-    model = ChatOpenAI(model='gpt-4o', streaming=True)  # Enable streaming here
-    structured_llm = model.with_structured_output(SearchResponse)
-
-    # Chain setup to stream the results
-    qa_chain = (
-        {
-            "context": retriever | format_docs,
-            "question": RunnablePassthrough(),
-        }
-        | QA_CHAIN_PROMPT
-        | structured_llm
-    )
-
-    for chunk in qa_chain.stream(query):  # Use streaming output
-        yield chunk  # Yield each chunk to stream the response
-
-# For middleware_qa to support streaming
-async def middleware_qa(_, info, query, convoHistory, roleFilter=None, contentType=None, resourceType=None):
-
-    prompt_template = """
-        Role: You are an AI chatbot for NEFAC, new england first amendment coalition. You are an expert in providing relevant NEFAC only resources.
-
-        Task: 
-        Given retrieved NEFAC resources, your task is to determine whether you have enough information, or too much confusing information, to answer the query. 
-        If not enough resources were found, ask the user for more information.
-        If a lot of unrelated resources were found, ask the user to specify the type of resource they are looking for.
-        If you seem comfortable with the information, return the number 1.
-        Generally speaking, here are some examples of information you might want to ask the user for:
-            - Is the user looking for specific resources, or general resources?
-            - Is the user looking for information regarding a specific US state?
-            - Is the user looking for information regarding a specific law or court case?
-
-        For example, if the user is looking for mentors, you would want to ask the user about the specific area of expertise or state the user is looking for.
-
-        Sources:
-        {context}
-
-        Conversation History:
-        {convoHistory}
-
-        Instructions:
-        - If you have enough information to answer the query, simply return the number 1.
-        - If you need more information to answer the query, ask the user relevant follow up questions to aid in your response.
-        - If you have too much conflicting information to answer the query, ask the user to specify the type of resource they are looking for.
-        - If you are unsure, ask the user for more information.
-        - Use the conversation history to guide your response.
-        - Do not ask more than 2 follow up questions. Therefore, if you already asked 2 questions (as shown in conversation history), return the number 1.
-
-        Question: {question}
-    """
-
-    if roleFilter is None and contentType is None and resourceType is None:
-        retriever = vector_store.as_retriever(
-            search_type="similarity",
-            search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
-        )
-    else:
-        filter_func = create_vectorstore_filter(roleFilter, contentType, resourceType)
-        retriever = vector_store.as_retriever(
-            search_type="similarity",
-            search_kwargs={
-                "k": 10,
-                "lambda_mult": 0.25,
-                "filter": filter_func
-            },
-        )
-
-    QA_CHAIN_PROMPT = PromptTemplate.from_template(prompt_template)
-    model = ChatOpenAI(model='o1-mini', streaming=True)  # Enable streaming here
-
-    # Chain setup to stream the results
-    qa_chain = (
-        {
-            "context": retriever | format_docs,
-            "question": RunnablePassthrough(),
-            "convoHistory": RunnablePassthrough(),
-        }
-        | QA_CHAIN_PROMPT
+        ).with_config(tags=["retriever"])
+    # print("Len", len(vector_store.))l
+    retriever = vector_store.as_retriever(
+                search_type="similarity",
+                search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
+            ).with_config(tags=["retriever"])
+    docs = retriever.invoke("NEFAC resources related to the First Amendment")
+    print("Docs: ", docs)
+        
+    rag_chain = (
+        RunnablePassthrough.assign(context=contextualize_q_chain | retriever | format_docs)
+        | qa_prompt
         | model
+        | (lambda x: {"answer": x})
+    ).with_config(
+        tags=["main_chain"]
     )
+    # print("Query: ", query)
+    conversational_rag_chain = RunnableWithMessageHistory(
+        rag_chain,
+        get_session_history,
+        input_messages_key="question",
+        history_messages_key="chat_history",
+        output_messages_key="answer",
+    )
+    input = {"question": query}
+    print("History: ", get_session_history("abc123"))
+    try:
+        async for event in conversational_rag_chain.astream_events(input, config={"configurable": {"session_id": "abc123"}}, version="v1"):
+            # Only get the answer
+            sources_tags = ['seq:step:3', 'main_chain']
+            if all(value in event["tags"] for value in sources_tags) and event["event"] == "on_chat_model_stream":
+                chunk_content = serialize_aimessagechunk(event["data"]["chunk"])
+                if len(chunk_content) != 0:
+                    data_dict = {"data": chunk_content}
+                    data_json = json.dumps(data_dict)
+                    yield f"data: {data_json}\n\n"
 
-    for chunk in qa_chain.stream(query):  # Use streaming output
-        yield chunk  # Yield each chunk to stream the response
+            # Get the reformulated question
+            sources_tags = ['seq:step:2', 'main_chain', 'contextualize_q_chain']
+            if all(value in event["tags"] for value in sources_tags) and event["event"] == "on_chat_model_stream":
+                chunk_content = serialize_aimessagechunk(event["data"]["chunk"])
+                if len(chunk_content) != 0:
+                    data_dict = {"reformulated": chunk_content}
+                    data_json = json.dumps(data_dict)
+                    yield f"data: {data_json}\n\n"
+                
+            # Get the context
+            sources_tags = ['main_chain', 'retriever']
+            if all(value in event["tags"] for value in sources_tags) and event["event"] == "on_retriever_end":
+                documents = event['data']['output']['documents']
+                # Create a new list to contain the formatted documents
+                formatted_documents = []
+                # Iterate over each document in the original list
+                for doc in documents:
+                    logger.info(f"Document: {doc}")
+                    # Create a new dictionary for each document with the required format
+                    formatted_doc = {
+                        'page_content': doc.page_content,
+                        'metadata': {
+                            'source': doc.metadata['source'],
+                        },
+                        'type': 'Document'
+                    }
+                    # Add the formatted document to the final list
+                    formatted_documents.append(formatted_doc)
+
+                # Create the final dictionary with the key "context"
+                final_output = {'context': formatted_documents}
+
+                # Convert the dictionary to a JSON string
+                data_json = json.dumps(final_output)
+                yield f"data: {data_json}\n\n"
+            if event["event"] == "on_chat_model_end":
+                print("Chat model has completed one response.")
+
+    except Exception as e:
+        print('error'+ str(e))
