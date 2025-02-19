@@ -168,7 +168,7 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
             if all(value in event["tags"] for value in sources_tags) and event["event"] == "on_chat_model_stream":
                 chunk_content = serialize_aimessagechunk(event["data"]["chunk"])
                 if len(chunk_content) != 0:
-                    data_dict = {"data": chunk_content}
+                    data_dict = {"message": chunk_content}
                     data_json = json.dumps(data_dict)
                     yield f"data: {data_json}\n\n"
 
