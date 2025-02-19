@@ -1,18 +1,19 @@
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
-
-# validation
-from validation import SearchResponse
 from langchain_core.runnables import RunnablePassthrough
-
+from validation import SearchResponse
 from vector.utils import create_vectorstore_filter, vector_store
 from llm.utils import format_docs
+import json
+import logging
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# For custom_QA_structured to support streaming
 async def custom_QA_structured(_, info, query, roleFilter=None, contentType=None, resourceType=None):
-    
     prompt_template = """
         Use the following context to answer the query.
-
         Sources:
         {context}
 
@@ -21,7 +22,7 @@ async def custom_QA_structured(_, info, query, roleFilter=None, contentType=None
         - You are an expert in the providing relevant NEFAC only resources.
         - Generate a list of unique relevant sources from the context as a search engine.
         - If the source is not relevant to the query, do not include it in the list.
-        - Titles can be slightly modified for readability. 
+        - Titles can be slightly modified for readability.
         - If the query is searching for a person, mentor, or people, mention specific names of people with expertise in the relevant areas.
         - If the query regards a specific state, find sources relevant to that specific state.
         - If the query is not state-specific or regards a general resource, find general resources.
@@ -49,14 +50,14 @@ async def custom_QA_structured(_, info, query, roleFilter=None, contentType=None
 
         Question: {question}
     """
-    
+
     if roleFilter is None and contentType is None and resourceType is None:
         retriever = vector_store.as_retriever(
             search_type="similarity",
             search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
         )
     else:
-        filter_func = create_vectorstore_filter(roleFilter, contentType, resourceType)  
+        filter_func = create_vectorstore_filter(roleFilter, contentType, resourceType)
         retriever = vector_store.as_retriever(
             search_type="similarity",
             search_kwargs={
@@ -66,10 +67,11 @@ async def custom_QA_structured(_, info, query, roleFilter=None, contentType=None
             },
         )
 
-    QA_CHAIN_PROMPT = PromptTemplate.from_template(prompt_template) # prompt_template defined above
-    model = ChatOpenAI(model='gpt-4o')
+    QA_CHAIN_PROMPT = PromptTemplate.from_template(prompt_template)
+    model = ChatOpenAI(model='gpt-4o', streaming=True)  # Enable streaming here
     structured_llm = model.with_structured_output(SearchResponse)
 
+    # Chain setup to stream the results
     qa_chain = (
         {
             "context": retriever | format_docs,
@@ -77,18 +79,17 @@ async def custom_QA_structured(_, info, query, roleFilter=None, contentType=None
         }
         | QA_CHAIN_PROMPT
         | structured_llm
-        
     )
-    response = qa_chain.invoke(query)
-        
-    return response.results
 
+    for chunk in qa_chain.stream(query):  # Use streaming output
+        yield chunk  # Yield each chunk to stream the response
+
+# For middleware_qa to support streaming
 async def middleware_qa(_, info, query, convoHistory, roleFilter=None, contentType=None, resourceType=None):
-    print("convo history: ", convoHistory)  
-    prompt_template = """
 
+    prompt_template = """
         Role: You are an AI chatbot for NEFAC, new england first amendment coalition. You are an expert in providing relevant NEFAC only resources.
-       
+
         Task: 
         Given retrieved NEFAC resources, your task is to determine whether you have enough information, or too much confusing information, to answer the query. 
         If not enough resources were found, ask the user for more information.
@@ -115,17 +116,16 @@ async def middleware_qa(_, info, query, convoHistory, roleFilter=None, contentTy
         - Use the conversation history to guide your response.
         - Do not ask more than 2 follow up questions. Therefore, if you already asked 2 questions (as shown in conversation history), return the number 1.
 
-
         Question: {question}
     """
-    
+
     if roleFilter is None and contentType is None and resourceType is None:
         retriever = vector_store.as_retriever(
             search_type="similarity",
             search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
         )
     else:
-        filter_func = create_vectorstore_filter(roleFilter, contentType, resourceType)  
+        filter_func = create_vectorstore_filter(roleFilter, contentType, resourceType)
         retriever = vector_store.as_retriever(
             search_type="similarity",
             search_kwargs={
@@ -135,9 +135,10 @@ async def middleware_qa(_, info, query, convoHistory, roleFilter=None, contentTy
             },
         )
 
-    QA_CHAIN_PROMPT = PromptTemplate.from_template(prompt_template) # prompt_template defined above
-    model = ChatOpenAI(model='o1-mini')
+    QA_CHAIN_PROMPT = PromptTemplate.from_template(prompt_template)
+    model = ChatOpenAI(model='o1-mini', streaming=True)  # Enable streaming here
 
+    # Chain setup to stream the results
     qa_chain = (
         {
             "context": retriever | format_docs,
@@ -146,13 +147,7 @@ async def middleware_qa(_, info, query, convoHistory, roleFilter=None, contentTy
         }
         | QA_CHAIN_PROMPT
         | model
-        
     )
-    response = qa_chain.invoke(query)
-    print("chat response: ", response)
-    return response.content
 
-
-
-
-
+    for chunk in qa_chain.stream(query):  # Use streaming output
+        yield chunk  # Yield each chunk to stream the response

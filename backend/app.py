@@ -7,7 +7,8 @@ from ariadne.asgi import GraphQL
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from llm.main import ask_llm
+from fastapi.responses import StreamingResponse
+from llm.main import ask_llm_stream
 from pydantic import BaseModel
 from vector.utils import add_documents_to_store, retrieve_documents
 
@@ -41,16 +42,8 @@ type_defs = gql("""
         id: String!
         context: String!
     }
-
-    type SearchResult {
-        title: String!
-        link: String!
-        summary: String!
-        citations: [Citation!]!
-    }
-            
+                
     type Query {
-        askLlm(prompt: String!, convoHistory: String, roleFilter: String, contentType: String, resourceType: String): [SearchResult!]!
         retrieveDocuments(query: String!): [Document]
     }
 
@@ -63,17 +56,23 @@ type_defs = gql("""
 # Create Query and Mutation types
 query = QueryType()
 mutation = MutationType()
-
-# Define the resolvers
-@query.field("askLlm")
-async def resolve_ask_llm(_, info, prompt, convoHistory, roleFilter=None,contentType=None,resourceType=None):
-    try:
-        print("convoHistory: ", convoHistory)
-        response = await ask_llm(_, info, prompt, convoHistory, roleFilter,contentType,resourceType)
-        return response
+    
+@app.get("/a***REMOVED***llm")
+async def ask_llm(
+    prompt: str,
+    convoHistory: str = "",
+    roleFilter: str = None,
+    contentType: str = None,
+    resourceType: str = None,
+):
+    try:        
+        # Return the stream as a response using StreamingResponse
+        return StreamingResponse(
+            ask_llm_stream(None, prompt, convoHistory, roleFilter, contentType, resourceType),
+            media_type="text/event-stream",
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-        return []
 
 @query.field("retrieveDocuments")
 def resolve_retrieve_documents(_, info, query):

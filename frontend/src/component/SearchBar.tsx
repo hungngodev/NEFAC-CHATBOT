@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Send } from "lucide-react";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
 import "./SearchBar.css";
 
 // Types and Interfaces
@@ -32,6 +33,8 @@ interface UserRole {
   title: string;
   description: string;
 }
+
+const BASE_URL = "http://127.0.0.1:8000/graphql";
 
 const SearchBar = () => {
   // State Management
@@ -236,8 +239,52 @@ const SearchBar = () => {
     setConversation((prev) => [...prev, { type: "user", content: searchText }]);
     setIsLoading(true);
 
+    const fetchData = async () => {
+      await fetchEventSource(
+        "http://127.0.0.1:8000/a***REMOVED***llm?prompt=" +
+          encodeURIComponent(searchText) +
+          "&convoHistory=" +
+          encodeURIComponent(reformatConvoHistory(convoHistory)) +
+          "&roleFilter=" +
+          encodeURIComponent(userRole) +
+          "&contentType=" +
+          encodeURIComponent(contentType) +
+          "&resourceType=" +
+          encodeURIComponent(resourceType),
+        {
+          method: "GET", // Using GET method for RESTful endpoint
+          headers: {
+            Accept: "text/event-stream", // Telling the server we expect a stream
+          },
+          onopen: async (res) => {
+            if (res.ok && res.status === 200) {
+              console.log("Connection made ", res);
+            } else if (
+              res.status >= 400 &&
+              res.status < 500 &&
+              res.status !== 429
+            ) {
+              console.log("Client-side error ", res);
+            }
+          },
+          onmessage(event) {
+            const parsedData = JSON.parse(event.data);
+            console.log(parsedData);
+            // setData((data) => [...data, parsedData]); // Important to set the data this way, otherwise old data may be overwritten if the stream is too fast
+          },
+          onclose() {
+            console.log("Connection closed by the server");
+          },
+          onerror(err) {
+            console.log("There was an error from server", err);
+          },
+        }
+      );
+    };
+    fetchData();
     try {
       // Make API request
+      throw new Error("Error: Fetching data failed");
       const response = await fetch("http://127.0.0.1:8000/graphql", {
         method: "POST",
         headers: {
