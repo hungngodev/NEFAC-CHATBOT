@@ -7,13 +7,19 @@ from ariadne.asgi import GraphQL
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from llm.main import ask_llm
+from fastapi.responses import StreamingResponse
+from llm.main import ask_llm_stream
 from pydantic import BaseModel
-from vector.utils import add_documents_to_store, retrieve_documents
+from vector.utils import retrieve_documents
+from vector.load import add_documents_to_store
 
 # config
 load_dotenv()
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+os.environ["LANGSMITH_TRACING"] = os.getenv("LANGSMITH_TRACING")
+os.environ["LANGSMITH_ENDPOINT"] = os.getenv("LANGSMITH_ENDPOINT")
+os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGSMITH_API_KEY")
+os.environ["LANGSMITH_PROJECT"] = os.getenv("LANGSMITH_PROJECT")
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO)
@@ -41,16 +47,8 @@ type_defs = gql("""
         id: String!
         context: String!
     }
-
-    type SearchResult {
-        title: String!
-        link: String!
-        summary: String!
-        citations: [Citation!]!
-    }
-            
+                
     type Query {
-        askLlm(prompt: String!, convoHistory: String, roleFilter: String, contentType: String, resourceType: String): [SearchResult!]!
         retrieveDocuments(query: String!): [Document]
     }
 
@@ -63,17 +61,24 @@ type_defs = gql("""
 # Create Query and Mutation types
 query = QueryType()
 mutation = MutationType()
-
-# Define the resolvers
-@query.field("askLlm")
-async def resolve_ask_llm(_, info, prompt, convoHistory, roleFilter=None,contentType=None,resourceType=None):
-    try:
-        print("convoHistory: ", convoHistory)
-        response = await ask_llm(_, info, prompt, convoHistory, roleFilter,contentType,resourceType)
-        return response
+    
+@app.get("/a***REMOVED***llm")
+async def ask_llm(
+    query: str,
+    convoHistory: str = "",
+    roleFilter: str = None,
+    contentType: str = None,
+    resourceType: str = None,
+):
+    
+    try:        
+        # Return the stream as a response using StreamingResponse
+        return StreamingResponse(
+            ask_llm_stream(None, query, convoHistory, roleFilter, contentType, resourceType),
+            media_type="text/event-stream",
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-        return []
 
 @query.field("retrieveDocuments")
 def resolve_retrieve_documents(_, info, query):
