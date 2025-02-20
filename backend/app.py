@@ -12,15 +12,9 @@ from llm.main import ask_llm_stream
 from pydantic import BaseModel
 from vector.utils import retrieve_documents
 from vector.load import add_documents_to_store
+from load_env import load_env
 
-# config
-load_dotenv()
-os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
-os.environ["LANGSMITH_TRACING"] = os.getenv("LANGSMITH_TRACING")
-os.environ["LANGSMITH_ENDPOINT"] = os.getenv("LANGSMITH_ENDPOINT")
-os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGSMITH_API_KEY")
-os.environ["LANGSMITH_PROJECT"] = os.getenv("LANGSMITH_PROJECT")
-
+load_env()
 # Initialize logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

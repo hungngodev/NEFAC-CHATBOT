@@ -1,7 +1,5 @@
 # general
 import logging
-import os
-
 import faiss
 from document.loader import load_all_documents
 from dotenv import load_dotenv
@@ -9,17 +7,12 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.docstore.in_memory import InMemoryDocstore
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
+from load_env import load_env
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-load_dotenv()
-os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
-os.environ["LANGSMITH_TRACING"] = os.getenv("LANGSMITH_TRACING")
-os.environ["LANGSMITH_ENDPOINT"] = os.getenv("LANGSMITH_ENDPOINT")
-os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGSMITH_API_KEY")
-os.environ["LANGSMITH_PROJECT"] = os.getenv("LANGSMITH_PROJECT")
-
+load_env()
 # Initialize embeddings and FAISS vector store
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
 

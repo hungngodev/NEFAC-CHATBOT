@@ -15,15 +15,10 @@ from langchain_openai import ChatOpenAI
 from llm.utils import format_docs
 from validation import SearchResponse
 from vector.utils import create_vectorstore_filter
-import os 
-from dotenv import load_dotenv
+from .query_translation.multi_query import get_multi_query_chain
+from load_env import load_env
 
-load_dotenv()
-os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
-os.environ["LANGSMITH_TRACING"] = os.getenv("LANGSMITH_TRACING")
-os.environ["LANGSMITH_ENDPOINT"] = os.getenv("LANGSMITH_ENDPOINT")
-os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGSMITH_API_KEY")
-os.environ["LANGSMITH_PROJECT"] = os.getenv("LANGSMITH_PROJECT")
+load_env()
 
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
 vector_store = FAISS.load_local("faiss_store", embedding_model, allow_dangerous_deserialization=True)
@@ -108,8 +103,6 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
         - Summarize each returned source content in a way that answers the query.
         - Do not include duplicate resources.
         - Sources should be unique.
-        - Source links must match exactly the original source links.
-        - Put the path of the source in the 'link' field.
     """
     
     qa_prompt = ChatPromptTemplate.from_messages(
@@ -142,9 +135,15 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
             ).with_config(tags=["retriever"])
     docs = retriever.invoke("NEFAC resources related to the First Amendment")
     print("Docs: ", docs)
+    
+    retriever_chain = {
+        'default': retriever | format_docs,
+        'multi_query': get_multi_query_chain(retriever).with_config(tags=["retriever"]),
+    }
+    
         
     rag_chain = (
-        RunnablePassthrough.assign(context=contextualize_q_chain | retriever | format_docs)
+        RunnablePassthrough.assign(context=contextualize_q_chain | retriever_chain['multi_query'])
         | qa_prompt
         | model
         | (lambda x: {"answer": x})
