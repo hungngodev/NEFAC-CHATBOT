@@ -1,17 +1,5 @@
-
-# general
-import os
-
-import json
-from dotenv import load_dotenv
 import logging
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_community.llms import OpenAI
-# validation
-from validation import SearchResponse
-from pydantic import BaseModel, ValidationError
 
-# Initialize logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 

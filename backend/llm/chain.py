@@ -13,9 +13,10 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_openai import ChatOpenAI
 from llm.utils import format_docs
-from validation import SearchResponse
 from vector.utils import create_vectorstore_filter
 from .query_translation.multi_query import get_multi_query_chain
+from .query_translation.rag_fusion import get_rag_fusion_chain
+from .query_translation.decomposition import get_decomposition_chain
 from load_env import load_env
 
 load_env()
@@ -25,6 +26,14 @@ vector_store = FAISS.load_local("faiss_store", embedding_model, allow_dangerous_
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+retriever = vector_store.as_retriever(
+    search_type="similarity",
+    search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
+).with_config(tags=["retriever"])
+
+rag_fusion_chain = get_rag_fusion_chain(retriever).with_config(tags=["retriever"])
+print(rag_fusion_chain.invoke("NEFAC resources related to the First Amendment"))
 
 
 store = {}
@@ -139,18 +148,19 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
     retriever_chain = {
         'default': retriever | format_docs,
         'multi_query': get_multi_query_chain(retriever).with_config(tags=["retriever"]),
+        'rag_fusion': get_rag_fusion_chain(retriever).with_config(tags=["retriever"]),
+        'decomposition': get_decomposition_chain(retriever).with_config(tags=["retriever"]),
     }
     
-        
     rag_chain = (
-        RunnablePassthrough.assign(context=contextualize_q_chain | retriever_chain['multi_query'])
+        RunnablePassthrough.assign(context=contextualize_q_chain | retriever_chain['decomposition'])
         | qa_prompt
         | model
         | (lambda x: {"answer": x})
     ).with_config(
         tags=["main_chain"]
     )
-    # print("Query: ", query)
+
     conversational_rag_chain = RunnableWithMessageHistory(
         rag_chain,
         get_session_history,
