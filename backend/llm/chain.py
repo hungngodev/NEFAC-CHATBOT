@@ -22,8 +22,17 @@ from .query_translation.rag_fusion import get_rag_fusion_chain
 
 load_env()
 
-embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
+embedding_model = OpenAIEmbeddings(model="text-embedding-3-large")
 vector_store = FAISS.load_local("faiss_store", embedding_model, allow_dangerous_deserialization=True)
+NUMBER_OF_NEAREST_NEIGHBORS = 10
+LAMBDA_MULT = 0.25
+THRESHOLD = 0.75
+# retriever = vector_store.as_retriever(
+#             search_type="similarity",
+#             search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
+#         ).with_config(tags=["retriever"])
+# docs = retriever.invoke("NEFAC resources related to the First Amendment")
+# print("Docs: ", docs)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -85,13 +94,14 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
         {context}
 
         Instructions:
-        - If you need more information to answer the query, ask the user relevant follow up questions to aid in your response.
+        - If you need more information in the Sources to answer the query, ask the user relevant follow up questions to aid in your response.
         - If you have too much conflicting information to answer the query, ask the user to specify the type of resource they are looking for.
         - If you are unsure, ask the user for more information.
         - Use the conversation history to guide your response.
         - Do not ask more than 2 follow up questions. Therefore, if you already asked 2 questions (as shown in conversation history), answer the query with the information you have so far and the below structure.
+        - But if you don't have enough information in the Sources, clarify with the user that you need more information to answer the query.
         
-        IF YOU HAVE ENOUGH INFORMATION TO ANSWER THE QUERY WITH THE FOLLOWING CRITERIA:
+        IF YOU HAVE ENOUGH INFORMATION IN THE SOURCE, ANSWER THE QUERY WITH THE FOLLOWING CRITERIA:
         - You are an AI search engine for NEFAC, new england first amendment coalition. Sometimes NEFAC gets mistaken with Kneefact in youtube transcripts, so be aware.
         - You are an expert in the providing relevant NEFAC only resources.
         - Generate a list of unique relevant sources from the context as a search engine.
@@ -117,32 +127,33 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
     if roleFilter is None and contentType is None and resourceType is None:
         retriever = vector_store.as_retriever(
             search_type="similarity",
-            search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
+            search_kwargs={"k": NUMBER_OF_NEAREST_NEIGHBORS, "lambda_mult": LAMBDA_MULT, "score_threshold": THRESHOLD},
         ).with_config(tags=["retriever"])
     else:
         filter_func = create_vectorstore_filter(roleFilter, contentType, resourceType)
         retriever = vector_store.as_retriever(
             search_type="similarity",
             search_kwargs={
-                "k": 10,
-                "lambda_mult": 0.25,
+                "k": NUMBER_OF_NEAREST_NEIGHBORS,
+                "lambda_mult": LAMBDA_MULT,
+                "score_threshold": THRESHOLD,
                 "filter": filter_func
             },
         ).with_config(tags=["retriever"])
-    
+        
     retriever = vector_store.as_retriever(
-                search_type="similarity",
-                search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
-            ).with_config(tags=["retriever"])
+            search_type="similarity",
+            search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
+        ).with_config(tags=["retriever"])
+    
     retriever_chain = {
         'default': retriever,
         'multi_query': get_multi_query_chain(retriever),
         'rag_fusion': get_rag_fusion_chain(retriever),
         'decomposition': get_decomposition_chain(retriever),
     }
-    docs = retriever.invoke("NEFAC resources related to the First Amendment")
-    print("Docs: ", docs)
-    retrieval_step = contextualize_q_chain | retriever_chain['default'] | format_docs
+    retrieval_step = (contextualize_q_chain | retriever_chain['rag_fusion'] | format_docs).with_config(tags=["full_retrieval_pipeline"])
+
     rag_chain = (
         RunnablePassthrough.assign(context=retrieval_step)
         | qa_prompt
@@ -160,13 +171,14 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
         output_messages_key="answer",
     )
     input = {"question": query}
-    print("History: ", get_session_history("abc123"))
+    # print("History: ", get_session_history("abc123"))
     try:
         i = 0
         async for event in conversational_rag_chain.astream_events(input, config={"configurable": {"session_id": "abc123"}}, version="v1"):
             # Only get the answer
             sources_tags = ['seq:step:3', 'main_chain']
-            if all(value in event["tags"] for value in sources_tags) and event["event"] == "on_chat_model_stream":
+            if all(value in event["tags"] for value in sources_tags) and 'full_retrieval_pipeline' not in event['tags'] and event["event"] == "on_chat_model_stream":
+                # logger.info(f"Event: {event['tags']}")
                 chunk_content = serialize_aimessagechunk(event["data"]["chunk"])
                 if len(chunk_content) != 0:
                     data_dict = {"message": chunk_content, "order": i}
@@ -190,8 +202,9 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
                 formatted_documents = []
                 # Iterate over each document in the original list
                 for doc in documents:
-                    logger.info(f"Document: {doc}")
+                    # logger.info(f"Document: {doc}")
                     # Create a new dictionary for each document with the required format
+                    print("Doc: ", doc)
                     formatted_doc = {
                         'summary': doc.page_content,
                         'link': doc.metadata['source'],
@@ -212,4 +225,4 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
                 print("Chat model has completed one response.")
             i +=1
     except Exception as e:
-        print('error'+ str(e))
+        logger.error(f"Error: {e}")

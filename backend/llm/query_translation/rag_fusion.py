@@ -43,7 +43,7 @@ def reciprocal_rank_fusion(results: list[list], k=60):
 
     # Sort the documents based on their fused scores in descending order to get the final reranked results
     reranked_results = [
-        (loads(doc), score)
+        loads(doc)
         for doc, score in sorted(fused_scores.items(), key=lambda x: x[1], reverse=True)
     ]
 
