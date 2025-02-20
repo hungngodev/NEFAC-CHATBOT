@@ -1,12 +1,12 @@
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import React, { useEffect, useRef, useState } from "react";
+import { EditRole } from "../component/EditRole";
 import { MessageBubble } from "../component/MessageBubble";
 import { RoleSelection } from "../component/RoleSelection";
-import "./SearchBar.css";
 import { SearchInput } from "../component/SearchInput";
-import { EditRole } from "../component/EditRole";
 import { SuggestionByRole } from "../component/SuggestionByRole";
 import { BASE_URL } from "../constant/backend";
+import "./SearchBar.css";
 
 // Types and Interfaces
 interface Citation {
@@ -17,20 +17,16 @@ interface Citation {
 export interface SearchResult {
   title: string;
   link: string;
-  summary: string;
-  citations: Citation[];
+  chunks: {
+    summary: string;
+    citations: Citation[];
+  }[];
 }
 
 export interface Message {
   type: "user" | "assistant";
   content: string;
-  results?: SearchResult[];
-}
-
-interface ConversationHistory {
-  role: string;
-  question: string;
-  llm_response: string;
+  results: SearchResult[];
 }
 
 const SearchBar = () => {
@@ -43,10 +39,12 @@ const SearchBar = () => {
   const [conversation, setConversation] = useState<Message[]>([
     {
       type: "assistant",
+      results: [],
       content: `Welcome to the New England First Amendment Coalition, the region's leading defender of First Amendment freedoms and government transparency. How can I help you?`,
     },
   ]);
   const prevLength = useRef<number>(1);
+  const orderStream = useRef<Set<number>>(new Set());
 
   // Refs
   const conversationEndRef = useRef<HTMLDivElement>(null);
@@ -66,7 +64,11 @@ const SearchBar = () => {
   const performSearch = async (searchText: string) => {
     if (!searchText.trim()) return;
 
-    setConversation((prev) => [...prev, { type: "user", content: searchText }]);
+    setConversation((prev) => [
+      ...prev,
+      { type: "user", content: searchText, results: [] },
+      { type: "assistant", content: "Searching...", results: [] },
+    ]);
     setIsLoading(true);
     try {
       // Make API request
@@ -102,19 +104,52 @@ const SearchBar = () => {
             const parsedData = JSON.parse(event.data);
             console.log(parsedData);
             if (parsedData.context) {
+              setConversation((prev) => {
+                const last = prev[prev.length - 1];
+                parsedData.context.forEach((result: any) => {
+                  const exist = last.results.find(
+                    (r) => r.title === result.title
+                  );
+                  if (exist) {
+                    exist.chunks.push({
+                      summary: result.summary,
+                      citations: [],
+                    });
+                  } else {
+                    last.results.push({
+                      title: result.title,
+                      link: result.link,
+                      chunks: [
+                        {
+                          summary: result.summary,
+                          citations: [],
+                        },
+                      ],
+                    });
+                  }
+                });
+                return [...prev];
+              });
             }
             if (parsedData.reformulated) {
               // Append reformulated question to reformulatedDiv
             }
             if (parsedData.message) {
-              // Append regular data to outputDiv
-              setConversation((prev) => []);
+              setConversation((prev) => {
+                const last = prev[prev.length - 1];
+                if (orderStream.current.size === 0) {
+                  last.content = parsedData.message;
+                } else if (!orderStream.current.has(parsedData.order)) {
+                  last.content += parsedData.message;
+                }
+                orderStream.current.add(parsedData.order);
+                return [...prev];
+              });
             }
-
-            // setData((data) => [...data, parsedData]); // Important to set the data this way, otherwise old data may be overwritten if the stream is too fast
           },
           onclose() {
             console.log("Connection closed by the server");
+            orderStream.current.clear();
           },
           onerror(err) {
             console.log("There was an error from server", err);
@@ -128,6 +163,7 @@ const SearchBar = () => {
         {
           type: "assistant",
           content: "Sorry, I encountered an error while searching.",
+          results: [],
         },
       ]);
     } finally {

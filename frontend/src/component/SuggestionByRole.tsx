@@ -22,7 +22,7 @@ export const SuggestionByRole: React.FC<SuggestionByRoleProps> = ({
     if (type == "document") {
       setConversation((prev) => [
         ...prev,
-        { type: "user", content: suggestion },
+        { type: "user", content: suggestion, results: [] },
       ]);
       setTimeout(() => {
         setConversation((prev) => [
@@ -35,8 +35,12 @@ export const SuggestionByRole: React.FC<SuggestionByRoleProps> = ({
                 title: popularDocumentsByRole[userRole][index].title,
                 link:
                   FRONTEND_URL + popularDocumentsByRole[userRole][index].link,
-                summary: popularDocumentsByRole[userRole][index].summary,
-                citations: [],
+                chunks: [
+                  {
+                    summary: popularDocumentsByRole[userRole][index].summary,
+                    citations: [],
+                  },
+                ],
               },
             ],
           },
@@ -57,9 +61,9 @@ export const SuggestionByRole: React.FC<SuggestionByRoleProps> = ({
         </h3>
         <div className="flex flex-wrap justify-center gap-4">
           {suggestionsByRole[userRole]?.map((suggestion, index: number) => (
-            <>
+            <div key={index}>
               <SuggestionButton
-                handleSuggestionClick={() => {}}
+                handleSuggestionClick={handleSuggestionClick}
                 key={index}
                 suggestion={suggestion}
                 index={index}
@@ -72,7 +76,7 @@ export const SuggestionByRole: React.FC<SuggestionByRoleProps> = ({
                   </h3>
                 </div>
               )}
-            </>
+            </div>
           ))}
         </div>
       </div>

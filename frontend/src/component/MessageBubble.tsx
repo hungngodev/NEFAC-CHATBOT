@@ -1,7 +1,8 @@
 import { Message } from "../pages/SearchBar";
 import { useEffect } from "react";
 import { SearchResultItem } from "./SearchResultItem";
-
+import remarkGfm from "remark-gfm";
+import ReactMarkdown from "react-markdown";
 interface MessageBubbleProps {
   msg: Message;
   index: number;
@@ -24,6 +25,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
     prevLength.current = conversation.length;
   }, [conversation.length]);
 
+  // console.log("msg", msg.content);
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} my-2`}>
       <div
@@ -39,14 +41,14 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
             ${shouldAnimate && "animate-once-messageIn"}
           `}
       >
-        <p
+        <div
           className={`
             text-base leading-relaxed
             ${isUser ? "text-white" : "text-gray-800"}
           `}
         >
-          {msg.content}
-        </p>
+          <ReactMarkdown children={msg.content} remarkPlugins={[remarkGfm]} />
+        </div>
 
         {msg.results && (
           <div className={`mt-4 space-y-4 `}>

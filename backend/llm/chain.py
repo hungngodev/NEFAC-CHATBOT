@@ -162,13 +162,14 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
     input = {"question": query}
     print("History: ", get_session_history("abc123"))
     try:
+        i = 0
         async for event in conversational_rag_chain.astream_events(input, config={"configurable": {"session_id": "abc123"}}, version="v1"):
             # Only get the answer
             sources_tags = ['seq:step:3', 'main_chain']
             if all(value in event["tags"] for value in sources_tags) and event["event"] == "on_chat_model_stream":
                 chunk_content = serialize_aimessagechunk(event["data"]["chunk"])
                 if len(chunk_content) != 0:
-                    data_dict = {"message": chunk_content}
+                    data_dict = {"message": chunk_content, "order": i}
                     data_json = json.dumps(data_dict)
                     yield f"data: {data_json}\n\n"
 
@@ -177,7 +178,7 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
             if all(value in event["tags"] for value in sources_tags) and event["event"] == "on_chat_model_stream":
                 chunk_content = serialize_aimessagechunk(event["data"]["chunk"])
                 if len(chunk_content) != 0:
-                    data_dict = {"reformulated": chunk_content}
+                    data_dict = {"reformulated": chunk_content, "order": i}
                     data_json = json.dumps(data_dict)
                     yield f"data: {data_json}\n\n"
                 
@@ -192,23 +193,24 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
                     logger.info(f"Document: {doc}")
                     # Create a new dictionary for each document with the required format
                     formatted_doc = {
-                        'page_content': doc.page_content,
-                        'metadata': {
-                            'source': doc.metadata['source'],
-                        },
-                        'type': 'Document'
+                        'summary': doc.page_content,
+                        'link': doc.metadata['source'],
+                        'type': doc.metadata['type'],
+                        'title': doc.metadata['title'],
+                        'citation': []
+                        
                     }
                     # Add the formatted document to the final list
                     formatted_documents.append(formatted_doc)
 
                 # Create the final dictionary with the key "context"
-                final_output = {'context': formatted_documents}
+                final_output = {'context': formatted_documents,"order": i}
 
                 # Convert the dictionary to a JSON string
                 data_json = json.dumps(final_output)
                 yield f"data: {data_json}\n\n"
             if event["event"] == "on_chat_model_end":
                 print("Chat model has completed one response.")
-
+            i +=1
     except Exception as e:
         print('error'+ str(e))
