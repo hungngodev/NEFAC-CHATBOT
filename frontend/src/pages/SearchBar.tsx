@@ -46,7 +46,7 @@ const SearchBar = () => {
   const prevLength = useRef<number>(1);
   const messageOrderStream = useRef<Set<number>>(new Set());
   const contextOrderStream = useRef<Set<number>>(new Set());
-  // Refs
+  const contextResultsStream = useRef<SearchResult[]>([]);
   const conversationEndRef = useRef<HTMLDivElement>(null);
 
   // Effects
@@ -104,40 +104,37 @@ const SearchBar = () => {
             const parsedData = JSON.parse(event.data);
             console.log(parsedData);
             if (parsedData.context) {
-              setConversation((prev) => {
-                const last = prev[prev.length - 1];
-                if (!contextOrderStream.current.has(parsedData.order)) {
-                  parsedData.context.forEach((result: any) => {
-                    const exist = last.results.find(
-                      (r) => r.title === result.title
-                    );
-                    if (exist) {
-                      exist.chunks.push({
-                        summary: result.summary,
-                        citations: [],
-                      });
-                    } else {
-                      last.results.push({
-                        title: result.title,
-                        link: result.link,
-                        chunks: [
-                          {
-                            summary: result.summary,
-                            citations: [],
-                          },
-                        ],
-                      });
-                    }
-                  });
-                }
-                contextOrderStream.current.add(parsedData.order);
-                return [...prev];
-              });
+              if (!contextOrderStream.current.has(parsedData.order)) {
+                parsedData.context.forEach((result: any) => {
+                  const exist = contextResultsStream.current.findIndex(
+                    (r) => r.title === result.title
+                  );
+                  if (exist !== -1) {
+                    contextResultsStream.current[exist].chunks.push({
+                      summary: result.summary,
+                      citations: [],
+                    });
+                  } else {
+                    contextResultsStream.current.push({
+                      title: result.title,
+                      link: result.link,
+                      chunks: [
+                        {
+                          summary: result.summary,
+                          citations: [],
+                        },
+                      ],
+                    });
+                  }
+                });
+              }
+              contextOrderStream.current.add(parsedData.order);
             }
             if (parsedData.reformulated) {
               // Append reformulated question to reformulatedDiv
             }
             if (parsedData.message) {
+              window.history.scrollRestoration = "auto";
               setConversation((prev) => {
                 const last = prev[prev.length - 1];
                 if (messageOrderStream.current.size === 0) {
@@ -153,6 +150,21 @@ const SearchBar = () => {
           onclose() {
             console.log("Connection closed by the server");
             messageOrderStream.current.clear();
+            contextOrderStream.current.clear();
+            setTimeout(() => {
+              setConversation((prev) => {
+                window.history.scrollRestoration = "manual";
+                const last = prev[prev.length - 1];
+                last.results = contextResultsStream.current.map((result) => ({
+                  title: result.title,
+                  link: result.link,
+                  chunks: result.chunks,
+                }));
+                last.content = last.content.replace("Searching...", "");
+                // console.log("final", prev);
+                return [...prev];
+              });
+            }, 1000);
           },
           onerror(err) {
             console.log("There was an error from server", err);
