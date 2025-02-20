@@ -13,11 +13,12 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_openai import ChatOpenAI
 from llm.utils import format_docs
+from load_env import load_env
 from vector.utils import create_vectorstore_filter
+
+from .query_translation.decomposition import get_decomposition_chain
 from .query_translation.multi_query import get_multi_query_chain
 from .query_translation.rag_fusion import get_rag_fusion_chain
-from .query_translation.decomposition import get_decomposition_chain
-from load_env import load_env
 
 load_env()
 
@@ -26,15 +27,6 @@ vector_store = FAISS.load_local("faiss_store", embedding_model, allow_dangerous_
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-retriever = vector_store.as_retriever(
-    search_type="similarity",
-    search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
-).with_config(tags=["retriever"])
-
-rag_fusion_chain = get_rag_fusion_chain(retriever).with_config(tags=["retriever"])
-print(rag_fusion_chain.invoke("NEFAC resources related to the First Amendment"))
-
 
 store = {}
 
@@ -137,23 +129,22 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
                 "filter": filter_func
             },
         ).with_config(tags=["retriever"])
-    # print("Len", len(vector_store.))l
+    
     retriever = vector_store.as_retriever(
                 search_type="similarity",
                 search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
             ).with_config(tags=["retriever"])
+    retriever_chain = {
+        'default': retriever,
+        'multi_query': get_multi_query_chain(retriever),
+        'rag_fusion': get_rag_fusion_chain(retriever),
+        'decomposition': get_decomposition_chain(retriever),
+    }
     docs = retriever.invoke("NEFAC resources related to the First Amendment")
     print("Docs: ", docs)
-    
-    retriever_chain = {
-        'default': retriever | format_docs,
-        'multi_query': get_multi_query_chain(retriever).with_config(tags=["retriever"]),
-        'rag_fusion': get_rag_fusion_chain(retriever).with_config(tags=["retriever"]),
-        'decomposition': get_decomposition_chain(retriever).with_config(tags=["retriever"]),
-    }
-    
+    retrieval_step = contextualize_q_chain | retriever_chain['default'] | format_docs
     rag_chain = (
-        RunnablePassthrough.assign(context=contextualize_q_chain | retriever_chain['decomposition'])
+        RunnablePassthrough.assign(context=retrieval_step)
         | qa_prompt
         | model
         | (lambda x: {"answer": x})
@@ -207,7 +198,6 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
                         'type': doc.metadata['type'],
                         'title': doc.metadata['title'],
                         'citation': []
-                        
                     }
                     # Add the formatted document to the final list
                     formatted_documents.append(formatted_doc)

@@ -3,6 +3,8 @@ from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain.schema.runnable import RunnableParallel, RunnableLambda
 from operator import itemgetter
+from load_env import load_env
+load_env()
 
 # Decomposition Prompt
 decomposition_prompt = ChatPromptTemplate.from_template(
@@ -33,8 +35,12 @@ answering_prompt = ChatPromptTemplate.from_template(
     \n --- \n {q_a_pairs} \n --- \n
     Here is additional context relevant to the question: 
     \n --- \n {context} \n --- \n
+    {%- if context == "No relevant documents found." %}
+    No relevant documents were retrieved. Provide a general response or let the user know more details may be needed.
+    {%- endif %}
     Use the above context and any background question + answer pairs to answer the question: {question}"""
 )
+
 
 def process_sub_questions(inputs, retriever):
     """Retrieves context and answers sub-questions sequentially"""
@@ -42,8 +48,11 @@ def process_sub_questions(inputs, retriever):
     q_a_pairs = ""
 
     for sub_q in sub_questions:
+        retrieved_docs = retriever.invoke({"question": sub_q})
+        context = retrieved_docs if retrieved_docs else "No relevant documents found."
+
         rag_chain = (
-            {"context": itemgetter("question") | retriever, "question": sub_q, "q_a_pairs": q_a_pairs} 
+            {"context": context, "question": sub_q, "q_a_pairs": q_a_pairs} 
             | answering_prompt
             | llm
             | output_parser
@@ -52,6 +61,7 @@ def process_sub_questions(inputs, retriever):
         q_a_pairs += f"\n---\n{format_qa_pair(sub_q, answer)}"
 
     return {"q_a_pairs": q_a_pairs}
+
 
 def get_decomposition_chain(retriever):
     """Final Chain"""

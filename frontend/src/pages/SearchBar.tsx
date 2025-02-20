@@ -44,8 +44,8 @@ const SearchBar = () => {
     },
   ]);
   const prevLength = useRef<number>(1);
-  const orderStream = useRef<Set<number>>(new Set());
-
+  const messageOrderStream = useRef<Set<number>>(new Set());
+  const contextOrderStream = useRef<Set<number>>(new Set());
   // Refs
   const conversationEndRef = useRef<HTMLDivElement>(null);
 
@@ -106,28 +106,31 @@ const SearchBar = () => {
             if (parsedData.context) {
               setConversation((prev) => {
                 const last = prev[prev.length - 1];
-                parsedData.context.forEach((result: any) => {
-                  const exist = last.results.find(
-                    (r) => r.title === result.title
-                  );
-                  if (exist) {
-                    exist.chunks.push({
-                      summary: result.summary,
-                      citations: [],
-                    });
-                  } else {
-                    last.results.push({
-                      title: result.title,
-                      link: result.link,
-                      chunks: [
-                        {
-                          summary: result.summary,
-                          citations: [],
-                        },
-                      ],
-                    });
-                  }
-                });
+                if (!contextOrderStream.current.has(parsedData.order)) {
+                  parsedData.context.forEach((result: any) => {
+                    const exist = last.results.find(
+                      (r) => r.title === result.title
+                    );
+                    if (exist) {
+                      exist.chunks.push({
+                        summary: result.summary,
+                        citations: [],
+                      });
+                    } else {
+                      last.results.push({
+                        title: result.title,
+                        link: result.link,
+                        chunks: [
+                          {
+                            summary: result.summary,
+                            citations: [],
+                          },
+                        ],
+                      });
+                    }
+                  });
+                }
+                contextOrderStream.current.add(parsedData.order);
                 return [...prev];
               });
             }
@@ -137,19 +140,19 @@ const SearchBar = () => {
             if (parsedData.message) {
               setConversation((prev) => {
                 const last = prev[prev.length - 1];
-                if (orderStream.current.size === 0) {
+                if (messageOrderStream.current.size === 0) {
                   last.content = parsedData.message;
-                } else if (!orderStream.current.has(parsedData.order)) {
+                } else if (!messageOrderStream.current.has(parsedData.order)) {
                   last.content += parsedData.message;
                 }
-                orderStream.current.add(parsedData.order);
+                messageOrderStream.current.add(parsedData.order);
                 return [...prev];
               });
             }
           },
           onclose() {
             console.log("Connection closed by the server");
-            orderStream.current.clear();
+            messageOrderStream.current.clear();
           },
           onerror(err) {
             console.log("There was an error from server", err);
