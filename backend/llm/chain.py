@@ -21,21 +21,21 @@ from .query_translation.multi_query import get_multi_query_chain
 from .query_translation.rag_fusion import get_rag_fusion_chain
 
 load_env()
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-large")
 vector_store = FAISS.load_local("faiss_store", embedding_model, allow_dangerous_deserialization=True)
 NUMBER_OF_NEAREST_NEIGHBORS = 10
 LAMBDA_MULT = 0.25
 THRESHOLD = 0.75
+
 # retriever = vector_store.as_retriever(
 #             search_type="similarity",
 #             search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
 #         ).with_config(tags=["retriever"])
-# docs = retriever.invoke("NEFAC resources related to the First Amendment")
-# print("Docs: ", docs)
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# decompose = get_decomposition_chain(retriever).invoke("NEFAC resources related to the First Amendment")
+# logger.info(f"Decompose: {decompose}")
 
 store = {}
 
@@ -152,7 +152,8 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
         'rag_fusion': get_rag_fusion_chain(retriever),
         'decomposition': get_decomposition_chain(retriever),
     }
-    retrieval_step = (contextualize_q_chain | retriever_chain['rag_fusion'] | format_docs).with_config(tags=["full_retrieval_pipeline"])
+    retrieval_step = (contextualize_q_chain | retriever_chain['decomposition'] | format_docs).with_config(tags=["full_retrieval_pipeline"])
+
 
     rag_chain = (
         RunnablePassthrough.assign(context=retrieval_step)
