@@ -4,6 +4,7 @@ from langchain_openai import ChatOpenAI
 from langchain.load import dumps, loads
 from load_env import load_env
 from llm.utils import format_docs
+from llm.constant import PROMPT_MODEL_NAME, SUB_MODEL_NAME
 load_env()
 
 # Multi Query: Different Perspectives
@@ -17,7 +18,7 @@ prompt_perspectives = ChatPromptTemplate.from_template(template)
 generate_queries = (
     prompt_perspectives 
     | ChatOpenAI(
-        model="gpt-4",
+        model=PROMPT_MODEL_NAME,
         temperature=0) 
     | StrOutputParser() 
     | (lambda x: x.split("\n"))

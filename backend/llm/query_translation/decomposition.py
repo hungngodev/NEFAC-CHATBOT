@@ -5,11 +5,11 @@ from langchain_core.runnables import RunnableLambda
 from operator import itemgetter
 from load_env import load_env
 from llm.utils import format_docs
-from langchain_core.runnables import RunnablePassthrough
+from llm.constant import PROMPT_MODEL_NAME, SUB_MODEL_NAME
 load_env()
 
 
-model = ChatOpenAI(temperature=0, model_name="gpt-4")
+model = ChatOpenAI(temperature=0, model_name=PROMPT_MODEL_NAME)
 
 decomposition_template = """You are a helpful assistant that generates multiple sub-questions related to an input question. 
 The goal is to break down the input into a set of sub-problems that can be answered in isolation.
@@ -39,6 +39,8 @@ Here is additional context relevant to the question:
 ---
 
 Use the above context and background pairs to answer the question: {question}"""
+
+rag_model = ChatOpenAI(temperature=0, model_name=SUB_MODEL_NAME)
 
 rag_chain = (
     {

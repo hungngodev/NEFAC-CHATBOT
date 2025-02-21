@@ -19,6 +19,7 @@ from vector.utils import create_vectorstore_filter
 from .query_translation.decomposition import get_decomposition_chain
 from .query_translation.multi_query import get_multi_query_chain
 from .query_translation.rag_fusion import get_rag_fusion_chain
+from constant import MODEL_NAME, NUMBER_OF_NEAREST_NEIGHBORS, LAMBDA_MULT, THRESHOLD
 
 load_env()
 logging.basicConfig(level=logging.INFO)
@@ -26,9 +27,6 @@ logger = logging.getLogger(__name__)
 
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-large")
 vector_store = FAISS.load_local("faiss_store", embedding_model, allow_dangerous_deserialization=True)
-NUMBER_OF_NEAREST_NEIGHBORS = 10
-LAMBDA_MULT = 0.25
-THRESHOLD = 0.75
 
 # retriever = vector_store.as_retriever(
 #             search_type="similarity",
@@ -53,7 +51,7 @@ def serialize_aimessagechunk(chunk):
         )
 
 async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, resourceType=None):
-    model = ChatOpenAI(model='gpt-4o', streaming=True)  # Enable streaming here
+    model = ChatOpenAI(model=MODEL_NAME, streaming=True)  # Enable streaming here
     
     contextualize_q_system_prompt = """Given a chat history and the latest user question \
     which might reference context in the chat history, formulate a standalone question \
