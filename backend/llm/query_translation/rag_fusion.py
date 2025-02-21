@@ -2,6 +2,7 @@ from langchain.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
 from langchain.load import dumps, loads
+from llm.utils import format_docs
 from load_env import load_env
 load_env()
 
@@ -62,4 +63,5 @@ def get_rag_fusion_chain(retriever):
         generate_queries
         | retriever.map()
         | handle_empty_results
+        | format_docs
     )

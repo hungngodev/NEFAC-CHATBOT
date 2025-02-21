@@ -3,6 +3,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
 from langchain.load import dumps, loads
 from load_env import load_env
+from llm.utils import format_docs
 load_env()
 
 # Multi Query: Different Perspectives
@@ -39,4 +40,5 @@ def get_multi_query_chain(retriever):
         generate_queries
         | retriever.map()
         | get_unique_union
+        | format_docs
     )

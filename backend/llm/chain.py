@@ -45,17 +45,13 @@ def get_session_history(session_id: str) -> BaseChatMessageHistory:
     return store[session_id]
 
 def serialize_aimessagechunk(chunk):
-    """
-    Custom serializer for AIMessageChunk objects.
-    Convert the AIMessageChunk object to a serializable format.
-    """
     if isinstance(chunk, AIMessageChunk):
         return chunk.content
     else:
         raise TypeError(
             f"Object of type {type(chunk).__name__} is not correctly formatted for serialization"
         )
-# For middleware_qa to support streaming
+
 async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, resourceType=None):
     model = ChatOpenAI(model='gpt-4o', streaming=True)  # Enable streaming here
     
@@ -147,13 +143,12 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
         ).with_config(tags=["retriever"])
     
     retriever_chain = {
-        'default': retriever,
+        'default': retriever | format_docs,
         'multi_query': get_multi_query_chain(retriever),
         'rag_fusion': get_rag_fusion_chain(retriever),
         'decomposition': get_decomposition_chain(retriever),
     }
-    retrieval_step = (contextualize_q_chain | retriever_chain['decomposition'] | format_docs).with_config(tags=["full_retrieval_pipeline"])
-
+    retrieval_step = (contextualize_q_chain | retriever_chain['decomposition']).with_config(tags=["full_retrieval_pipeline"])
 
     rag_chain = (
         RunnablePassthrough.assign(context=retrieval_step)
