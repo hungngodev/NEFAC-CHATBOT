@@ -146,7 +146,7 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
         'rag_fusion': get_rag_fusion_chain(retriever),
         'decomposition': get_decomposition_chain(retriever),
     }
-    retrieval_step = (contextualize_q_chain | retriever_chain['decomposition']).with_config(tags=["full_retrieval_pipeline"])
+    retrieval_step = (contextualize_q_chain | retriever_chain['default']).with_config(tags=["full_retrieval_pipeline"])
 
     rag_chain = (
         RunnablePassthrough.assign(context=retrieval_step)
