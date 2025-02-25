@@ -1,7 +1,5 @@
 # general
 import logging
-import os
-
 import faiss
 from document.loader import load_all_documents
 from dotenv import load_dotenv
@@ -9,23 +7,21 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.docstore.in_memory import InMemoryDocstore
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
+from load_env import load_env
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-load_dotenv()
-os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
-os.environ["LANGSMITH_TRACING"] = os.getenv("LANGSMITH_TRACING")
-os.environ["LANGSMITH_ENDPOINT"] = os.getenv("LANGSMITH_ENDPOINT")
-os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGSMITH_API_KEY")
-os.environ["LANGSMITH_PROJECT"] = os.getenv("LANGSMITH_PROJECT")
+load_env()
 
 # Initialize embeddings and FAISS vector store
-embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
+embedding_model = OpenAIEmbeddings(model="text-embedding-3-large")
 
 # Initialize docstore -- MAKE PERMANENT FILE
 docstore = InMemoryDocstore({})
-vector_store = FAISS(embedding_function=embedding_model, index = faiss.IndexFlatL2(1536), docstore = docstore, index_to_docstore_id={})  # 768 is the embedding dimension size
+vector_store = FAISS(embedding_function=embedding_model, 
+                     index = faiss.IndexFlatIP(3072), 
+                     docstore = docstore, index_to_docstore_id={})  # 768 is the embedding dimension size
 all_docs = []
 
 
@@ -44,7 +40,7 @@ def add_documents_to_store():
     return all_doc_types
 # Function to chunk documents
 def chunk_documents(docs):
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=250, chunk_overlap=25)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=32)
     chunked_docs = text_splitter.split_documents(docs)
     return chunked_docs
 

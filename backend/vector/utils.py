@@ -1,6 +1,5 @@
 # general
 import logging
-import os
 
 import faiss
 from document.loader import load_all_documents
