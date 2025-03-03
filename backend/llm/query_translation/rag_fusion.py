@@ -52,14 +52,13 @@ def reciprocal_rank_fusion(results: list[list], k=60):
     # Return the reranked results as a list of tuples, each containing the document and its fused score
     return reranked_results
 
+def handle_empty_results(results):
+    """Handles empty retrieval results by returning a fallback response."""
+    if not any(results):  # Check if all retrieved lists are empty
+        return [("No relevant documents found.", 0)]  # Fallback response
+    return reciprocal_rank_fusion(results)  # Otherwise, apply RRF
 
 def get_rag_fusion_chain(retriever):
-    def handle_empty_results(results):
-        """Handles empty retrieval results by returning a fallback response."""
-        if not any(results):  # Check if all retrieved lists are empty
-            return [("No relevant documents found.", 0)]  # Fallback response
-        return reciprocal_rank_fusion(results)  # Otherwise, apply RRF
-
     return (
         generate_queries
         | retriever.map()
