@@ -204,6 +204,9 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
                         'link': doc.metadata['source'],
                         'type': doc.metadata['type'],
                         'title': doc.metadata['title'],
+                        'nefac_categories': doc.metadata['nefac_categories'],
+                        'resource_types': doc.metadata['resource_types'],
+                        'audiences': doc.metadata['audiences'],
                         'citation': []
                     }
                     # Add the formatted document to the final list
