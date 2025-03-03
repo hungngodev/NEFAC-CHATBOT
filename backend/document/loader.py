@@ -168,6 +168,7 @@ def load_all_documents():
                         existing_vid.metadata['nefac_category'].append(content_folder.split("/")[-1])
                     if 'resource_type' not in existing_vid.metadata:
                         existing_vid.metadata['resource_type'] = []
+                        
     for page in all_pdf_pages:
         page.metadata['type'] = 'pdf'
     for vid in all_yt_vid_chunks:
