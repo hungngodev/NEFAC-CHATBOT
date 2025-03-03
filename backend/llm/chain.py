@@ -19,7 +19,7 @@ from vector.utils import create_vectorstore_filter
 from .query_translation.decomposition import get_decomposition_chain
 from .query_translation.multi_query import get_multi_query_chain
 from .query_translation.rag_fusion import get_rag_fusion_chain
-from constant import MODEL_NAME, NUMBER_OF_NEAREST_NEIGHBORS, LAMBDA_MULT, THRESHOLD
+from llm.constant import MODEL_NAME, NUMBER_OF_NEAREST_NEIGHBORS, LAMBDA_MULT, THRESHOLD
 
 load_env()
 logging.basicConfig(level=logging.INFO)
