@@ -9,7 +9,7 @@ from langchain_core.messages import AIMessageChunk
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import (ChatPromptTemplate, MessagesPlaceholder,
                                     PromptTemplate)
-from langchain_core.runnables import RunnablePassthrough
+from langchain_core.runnables import RunnablePassthrough, RunnableBranch, RunnableLambda
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_openai import ChatOpenAI
 from llm.utils import format_docs
@@ -19,6 +19,8 @@ from vector.utils import create_vectorstore_filter
 from .query_translation.decomposition import get_decomposition_chain
 from .query_translation.multi_query import get_multi_query_chain
 from .query_translation.rag_fusion import get_rag_fusion_chain
+from .query_translation.hyDe import get_hyDe_chain
+from .query_translation.step_back import get_step_back_chain
 from llm.constant import MODEL_NAME, NUMBER_OF_NEAREST_NEIGHBORS, LAMBDA_MULT, THRESHOLD
 
 load_env()
@@ -141,12 +143,50 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
         ).with_config(tags=["retriever"])
     
     retriever_chain = {
-        'default': retriever | format_docs,
+        'default': RunnableLambda(lambda x: x['question']) | retriever | format_docs,
         'multi_query': get_multi_query_chain(retriever),
         'rag_fusion': get_rag_fusion_chain(retriever),
         'decomposition': get_decomposition_chain(retriever),
+        'step_back': get_step_back_chain(retriever),
+        'hyde': get_hyDe_chain(retriever)
     }
-    retrieval_step = (contextualize_q_chain | retriever_chain['default']).with_config(tags=["full_retrieval_pipeline"])
+    
+    classifier_prompt = ChatPromptTemplate.from_template(
+    """Analyze the following question and choose the best query transformation strategy:
+    1. multiquery - for ambiguous questions needing multiple perspectives
+    2. ragfusion - for complex questions needing combined search strategies
+    3. stepback - for specific questions needing broader context
+    4. decompose - for multi-part questions needing breakdown
+    5. hyde - for technical questions needing hypothetical examples
+    6. default - for straightforward questions needing direct answers
+    
+    Question: {question}
+    
+    Respond ONLY with the method name from the list above."""
+    )
+
+    # Define the classifier chain
+    query_classifier = (
+        classifier_prompt 
+        | ChatOpenAI(temperature=0, model="gpt-4")
+        | StrOutputParser()
+    )
+    
+    retrieval_step = (
+        contextualize_q_chain 
+        | {
+            'question': RunnablePassthrough(),
+            'method': query_classifier
+        }
+        | RunnableBranch(
+            (lambda x: "multiquery" in x["method"], retriever_chain['multi_query']),
+            (lambda x: "decompose" in x["method"], retriever_chain['decomposition']),
+            (lambda x: "stepback" in x["method"], retriever_chain['step_back']),
+            (lambda x: "hyde" in x["method"], retriever_chain['hyde']),
+            (lambda x: "ragfusion" in x["method"], retriever_chain['rag_fusion']),
+            retriever_chain['default']
+        )
+    ).with_config(tags=["full_retrieval_pipeline"])
 
     rag_chain = (
         RunnablePassthrough.assign(context=retrieval_step)
@@ -170,6 +210,7 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
         i = 0
         async for event in conversational_rag_chain.astream_events(input, config={"configurable": {"session_id": "abc123"}}, version="v1"):
             # Only get the answer
+            # print("Event: ", event)
             sources_tags = ['seq:step:3', 'main_chain']
             if all(value in event["tags"] for value in sources_tags) and 'full_retrieval_pipeline' not in event['tags'] and event["event"] == "on_chat_model_stream":
                 # logger.info(f"Event: {event['tags']}")
@@ -198,15 +239,15 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
                 for doc in documents:
                     # logger.info(f"Document: {doc}")
                     # Create a new dictionary for each document with the required format
-                    print("Doc: ", doc)
+                    # print("Doc: ", doc)
                     formatted_doc = {
                         'summary': doc.page_content,
                         'link': doc.metadata['source'],
                         'type': doc.metadata['type'],
                         'title': doc.metadata['title'],
-                        'nefac_categories': doc.metadata['nefac_categories'],
-                        'resource_types': doc.metadata['resource_types'],
-                        'audiences': doc.metadata['audiences'],
+                        'nefac_categorie': doc.metadata['nefac_category'],
+                        'resource_type': doc.metadata['resource_type'],
+                        'audience': doc.metadata['audience'],
                         'citation': []
                     }
                     # Add the formatted document to the final list
