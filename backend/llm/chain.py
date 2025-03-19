@@ -15,6 +15,7 @@ from langchain_openai import ChatOpenAI
 from llm.utils import format_docs
 from load_env import load_env
 from vector.utils import create_vectorstore_filter
+from vector.load import vector_store
 
 from .query_translation.decomposition import get_decomposition_chain
 from .query_translation.multi_query import get_multi_query_chain
@@ -28,7 +29,6 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-large")
-vector_store = FAISS.load_local("faiss_store", embedding_model, allow_dangerous_deserialization=True)
 
 # retriever = vector_store.as_retriever(
 #             search_type="similarity",
