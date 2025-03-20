@@ -63,9 +63,9 @@ app.add_middleware(
 async def ask_llm(
     query: str,
     convoHistory: str = "",
-    roleFilter: str = None,
-    contentType: str = None,
-    resourceType: str = None,
+    roleFilter: str = "",
+    contentType: str = "",
+    resourceType: str = "",
 ):
     
     try:        

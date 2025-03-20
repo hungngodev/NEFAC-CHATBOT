@@ -7,32 +7,27 @@ import os
 # grab all the documents in the waiting room. use the llm to tag them, append the tags to the txt files in the locations and in the metadata for the db. once done, move them to the finished tagging
 
 def load_all_documents():
-    all_pdfs = set()
-    all_yt_vids = set() 
+    all_documents = set()
 
     docs_path="docs/*"
     all_paths=[d for d in glob.glob(docs_path) if os.path.isdir(d)] 
 
     url_to_title={}
-    title_to_pages={}
+    title_to_chunks={}
 
-    def load_all_in_path(path):
+    def load_all_in_path(path,tag_title):
         path_list=glob.glob(path+'/*')
         for folder in path_list:
-            path_dirs=folder.split("/") # docs/by_audience/citizen
-            tag_type_name=path_dirs[-2]
-            tag=path_dirs[-1] 
-            tag_type='audience' if tag_type_name=='by_audience' else 'nefac_category' if tag_type_name=='by_content' else 'resource_type' if tag_type_name=='by_resource' else ''
+            tag=folder.split("/")[-1] # docs/by_audience/citizen
+            tag_type='audience' if tag_title=='by_audience' else 'nefac_category' if tag_title=='by_content' else 'resource_type' if tag_title=='by_resource' else ''
 
-            new_docs = pdfLoader(folder, title_to_pages, tag_type,tag)
-            # print(path_list,folder)
+            new_docs = pdfLoader(folder, title_to_chunks, tag_type, tag)
+            all_documents.update(new_docs)
 
-            all_pdfs.update(new_docs)
-
-            new_vids = youtubeLoader(folder, title_to_pages, url_to_title, tag_type,tag)
-            all_yt_vids.update(new_vids)
+            new_vids = youtubeLoader(folder, title_to_chunks, url_to_title, tag_type, tag)
+            all_documents.update(new_vids)
             
     for path in all_paths:
-        load_all_in_path(path)
+        load_all_in_path(path,path.split("/")[-1]) # docs/by_audience
 
-    return [page for pdf in all_pdfs for page in title_to_pages[pdf]], [clip for vid in all_yt_vids for clip in title_to_pages[vid]], all_pdfs, all_yt_vids
+    return [chunk for doc in all_documents for chunk in title_to_chunks[doc]], all_documents

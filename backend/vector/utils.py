@@ -6,10 +6,11 @@ logger = logging.getLogger(__name__)
 
 def retrieve_documents(query):
     pass
-def create_vectorstore_filter(roleFilter=None, contentType=None, resourceType=None):
+def create_vectorstore_filter(roleFilter="", contentType="", resourceType=""):
+    
+
     """
-    Creates a metadata filter function for vector store retriever that checks if single target values
-    exist in corresponding metadata arrays.
+    Creates a metadata filter function for vector store retriever to make sure we don't get duplicate documents that don't match the filters
     
     Args:
         roleFilter (str, optional): Target audience value to match
@@ -20,22 +21,33 @@ def create_vectorstore_filter(roleFilter=None, contentType=None, resourceType=No
         function: A filter function that can be used with vectorstore.as_retriever()
     """
     def filter_func(metadata):
+        seen_documents=set()
         # Check audience/roleFilter
-        if roleFilter is not None:
+        if metadata["title"] in seen_documents:
+            print(metadata["title"],"didn't make it through due to already seen")
+            return False
+        else:
+            seen_documents.add(metadata["title"])
+
+        if roleFilter!="":
             if roleFilter not in metadata['audience']:
+                print(metadata["title"],"didn't make it through due to audience")
                 return False
 
         # Check nefac_category/contentType
-        if contentType is not None:
+        if contentType!="":
             if contentType not in metadata['nefac_category']:
+                print(metadata["title"],"didn't make it through due to contentType")
                 return False
 
         # Check resource_type/resourceType
-        if resourceType is not None:
+        if resourceType!="":
             if resourceType not in metadata['resource_type']:
+                print(metadata["title"],"didn't make it through due to resourceType")
                 return False
 
         # If all specified filters pass, return True
+        print(metadata["title"],'made it through')
         return True
 
     return filter_func

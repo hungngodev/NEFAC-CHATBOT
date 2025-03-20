@@ -53,13 +53,10 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
         {msg.results && msg.results.length > 0 && (
         <div className={`mt-4 space-y-4 `}>
           {msg.results.map((result, index) => (
-            <div key={index}>
               <SearchResultItem
+                key={index}
                 result={result}
-                // isUserMessage={false}
-                // shouldAnimate={shouldAnimate}
               />
-            </div>
           ))}
         </div>
       )}

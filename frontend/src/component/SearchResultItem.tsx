@@ -3,7 +3,7 @@
 // import ReactMarkdown from "react-markdown";
 
 import React from "react";
-
+import { useEffect } from 'react';
 // Define the SearchResult interface (assuming this is already updated)
 interface SearchResult {
   title: string;
@@ -14,7 +14,7 @@ interface SearchResult {
   chunks: { summary: string; citations: any[] }[]; // Adjust as needed
 }
 
-export const SearchResultItem: React.FC<{ result: SearchResult }> = ({ result }) => {
+export const SearchResultItem: React.FC<{ result: SearchResult}> = ({ result }) => {
   // Get the first two tags from each array
   const audienceTags = result.audience.slice(0, 2);
   const categoryTags = result.nefac_category.slice(0, 2);

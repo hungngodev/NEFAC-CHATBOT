@@ -49,6 +49,7 @@ const SearchBar = () => {
   const prevLength = useRef<number>(1);
   const messageOrderStream = useRef<Set<number>>(new Set());
   const contextOrderStream = useRef<Set<number>>(new Set());
+  
   const contextResultsStream = useRef<SearchResult[]>([]);
   const conversationEndRef = useRef<HTMLDivElement>(null);
 
@@ -170,7 +171,6 @@ const SearchBar = () => {
                   chunks: result.chunks,
                 }));
                 last.content = last.content.replace("Searching...", "");
-                // console.log("final", prev);
                 return [...prev];
               });
             }, 1000);
@@ -191,7 +191,10 @@ const SearchBar = () => {
         },
       ]);
     } finally {
-      setIsLoading(false);
+      setTimeout(() => {
+        contextResultsStream.current=[]
+        setIsLoading(false);
+      },2000);
     }
   };
 
@@ -229,7 +232,7 @@ const SearchBar = () => {
                   msg={msg}
                   index={index}
                   conversation={conversation}
-                  prevLength={prevLength}
+                  prevLength={prevLength} 
                 />
               ))}
 

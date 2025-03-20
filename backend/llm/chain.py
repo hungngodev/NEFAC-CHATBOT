@@ -52,7 +52,7 @@ def serialize_aimessagechunk(chunk):
             f"Object of type {type(chunk).__name__} is not correctly formatted for serialization"
         )
 
-async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, resourceType=None):
+async def middleware_qa(query, convoHistory, roleFilter="", contentType="", resourceType=""):
     model = ChatOpenAI(model=MODEL_NAME, streaming=True)  # Enable streaming here
 
     contextualize_q_system_prompt = """Given a chat history and the latest user question \
@@ -119,28 +119,20 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
         ("human", "{question}"),
     ])
 
-
-    if roleFilter is None and contentType is None and resourceType is None:
-        retriever = vector_store.as_retriever(
-            search_type="similarity",
-            search_kwargs={"k": NUMBER_OF_NEAREST_NEIGHBORS, "lambda_mult": LAMBDA_MULT, "score_threshold": THRESHOLD},
-        ).with_config(tags=["retriever"])
-    else:
-        filter_func = create_vectorstore_filter(roleFilter, contentType, resourceType)
-        retriever = vector_store.as_retriever(
-            search_type="similarity",
-            search_kwargs={
-                "k": NUMBER_OF_NEAREST_NEIGHBORS,
-                "lambda_mult": LAMBDA_MULT,
-                "score_threshold": THRESHOLD,
-                "filter": filter_func
-            },
-        ).with_config(tags=["retriever"])
-
     retriever = vector_store.as_retriever(
-            search_type="similarity",
-            search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
-        ).with_config(tags=["retriever"])
+        search_type="similarity",
+        search_kwargs={
+            "k": NUMBER_OF_NEAREST_NEIGHBORS,
+            "lambda_mult": LAMBDA_MULT,
+            "score_threshold": THRESHOLD,
+            "filter": create_vectorstore_filter(roleFilter, contentType, resourceType)
+        },
+    ).with_config(tags=["retriever"])
+
+    # retriever = vector_store.as_retriever(
+    #         search_type="similarity",
+    #         search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
+    #     ).with_config(tags=["retriever"])
 
     retriever_chain = {
         'default': RunnableLambda(lambda x: x['question']) | retriever | format_docs,
@@ -237,9 +229,8 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
                 formatted_documents = []
                 # Iterate over each document in the original list
                 for doc in documents:
-                    # logger.info(f"Document: {doc}")
+                    logger.info(f"Document: {doc}")
                     # Create a new dictionary for each document with the required format
-                    # print("Doc: ", doc)
                     formatted_doc = {
                         'summary': doc.page_content,
                         'link': doc.metadata['source'],

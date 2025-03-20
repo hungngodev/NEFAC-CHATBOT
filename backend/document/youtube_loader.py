@@ -1,10 +1,9 @@
 import os
-from langchain_community.document_loaders import (DirectoryLoader, PyPDFLoader,
-                                                  YoutubeLoader)
+from langchain_community.document_loaders import YoutubeLoader
 from langchain_community.document_loaders.youtube import TranscriptFormat
 import yt_dlp
 
-def get_youtube_title(url):
+def get_youtube_title(url): # function to scrape the titles of the youtube videos given the link
     ydl_opts = {
         'quiet': True,
         'no_warnings': False,
@@ -13,29 +12,28 @@ def get_youtube_title(url):
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             title = info.get('title', 'Title not found')
-            print(f"Fetched title for {url}: '{title}'")
             return title
     except Exception as e:
         print(f"Error fetching title for {url}: {str(e)}")
         return "Title not found"
 
-def youtubeLoader(path, title_to_pages, url_to_title, tag_type, tag):
-    if 'yt_urls.txt' not in os.listdir(path):
-        print('yt_urls.txt not in os.listdir(path)')
-        return set(), set()
+def youtubeLoader(path, title_to_chunks, url_to_title, tag_type, tag):
+    if not os.path.isdir(path) or 'yt_urls.txt' not in os.listdir(path):
+        print('not a directory or yt_urls.txt not in path', path)
+        return set()
 
     with open(f"{path}/yt_urls.txt", "r") as f:
         URLs = f.readlines()
     
     new_vids = set()
     for url in URLs:
-        url=url.rstrip()
+        url=url.rstrip() # remove \n
         if url not in url_to_title:
-            url_to_title[url] = get_youtube_title(url)
+            url_to_title[url] = get_youtube_title(url) # get the title if we haven't fetched it yet
         title = url_to_title[url]
-        if title in title_to_pages:
-            if tag not in title_to_pages[title][0].metadata[tag_type]:
-                for clip in title_to_pages[title]:
+        if title in title_to_chunks: # if we have already loaded this video
+            if tag not in title_to_chunks[title][0].metadata[tag_type]: # update the tagging for each of the chunks if they don't have this tag yet
+                for clip in title_to_chunks[title]:
                     clip.metadata[tag_type].append(tag)
         else:
             loader = YoutubeLoader.from_youtube_url(
@@ -44,15 +42,15 @@ def youtubeLoader(path, title_to_pages, url_to_title, tag_type, tag):
                 transcript_format=TranscriptFormat.CHUNKS,
                 chunk_size_seconds=60, # 60
             )
-            new_vids.add(title)
             loaded_clips=loader.load()
             for clip in loaded_clips:
-                clip.metadata["title"] = title
-                clip.metadata["page"] = clip.metadata["start_seconds"]
-                clip.metadata['audience']=[]
+                clip.metadata["title"] = title # set the title
+                clip.metadata["page"] = clip.metadata["start_seconds"] # update the page metadata for youtube videos
+                clip.metadata['audience']=[] # initialize the tagging fields
                 clip.metadata['nefac_category'] = []
                 clip.metadata['resource_type'] = []
-                clip.metadata[tag_type].append(tag)
-                clip.metadata['type'] = 'youtube'
-            title_to_pages[title]=loaded_clips
+                clip.metadata[tag_type].append(tag) # update the current tag
+                clip.metadata['type'] = 'youtube' # mark as youtube video
+            new_vids.add(title)
+            title_to_chunks[title] = loaded_clips # store the clips
     return new_vids
