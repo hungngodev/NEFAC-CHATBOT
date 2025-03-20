@@ -1,6 +1,6 @@
 # RAG Search Application
 
-A full-stack Retrieval Augmented Generation (RAG) application using React, TypeScript, Flask, and Claude.
+A full-stack Retrieval Augmented Generation (RAG) application using Langchain, FAISS, FastAPI, React, and OpenAI models.
 
 ## Project Structure - NEEDS UPDATING
 ```
@@ -23,9 +23,11 @@ rag-project/
 
 ### Backend Setup
 1. Make sure you have correct Python version - should be <3.13:
-   ```bash
+```bash
+
 python --version or python<version> -- version
 ```
+
 2. Create and activate virtual environment:
 ```bash
 

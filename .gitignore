@@ -130,3 +130,5 @@ node_modules/
 
 # Vite build output
 dist/
+
+# we may need to eventually remove the documents, database, and pkls from the git
