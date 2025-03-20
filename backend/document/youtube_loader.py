@@ -6,13 +6,13 @@ from langchain_community.document_loaders.youtube import TranscriptFormat
 def youtubeLoader(path, existing_vids):
     if 'yt_urls.txt' not in os.listdir(path):
         print('yt_urls.txt not in os.listdir(path)')
-        return [], [], []
+        return [],set(), set()
 
     with open(f"{path}/yt_urls.txt", "r") as f:
         URLs = f.readlines()
-
-    new_vids = set()
+    
     new_vids_chunks = []
+    new_vids = set()
     duplicate_vids = set()
 
     for url in URLs:

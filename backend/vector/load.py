@@ -3,9 +3,9 @@ import logging
 import faiss
 import os
 from document.loader import load_all_documents
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.docstore.in_memory import InMemoryDocstore
-from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from load_env import load_env
 import pickle
@@ -23,7 +23,7 @@ FAISS_STORE_PATH = "faiss_store"
 
 # adds all docs and videos to the vector store
 def add_all_documents_to_store(vector_store):
-  
+
     new_pages, new_vid_chunks, all_pdfs, all_yt_vids = load_all_documents()
 
     # Save all_pdfs so we don't add new stuff to the store thats already there in future

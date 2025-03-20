@@ -1,4 +1,4 @@
-from langchain.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnableLambda
@@ -59,13 +59,13 @@ def get_decomposition_chain(retriever):
         sub_questions = input_dict["sub_question"]
         main_question = input_dict["question"]
         contexts = input_dict["context"]
-        
+
         q_a_pairs = []
         for i in range(len(sub_questions)):
             current_context = "\n---\n".join(q_a_pairs) if q_a_pairs else ""
             answer = rag_chain.invoke({"question": sub_questions[i], "q_a_pairs": current_context, "context": contexts[i]})
             q_a_pairs.append( f"Question: {sub_questions[i]}\nAnswer: {answer}")
-        
+
         return {
             "context": "\n---\n".join(q_a_pairs),
             "question": main_question

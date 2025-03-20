@@ -1,9 +1,9 @@
 import json
 import logging
 
-from langchain.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS
 from langchain_community.chat_message_histories import ChatMessageHistory
-from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.messages import AIMessageChunk
 from langchain_core.output_parsers import StrOutputParser
@@ -54,12 +54,12 @@ def serialize_aimessagechunk(chunk):
 
 async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, resourceType=None):
     model = ChatOpenAI(model=MODEL_NAME, streaming=True)  # Enable streaming here
-    
+
     contextualize_q_system_prompt = """Given a chat history and the latest user question \
     which might reference context in the chat history, formulate a standalone question \
     which can be understood without the chat history. Do NOT answer the question, \
     just reformulate it if needed and otherwise return it as is."""
-    
+
     contextualize_q_prompt = ChatPromptTemplate.from_messages(
         [
             ("system", contextualize_q_system_prompt),
@@ -111,15 +111,15 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
         - Do not include duplicate resources.
         - Sources should be unique.
     """
-    
+
     qa_prompt = ChatPromptTemplate.from_messages(
     [
         ("system", qa_system_prompt),
         MessagesPlaceholder(variable_name="chat_history"),
         ("human", "{question}"),
     ])
-    
-    
+
+
     if roleFilter is None and contentType is None and resourceType is None:
         retriever = vector_store.as_retriever(
             search_type="similarity",
@@ -136,12 +136,12 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
                 "filter": filter_func
             },
         ).with_config(tags=["retriever"])
-        
+
     retriever = vector_store.as_retriever(
             search_type="similarity",
             search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
         ).with_config(tags=["retriever"])
-    
+
     retriever_chain = {
         'default': RunnableLambda(lambda x: x['question']) | retriever | format_docs,
         'multi_query': get_multi_query_chain(retriever),
@@ -150,7 +150,7 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
         'step_back': get_step_back_chain(retriever),
         'hyde': get_hyDe_chain(retriever)
     }
-    
+
     classifier_prompt = ChatPromptTemplate.from_template(
     """Analyze the following question and choose the best query transformation strategy:
     1. multiquery - for ambiguous questions needing multiple perspectives
@@ -171,7 +171,7 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
         | ChatOpenAI(temperature=0, model="gpt-4")
         | StrOutputParser()
     )
-    
+
     retrieval_step = (
         contextualize_q_chain 
         | {
@@ -228,7 +228,7 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
                     data_dict = {"reformulated": chunk_content, "order": i}
                     data_json = json.dumps(data_dict)
                     yield f"data: {data_json}\n\n"
-                
+
             # Get the context
             sources_tags = ['main_chain', 'retriever']
             if all(value in event["tags"] for value in sources_tags) and event["event"] == "on_retriever_end":
