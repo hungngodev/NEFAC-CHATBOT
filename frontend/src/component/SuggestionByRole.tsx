@@ -33,8 +33,10 @@ export const SuggestionByRole: React.FC<SuggestionByRoleProps> = ({
             results: [
               {
                 title: popularDocumentsByRole[userRole][index].title,
-                link:
-                  FRONTEND_URL + popularDocumentsByRole[userRole][index].link,
+                link: FRONTEND_URL + popularDocumentsByRole[userRole][index].link,
+                  audience: [],
+                  nefac_category: [],
+                  resource_type: [],
                 chunks: [
                   {
                     summary: popularDocumentsByRole[userRole][index].summary,

@@ -25,8 +25,6 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
     prevLength.current = conversation.length;
   }, [conversation.length]);
 
-  // Debug: Log the entire msg object
-  console.log(`MessageBubble msg[${index}]:`, msg);
   // console.log("msg", msg.content);
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} my-2`}>
@@ -52,19 +50,19 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           <ReactMarkdown children={msg.content} remarkPlugins={[remarkGfm]} />
         </div>
 
-        {msg.results && (
-          <div className={`mt-4 space-y-4 `}>
-            {msg.results.map((result, index) => (
-              <div key={index}>
-                <SearchResultItem
-                  result={result}
-                  isUserMessage={false}
-                  shouldAnimate={shouldAnimate}
-                />
-              </div>
-            ))}
-          </div>
-        )}
+        {msg.results && msg.results.length > 0 && (
+        <div className={`mt-4 space-y-4 `}>
+          {msg.results.map((result, index) => (
+            <div key={index}>
+              <SearchResultItem
+                result={result}
+                // isUserMessage={false}
+                // shouldAnimate={shouldAnimate}
+              />
+            </div>
+          ))}
+        </div>
+      )}
       </div>
     </div>
   );

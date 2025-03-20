@@ -1,7 +1,7 @@
 from llm.chain import middleware_qa
 import json
 import logging
-from vector.load import vector_store
+from vector.load import get_vector_store
 import numpy as np
 
 logging.basicConfig(level=logging.INFO)
@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 async def ask_llm_stream(_, query, convoHistory="", roleFilter=None, contentType=None, resourceType=None):
     logger.info(f"Query: {query}")
     async for chunk in middleware_qa(query, convoHistory, roleFilter, contentType, resourceType):
-            yield chunk
+        yield chunk
 
 def inspect_vector_store(vector_store, prompt='', k=5):
     """
@@ -57,4 +57,5 @@ def inspect_vector_store(vector_store, prompt='', k=5):
                     print(f"Similarity Score: {distance}")
                     print("-" * 40)
 
-# inspect_vector_store(vector_store,'voter turnout')
+# vector_store = get_vector_store()
+# inspect_vector_store(vector_store,'Connecticut freedom of information guide')

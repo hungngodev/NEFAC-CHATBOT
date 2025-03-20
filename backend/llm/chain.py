@@ -245,11 +245,13 @@ async def middleware_qa(query, convoHistory, roleFilter=None, contentType=None, 
                         'link': doc.metadata['source'],
                         'type': doc.metadata['type'],
                         'title': doc.metadata['title'],
-                        'nefac_categorie': doc.metadata['nefac_category'],
+                        'nefac_category': doc.metadata['nefac_category'],
                         'resource_type': doc.metadata['resource_type'],
                         'audience': doc.metadata['audience'],
                         'citation': []
                     }
+                    logger.info(f"Formatted Document: {formatted_doc}")
+
                     # Add the formatted document to the final list
                     formatted_documents.append(formatted_doc)
 

@@ -17,6 +17,9 @@ interface Citation {
 export interface SearchResult {
   title: string;
   link: string;
+  audience: string[];
+  nefac_category: string[];  
+  resource_type: string[];
   chunks: {
     summary: string;
     citations: Citation[];
@@ -118,6 +121,9 @@ const SearchBar = () => {
                     contextResultsStream.current.push({
                       title: result.title,
                       link: result.link,
+                      audience: result.audience,
+                      nefac_category: result.nefac_category,  
+                      resource_type: result.resource_type,
                       chunks: [
                         {
                           summary: result.summary,
@@ -158,6 +164,9 @@ const SearchBar = () => {
                 last.results = contextResultsStream.current.map((result) => ({
                   title: result.title,
                   link: result.link,
+                  audience: result.audience,
+                  nefac_category: result.nefac_category,  
+                  resource_type: result.resource_type,
                   chunks: result.chunks,
                 }));
                 last.content = last.content.replace("Searching...", "");

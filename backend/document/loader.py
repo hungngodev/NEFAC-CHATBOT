@@ -4,6 +4,8 @@ from document.youtube_loader import youtubeLoader
 import os
 # TODO: implement for txt files, images, etc. add optional filter params for each category (audience, tag_type, nefac_category) retrieved from frontend
 
+# grab all the documents in the waiting room. use the llm to tag them, append the tags to the txt files in the locations and in the metadata for the db. once done, move them to the finished tagging
+
 def load_all_documents():
     all_pdfs = set()
     all_yt_vids = set() 
@@ -32,5 +34,5 @@ def load_all_documents():
             
     for path in all_paths:
         load_all_in_path(path)
-        
+
     return [page for pdf in all_pdfs for page in title_to_pages[pdf]], [clip for vid in all_yt_vids for clip in title_to_pages[vid]], all_pdfs, all_yt_vids

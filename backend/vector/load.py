@@ -26,12 +26,12 @@ def add_all_documents_to_store(vector_store):
 
     new_pages, new_vid_chunks, all_pdfs, all_yt_vids = load_all_documents()
 
-    # Save all_pdfs so we don't add new stuff to the store thats already there in future
+
+    # Keeping track of everything we have for the future but honestly will prob be able to do this with txt file in the doc store
     with open('all_pdfs.pkl', 'wb') as pdf_file:
         pickle.dump(all_pdfs, pdf_file)
     print(all_pdfs)
 
-    # Save all_yt_vids so we don't add new stuff to the store thats already there in future
     with open('all_yt_vids.pkl', 'wb') as yt_file:
         pickle.dump(all_yt_vids, yt_file)
     print(all_yt_vids)
@@ -66,6 +66,7 @@ def get_vector_store():
     return vector_store
 
 vector_store = get_vector_store()
+
 # vector_store.save_local(FAISS_STORE_PATH)
 # add_documents_to_store(vector_store)
 
