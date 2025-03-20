@@ -1,12 +1,13 @@
 import os
 from langchain_community.document_loaders import YoutubeLoader
 from langchain_community.document_loaders.youtube import TranscriptFormat
+from document.summary import generate_summary
 import yt_dlp
 
 def get_youtube_title(url): # function to scrape the titles of the youtube videos given the link
     ydl_opts = {
         'quiet': True,
-        'no_warnings': False,
+        'no_warnings': True
     }
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -24,7 +25,7 @@ def youtubeLoader(path, title_to_chunks, url_to_title, tag_type, tag):
 
     with open(f"{path}/yt_urls.txt", "r") as f:
         URLs = f.readlines()
-    
+
     new_vids = set()
     for url in URLs:
         url=url.rstrip() # remove \n
@@ -43,6 +44,8 @@ def youtubeLoader(path, title_to_chunks, url_to_title, tag_type, tag):
                 chunk_size_seconds=60, # 60
             )
             loaded_clips=loader.load()
+            summary = generate_summary(loaded_clips)
+            print("youtube summary",summary)
             for clip in loaded_clips:
                 clip.metadata["title"] = title # set the title
                 clip.metadata["page"] = clip.metadata["start_seconds"] # update the page metadata for youtube videos
@@ -51,6 +54,7 @@ def youtubeLoader(path, title_to_chunks, url_to_title, tag_type, tag):
                 clip.metadata['resource_type'] = []
                 clip.metadata[tag_type].append(tag) # update the current tag
                 clip.metadata['type'] = 'youtube' # mark as youtube video
+                clip.metadata['summary'] = summary
             new_vids.add(title)
             title_to_chunks[title] = loaded_clips # store the clips
     return new_vids

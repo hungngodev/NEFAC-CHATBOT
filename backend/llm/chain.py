@@ -125,14 +125,9 @@ async def middleware_qa(query, convoHistory, roleFilter="", contentType="", reso
             "k": NUMBER_OF_NEAREST_NEIGHBORS,
             "lambda_mult": LAMBDA_MULT,
             "score_threshold": THRESHOLD,
-            "filter": create_vectorstore_filter(roleFilter, contentType, resourceType)
+            "filter": create_vectorstore_filter(roleFilter, contentType, resourceType,NUMBER_OF_NEAREST_NEIGHBORS)
         },
     ).with_config(tags=["retriever"])
-
-    # retriever = vector_store.as_retriever(
-    #         search_type="similarity",
-    #         search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
-    #     ).with_config(tags=["retriever"])
 
     retriever_chain = {
         'default': RunnableLambda(lambda x: x['question']) | retriever | format_docs,
@@ -228,11 +223,18 @@ async def middleware_qa(query, convoHistory, roleFilter="", contentType="", reso
                 # Create a new list to contain the formatted documents
                 formatted_documents = []
                 # Iterate over each document in the original list
+                seen_documents=set()
                 for doc in documents:
+                    if doc.metadata["source"] in seen_documents: 
+                        print("de_duplicated after initial gathering of documents")
+                        continue
+                    else: 
+                        seen_documents.add(doc.metadata["source"])
                     logger.info(f"Document: {doc}")
                     # Create a new dictionary for each document with the required format
                     formatted_doc = {
-                        'summary': doc.page_content,
+                        # 'summary': doc.page_content,
+                        'summary': doc.metadata['summary'],
                         'link': doc.metadata['source'],
                         'type': doc.metadata['type'],
                         'title': doc.metadata['title'],

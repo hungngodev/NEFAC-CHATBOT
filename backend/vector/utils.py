@@ -6,9 +6,8 @@ logger = logging.getLogger(__name__)
 
 def retrieve_documents(query):
     pass
-def create_vectorstore_filter(roleFilter="", contentType="", resourceType=""):
+def create_vectorstore_filter(roleFilter="", contentType="", resourceType="",k=3):
     
-
     """
     Creates a metadata filter function for vector store retriever to make sure we don't get duplicate documents that don't match the filters
     
@@ -20,34 +19,38 @@ def create_vectorstore_filter(roleFilter="", contentType="", resourceType=""):
     Returns:
         function: A filter function that can be used with vectorstore.as_retriever()
     """
+    seen_documents=set()
+    total_returned=0 # shoutout 220 for teaching closures
     def filter_func(metadata):
-        seen_documents=set()
-        # Check audience/roleFilter
-        if metadata["title"] in seen_documents:
-            print(metadata["title"],"didn't make it through due to already seen")
+        nonlocal seen_documents, total_returned
+        if metadata['source'] in seen_documents:
             return False
         else:
-            seen_documents.add(metadata["title"])
+            seen_documents.add(metadata['source'])
 
         if roleFilter!="":
             if roleFilter not in metadata['audience']:
-                print(metadata["title"],"didn't make it through due to audience")
+                # print(metadata["title"],"didn't make it through due to audience")
                 return False
 
         # Check nefac_category/contentType
         if contentType!="":
             if contentType not in metadata['nefac_category']:
-                print(metadata["title"],"didn't make it through due to contentType")
+                # print(metadata["title"],"didn't make it through due to contentType")
                 return False
 
         # Check resource_type/resourceType
         if resourceType!="":
             if resourceType not in metadata['resource_type']:
-                print(metadata["title"],"didn't make it through due to resourceType")
+                # print(metadata["title"],"didn't make it through due to resourceType")
                 return False
 
         # If all specified filters pass, return True
-        print(metadata["title"],'made it through')
+        # print(metadata["title"],'made it through')
+        total_returned+=1
+        if total_returned==k:
+            total_returned=0
+            seen_documents.clear()
         return True
 
     return filter_func
