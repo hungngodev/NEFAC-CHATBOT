@@ -1,7 +1,11 @@
-from langchain.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
-from langchain.load import dumps, loads
+from langchain_core.documents import Document
+
+from langchain_core.load import dumps
+
+from langchain_core.load import loads
 from llm.utils import format_docs
 from llm.constant import PROMPT_MODEL_NAME
 from load_env import load_env
@@ -25,7 +29,7 @@ generate_queries = (
 def reciprocal_rank_fusion(results: list[list], k=60):
     """ Reciprocal_rank_fusion that takes multiple lists of ranked documents 
         and an optional parameter k used in the RRF formula """
-    
+
     # Initialize a dictionary to hold fused scores for each unique document
     fused_scores = {}
 
@@ -55,7 +59,7 @@ def reciprocal_rank_fusion(results: list[list], k=60):
 def handle_empty_results(results):
     """Handles empty retrieval results by returning a fallback response."""
     if not any(results):  # Check if all retrieved lists are empty
-        return [("No relevant documents found.", 0)]  # Fallback response
+        return [Document(page_content="No relevant documents found.", metadata={})]    
     return reciprocal_rank_fusion(results)  # Otherwise, apply RRF
 
 def get_rag_fusion_chain(retriever):

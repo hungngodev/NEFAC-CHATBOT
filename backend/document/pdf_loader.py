@@ -1,21 +1,29 @@
 import glob
-from langchain_community.document_loaders import ( PyPDFLoader,
-                                                  )
+from langchain_community.document_loaders import PyPDFLoader
+from document.summary import generate_summary
 
-def pdfLoader(path, existing_docs):
-    # Load all PDF documents from the directory "docs/"
-    all_docs_path = glob.glob(path+"/*")
-    new_docs = []
-    new_pages = []
-    duplicate_docs = []
-    for idx, doc in enumerate(all_docs_path):
-        doc_title = doc.split("/")[-1]
-        if doc_title in existing_docs:
-            duplicate_docs.append(doc_title.split(".")[0])
-        elif doc.endswith(".pdf") and doc_title not in new_docs:
-            new_docs.append(doc_title)
-            loader = PyPDFLoader(doc)
+def pdfLoader(path, title_to_chunks, tag_type, tag):
+    all_docs_path = glob.glob(path + "/*.pdf")
+    new_docs = set()
+    for doc_path in all_docs_path:
+        doc_title = doc_path.split("/")[-1][:-4].strip().replace('_', ' ').replace('  ', ' ')
+        if doc_title in title_to_chunks:
+            if tag not in title_to_chunks[doc_title][0].metadata[tag_type]:
+                for page in title_to_chunks[doc_title]:
+                    page.metadata[tag_type].append(tag)
+        else:
+            loader = PyPDFLoader(doc_path)
             pages = loader.load_and_split()
-            new_pages.extend(pages)
-
-    return new_pages, new_docs, duplicate_docs
+            summary = generate_summary(pages)
+            print("page summary",summary)
+            for page in pages:
+                page.metadata['title'] = doc_title
+                page.metadata['audience'] = []
+                page.metadata['nefac_category'] = []
+                page.metadata['resource_type'] = []
+                page.metadata[tag_type].append(tag)
+                page.metadata['type'] = 'pdf'
+                page.metadata['summary'] = summary
+            new_docs.add(doc_title)
+            title_to_chunks[doc_title] = pages
+    return new_docs

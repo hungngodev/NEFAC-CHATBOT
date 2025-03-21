@@ -1,55 +1,70 @@
-# general
 import logging
 import faiss
+import os
 from document.loader import load_all_documents
-from dotenv import load_dotenv
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.docstore.in_memory import InMemoryDocstore
-from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from load_env import load_env
+import pickle
+# we need to make it so that when we add new documents, it adds them to the store.
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 load_env()
 
-# Initialize embeddings and FAISS vector store
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-large")
 
-# Initialize docstore -- MAKE PERMANENT FILE
-docstore = InMemoryDocstore({})
-vector_store = FAISS(embedding_function=embedding_model, 
-                     index = faiss.IndexFlatIP(3072), 
-                     docstore = docstore, index_to_docstore_id={})  # 768 is the embedding dimension size
-all_docs = []
+FAISS_STORE_PATH = "faiss_store"
 
+# adds all docs and videos to the vector store
+def add_all_documents_to_store(vector_store):
 
-def add_documents_to_store():
-  
-    new_docs, new_vids = load_all_documents()
+    all_documents, url_to_title, title_to_chunks = load_all_documents()
 
-    # logger.info("new_docs: ", new_docs)
-    # logger.info("new_vids: ", new_vids)
+    # Keeping track of all document names we have for the future (may not be needed)
+    with open('doc_names.pkl', 'wb') as doc_names:
+        pickle.dump(all_documents, doc_names)
+    # print(all_documents)
 
-    chunked_docs = chunk_documents(new_docs)
-    chunked_vids = chunk_documents(new_vids)
-    all_doc_types = chunked_docs + chunked_vids
-    vector_store.add_documents(documents = all_doc_types)
+    with open('url_to_title.pkl', 'wb') as u2t:
+        pickle.dump(url_to_title, u2t)
+    # print(url_to_title)
 
-    return all_doc_types
-# Function to chunk documents
-def chunk_documents(docs):
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=32)
-    chunked_docs = text_splitter.split_documents(docs)
+    with open('title_to_chunks.pkl', 'wb') as t2c:
+        pickle.dump(title_to_chunks, t2c)
+    # print(title_to_chunks)
+
+    def chunk_documents(docs):
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=32)
+        chunked_docs = text_splitter.split_documents(docs)
+        return chunked_docs
+    new_chunks=[chunk for doc in all_documents for chunk in title_to_chunks[doc]]
+    chunked_docs = chunk_documents(new_chunks) if len(new_chunks)>0 else []
+    if len(chunked_docs)>0:
+        vector_store.add_documents(documents = chunked_docs)
+    vector_store.save_local(FAISS_STORE_PATH)
+
     return chunked_docs
 
-# add_documents_to_store()
-# vector_store.save_local("faiss_store")
-# vector_store.load_local("faiss_store",  embeddings=embedding_model, allow_dangerous_deserialization=True)
-# retriever = vector_store.as_retriever(
-#             search_type="similarity",
-#             search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
-#         ).with_config(tags=["retriever"])
-# docs = retriever.invoke("NEFAC resources related to the First Amendment")
-# print("Docs: ", docs)
+def get_vector_store():
+    if os.path.exists(FAISS_STORE_PATH):
+        print('Store found and initialized')
+        vector_store = FAISS.load_local(
+            FAISS_STORE_PATH,
+            embeddings=embedding_model,
+            allow_dangerous_deserialization=True
+        )
+    else:
+        print('Store not found')
+        vector_store = FAISS(embedding_function=embedding_model, 
+                        index = faiss.IndexFlatIP(3072),  # because we use text-embedding-3-large -> 3072
+                        docstore = InMemoryDocstore({}), 
+                        index_to_docstore_id={}
+        ) 
+        add_all_documents_to_store(vector_store)
+    return vector_store
+
+vector_store = get_vector_store()

@@ -11,24 +11,14 @@ from fastapi.responses import StreamingResponse
 from llm.main import ask_llm_stream
 from pydantic import BaseModel
 from vector.utils import retrieve_documents
-from vector.load import add_documents_to_store
+from vector.load import add_all_documents_to_store
 from load_env import load_env
 
 load_env()
+
 # Initialize logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-app = FastAPI()
-
-# Add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins; change this to specific domains as needed
-    allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods; you can restrict this to specific methods if desired
-    allow_headers=["*"],  # Allows all headers; you can restrict this to specific headers if desired
-)
 
 # GraphQL Type Definitions
 type_defs = gql("""
@@ -51,18 +41,31 @@ type_defs = gql("""
     }
 """)
 
-
 # Create Query and Mutation types
 query = QueryType()
 mutation = MutationType()
     
+# Create the executable schema
+schema = make_executable_schema(type_defs, query, mutation)
+
+app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins; change this to specific domains as needed
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods; you can restrict this to specific methods if desired
+    allow_headers=["*"],  # Allows all headers; you can restrict this to specific headers if desired
+)
+
 @app.get("/a***REMOVED***llm")
 async def ask_llm(
     query: str,
     convoHistory: str = "",
-    roleFilter: str = None,
-    contentType: str = None,
-    resourceType: str = None,
+    roleFilter: str = "",
+    contentType: str = "",
+    resourceType: str = "",
 ):
     
     try:        
@@ -74,6 +77,9 @@ async def ask_llm(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# Mount the GraphQL ASGI application
+app.add_route("/graphql", GraphQL(schema, debug=True))
+
 @query.field("retrieveDocuments")
 def resolve_retrieve_documents(_, info, query):
     try:
@@ -84,16 +90,10 @@ def resolve_retrieve_documents(_, info, query):
 @mutation.field("addDocuments")
 async def resolve_add_documents(_, info, documents):
     try:
-        add_documents_to_store(_, info, documents)
+        add_all_documents_to_store(_, info, documents)
         print("Documents added!")
         return "Documents added!"
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-# Create the executable schema
-schema = make_executable_schema(type_defs, query, mutation)
-
-# Mount the GraphQL ASGI application
-app.add_route("/graphql", GraphQL(schema, debug=True))
 
 # Run using: uvicorn app:app --reload

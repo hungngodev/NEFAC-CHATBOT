@@ -1,23 +1,15 @@
 # general
 import logging
 
-import faiss
-from document.loader import load_all_documents
-from dotenv import load_dotenv
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.docstore.in_memory import InMemoryDocstore
-from langchain_community.embeddings import OpenAIEmbeddings
-from langchain_community.vectorstores import FAISS
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def retrieve_documents(query):
     pass
-def create_vectorstore_filter(roleFilter=None, contentType=None, resourceType=None):
+def create_vectorstore_filter(roleFilter="", contentType="", resourceType="",k=3):
+    
     """
-    Creates a metadata filter function for vector store retriever that checks if single target values
-    exist in corresponding metadata arrays.
+    Creates a metadata filter function for vector store retriever to make sure we don't get duplicate documents that don't match the filters
     
     Args:
         roleFilter (str, optional): Target audience value to match
@@ -27,23 +19,38 @@ def create_vectorstore_filter(roleFilter=None, contentType=None, resourceType=No
     Returns:
         function: A filter function that can be used with vectorstore.as_retriever()
     """
+    seen_documents=set()
+    total_returned=0 # shoutout 220 for teaching closures
     def filter_func(metadata):
-        # Check audience/roleFilter
-        if roleFilter is not None:
+        nonlocal seen_documents, total_returned
+        if metadata['title'] in seen_documents:
+            return False
+        else:
+            seen_documents.add(metadata['title'])
+
+        if roleFilter!="":
             if roleFilter not in metadata['audience']:
+                # print(metadata["title"],"didn't make it through due to audience")
                 return False
-                
+
         # Check nefac_category/contentType
-        if contentType is not None:
+        if contentType!="":
             if contentType not in metadata['nefac_category']:
+                # print(metadata["title"],"didn't make it through due to contentType")
                 return False
-                
+
         # Check resource_type/resourceType
-        if resourceType is not None:
+        if resourceType!="":
             if resourceType not in metadata['resource_type']:
+                # print(metadata["title"],"didn't make it through due to resourceType")
                 return False
-                
+
         # If all specified filters pass, return True
+        # print(metadata["title"],'made it through')
+        total_returned+=1
+        if total_returned==k:
+            total_returned=0
+            seen_documents.clear()
         return True
-    
+
     return filter_func

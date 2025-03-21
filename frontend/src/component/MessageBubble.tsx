@@ -50,19 +50,16 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           <ReactMarkdown children={msg.content} remarkPlugins={[remarkGfm]} />
         </div>
 
-        {msg.results && (
-          <div className={`mt-4 space-y-4 `}>
-            {msg.results.map((result, index) => (
-              <div key={index}>
-                <SearchResultItem
-                  result={result}
-                  isUserMessage={false}
-                  shouldAnimate={shouldAnimate}
-                />
-              </div>
-            ))}
-          </div>
-        )}
+        {msg.results && msg.results.length > 0 && (
+        <div className={`mt-4 space-y-4 `}>
+          {msg.results.map((result, index) => (
+              <SearchResultItem
+                key={index}
+                result={result}
+              />
+          ))}
+        </div>
+      )}
       </div>
     </div>
   );

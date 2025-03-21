@@ -17,6 +17,9 @@ interface Citation {
 export interface SearchResult {
   title: string;
   link: string;
+  audience: string[];
+  nefac_category: string[];  
+  resource_type: string[];
   chunks: {
     summary: string;
     citations: Citation[];
@@ -46,6 +49,7 @@ const SearchBar = () => {
   const prevLength = useRef<number>(1);
   const messageOrderStream = useRef<Set<number>>(new Set());
   const contextOrderStream = useRef<Set<number>>(new Set());
+  
   const contextResultsStream = useRef<SearchResult[]>([]);
   const conversationEndRef = useRef<HTMLDivElement>(null);
 
@@ -118,6 +122,9 @@ const SearchBar = () => {
                     contextResultsStream.current.push({
                       title: result.title,
                       link: result.link,
+                      audience: result.audience,
+                      nefac_category: result.nefac_category,  
+                      resource_type: result.resource_type,
                       chunks: [
                         {
                           summary: result.summary,
@@ -158,10 +165,12 @@ const SearchBar = () => {
                 last.results = contextResultsStream.current.map((result) => ({
                   title: result.title,
                   link: result.link,
+                  audience: result.audience,
+                  nefac_category: result.nefac_category,  
+                  resource_type: result.resource_type,
                   chunks: result.chunks,
                 }));
                 last.content = last.content.replace("Searching...", "");
-                // console.log("final", prev);
                 return [...prev];
               });
             }, 1000);
@@ -182,7 +191,10 @@ const SearchBar = () => {
         },
       ]);
     } finally {
-      setIsLoading(false);
+      setTimeout(() => {
+        contextResultsStream.current=[]
+        setIsLoading(false);
+      },2000);
     }
   };
 
@@ -220,7 +232,7 @@ const SearchBar = () => {
                   msg={msg}
                   index={index}
                   conversation={conversation}
-                  prevLength={prevLength}
+                  prevLength={prevLength} 
                 />
               ))}
 

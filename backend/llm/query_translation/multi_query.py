@@ -1,7 +1,11 @@
-from langchain.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
-from langchain.load import dumps, loads
+
+
+from langchain_core.load import dumps
+
+from langchain_core.load import loads
 from load_env import load_env
 from llm.utils import format_docs
 from llm.constant import PROMPT_MODEL_NAME, SUB_MODEL_NAME

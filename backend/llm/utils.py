@@ -14,9 +14,9 @@ def format_docs(docs):
             "source": doc.metadata.get("source", "N/A"),
             "page": doc.metadata.get("page", "N/A"),
             "title": doc.metadata.get("title", "N/A"),
-            "nefac_category": doc.metadata.get("nefac_category", "N/A"),
-            "resource_type": doc.metadata.get("resource_type", "N/A"),
-            "audience": doc.metadata.get("audience", "N/A")
+            "nefac_category": doc.metadata.get("nefac_category", []),
+            "resource_type": doc.metadata.get("resource_type", []),
+            "audience": doc.metadata.get("audience", [])
         }
         
         # Format the document
