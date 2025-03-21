@@ -7,7 +7,8 @@ import yt_dlp
 def get_youtube_title(url): # function to scrape the titles of the youtube videos given the link
     ydl_opts = {
         'quiet': True,
-        'no_warnings': True
+        'no_warnings': True, 
+        # 'cookies': 'cookies.txt'
     }
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -31,6 +32,7 @@ def youtubeLoader(path, title_to_chunks, url_to_title, tag_type, tag):
         url=url.rstrip() # remove \n
         if url not in url_to_title:
             url_to_title[url] = get_youtube_title(url) # get the title if we haven't fetched it yet
+            print(url_to_title[url])
         title = url_to_title[url]
         if title in title_to_chunks: # if we have already loaded this video
             if tag not in title_to_chunks[title][0].metadata[tag_type]: # update the tagging for each of the chunks if they don't have this tag yet
@@ -44,7 +46,7 @@ def youtubeLoader(path, title_to_chunks, url_to_title, tag_type, tag):
                 chunk_size_seconds=60, # 60
             )
             loaded_clips=loader.load()
-            summary = generate_summary(loaded_clips)
+            summary = generate_summary(loaded_clips[:-1]) # remove the last minute where information is usually irrelevant to summary
             print("youtube summary",summary)
             for clip in loaded_clips:
                 clip.metadata["title"] = title # set the title

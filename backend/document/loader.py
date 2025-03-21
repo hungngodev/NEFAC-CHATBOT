@@ -2,7 +2,7 @@ import glob
 from document.pdf_loader import pdfLoader
 from document.youtube_loader import youtubeLoader
 import os
-
+import pickle
 # TODO: implement for txt files, images, etc. add optional filter params for each category (audience, tag_type, nefac_category) retrieved from frontend
 
 # grab all the documents in the waiting room. use the llm to tag them, append the tags to the txt files in the locations and in the metadata for the db. once done, move them to the finished tagging
@@ -13,8 +13,18 @@ def load_all_documents():
     docs_path="docs/*"
     all_paths=[d for d in glob.glob(docs_path) if os.path.isdir(d)] 
 
-    url_to_title={}
-    title_to_chunks={}
+    # Load url_to_title and title_to_chunks from pickle files
+    try:
+        with open('url_to_title.pkl', 'rb') as u2t:
+            url_to_title = pickle.load(u2t)
+    except FileNotFoundError:
+        url_to_title = {}  # Initialize as empty if file not found
+
+    try:
+        with open('title_to_chunks.pkl', 'rb') as t2c:
+            title_to_chunks = pickle.load(t2c)
+    except FileNotFoundError:
+        title_to_chunks = {}  # Initialize as empty if file not found
 
     def load_all_in_path(path,tag_title):
         path_list=glob.glob(path+'/*')
@@ -25,10 +35,10 @@ def load_all_documents():
             new_docs = pdfLoader(folder, title_to_chunks, tag_type, tag)
             all_documents.update(new_docs)
 
-            # new_vids = youtubeLoader(folder, title_to_chcunks, url_to_title, tag_type, tag)
-            # all_documents.update(new_vids)
+            new_vids = youtubeLoader(folder, title_to_chunks, url_to_title, tag_type, tag)
+            all_documents.update(new_vids)
             
     for path in all_paths:
         load_all_in_path(path,path.split("/")[-1]) # docs/by_audience
 
-    return [chunk for doc in all_documents for chunk in title_to_chunks[doc]], all_documents
+    return all_documents, url_to_title, title_to_chunks

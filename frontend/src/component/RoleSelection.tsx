@@ -60,11 +60,11 @@ export const RoleSelection: React.FC<RoleSelectionProps> = ({
                     `I see that you are a${
                       ["a", "e", "i", "o", "u"].includes(role.id[0]) ? "n" : ""
                     } ${role.id}.`
-                  } How can I help you?`,
+                  } You can ask me for NEFAC documents and YouTube vidoes or we can chat about first amendment related topics. How can I help you?`,
                 },
               ]);
             }}
-            className="p-6 bg-blue-50 shadow-md rounded-lg transition-transform hover:scale-105"
+            className="p-6 bg-blue-50 shadow-md rounded-lg transition-transform hover:scale-105"ƒ
           >
             <h2 className="text-2xl font-semibold text-gray-800">
               {role.title}

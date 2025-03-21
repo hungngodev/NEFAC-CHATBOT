@@ -62,27 +62,37 @@ export const SuggestionByRole: React.FC<SuggestionByRoleProps> = ({
           {userRole.charAt(0).toUpperCase() + userRole.slice(1)}s:
         </h3>
         <div className="flex flex-wrap justify-center gap-4">
-          {suggestionsByRole[userRole]?.map((suggestion, index: number) => (
-            <div key={index}>
-              <SuggestionButton
-                handleSuggestionClick={handleSuggestionClick}
-                key={index}
-                suggestion={suggestion}
-                index={index}
-                type={index < 2 ? "document" : "discussion"}
-              />
-              {index === 1 && (
-                <div className="w-full mt-2">
-                  <h3 className="text-lg font-semibold text-black">
-                    Common Questions:
-                  </h3>
-                </div>
-              )}
-            </div>
-          ))}
+        {/* Render all buttons except the last 2 */}
+        {suggestionsByRole[userRole]?.slice(0, -2).map((suggestion, index) => (
+          <div key={index}>
+            <SuggestionButton
+              handleSuggestionClick={handleSuggestionClick}
+              suggestion={suggestion}
+              index={index}
+              type="document"
+            />
+          </div>
+        ))}
+
+        {/* Insert Common Questions section */}
+        <div className="w-full mt-2 flex justify-center">
+          <h3 className="text-lg font-semibold text-black">Common Questions:</h3>
         </div>
+
+        {/* Render the last 2 buttons */}
+        {suggestionsByRole[userRole]?.slice(-2).map((suggestion, index) => (
+          <div key={index + suggestionsByRole[userRole].length - 2}>
+            <SuggestionButton
+              handleSuggestionClick={handleSuggestionClick}
+              suggestion={suggestion}
+              index={index + suggestionsByRole[userRole].length - 2}
+              type="discussion"
+            />
+          </div>
+        ))}
       </div>
     </div>
+  </div>
   );
 };
 

@@ -22,17 +22,26 @@ FAISS_STORE_PATH = "faiss_store"
 # adds all docs and videos to the vector store
 def add_all_documents_to_store(vector_store):
 
-    new_chunks, all_documents = load_all_documents()
+    all_documents, url_to_title, title_to_chunks = load_all_documents()
 
     # Keeping track of all document names we have for the future (may not be needed)
-    with open('all_pdfs.pkl', 'wb') as pdf_file:
-        pickle.dump(all_documents, pdf_file)
-    print(all_documents)
+    with open('doc_names.pkl', 'wb') as doc_names:
+        pickle.dump(all_documents, doc_names)
+    # print(all_documents)
+
+    with open('url_to_title.pkl', 'wb') as u2t:
+        pickle.dump(url_to_title, u2t)
+    # print(url_to_title)
+
+    with open('title_to_chunks.pkl', 'wb') as t2c:
+        pickle.dump(title_to_chunks, t2c)
+    # print(title_to_chunks)
 
     def chunk_documents(docs):
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=32)
         chunked_docs = text_splitter.split_documents(docs)
         return chunked_docs
+    new_chunks=[chunk for doc in all_documents for chunk in title_to_chunks[doc]]
     chunked_docs = chunk_documents(new_chunks) if len(new_chunks)>0 else []
     if len(chunked_docs)>0:
         vector_store.add_documents(documents = chunked_docs)

@@ -23,10 +23,10 @@ def create_vectorstore_filter(roleFilter="", contentType="", resourceType="",k=3
     total_returned=0 # shoutout 220 for teaching closures
     def filter_func(metadata):
         nonlocal seen_documents, total_returned
-        if metadata['source'] in seen_documents:
+        if metadata['title'] in seen_documents:
             return False
         else:
-            seen_documents.add(metadata['source'])
+            seen_documents.add(metadata['title'])
 
         if roleFilter!="":
             if roleFilter not in metadata['audience']:

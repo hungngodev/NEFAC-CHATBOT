@@ -1,22 +1,20 @@
 import json
 import logging
-
 from langchain_community.vectorstores import FAISS
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_openai import OpenAIEmbeddings
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.messages import AIMessageChunk
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import (ChatPromptTemplate, MessagesPlaceholder,
-                                    PromptTemplate)
-from langchain_core.runnables import RunnablePassthrough, RunnableBranch, RunnableLambda
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.runnables import RunnablePassthrough, RunnableBranch
 from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_core.runnables import RunnableLambda
 from langchain_openai import ChatOpenAI
 from llm.utils import format_docs
 from load_env import load_env
 from vector.utils import create_vectorstore_filter
 from vector.load import vector_store
-
 from .query_translation.decomposition import get_decomposition_chain
 from .query_translation.multi_query import get_multi_query_chain
 from .query_translation.rag_fusion import get_rag_fusion_chain
@@ -29,13 +27,6 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-large")
-
-# retriever = vector_store.as_retriever(
-#             search_type="similarity",
-#             search_kwargs={"k": 10, "lambda_mult": 0.25, "score_threshold": 0.75},
-#         ).with_config(tags=["retriever"])
-# decompose = get_decomposition_chain(retriever).invoke("NEFAC resources related to the First Amendment")
-# logger.info(f"Decompose: {decompose}")
 
 store = {}
 
@@ -52,14 +43,65 @@ def serialize_aimessagechunk(chunk):
             f"Object of type {type(chunk).__name__} is not correctly formatted for serialization"
         )
 
+# Keep format_docs as metadata-focused, but we won’t use it directly in the message
+def format_docs(docs):
+    formatted = []
+    for doc in docs:
+        metadata = doc.metadata
+        formatted.append(
+            f"Title: {metadata['title']}\n"
+            f"Summary: {metadata['summary']}\n"
+            f"Link: {metadata['source']}\n"
+            f"Type: {metadata['type']}\n"
+        )
+    return "\n\n".join(formatted)
+
 async def middleware_qa(query, convoHistory, roleFilter="", contentType="", resourceType=""):
-    model = ChatOpenAI(model=MODEL_NAME, streaming=True)  # Enable streaming here
+    model = ChatOpenAI(model=MODEL_NAME, streaming=True)
 
-    contextualize_q_system_prompt = """Given a chat history and the latest user question \
-    which might reference context in the chat history, formulate a standalone question \
-    which can be understood without the chat history. Do NOT answer the question, \
-    just reformulate it if needed and otherwise return it as is."""
+    # Step 1: Classification Prompt and Chain (unchanged)
+    classify_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", """
+Based on the conversation history and the latest user query, determine the user's intent:
+- If the user is requesting specific information, documents, resources, or media on any particular topic, classify it as 'document request'.
+- If the user is asking a general question, making a statement, or seeking broad explanations, classify it as 'general query'.
+Ignore whether the topic is related to NEFAC's focus areas; focus solely on the structure and intent of the query.
 
+Examples:
+- "Do you have any information about Excel?" → document request
+- "What is the First Amendment?" → general query
+- "Tell me about NEFAC's mission." → general query
+- "Are there any resources on freedom of speech?" → document request
+- "Can you explain freedom of the press?" → general query
+- "Do you have documents on data privacy laws?" → document request
+
+Respond with 'document request' or 'general query'.
+"""),
+            MessagesPlaceholder(variable_name="chat_history"),
+            ("human", "{question}"),
+        ]
+    )
+    classify_chain = classify_prompt | ChatOpenAI(temperature=0) | StrOutputParser()
+
+    # Step 2: General Query Prompt and Chain (unchanged)
+    general_prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", """
+You are an AI chatbot for NEFAC, the New England First Amendment Coalition. NEFAC is dedicated to protecting press freedoms and the public's right to know in New England. Provide a helpful response to the user's query based on your knowledge of NEFAC’s mission and activities. Do not retrieve documents.
+"""),
+            MessagesPlaceholder(variable_name="chat_history"),
+            ("human", "{question}"),
+        ]
+    )
+    general_chain = (
+        general_prompt
+        | model.with_config(tags=["final_answer"])
+        | (lambda x: {"answer": x})
+    )
+
+    # Step 3: Document Request Path (Updated QA Prompt)
+    contextualize_q_system_prompt = """Given a chat history and the latest user question, formulate a standalone question that can be understood without the chat history. Do NOT answer it, just reformulate if needed."""
     contextualize_q_prompt = ChatPromptTemplate.from_messages(
         [
             ("system", contextualize_q_system_prompt),
@@ -71,53 +113,26 @@ async def middleware_qa(query, convoHistory, roleFilter="", contentType="", reso
         tags=["contextualize_q_chain"]
     )
 
-    qa_system_prompt = """
-        Role: You are an AI chatbot for NEFAC, new england first amendment coalition. You are an expert in providing relevant NEFAC only resources.
-
-        Task: 
-        Given retrieved NEFAC resources, your task is to determine whether you have enough information, or too much confusing information, to answer the query. 
-        If not enough resources were found, ask the user for more information.
-        If a lot of unrelated resources were found, ask the user to specify the type of resource they are looking for.
-        If you seem comfortable with the information, answer the query with the relevant resources.
-        Generally speaking, here are some examples of information you might want to ask the user for:
-            - Is the user looking for specific resources, or general resources?
-            - Is the user looking for information regarding a specific US state?
-            - Is the user looking for information regarding a specific law or court case?
-
-        For example, if the user is looking for mentors, you would want to ask the user about the specific area of expertise or state the user is looking for.
-
-        Sources:
-        {context}
-
-        Instructions:
-        - If you need more information in the Sources to answer the query, ask the user relevant follow up questions to aid in your response.
-        - If you have too much conflicting information to answer the query, ask the user to specify the type of resource they are looking for.
-        - If you are unsure, ask the user for more information.
-        - Use the conversation history to guide your response.
-        - Do not ask more than 2 follow up questions. Therefore, if you already asked 2 questions (as shown in conversation history), answer the query with the information you have so far and the below structure.
-        - But if you don't have enough information in the Sources, clarify with the user that you need more information to answer the query.
-        
-        IF YOU HAVE ENOUGH INFORMATION IN THE SOURCE, ANSWER THE QUERY WITH THE FOLLOWING CRITERIA:
-        - You are an AI search engine for NEFAC, new england first amendment coalition. Sometimes NEFAC gets mistaken with Kneefact in youtube transcripts, so be aware.
-        - You are an expert in the providing relevant NEFAC only resources.
-        - Generate a list of unique relevant sources from the context as a search engine.
-        - If the source is not relevant to the query, do not include it in the list.
-        - Titles can be slightly modified for readability.
-        - If the query is searching for a person, mentor, or people, mention specific names of people with expertise in the relevant areas.
-        - If the query regards a specific state, find sources relevant to that specific state.
-        - If the query is not state-specific or regards a general resource, find general resources.
-        - Do not hallucianate or make up any resources that arent explicitely given to you above. 
-        - Summarize each returned source content in a way that answers the query.
-        - Do not include duplicate resources.
-        - Sources should be unique.
-    """
-
     qa_prompt = ChatPromptTemplate.from_messages(
-    [
-        ("system", qa_system_prompt),
-        MessagesPlaceholder(variable_name="chat_history"),
-        ("human", "{question}"),
-    ])
+        [
+            ("system", """
+You are an AI assistant for NEFAC, the New England First Amendment Coalition. The user has asked for documents or resources. Your task is to acknowledge their request and indicate that relevant documents are available, without including the document details in your response.
+
+Instructions:
+- Respond with a concise message like: "I have found some relevant documents on [topic]. You can view the details below."
+- Replace [topic] with a brief description of what the user asked for (e.g., 'NEFAC’s FOI guides').
+- Do NOT include document titles, summaries, or links in your response—they will be provided separately.
+- If no documents are relevant (context is empty), say: "I couldn’t find specific documents on [topic]. Can you provide more details?"
+- Use the conversation history to refine your response if needed.
+- Keep it short and clear.
+
+Retrieved documents (for your reference, not to include in the response):
+{context}
+"""),
+            MessagesPlaceholder(variable_name="chat_history"),
+            ("human", "{question}"),
+        ]
+    )
 
     retriever = vector_store.as_retriever(
         search_type="similarity",
@@ -125,7 +140,7 @@ async def middleware_qa(query, convoHistory, roleFilter="", contentType="", reso
             "k": NUMBER_OF_NEAREST_NEIGHBORS,
             "lambda_mult": LAMBDA_MULT,
             "score_threshold": THRESHOLD,
-            "filter": create_vectorstore_filter(roleFilter, contentType, resourceType,NUMBER_OF_NEAREST_NEIGHBORS)
+            "filter": create_vectorstore_filter(roleFilter, contentType, resourceType, NUMBER_OF_NEAREST_NEIGHBORS)
         },
     ).with_config(tags=["retriever"])
 
@@ -139,20 +154,17 @@ async def middleware_qa(query, convoHistory, roleFilter="", contentType="", reso
     }
 
     classifier_prompt = ChatPromptTemplate.from_template(
-    """Analyze the following question and choose the best query transformation strategy:
-    1. multiquery - for ambiguous questions needing multiple perspectives
-    2. ragfusion - for complex questions needing combined search strategies
-    3. stepback - for specific questions needing broader context
-    4. decompose - for multi-part questions needing breakdown
-    5. hyde - for technical questions needing hypothetical examples
-    6. default - for straightforward questions needing direct answers
-    
-    Question: {question}
-    
-    Respond ONLY with the method name from the list above."""
+        """Analyze the question and choose the best query transformation strategy:
+        1. multiquery - ambiguous questions
+        2. ragfusion - complex questions
+        3. stepback - specific questions needing context
+        4. decompose - multi-part questions
+        5. hyde - technical questions
+        6. default - straightforward questions
+        Question: {question}
+        Respond ONLY with the method name."""
     )
 
-    # Define the classifier chain
     query_classifier = (
         classifier_prompt 
         | ChatOpenAI(temperature=0, model="gpt-4")
@@ -175,39 +187,43 @@ async def middleware_qa(query, convoHistory, roleFilter="", contentType="", reso
         )
     ).with_config(tags=["full_retrieval_pipeline"])
 
-    rag_chain = (
+    retrieval_chain = (
         RunnablePassthrough.assign(context=retrieval_step)
         | qa_prompt
-        | model
+        | model.with_config(tags=["final_answer"])
         | (lambda x: {"answer": x})
-    ).with_config(
-        tags=["main_chain"]
     )
 
-    conversational_rag_chain = RunnableWithMessageHistory(
-        rag_chain,
+    # Step 4: Routing Logic (unchanged)
+    router = RunnableBranch(
+        (
+            lambda x: "document request" in classify_chain.invoke(x).lower(),
+            retrieval_chain
+        ),
+        general_chain
+    )
+
+    conversational_chain = RunnableWithMessageHistory(
+        router,
         get_session_history,
         input_messages_key="question",
         history_messages_key="chat_history",
         output_messages_key="answer",
     )
-    input = {"question": query}
-    # print("History: ", get_session_history("abc123"))
+
+    input = {"question": query, "chat_history": convoHistory}
     try:
         i = 0
-        async for event in conversational_rag_chain.astream_events(input, config={"configurable": {"session_id": "abc123"}}, version="v1"):
-            # Only get the answer
-            # print("Event: ", event)
-            sources_tags = ['seq:step:3', 'main_chain']
-            if all(value in event["tags"] for value in sources_tags) and 'full_retrieval_pipeline' not in event['tags'] and event["event"] == "on_chat_model_stream":
-                # logger.info(f"Event: {event['tags']}")
+        async for event in conversational_chain.astream_events(input, config={"configurable": {"session_id": "abc123"}}, version="v1"):
+            # Stream the final answer (message only)
+            if "final_answer" in event["tags"] and event["event"] == "on_chat_model_stream":               
                 chunk_content = serialize_aimessagechunk(event["data"]["chunk"])
                 if len(chunk_content) != 0:
                     data_dict = {"message": chunk_content, "order": i}
                     data_json = json.dumps(data_dict)
                     yield f"data: {data_json}\n\n"
 
-            # Get the reformulated question
+            # Stream the reformulated question (unchanged)
             sources_tags = ['seq:step:2', 'main_chain', 'contextualize_q_chain']
             if all(value in event["tags"] for value in sources_tags) and event["event"] == "on_chat_model_stream":
                 chunk_content = serialize_aimessagechunk(event["data"]["chunk"])
@@ -216,46 +232,34 @@ async def middleware_qa(query, convoHistory, roleFilter="", contentType="", reso
                     data_json = json.dumps(data_dict)
                     yield f"data: {data_json}\n\n"
 
-            # Get the context
+            # Stream the context (document metadata) - adjusted to ensure it’s sent properly
             sources_tags = ['main_chain', 'retriever']
-            if all(value in event["tags"] for value in sources_tags) and event["event"] == "on_retriever_end":
+            if "retriever" in event["tags"] and event["event"] == "on_retriever_end":
+                print("WE ENDED UP IN THE DOCUMENT OUTPUT")
                 documents = event['data']['output']['documents']
-                # Create a new list to contain the formatted documents
                 formatted_documents = []
-                # Iterate over each document in the original list
-                seen_documents=set()
+                seen_documents = set()
                 for doc in documents:
-                    if doc.metadata["source"] in seen_documents: 
-                        print("de_duplicated after initial gathering of documents")
+                    if doc.metadata["title"] in seen_documents:
                         continue
-                    else: 
-                        seen_documents.add(doc.metadata["source"])
-                    logger.info(f"Document: {doc}")
-                    # Create a new dictionary for each document with the required format
+                    seen_documents.add(doc.metadata["title"])
                     formatted_doc = {
-                        # 'summary': doc.page_content,
                         'summary': doc.metadata['summary'],
                         'link': doc.metadata['source'],
                         'type': doc.metadata['type'],
                         'title': doc.metadata['title'],
-                        'nefac_category': doc.metadata['nefac_category'],
-                        'resource_type': doc.metadata['resource_type'],
-                        'audience': doc.metadata['audience'],
-                        'citation': []
+                        'nefac_category': doc.metadata.get('nefac_category', []),
+                        'resource_type': doc.metadata.get('resource_type', []),
+                        'audience': doc.metadata.get('audience', []),
+                        'citation': doc.metadata.get('citation', [])
                     }
-                    logger.info(f"Formatted Document: {formatted_doc}")
-
-                    # Add the formatted document to the final list
                     formatted_documents.append(formatted_doc)
-
-                # Create the final dictionary with the key "context"
-                final_output = {'context': formatted_documents,"order": i}
-
-                # Convert the dictionary to a JSON string
-                data_json = json.dumps(final_output)
-                yield f"data: {data_json}\n\n"
+                if formatted_documents:  # Only send if there are documents
+                    final_output = {'context': formatted_documents, "order": i}
+                    data_json = json.dumps(final_output)
+                    yield f"data: {data_json}\n\n"
             if event["event"] == "on_chat_model_end":
                 print("Chat model has completed one response.")
-            i +=1
+            i += 1
     except Exception as e:
         logger.error(f"Error: {e}")
