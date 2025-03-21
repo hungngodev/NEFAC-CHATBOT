@@ -13,18 +13,18 @@ def load_all_documents():
     docs_path="docs/*"
     all_paths=[d for d in glob.glob(docs_path) if os.path.isdir(d)] 
 
-    # Load url_to_title and title_to_chunks from pickle files
-    try:
-        with open('url_to_title.pkl', 'rb') as u2t:
-            url_to_title = pickle.load(u2t)
-    except FileNotFoundError:
-        url_to_title = {}  # Initialize as empty if file not found
+    # Load url_to_title and title_to_chunks from pickle files 
+    # try:
+    #     with open('url_to_title.pkl', 'rb') as u2t:
+    #         url_to_title = pickle.load(u2t)
+    # except FileNotFoundError:
+    url_to_title = {}  # Initialize as empty if file not found
 
-    try:
-        with open('title_to_chunks.pkl', 'rb') as t2c:
-            title_to_chunks = pickle.load(t2c)
-    except FileNotFoundError:
-        title_to_chunks = {}  # Initialize as empty if file not found
+    # try:
+    #     with open('title_to_chunks.pkl', 'rb') as t2c:
+    #         title_to_chunks = pickle.load(t2c)
+    # except FileNotFoundError:
+    title_to_chunks = {}  # Initialize as empty if file not found
 
     def load_all_in_path(path,tag_title):
         path_list=glob.glob(path+'/*')
