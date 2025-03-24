@@ -30,6 +30,12 @@ const userRoles: UserRole[] = [
     description:
       "Navigate through precedents and legal arguments related to First Amendment cases.",
   },
+  {
+    id: "",
+    title: "None",
+    description:
+      "Get documents related to any user role.",
+  },
 ];
 
 interface RoleSelectionProps {

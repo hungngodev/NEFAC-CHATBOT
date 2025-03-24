@@ -152,3 +152,4 @@ webencodings==0.5.1
 wrapt==1.16.0
 yarl==1.16.0
 youtube-transcript-api==0.6.3
+yt-dlp==2025.3.21

@@ -12,7 +12,7 @@ export const EditRole: React.FC<EditRoleProps> = ({
   return (
     <div className="fixed top-4 right-4 flex flex-col items-end space-y-2">
       <button
-        onClick={() => setUserRole("")}
+        onClick={() => setUserRole("none")}
         className="bg-blue-500 text-white border-2 border-blue-500 px-4 py-2 rounded-md shadow-lg 
                 transition-all duration-200 ease-in-out
                 hover:bg-blue-600 hover:border-blue-600 hover:shadow-xl 
