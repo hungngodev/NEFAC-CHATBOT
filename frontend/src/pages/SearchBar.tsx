@@ -18,7 +18,7 @@ export interface SearchResult {
   title: string;
   link: string;
   audience: string[];
-  nefac_category: string[];  
+  nefac_category: string[];
   resource_type: string[];
   chunks: {
     summary: string;
@@ -49,7 +49,6 @@ const SearchBar = () => {
   const prevLength = useRef<number>(1);
   const messageOrderStream = useRef<Set<number>>(new Set());
   const contextOrderStream = useRef<Set<number>>(new Set());
-  
   const contextResultsStream = useRef<SearchResult[]>([]);
   const conversationEndRef = useRef<HTMLDivElement>(null);
 
@@ -68,97 +67,100 @@ const SearchBar = () => {
   const performSearch = async (searchText: string) => {
     if (!searchText.trim()) return;
 
+    // Add initial messages to the conversation
     setConversation((prev) => [
       ...prev,
       { type: "user", content: searchText, results: [] },
       { type: "assistant", content: "Searching...", results: [] },
     ]);
     setIsLoading(true);
+
     try {
-      // Make API request
-      await fetchEventSource(
-        BASE_URL +
-          "/a***REMOVED***llm?query=" +
-          encodeURIComponent(searchText) +
-          "&convoHistory=" +
-          encodeURIComponent("") +
-          "&roleFilter=" +
-          encodeURIComponent(userRole) +
-          "&contentType=" +
-          encodeURIComponent(contentType) +
-          "&resourceType=" +
-          encodeURIComponent(resourceType),
-        {
-          method: "GET", // Using GET method for RESTful endpoint
-          headers: {
-            Accept: "text/event-stream", // Telling the server we expect a stream
-          },
-          onopen: async (res) => {
-            if (res.ok && res.status === 200) {
-              console.log("Connection made ", res);
-            } else if (
-              res.status >= 400 &&
-              res.status < 500 &&
-              res.status !== 429
-            ) {
-              console.log("Client-side error ", res);
-            }
-          },
-          onmessage(event) {
-            const parsedData = JSON.parse(event.data);
-            console.log(parsedData);
-            if (parsedData.context) {
-              if (!contextOrderStream.current.has(parsedData.order)) {
-                parsedData.context.forEach((result: any) => {
-                  const exist = contextResultsStream.current.findIndex(
-                    (r) => r.title === result.title
-                  );
-                  if (exist !== -1) {
-                    contextResultsStream.current[exist].chunks.push({
-                      summary: result.summary,
-                      citations: [],
-                    });
-                  } else {
-                    contextResultsStream.current.push({
-                      title: result.title,
-                      link: result.link,
-                      audience: result.audience,
-                      nefac_category: result.nefac_category,  
-                      resource_type: result.resource_type,
-                      chunks: [
-                        {
-                          summary: result.summary,
-                          citations: [],
-                        },
-                      ],
-                    });
+      // Wrap the streaming process in a promise
+      await new Promise<void>((resolve, reject) => {
+        fetchEventSource(
+          BASE_URL +
+            "/a***REMOVED***llm?query=" +
+            encodeURIComponent(searchText) +
+            "&convoHistory=" +
+            encodeURIComponent("") +
+            "&roleFilter=" +
+            encodeURIComponent(userRole) +
+            "&contentType=" +
+            encodeURIComponent(contentType) +
+            "&resourceType=" +
+            encodeURIComponent(resourceType),
+          {
+            method: "GET",
+            headers: {
+              Accept: "text/event-stream",
+            },
+            onopen: async (res) => {
+              if (res.ok && res.status === 200) {
+                console.log("Connection made", res);
+              } else if (
+                res.status >= 400 &&
+                res.status < 500 &&
+                res.status !== 429
+              ) {
+                console.log("Client-side error", res);
+              }
+            },
+            onmessage(event) {
+              const parsedData = JSON.parse(event.data);
+              console.log(parsedData);
+              if (parsedData.context) {
+                if (!contextOrderStream.current.has(parsedData.order)) {
+                  parsedData.context.forEach((result: any) => {
+                    const exist = contextResultsStream.current.findIndex(
+                      (r) => r.title === result.title
+                    );
+                    if (exist !== -1) {
+                      contextResultsStream.current[exist].chunks.push({
+                        summary: result.summary,
+                        citations: [],
+                      });
+                    } else {
+                      contextResultsStream.current.push({
+                        title: result.title,
+                        link: result.link,
+                        audience: result.audience,
+                        nefac_category: result.nefac_category,
+                        resource_type: result.resource_type,
+                        chunks: [
+                          {
+                            summary: result.summary,
+                            citations: [],
+                          },
+                        ],
+                      });
+                    }
+                  });
+                }
+                contextOrderStream.current.add(parsedData.order);
+              }
+              if (parsedData.message) {
+                window.history.scrollRestoration = "auto";
+                setConversation((prev) => {
+                  const last = prev[prev.length - 1];
+                  if (messageOrderStream.current.size === 0) {
+                    last.content = parsedData.message;
+                  } else if (
+                    !messageOrderStream.current.has(parsedData.order)
+                  ) {
+                    last.content += parsedData.message;
                   }
+                  messageOrderStream.current.add(parsedData.order);
+                  return [...prev];
                 });
               }
-              contextOrderStream.current.add(parsedData.order);
-            }
-            if (parsedData.reformulated) {
-              // Append reformulated question to reformulatedDiv
-            }
-            if (parsedData.message) {
-              window.history.scrollRestoration = "auto";
-              setConversation((prev) => {
-                const last = prev[prev.length - 1];
-                if (messageOrderStream.current.size === 0) {
-                  last.content = parsedData.message;
-                } else if (!messageOrderStream.current.has(parsedData.order)) {
-                  last.content += parsedData.message;
-                }
-                messageOrderStream.current.add(parsedData.order);
-                return [...prev];
-              });
-            }
-          },
-          onclose() {
-            console.log("Connection closed by the server");
-            messageOrderStream.current.clear();
-            contextOrderStream.current.clear();
-            setTimeout(() => {
+            },
+            onclose() {
+              console.log("Connection closed by the server");
+              // Clear order sets
+              messageOrderStream.current.clear();
+              contextOrderStream.current.clear();
+              // Update conversation with final results
               setConversation((prev) => {
                 window.history.scrollRestoration = "manual";
                 const last = prev[prev.length - 1];
@@ -166,20 +168,24 @@ const SearchBar = () => {
                   title: result.title,
                   link: result.link,
                   audience: result.audience,
-                  nefac_category: result.nefac_category,  
+                  nefac_category: result.nefac_category,
                   resource_type: result.resource_type,
                   chunks: result.chunks,
                 }));
+                // Remove placeholder text
                 last.content = last.content.replace("Searching...", "");
                 return [...prev];
               });
-            }, 1000);
-          },
-          onerror(err) {
-            console.log("There was an error from server", err);
-          },
-        }
-      );
+              // Resolve the promise when the stream is done
+              resolve();
+            },
+            onerror(err) {
+              console.log("There was an error from server", err);
+              reject(err);
+            },
+          }
+        );
+      });
     } catch (error) {
       console.error(error);
       setConversation((prev) => [
@@ -191,10 +197,9 @@ const SearchBar = () => {
         },
       ]);
     } finally {
-      setTimeout(() => {
-        contextResultsStream.current=[]
-        setIsLoading(false);
-      },2000);
+      // Clear stream results and stop loading immediately after completion
+      contextResultsStream.current = [];
+      setIsLoading(false);
     }
   };
 
@@ -232,7 +237,7 @@ const SearchBar = () => {
                   msg={msg}
                   index={index}
                   conversation={conversation}
-                  prevLength={prevLength} 
+                  prevLength={prevLength}
                 />
               ))}
 
