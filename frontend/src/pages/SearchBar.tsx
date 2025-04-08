@@ -60,6 +60,18 @@ const SearchBar = () => {
     }
   }, [conversation]);
 
+
+  useEffect(() => {
+    const last = conversation[conversation.length - 1];
+    const hasResults = last?.results?.length;
+  
+    if (contextResultsStream.current.length && hasResults) {
+      contextResultsStream.current = [];
+      setIsLoading(false);
+    }
+  }, [conversation]);
+
+  
   // Event Handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -158,23 +170,22 @@ const SearchBar = () => {
             console.log("Connection closed by the server");
             messageOrderStream.current.clear();
             contextOrderStream.current.clear();
-            setTimeout(() => {
-              setConversation((prev) => {
-                window.history.scrollRestoration = "manual";
-                const last = prev[prev.length - 1];
-                last.results = contextResultsStream.current.map((result) => ({
-                  title: result.title,
-                  link: result.link,
-                  audience: result.audience,
-                  nefac_category: result.nefac_category,  
-                  resource_type: result.resource_type,
-                  chunks: result.chunks,
-                }));
-                last.content = last.content.replace("Searching...", "");
-                return [...prev];
-              });
-            }, 1000);
-          },
+                  setConversation((prev) => {
+                    window.history.scrollRestoration = "manual";
+                    const last = prev[prev.length - 1];
+                    last.results = contextResultsStream.current.map((result) => ({
+                      title: result.title,
+                      link: result.link,
+                      audience: result.audience,
+                      nefac_category: result.nefac_category,
+                      resource_type: result.resource_type,
+                      chunks: result.chunks,
+                    }));
+                    last.content = last.content.replace("Searching...", "");
+                    return [...prev]; // You can resolve the new state if needed
+                  });
+            },
+          
           onerror(err) {
             console.log("There was an error from server", err);
           },
@@ -191,10 +202,7 @@ const SearchBar = () => {
         },
       ]);
     } finally {
-      setTimeout(() => {
-        contextResultsStream.current=[]
-        setIsLoading(false);
-      },2000);
+
     }
   };
 
