@@ -18,7 +18,7 @@ export interface SearchResult {
   title: string;
   link: string;
   audience: string[];
-  nefac_category: string[];  
+  nefac_category: string[];
   resource_type: string[];
   chunks: {
     summary: string;
@@ -49,7 +49,7 @@ const SearchBar = () => {
   const prevLength = useRef<number>(1);
   const messageOrderStream = useRef<Set<number>>(new Set());
   const contextOrderStream = useRef<Set<number>>(new Set());
-  
+
   const contextResultsStream = useRef<SearchResult[]>([]);
   const conversationEndRef = useRef<HTMLDivElement>(null);
 
@@ -60,18 +60,6 @@ const SearchBar = () => {
     }
   }, [conversation]);
 
-
-  useEffect(() => {
-    const last = conversation[conversation.length - 1];
-    const hasResults = last?.results?.length;
-  
-    if (contextResultsStream.current.length && hasResults) {
-      contextResultsStream.current = [];
-      setIsLoading(false);
-    }
-  }, [conversation]);
-
-  
   // Event Handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -135,7 +123,7 @@ const SearchBar = () => {
                       title: result.title,
                       link: result.link,
                       audience: result.audience,
-                      nefac_category: result.nefac_category,  
+                      nefac_category: result.nefac_category,
                       resource_type: result.resource_type,
                       chunks: [
                         {
@@ -168,24 +156,25 @@ const SearchBar = () => {
           },
           onclose() {
             console.log("Connection closed by the server");
+            setIsLoading(false);
             messageOrderStream.current.clear();
             contextOrderStream.current.clear();
-                  setConversation((prev) => {
-                    window.history.scrollRestoration = "manual";
-                    const last = prev[prev.length - 1];
-                    last.results = contextResultsStream.current.map((result) => ({
-                      title: result.title,
-                      link: result.link,
-                      audience: result.audience,
-                      nefac_category: result.nefac_category,
-                      resource_type: result.resource_type,
-                      chunks: result.chunks,
-                    }));
-                    last.content = last.content.replace("Searching...", "");
-                    return [...prev]; // You can resolve the new state if needed
-                  });
-            },
-          
+            setConversation((prev) => {
+              window.history.scrollRestoration = "manual";
+              const last = prev[prev.length - 1];
+              last.results = contextResultsStream.current.map((result) => ({
+                title: result.title,
+                link: result.link,
+                audience: result.audience,
+                nefac_category: result.nefac_category,
+                resource_type: result.resource_type,
+                chunks: result.chunks,
+              }));
+              last.content = last.content.replace("Searching...", "");
+              return [...prev]; // You can resolve the new state if needed
+            });
+          },
+
           onerror(err) {
             console.log("There was an error from server", err);
           },
@@ -202,7 +191,6 @@ const SearchBar = () => {
         },
       ]);
     } finally {
-
     }
   };
 
@@ -240,7 +228,7 @@ const SearchBar = () => {
                   msg={msg}
                   index={index}
                   conversation={conversation}
-                  prevLength={prevLength} 
+                  prevLength={prevLength}
                 />
               ))}
 

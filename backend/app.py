@@ -50,7 +50,6 @@ mutation = MutationType()
 schema = make_executable_schema(type_defs, query, mutation)
 
 app = FastAPI()
-app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="static")
 
 # Add CORS middleware
 app.add_middleware(
@@ -99,3 +98,4 @@ async def resolve_add_documents(_, info, documents):
         raise HTTPException(status_code=500, detail=str(e))
 
 # Run using: uvicorn app:app --reload
+app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="static")
