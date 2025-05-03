@@ -98,4 +98,4 @@ async def resolve_add_documents(_, info, documents):
         raise HTTPException(status_code=500, detail=str(e))
 
 # Run using: uvicorn app:app --reload
-app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="static")
+app.mount("/", StaticFiles(directory="/app/frontend/dist", html=True), name="static")
