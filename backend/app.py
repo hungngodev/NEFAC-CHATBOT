@@ -13,6 +13,7 @@ from pydantic import BaseModel
 from vector.utils import retrieve_documents
 from vector.load import add_all_documents_to_store
 from load_env import load_env
+from fastapi.staticfiles import StaticFiles
 
 load_env()
 
@@ -49,6 +50,7 @@ mutation = MutationType()
 schema = make_executable_schema(type_defs, query, mutation)
 
 app = FastAPI()
+app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="static")
 
 # Add CORS middleware
 app.add_middleware(

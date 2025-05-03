@@ -33,8 +33,7 @@ const userRoles: UserRole[] = [
   {
     id: "",
     title: "None",
-    description:
-      "Get documents related to any user role.",
+    description: "Get documents related to any user role.",
   },
 ];
 
@@ -70,7 +69,7 @@ export const RoleSelection: React.FC<RoleSelectionProps> = ({
                 },
               ]);
             }}
-            className="p-6 bg-blue-50 shadow-md rounded-lg transition-transform hover:scale-105"ƒ
+            className="p-6 bg-blue-50 shadow-md rounded-lg transition-transform hover:scale-105"
           >
             <h2 className="text-2xl font-semibold text-gray-800">
               {role.title}
