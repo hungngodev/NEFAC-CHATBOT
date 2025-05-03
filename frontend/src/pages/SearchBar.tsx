@@ -34,7 +34,7 @@ export interface Message {
 
 const SearchBar = () => {
   // State Management
-  const [userRole, setUserRole] = useState("");
+  const [userRole, setUserRole] = useState("none");
   const [contentType, setContentType] = useState("");
   const [resourceType, setResourceType] = useState("");
   const [inputValue, setInputValue] = useState("");
@@ -216,7 +216,7 @@ const SearchBar = () => {
   // Main Render
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      {userRole === "" ? (
+      {userRole === "none" ? (
         <RoleSelection
           setUserRole={setUserRole}
           setConversation={setConversation}
