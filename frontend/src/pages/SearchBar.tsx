@@ -89,7 +89,7 @@ const SearchBar = () => {
       // Make API request
       await fetchEventSource(
         BASE_URL +
-          "/a***REMOVED***llm?query=" +
+          "/ask-llm?query=" +
           encodeURIComponent(searchText) +
           "&convoHistory=" +
           encodeURIComponent("") +

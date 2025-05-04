@@ -60,7 +60,7 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers; you can restrict this to specific headers if desired
 )
 
-@app.get("/a***REMOVED***llm")
+@app.get("/ask-llm")
 async def ask_llm(
     query: str,
     convoHistory: str = "",
@@ -98,4 +98,4 @@ async def resolve_add_documents(_, info, documents):
         raise HTTPException(status_code=500, detail=str(e))
 
 # Run using: uvicorn app:app --reload
-# app.mount("/", StaticFiles(directory="/app/frontend/dist", html=True), name="static")
+app.mount("/", StaticFiles(directory="/app/frontend/dist", html=True), name="static")

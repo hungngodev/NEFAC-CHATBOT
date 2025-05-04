@@ -138,7 +138,7 @@ Retrieved documents (for your reference, not to include in the response):
             "k": NUMBER_OF_NEAREST_NEIGHBORS,
             "lambda_mult": LAMBDA_MULT,
             "score_threshold": THRESHOLD,
-            "filter": create_vectorstore_filter(roleFilter, contentType, resourceType, seen_documents)
+            # "filter": create_vectorstore_filter(roleFilter, contentType, resourceType, seen_documents)
         },
     ).with_config(tags=["retriever"])
 
