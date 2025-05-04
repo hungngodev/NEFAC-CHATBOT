@@ -30,6 +30,8 @@ embedding_model = OpenAIEmbeddings(model="text-embedding-3-large")
 
 store = {}
 
+seen_documents = set()
+
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
     if session_id not in store:
         store[session_id] = ChatMessageHistory()
@@ -43,7 +45,6 @@ def serialize_aimessagechunk(chunk):
             f"Object of type {type(chunk).__name__} is not correctly formatted for serialization"
         )
 
-# Keep format_docs as metadata-focused, but we won’t use it directly in the message
 def format_docs(docs):
     formatted = []
     for doc in docs:
@@ -59,7 +60,6 @@ def format_docs(docs):
 async def middleware_qa(query, convoHistory, roleFilter="", contentType="", resourceType=""):
     model = ChatOpenAI(model=MODEL_NAME, streaming=True)
 
-    # Step 1: Classification Prompt and Chain (unchanged)
     classify_prompt = ChatPromptTemplate.from_messages(
     [
         ("system", """
@@ -84,7 +84,6 @@ Respond with 'document request' or 'general query'.
     )
     classify_chain = classify_prompt | ChatOpenAI(temperature=0) | StrOutputParser()
 
-    # Step 2: General Query Prompt and Chain (unchanged)
     general_prompt = ChatPromptTemplate.from_messages(
         [
             ("system", """
@@ -100,7 +99,6 @@ You are an AI chatbot for NEFAC, the New England First Amendment Coalition. NEFA
         | (lambda x: {"answer": x})
     )
 
-    # Step 3: Document Request Path (Updated QA Prompt)
     contextualize_q_system_prompt = """Given a chat history and the latest user question, formulate a standalone question that can be understood without the chat history. Do NOT answer it, just reformulate if needed."""
     contextualize_q_prompt = ChatPromptTemplate.from_messages(
         [
@@ -140,7 +138,7 @@ Retrieved documents (for your reference, not to include in the response):
             "k": NUMBER_OF_NEAREST_NEIGHBORS,
             "lambda_mult": LAMBDA_MULT,
             "score_threshold": THRESHOLD,
-            # "filter": create_vectorstore_filter(roleFilter, contentType, resourceType, NUMBER_OF_NEAREST_NEIGHBORS)
+            "filter": create_vectorstore_filter(roleFilter, contentType, resourceType, seen_documents)
         },
     ).with_config(tags=["retriever"])
 
@@ -194,7 +192,6 @@ Retrieved documents (for your reference, not to include in the response):
         | (lambda x: {"answer": x})
     )
 
-    # Step 4: Routing Logic (unchanged)
     router = RunnableBranch(
         (
             lambda x: "document request" in classify_chain.invoke(x).lower(),
@@ -215,7 +212,6 @@ Retrieved documents (for your reference, not to include in the response):
     try:
         i = 0
         async for event in conversational_chain.astream_events(input, config={"configurable": {"session_id": "abc123"}}, version="v1"):
-            # Stream the final answer (message only)
             if "final_answer" in event["tags"] and event["event"] == "on_chat_model_stream":               
                 chunk_content = serialize_aimessagechunk(event["data"]["chunk"])
                 if len(chunk_content) != 0:
@@ -223,7 +219,6 @@ Retrieved documents (for your reference, not to include in the response):
                     data_json = json.dumps(data_dict)
                     yield f"data: {data_json}\n\n"
 
-            # Stream the reformulated question (unchanged)
             sources_tags = ['seq:step:2', 'main_chain', 'contextualize_q_chain']
             if all(value in event["tags"] for value in sources_tags) and event["event"] == "on_chat_model_stream":
                 chunk_content = serialize_aimessagechunk(event["data"]["chunk"])
@@ -232,17 +227,15 @@ Retrieved documents (for your reference, not to include in the response):
                     data_json = json.dumps(data_dict)
                     yield f"data: {data_json}\n\n"
 
-            # Stream the context (document metadata) - adjusted to ensure it’s sent properly
-            sources_tags = ['main_chain', 'retriever']
             if "retriever" in event["tags"] and event["event"] == "on_retriever_end":
                 logger.info("WE ENDED UP IN THE DOCUMENT OUTPUT")
                 documents = event['data']['output']['documents']
                 formatted_documents = []
-                seen_documents = set()
+                curr_seen_documents = set()
                 for doc in documents:
-                    if doc.metadata["title"] in seen_documents:
+                    if doc.metadata["title"] in curr_seen_documents:
                         continue
-                    seen_documents.add(doc.metadata["title"])
+                    curr_seen_documents.add(doc.metadata["title"])
                     formatted_doc = {
                         'summary': doc.metadata['summary'],
                         'link': doc.metadata['source'],
@@ -254,12 +247,14 @@ Retrieved documents (for your reference, not to include in the response):
                         'citation': doc.metadata.get('citation', [])
                     }
                     formatted_documents.append(formatted_doc)
-                if formatted_documents:  # Only send if there are documents
+                if formatted_documents:
                     final_output = {'context': formatted_documents, "order": i}
                     data_json = json.dumps(final_output)
                     yield f"data: {data_json}\n\n"
+                seen_documents.clear()  # Clear after processing retriever output
             if event["event"] == "on_chat_model_end":
                 print("Chat model has completed one response.")
             i += 1
     except Exception as e:
         logger.error(f"Error: {e}")
+        seen_documents.clear()  # Clear in case of error

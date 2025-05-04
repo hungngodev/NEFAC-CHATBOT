@@ -14,12 +14,14 @@ export const SuggestionByRole: React.FC<SuggestionByRoleProps> = ({
   setConversation,
   performSearch,
 }) => {
+  const definedRoles = ["citizen", "educator", "journalist", "lawyer"];
+
   const handleSuggestionClick = async (
     suggestion: string,
     index: number,
     type: string
   ) => {
-    if (type == "document") {
+    if (type === "document") {
       setConversation((prev) => [
         ...prev,
         { type: "user", content: suggestion, results: [] },
@@ -34,9 +36,9 @@ export const SuggestionByRole: React.FC<SuggestionByRoleProps> = ({
               {
                 title: popularDocumentsByRole[userRole][index].title,
                 link: FRONTEND_URL + popularDocumentsByRole[userRole][index].link,
-                  audience: [],
-                  nefac_category: [],
-                  resource_type: [],
+                audience: [],
+                nefac_category: [],
+                resource_type: [],
                 chunks: [
                   {
                     summary: popularDocumentsByRole[userRole][index].summary,
@@ -53,7 +55,7 @@ export const SuggestionByRole: React.FC<SuggestionByRoleProps> = ({
     }
   };
 
-  return (
+  return definedRoles.includes(userRole) ? (
     <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-full max-w-3xl px-4 py-6 flex flex-col items-center gap-4 z-10">
       {/* Popular Documents */}
       <div className="text-center">
@@ -62,25 +64,25 @@ export const SuggestionByRole: React.FC<SuggestionByRoleProps> = ({
           {userRole.charAt(0).toUpperCase() + userRole.slice(1)}s:
         </h3>
         <div className="flex flex-wrap justify-center gap-4">
-        {/* Render all buttons except the last 2 */}
-        {suggestionsByRole[userRole]?.slice(0, -2).map((suggestion, index) => (
-          <div key={index}>
-            <SuggestionButton
-              handleSuggestionClick={handleSuggestionClick}
-              suggestion={suggestion}
-              index={index}
-              type="document"
-            />
-          </div>
-        ))}
-
-        {/* Insert Common Questions section */}
-        <div className="w-full mt-2 flex justify-center">
-          <h3 className="text-lg font-semibold text-black">Common Questions:</h3>
+          {suggestionsByRole[userRole].slice(0, -2).map((suggestion, index) => (
+            <div key={index}>
+              <SuggestionButton
+                handleSuggestionClick={handleSuggestionClick}
+                suggestion={suggestion}
+                index={index}
+                type="document"
+              />
+            </div>
+          ))}
         </div>
+      </div>
 
-        {/* Render the last 2 buttons */}
-        {suggestionsByRole[userRole]?.slice(-2).map((suggestion, index) => (
+      {/* Common Questions */}
+      <div className="w-full mt-2 flex justify-center">
+        <h3 className="text-lg font-semibold text-black">Common Questions:</h3>
+      </div>
+      <div className="flex flex-wrap justify-center gap-4">
+        {suggestionsByRole[userRole].slice(-2).map((suggestion, index) => (
           <div key={index + suggestionsByRole[userRole].length - 2}>
             <SuggestionButton
               handleSuggestionClick={handleSuggestionClick}
@@ -92,8 +94,7 @@ export const SuggestionByRole: React.FC<SuggestionByRoleProps> = ({
         ))}
       </div>
     </div>
-  </div>
-  );
+  ) : null;
 };
 
 const popularDocumentsByRole: {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 interface UserRole {
   id: string;
@@ -46,13 +46,43 @@ export const RoleSelection: React.FC<RoleSelectionProps> = ({
   setUserRole,
   setConversation,
 }) => {
+  const getWelcomeMessage = (roleId: string) => {
+    let roleMessage = "";
+    if (roleId) {
+      const vowelStart = ["a", "e", "i", "o", "u"].includes(roleId[0].toLowerCase());
+      roleMessage = `I see that you are a${vowelStart ? "n" : ""} ${roleId}. `;
+    }
+    return `Welcome to the New England First Amendment Coalition, the region's leading defender of First Amendment freedoms and government transparency. ${roleMessage}You can ask me for NEFAC documents and YouTube vidoes or we can chat about first amendment related topics. How can I help you?`;
+  };
+
   return (
     <div className="flex flex-col items-center justify-center p-4">
+      <div className="fixed top-4 right-4">
+        <button
+          onClick={() => {
+            setUserRole("");
+            setConversation([
+              {
+                type: "assistant",
+                content: getWelcomeMessage(""),
+              },
+            ]);
+          }}
+          title="Select no specific role"
+          className="bg-blue-500 text-white border-2 border-blue-500 px-4 py-2 rounded-md shadow-lg 
+                      transition-all duration-200 ease-in-out
+                      hover:bg-blue-600 hover:border-blue-600 hover:shadow-xl 
+                      active:bg-blue-700 active:scale-95
+                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          None
+        </button>
+      </div>
       <h1 className="text-4xl font-bold mb-6 text-blue-700">
         Choose Your Role
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl">
-        {userRoles.map((role) => (
+        {userRoles.filter(role => role.id !== "").map((role) => (
           <button
             key={role.id}
             onClick={() => {
@@ -60,12 +90,7 @@ export const RoleSelection: React.FC<RoleSelectionProps> = ({
               setConversation([
                 {
                   type: "assistant",
-                  content: `Welcome to the New England First Amendment Coalition, the region's leading defender of First Amendment freedoms and government transparency. ${
-                    role.id &&
-                    `I see that you are a${
-                      ["a", "e", "i", "o", "u"].includes(role.id[0]) ? "n" : ""
-                    } ${role.id}.`
-                  } You can ask me for NEFAC documents and YouTube vidoes or we can chat about first amendment related topics. How can I help you?`,
+                  content: getWelcomeMessage(role.id),
                 },
               ]);
             }}

@@ -22,7 +22,7 @@ FAISS_STORE_PATH = "faiss_store"
 # adds all docs and videos to the vector store
 def add_all_documents_to_store(vector_store):
 
-    all_documents, url_to_title, title_to_chunks = load_all_documents()
+    all_documents, url_to_title, title_to_chunks, new_docs = load_all_documents()
 
     # Keeping track of all document names we have for the future (may not be needed)
     with open('doc_names.pkl', 'wb') as doc_names:
@@ -35,13 +35,13 @@ def add_all_documents_to_store(vector_store):
 
     with open('title_to_chunks.pkl', 'wb') as t2c:
         pickle.dump(title_to_chunks, t2c)
-    # print(title_to_chunks)
+    print(title_to_chunks)
 
     def chunk_documents(docs):
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=32)
         chunked_docs = text_splitter.split_documents(docs)
         return chunked_docs
-    new_chunks=[chunk for doc in all_documents for chunk in title_to_chunks[doc]]
+    new_chunks=[chunk for doc in new_docs for chunk in title_to_chunks[doc]]
     chunked_docs = chunk_documents(new_chunks) if len(new_chunks)>0 else []
     if len(chunked_docs)>0:
         vector_store.add_documents(documents = chunked_docs)
@@ -57,6 +57,7 @@ def get_vector_store():
             embeddings=embedding_model,
             allow_dangerous_deserialization=True
         )
+        add_all_documents_to_store(vector_store)
     else:
         print('Store not found')
         vector_store = FAISS(embedding_function=embedding_model, 

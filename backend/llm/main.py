@@ -57,4 +57,4 @@ def inspect_vector_store(vector_store, prompt='', k=5):
                     print(f"Similarity Score: {distance}")
                     print("-" * 40)
 
-# inspect_vector_store(vector_store,'data cleaning 101')
+inspect_vector_store(vector_store,'law')

@@ -60,6 +60,17 @@ const SearchBar = () => {
     }
   }, [conversation]);
 
+  useEffect(() => {
+    const last = conversation[conversation.length - 1];
+    const hasResults = last?.results?.length;
+  
+    if (hasResults) {
+      contextResultsStream.current = [];
+      setIsLoading(false);
+    }
+  }, [conversation]);
+
+
   // Event Handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -121,7 +132,7 @@ const SearchBar = () => {
                   } else {
                     contextResultsStream.current.push({
                       title: result.title,
-                      link: result.link,
+                      link: result.link.replace("/waiting_room", ""), // Remove /waiting_room
                       audience: result.audience,
                       nefac_category: result.nefac_category,
                       resource_type: result.resource_type,
@@ -156,7 +167,6 @@ const SearchBar = () => {
           },
           onclose() {
             console.log("Connection closed by the server");
-            setIsLoading(false);
             messageOrderStream.current.clear();
             contextOrderStream.current.clear();
             setConversation((prev) => {
@@ -164,7 +174,7 @@ const SearchBar = () => {
               const last = prev[prev.length - 1];
               last.results = contextResultsStream.current.map((result) => ({
                 title: result.title,
-                link: result.link,
+                link: result.link.replace("/waiting_room", ""), // Remove /waiting_room
                 audience: result.audience,
                 nefac_category: result.nefac_category,
                 resource_type: result.resource_type,
@@ -191,6 +201,7 @@ const SearchBar = () => {
         },
       ]);
     } finally {
+      setIsLoading(false);
     }
   };
 

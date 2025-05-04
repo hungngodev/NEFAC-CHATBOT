@@ -32,8 +32,8 @@ export const EditRole: React.FC<EditRoleProps> = ({
                   cursor-pointer"
           onChange={(e) =>
             index === 0
-              ? setResourceType(e.target.value)
-              : setContentType(e.target.value)
+              ? setResourceType(e.target.value.toLowerCase())
+              : setContentType(e.target.value.toLowerCase())
           }
         >
           {select.options.map((option, index) => (
