@@ -27,8 +27,8 @@ export const SearchResultItem: React.FC<{ result: SearchResult}> = ({ result }) 
       
       {/* Link */}
       <a href={result.link} className="text-blue-500 hover:underline">
-        {result.link}
-      </a>
+      {result.link}
+        </a>
       
       {/* Tags under the link */}
       <div className="mt-2 flex flex-wrap gap-2">

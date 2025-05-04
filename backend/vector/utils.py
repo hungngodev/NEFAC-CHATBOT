@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 def retrieve_documents(query):
     pass
-def create_vectorstore_filter(roleFilter="", contentType="", resourceType="",k=3):
+def create_vectorstore_filter(roleFilter="", contentType="", resourceType="", seen_documents=set()):
     
     """
     Creates a metadata filter function for vector store retriever to make sure we don't get duplicate documents that don't match the filters
@@ -19,10 +19,7 @@ def create_vectorstore_filter(roleFilter="", contentType="", resourceType="",k=3
     Returns:
         function: A filter function that can be used with vectorstore.as_retriever()
     """
-    seen_documents=set()
-    total_returned=0 # shoutout 220 for teaching closures
     def filter_func(metadata):
-        nonlocal seen_documents, total_returned
         if metadata['title'] in seen_documents:
             return False
         else:
@@ -47,10 +44,6 @@ def create_vectorstore_filter(roleFilter="", contentType="", resourceType="",k=3
 
         # If all specified filters pass, return True
         # print(metadata["title"],'made it through')
-        total_returned+=1
-        if total_returned==k:
-            total_returned=0
-            seen_documents.clear()
         return True
 
     return filter_func
