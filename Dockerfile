@@ -13,9 +13,18 @@ WORKDIR /app
 # Set PYTHONPATH for backend
 ENV PYTHONPATH="/app/backend"
 
-# Install backend dependencies
-COPY backend/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install poetry
+RUN curl -sSL https://install.python-poetry.org | python3 - && \
+    poetry config virtualenvs.create false
+
+# Copy poetry files
+COPY backend/pyproject.toml backend/poetry.lock ./backend/
+
+# Install dependencies
+WORKDIR /app/backend
+RUN poetry install --no-interaction --no-ansi
+
+WORKDIR /app
 
 # Copy backend and built frontend
 COPY backend ./backend

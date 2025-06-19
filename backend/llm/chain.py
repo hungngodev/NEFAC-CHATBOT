@@ -258,3 +258,7 @@ Retrieved documents (for your reference, not to include in the response):
     except Exception as e:
         logger.error(f"Error: {e}")
         seen_documents.clear()  # Clear in case of error
+        
+        
+        # very specfic prompt, working on 
+        # opages foi guides, youtube, legal briefs
