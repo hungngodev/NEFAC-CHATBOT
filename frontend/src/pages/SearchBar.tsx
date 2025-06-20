@@ -18,7 +18,7 @@ export interface SearchResult {
 export interface Message {
   type: 'user' | 'assistant';
   content: string;
-  results: SearchResult[];
+  results?: SearchResult[];
 }
 
 const SearchBar = () => {

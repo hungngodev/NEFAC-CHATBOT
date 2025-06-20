@@ -5,7 +5,7 @@ from fastapi.responses import StreamingResponse
 from llm.main import ask_llm_stream
 from load_env import load_env
 from vector.load import get_loading_status, is_loading
-from .schemas import LoadingStatusResponse
+from schemas import LoadingStatusResponse
 
 load_env()
 
