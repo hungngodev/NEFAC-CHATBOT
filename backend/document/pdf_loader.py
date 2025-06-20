@@ -1,4 +1,3 @@
-import glob
 from langchain_community.document_loaders import PyPDFLoader
 import os
 

@@ -7,27 +7,31 @@ logger = logging.getLogger(__name__)
 def format_docs(docs):
     """Format documents with default values for missing metadata."""
     formatted_docs = []
-    
-    for doc in docs:
-        # Safely extract metadata with defaults
-        metadata = {
-            "source": doc.metadata.get("source", "N/A"),
-            "page": doc.metadata.get("page", "N/A"),
-            "title": doc.metadata.get("title", "N/A"),
-            "nefac_category": doc.metadata.get("nefac_category", []),
-            "resource_type": doc.metadata.get("resource_type", []),
-            "audience": doc.metadata.get("audience", [])
+    for i, doc in enumerate(docs):
+        metadata = doc.metadata
+        title = metadata.get('title', 'Unknown Source')
+        source_url = metadata.get('source', '')
+        doc_type = metadata.get('type', 'unknown')
+        timestamp = metadata.get('page', None)
+        
+        # Store metadata for potential source creation
+        metadata ={
+            "source_id": i+1,
+            "title": title,
+            "type": doc_type,
+            "link": f"{source_url}&t={timestamp}s" if doc_type == 'youtube' and timestamp else source_url,
+            "timestamp_seconds": timestamp if doc_type == 'youtube' else None,
+            "summary": metadata.get('summary', None)
         }
         
-        # Format the document
+        # Format the document with the new metadata
         formatted_doc = "\n".join([
             f"content: {doc.page_content}",
-            f"source: {metadata['source']}",
-            f"page: {metadata['page']}",
             f"title: {metadata['title']}",
-            f"nefac_category: {metadata['nefac_category']}",
-            f"resource_type: {metadata['resource_type']}",
-            f"audience: {metadata['audience']}"
+            f"type: {metadata['type']}",
+            f"link: {metadata['link']}",
+            f"timestamp_seconds: {metadata['timestamp_seconds']}",
+            f"summary: {metadata['summary']}"
         ])
         
         formatted_docs.append(formatted_doc)

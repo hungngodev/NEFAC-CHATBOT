@@ -10,8 +10,6 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from load_env import load_env
 import pickle
-from concurrent.futures import ThreadPoolExecutor
-from typing import Optional
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -191,7 +189,7 @@ def get_vector_store():
             thread = threading.Thread(target=add_documents_sequentially, daemon=True)
             thread.start()
         
-        return _vector_store
+        return _vector_store.vector_store
 
 def get_loading_status():
     """Get current loading status"""

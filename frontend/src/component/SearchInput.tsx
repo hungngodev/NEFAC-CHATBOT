@@ -1,5 +1,5 @@
-import { Send } from "lucide-react";
-import { FormEvent } from "react";
+import { Send } from 'lucide-react';
+import { FormEvent } from 'react';
 
 interface SearchInputProps {
   handleSearch: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;

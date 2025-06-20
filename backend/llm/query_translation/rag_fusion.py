@@ -7,15 +7,24 @@ from langchain_core.load import dumps
 
 from langchain_core.load import loads
 from llm.utils import format_docs
-from llm.constant import PROMPT_MODEL_NAME
+from llm.constant import PROMPT_MODEL_NAME, BASE_PROMPT
 from load_env import load_env
 load_env()
 
+prompt_rag_fusion = ChatPromptTemplate.from_template(f"""
+You are an AI assistant for the New England First Amendment Coalition (NEFAC). Your goal is to enhance document retrieval by generating multiple complementary search queries based on a single user question.
 
-template = """You are a helpful assistant that generates multiple search queries based on a single input query. \n
-Generate multiple search queries related to: {question} \n
-Output (4 queries):"""
-prompt_rag_fusion = ChatPromptTemplate.from_template(template)
+{BASE_PROMPT}
+Given the user's original question, generate exactly 4 refined and diverse queries designed to:
+1. Precisely address the user's original query from a NEFAC legal or press-freedom perspective.
+2. Identify broader issues and historical contexts relevant to NEFAC's First Amendment advocacy.
+3. Surface related case studies, precedent-setting legal cases, or real-world applications.
+4. Uncover potential challenges, debates, or alternative viewpoints connected to NEFAC's work.
+
+Original question: {{question}}
+
+Output (4 queries, separated by newlines):
+""")
 
 generate_queries = (
     prompt_rag_fusion 
@@ -43,7 +52,7 @@ def reciprocal_rank_fusion(results: list[list], k=60):
             if doc_str not in fused_scores:
                 fused_scores[doc_str] = 0
             # Retrieve the current score of the document, if any
-            previous_score = fused_scores[doc_str]
+            fused_scores[doc_str]
             # Update the score of the document using the RRF formula: 1 / (rank + k)
             fused_scores[doc_str] += 1 / (rank + k)
 

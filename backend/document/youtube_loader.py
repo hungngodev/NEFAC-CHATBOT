@@ -6,7 +6,6 @@ from langchain_core.documents import Document
 import yt_dlp
 from langchain_openai import ChatOpenAI  
 from load_env import load_env
-import requests
 from youtube_transcript_api import YouTubeTranscriptApi
 from urllib.parse import parse_qs, urlparse
 import time

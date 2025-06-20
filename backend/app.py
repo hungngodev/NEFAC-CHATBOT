@@ -1,101 +1,45 @@
 import logging
-import os
-from typing import List
-
-from ariadne import MutationType, QueryType, gql, make_executable_schema
-from ariadne.asgi import GraphQL
-from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from llm.main import ask_llm_stream
-from pydantic import BaseModel
-from vector.utils import retrieve_documents
-from vector.load import add_all_documents_to_store
 from load_env import load_env
-from fastapi.staticfiles import StaticFiles
+from vector.load import get_loading_status, is_loading
 
 load_env()
 
-# Initialize logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# GraphQL Type Definitions
-type_defs = gql("""
-                
-    interface Document {
-        page_content: String
-    }
-
-    type Citation {
-        id: String!
-        context: String!
-    }
-                
-    type Query {
-        retrieveDocuments(query: String!): [Document]
-    }
-
-    type Mutation {
-        addDocuments(documents: [String!]!): String!
-    }
-""")
-
-# Create Query and Mutation types
-query = QueryType()
-mutation = MutationType()
-    
-# Create the executable schema
-schema = make_executable_schema(type_defs, query, mutation)
-
 app = FastAPI()
 
-# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins; change this to specific domains as needed
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods; you can restrict this to specific methods if desired
-    allow_headers=["*"],  # Allows all headers; you can restrict this to specific headers if desired
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @app.get("/ask-llm")
 async def ask_llm(
     query: str,
     convoHistory: str = "",
-    roleFilter: str = "",
-    contentType: str = "",
-    resourceType: str = "",
 ):
-    
     try:        
-        # Return the stream as a response using StreamingResponse
         return StreamingResponse(
-            ask_llm_stream(None, query, convoHistory, roleFilter, contentType, resourceType),
+            ask_llm_stream(None, query, convoHistory),
             media_type="text/event-stream",
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# Mount the GraphQL ASGI application
-app.add_route("/graphql", GraphQL(schema, debug=True))
-
-@query.field("retrieveDocuments")
-def resolve_retrieve_documents(_, info, query):
+@app.get("/loading-status")
+async def get_vector_loading_status():
+    """Get the current status of document loading into the vector store"""
     try:
-        return retrieve_documents(query)
+        status = get_loading_status()
+        status["is_loading"] = is_loading()
+        return status
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
-@mutation.field("addDocuments")
-async def resolve_add_documents(_, info, documents):
-    try:
-        add_all_documents_to_store(_, info, documents)
-        print("Documents added!")
-        return "Documents added!"
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-# Run using: uvicorn app:app --reload
-app.mount("/", StaticFiles(directory="/app/frontend/dist", html=True), name="static")

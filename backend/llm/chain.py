@@ -1,6 +1,5 @@
 import json
 import logging
-from langchain_community.vectorstores import FAISS
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_openai import OpenAIEmbeddings
 from langchain_core.chat_history import BaseChatMessageHistory
@@ -13,7 +12,6 @@ from langchain_core.runnables import RunnableLambda
 from langchain_openai import ChatOpenAI
 from llm.utils import format_docs
 from load_env import load_env
-from vector.utils import create_vectorstore_filter
 from vector.load import vector_store
 from .query_translation.decomposition import get_decomposition_chain
 from .query_translation.multi_query import get_multi_query_chain
@@ -45,18 +43,6 @@ def serialize_aimessagechunk(chunk):
             f"Object of type {type(chunk).__name__} is not correctly formatted for serialization"
         )
 
-def format_docs(docs):
-    formatted = []
-    for doc in docs:
-        metadata = doc.metadata
-        formatted.append(
-            f"Title: {metadata['title']}\n"
-            f"Summary: {metadata['summary']}\n"
-            f"Link: {metadata['source']}\n"
-            f"Type: {metadata['type']}\n"
-        )
-    return "\n\n".join(formatted)
-
 async def middleware_qa(query, convoHistory, roleFilter="", contentType="", resourceType=""):
     model = ChatOpenAI(model=MODEL_NAME, streaming=True)
 
@@ -87,7 +73,7 @@ Respond with 'document request' or 'general query'.
     general_prompt = ChatPromptTemplate.from_messages(
         [
             ("system", """
-You are an AI chatbot for NEFAC, the New England First Amendment Coalition. NEFAC is dedicated to protecting press freedoms and the public's right to know in New England. Provide a helpful response to the user's query based on your knowledge of NEFAC’s mission and activities. Do not retrieve documents.
+You are an AI chatbot for NEFAC, the New England First Amendment Coalition. NEFAC is dedicated to protecting press freedoms and the public's right to know in New England. Provide a helpful response to the user's query based on your knowledge of NEFAC's mission and activities. Do not retrieve documents.
 """),
             MessagesPlaceholder(variable_name="chat_history"),
             ("human", "{question}"),
@@ -118,11 +104,22 @@ You are an AI assistant for NEFAC, the New England First Amendment Coalition. Th
 
 Instructions:
 - Respond with a concise message like: "I have found some relevant documents on [topic]. You can view the details below."
-- Replace [topic] with a brief description of what the user asked for (e.g., 'NEFAC’s FOI guides').
+- Replace [topic] with a brief description of what the user asked for (e.g., 'NEFAC's FOI guides').
 - Do NOT include document titles, summaries, or links in your response—they will be provided separately.
-- If no documents are relevant (context is empty), say: "I couldn’t find specific documents on [topic]. Can you provide more details?"
+- If no documents are relevant (context is empty), say: "I couldn't find specific documents on [topic]. Can you provide more details?"
 - Use the conversation history to refine your response if needed.
 - Keep it short and clear.
+
+Your job is to answer questions using information from NEFAC's database.
+
+HOW TO RESPOND:
+1. If you find relevant information in the sources below, use it to answer the question. Reference specific sources (e.g., "According to the Data Cleaning 101 video").
+
+2. If sources mention the topic indirectly, you can explain the concept based on how NEFAC discusses it. Start with "Based on NEFAC's materials..." 
+
+3. If the topic is unrelated to NEFAC's work (like pizza, sports, etc.), say: "That topic isn't related to NEFAC's focus on First Amendment rights and government transparency. I can help with journalism, public records, FOI requests, and related topics."
+
+4. If the topic is relevant but not found, say: "I'm sorry, but NEFAC doesn't have information about [topic] in our current database."
 
 Retrieved documents (for your reference, not to include in the response):
 {context}
@@ -132,27 +129,46 @@ Retrieved documents (for your reference, not to include in the response):
         ]
     )
 
-    retriever = vector_store.as_retriever(
-        search_type="similarity",
-        search_kwargs={
-            "k": NUMBER_OF_NEAREST_NEIGHBORS,
-            "lambda_mult": LAMBDA_MULT,
-            "score_threshold": THRESHOLD,
-            # "filter": create_vectorstore_filter(roleFilter, contentType, resourceType, seen_documents)
-        },
+    retriever = RunnableLambda(
+        lambda question: vector_store
+            .as_retriever(
+                search_type="similarity",
+                search_kwargs={
+                    "k": NUMBER_OF_NEAREST_NEIGHBORS,
+                    "lambda_mult": LAMBDA_MULT,
+                    "score_threshold": THRESHOLD,
+                }
+            )
+            .invoke(question)
     ).with_config(tags=["retriever"])
 
-    retriever_chain = {
-        'default': RunnableLambda(lambda x: x['question']) | retriever | format_docs,
-        'multi_query': get_multi_query_chain(retriever),
-        'rag_fusion': get_rag_fusion_chain(retriever),
-        'decomposition': get_decomposition_chain(retriever),
-        'step_back': get_step_back_chain(retriever),
-        'hyde': get_hyDe_chain(retriever)
-    }
 
-    classifier_prompt = ChatPromptTemplate.from_template(
+    query_classifier = (
+        ChatPromptTemplate.from_template(
         """Analyze the question and choose the best query transformation strategy:
+        
+        You are an assistant for the New England First Amendment Coalition (NEFAC). 
+        Your task is to generate exactly 5 search queries that will be used to search through a vector database 
+        containing YouTube video transcripts, summaries, and documents related to NEFAC's work.
+
+        Make these queries ABSTRACT and COMPREHENSIVE - think about what information would make you give the BEST possible answer, even if it's not directly mentioned in the question.
+
+        IMPORTANT: Be creative and expansive in your search. Consider:
+        - Historical context and evolution of the topic
+        - Legal frameworks and precedents
+        - Best practices and methodologies
+        - Common challenges and innovative solutions
+        - Cross-cutting themes that might illuminate the topic
+        - Expert perspectives and professional advice
+        - Real-world examples and case studies
+
+        For topics related to:
+        - FOI/Public Records: Include queries about access challenges, legal precedents, best practices, enforcement, litigation, delays, exemptions, appeals
+        - First Amendment: Include constitutional principles, case law, practical applications, violations, protections, limits, interpretations
+        - Journalism/Media: Include ethics, techniques, legal protections, investigations, sources, verification, storytelling
+        - Government Transparency: Include accountability, oversight, public participation, barriers, reform, democracy, citizen engagement
+        - Data/Research: Include methodology, accuracy, verification, sources, analysis, presentation, ethics
+        
         1. multiquery - ambiguous questions
         2. ragfusion - complex questions
         3. stepback - specific questions needing context
@@ -161,14 +177,11 @@ Retrieved documents (for your reference, not to include in the response):
         6. default - straightforward questions
         Question: {question}
         Respond ONLY with the method name."""
-    )
-
-    query_classifier = (
-        classifier_prompt 
+    ) 
         | ChatOpenAI(temperature=0, model="gpt-4")
         | StrOutputParser()
     )
-
+    
     retrieval_step = (
         contextualize_q_chain 
         | {
@@ -176,12 +189,12 @@ Retrieved documents (for your reference, not to include in the response):
             'method': query_classifier
         }
         | RunnableBranch(
-            (lambda x: "multiquery" in x["method"], retriever_chain['multi_query']),
-            (lambda x: "decompose" in x["method"], retriever_chain['decomposition']),
-            (lambda x: "stepback" in x["method"], retriever_chain['step_back']),
-            (lambda x: "hyde" in x["method"], retriever_chain['hyde']),
-            (lambda x: "ragfusion" in x["method"], retriever_chain['rag_fusion']),
-            retriever_chain['default']
+            (lambda x: "multiquery" in x["method"], get_multi_query_chain(retriever)),
+            (lambda x: "decompose" in x["method"], get_decomposition_chain(retriever)),
+            (lambda x: "stepback" in x["method"], get_step_back_chain(retriever)),
+            (lambda x: "hyde" in x["method"], get_hyDe_chain(retriever)),
+            (lambda x: "ragfusion" in x["method"], get_rag_fusion_chain(retriever)),
+            RunnableLambda(lambda x: x['question']) | retriever | format_docs,
         )
     ).with_config(tags=["full_retrieval_pipeline"])
 
@@ -233,32 +246,29 @@ Retrieved documents (for your reference, not to include in the response):
                 formatted_documents = []
                 curr_seen_documents = set()
                 for doc in documents:
-                    if doc.metadata["title"] in curr_seen_documents:
+                    chunk_id = f"{doc.metadata.get('title', 'unknown')}:{doc.metadata.get('page', '0')}:{hash(doc.page_content[:100])}"
+                    if chunk_id in curr_seen_documents:
                         continue
-                    curr_seen_documents.add(doc.metadata["title"])
+                    curr_seen_documents.add(chunk_id)
                     formatted_doc = {
-                        'summary': doc.metadata['summary'],
-                        'link': doc.metadata['source'],
-                        'type': doc.metadata['type'],
-                        'title': doc.metadata['title'],
-                        'nefac_category': doc.metadata.get('nefac_category', []),
-                        'resource_type': doc.metadata.get('resource_type', []),
-                        'audience': doc.metadata.get('audience', []),
-                        'citation': doc.metadata.get('citation', [])
+                        'summary': doc.metadata.get('summary', ''),
+                        'link': doc.metadata.get('source', ''),
+                        'type': doc.metadata.get('type', ''),
+                        'title': doc.metadata.get('title', ''),
+                        "timestamp_seconds": doc.metadata.get('page', None) if doc.metadata.get('type', '') == 'youtube' else None,
                     }
                     formatted_documents.append(formatted_doc)
                 if formatted_documents:
                     final_output = {'context': formatted_documents, "order": i}
                     data_json = json.dumps(final_output)
                     yield f"data: {data_json}\n\n"
-                seen_documents.clear()  # Clear after processing retriever output
-            if event["event"] == "on_chat_model_end":
-                print("Chat model has completed one response.")
+                seen_documents.clear()
             i += 1
     except Exception as e:
-        logger.error(f"Error: {e}")
-        seen_documents.clear()  # Clear in case of error
-        
-        
-        # very specfic prompt, working on 
-        # opages foi guides, youtube, legal briefs
+        logger.error(f"Error in middleware_qa: {e}")
+        error_chunk = {
+            "message": "An error occurred while processing your query.",
+            "order": 1
+        }
+        logger.info(f"Yielding error chunk: {error_chunk}")
+        yield f"data: {json.dumps(error_chunk)}\n\n"
