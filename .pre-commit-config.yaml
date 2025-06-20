@@ -1,0 +1,34 @@
+# This is the single, centralized pre-commit configuration for the entire repository.
+
+repos:
+  # ===== Python Backend Hooks =====
+  - repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+      - id: black
+        language_version: python3
+        # Run only on files in the backend directory
+        files: ^backend/
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.8
+    hooks:
+      - id: ruff
+        args: ["--fix"]
+        language_version: python3
+        # Run only on files in the backend directory
+        files: ^backend/
+
+  # ===== Frontend Hooks =====
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.1.0 # Using a slightly newer version
+    hooks:
+      - id: prettier
+        # Run only on files in the frontend directory
+        files: ^frontend/.*\.(js|jsx|ts|tsx|json|css|md|html)$
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.57.0 # Using a slightly newer version
+    hooks:
+      - id: eslint
+        args: [--fix]
+        # Run only on files in the frontend directory
+        files: ^frontend/.*\.(js|jsx|ts|tsx)$
