@@ -154,10 +154,16 @@ dependencies = [
     "wrapt (==1.16.0)",
     "yarl (==1.16.0)",
     "youtube-transcript-api (==1.1.0)",
-    "yt-dlp (==2025.6.9)"
+    "yt-dlp (==2025.6.9)",
+    "ariadne (>=0.26.2,<0.27.0)"
 ]
 
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.4.2"
+ruff = "^0.4.8"
+pre-commit = "^3.7.1"

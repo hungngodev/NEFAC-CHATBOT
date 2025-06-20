@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ValidationError, Field
+from pydantic import BaseModel, Field
 from typing import List
 
 class Citation(BaseModel):
