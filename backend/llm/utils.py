@@ -1,12 +1,14 @@
 import logging
+from typing import List
+from langchain_core.documents import Document
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def format_docs(docs):
+def format_docs(docs: List[Document]) -> str:
     """Format documents with default values for missing metadata."""
-    formatted_docs = []
+    formatted_docs: List[str] = []
     for i, doc in enumerate(docs):
         metadata = doc.metadata
         title = metadata.get('title', 'Unknown Source')

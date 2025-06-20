@@ -1,5 +1,6 @@
 import json
 import logging
+from typing import AsyncGenerator, Any
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_openai import OpenAIEmbeddings
 from langchain_core.chat_history import BaseChatMessageHistory
@@ -35,7 +36,7 @@ def get_session_history(session_id: str) -> BaseChatMessageHistory:
         store[session_id] = ChatMessageHistory()
     return store[session_id]
 
-def serialize_aimessagechunk(chunk):
+def serialize_aimessagechunk(chunk: Any) -> str:
     if isinstance(chunk, AIMessageChunk):
         return chunk.content
     else:
@@ -43,7 +44,9 @@ def serialize_aimessagechunk(chunk):
             f"Object of type {type(chunk).__name__} is not correctly formatted for serialization"
         )
 
-async def middleware_qa(query, convoHistory, roleFilter="", contentType="", resourceType=""):
+async def middleware_qa(
+    query: str, convoHistory: str, roleFilter: str = "", contentType: str = "", resourceType: str = ""
+) -> AsyncGenerator[str, None]:
     model = ChatOpenAI(model=MODEL_NAME, streaming=True)
 
     classify_prompt = ChatPromptTemplate.from_messages(
@@ -224,6 +227,7 @@ Retrieved documents (for your reference, not to include in the response):
     input = {"question": query, "chat_history": convoHistory}
     try:
         i = 0
+        # type: ignore
         async for event in conversational_chain.astream_events(input, config={"configurable": {"session_id": "abc123"}}, version="v1"):
             if "final_answer" in event["tags"] and event["event"] == "on_chat_model_stream":               
                 chunk_content = serialize_aimessagechunk(event["data"]["chunk"])
