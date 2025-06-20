@@ -26,18 +26,18 @@ repos:
         # Run only on files in the frontend directory
         files: ^frontend/.*\.(js|jsx|ts|tsx|json|css|md|html)$
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.0.0 # Using a slightly newer version
+    rev: v8.53.0
     hooks:
       - id: eslint
-        args: [--fix, --config, frontend/eslint.config.js]
+        args: [--fix]
         additional_dependencies:
-          [
-            "eslint@9.0.0",
-            "@typescript-eslint/eslint-plugin@7.0.0",
-            "@typescript-eslint/parser@7.0.0",
-            "eslint-plugin-react@7.33.0",
-            "eslint-plugin-react-hooks@4.6.0",
-            "eslint-plugin-react-refresh@0.4.5",
-          ]
+          - eslint@8.57.0
+          - "@typescript-eslint/eslint-plugin@7.13.0"
+          - "@typescript-eslint/parser@7.13.0"
+          - eslint-plugin-react@7.34.2
+          - eslint-plugin-react-hooks@4.6.2
+          - eslint-plugin-react-refresh@0.4.7
+          - typescript-eslint@7.13.0
+          - globals@15.11.0
         # Run only on files in the frontend directory
         files: ^frontend/.*\.(js|jsx|ts|tsx)$
