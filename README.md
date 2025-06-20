@@ -101,3 +101,12 @@ git push origin <branch name>
 ## License
 
 MIT
+
+# Migration & Inspiration
+
+This project is inspired by and migrated from the following repositories:
+
+- [uynx/NEFAC-Chatbot](https://github.com/uynx/NEFAC-Chatbot)
+- [DorianAtSchool/nefac](https://github.com/DorianAtSchool/nefac)
+
+We have adapted, refactored, and extended the codebase to fit our current needs. Please refer to those repositories for earlier history and context.
