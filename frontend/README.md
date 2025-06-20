@@ -22,7 +22,7 @@ export default tseslint.config({
       tsconfigRootDir: import.meta.dirname,
     },
   },
-})
+});
 ```
 
 - Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
@@ -31,7 +31,7 @@ export default tseslint.config({
 
 ```js
 // eslint.config.js
-import react from 'eslint-plugin-react'
+import react from 'eslint-plugin-react';
 
 export default tseslint.config({
   // Set the react version
@@ -46,5 +46,44 @@ export default tseslint.config({
     ...react.configs.recommended.rules,
     ...react.configs['jsx-runtime'].rules,
   },
-})
+});
 ```
+
+# Frontend Code Style & Linting
+
+This project uses [Prettier](https://prettier.io/) for code formatting and [ESLint](https://eslint.org/) for linting. Both are enforced automatically with [pre-commit](https://pre-commit.com/) hooks.
+
+## Setup
+
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+2. **Install pre-commit hooks (requires pre-commit installed globally):**
+   ```bash
+   pre-commit install
+   ```
+
+## Running the development server
+
+- To start the frontend dev server:
+  ```bash
+  npm run dev
+  ```
+
+## Linting and Formatting
+
+- **Lint with ESLint:**
+  ```bash
+  npm run lint
+  ```
+- **Format with Prettier:**
+  ```bash
+  npm run format
+  ```
+- **Check formatting only:**
+  ```bash
+  npx prettier --check .
+  ```
+
+---
