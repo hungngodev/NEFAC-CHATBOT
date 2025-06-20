@@ -9,9 +9,11 @@ from langchain_core.load import loads
 from llm.utils import format_docs
 from llm.constant import PROMPT_MODEL_NAME, BASE_PROMPT
 from load_env import load_env
+
 load_env()
 
-prompt_rag_fusion = ChatPromptTemplate.from_template(f"""
+prompt_rag_fusion = ChatPromptTemplate.from_template(
+    f"""
 You are an AI assistant for the New England First Amendment Coalition (NEFAC). Your goal is to enhance document retrieval by generating multiple complementary search queries based on a single user question.
 
 {BASE_PROMPT}
@@ -24,20 +26,20 @@ Given the user's original question, generate exactly 4 refined and diverse queri
 Original question: {{question}}
 
 Output (4 queries, separated by newlines):
-""")
+"""
+)
 
 generate_queries = (
-    prompt_rag_fusion 
-    | ChatOpenAI(
-        model=PROMPT_MODEL_NAME,
-        temperature=0) 
-    | StrOutputParser() 
+    prompt_rag_fusion
+    | ChatOpenAI(model=PROMPT_MODEL_NAME, temperature=0)
+    | StrOutputParser()
     | (lambda x: x.split("\n"))
 )
 
+
 def reciprocal_rank_fusion(results: list[list], k=60):
-    """ Reciprocal_rank_fusion that takes multiple lists of ranked documents 
-        and an optional parameter k used in the RRF formula """
+    """Reciprocal_rank_fusion that takes multiple lists of ranked documents
+    and an optional parameter k used in the RRF formula"""
 
     # Initialize a dictionary to hold fused scores for each unique document
     fused_scores = {}
@@ -65,16 +67,13 @@ def reciprocal_rank_fusion(results: list[list], k=60):
     # Return the reranked results as a list of tuples, each containing the document and its fused score
     return reranked_results
 
+
 def handle_empty_results(results):
     """Handles empty retrieval results by returning a fallback response."""
     if not any(results):  # Check if all retrieved lists are empty
-        return [Document(page_content="No relevant documents found.", metadata={})]    
+        return [Document(page_content="No relevant documents found.", metadata={})]
     return reciprocal_rank_fusion(results)  # Otherwise, apply RRF
 
+
 def get_rag_fusion_chain(retriever):
-    return (
-        generate_queries
-        | retriever.map()
-        | handle_empty_results
-        | format_docs
-    )
+    return generate_queries | retriever.map() | handle_empty_results | format_docs

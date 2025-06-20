@@ -1,8 +1,12 @@
 backend:
-  - "backend/**"
+  - any: ["backend/**"]
 frontend:
-  - "frontend/**"
+  - any: ["frontend/**"]
 docs:
-  - "**/*.md"
+  - any: ["**/*.md"]
 workflow:
-  - ".github/workflows/**"
+  - any: [".github/workflows/**"]
+aws:
+  - any: ["aws/**"]
+terraform:
+  - any: ["terraform/**"]

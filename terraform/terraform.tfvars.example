@@ -1,0 +1,110 @@
+# AWS Configuration
+aws_region = "us-east-1"
+environment = "dev"
+
+# VPC Configuration
+vpc_cidr = "10.0.0.0/16"
+
+# Lambda Functions
+lambda_functions = {
+  text_processor = {
+    filename      = "lambda_functions/text_processor.zip"
+    function_name = "text-processor"
+    handler       = "text_processor.lambda_handler"
+    runtime       = "python3.9"
+    timeout       = 300
+    memory_size   = 512
+    environment_vars = {
+      CHUNK_SIZE     = "1000"
+      PCA_COMPONENTS = "256"
+    }
+    create_function_url = true
+    sqs_queue_name      = "text_processing_input"
+    batch_size          = 10
+  }
+}
+
+# SQS Queues
+sqs_queues = {
+  text_processing_input = {
+    name                     = "text-processing-input"
+    visibility_timeout       = 300
+    message_retention_period = 1209600
+    receive_wait_time        = 20
+    enable_policy            = true
+    alarm_threshold          = 100
+  }
+  processed_chunks = {
+    name                     = "processed-chunks"
+    visibility_timeout       = 60
+    message_retention_period = 1209600
+    receive_wait_time        = 20
+    enable_policy            = true
+    alarm_threshold          = 50
+  }
+  embedding_results = {
+    name                     = "embedding-results"
+    visibility_timeout       = 60
+    message_retention_period = 1209600
+    receive_wait_time        = 20
+    enable_policy            = true
+    alarm_threshold          = 50
+  }
+}
+
+# ECR Repositories
+ecr_repositories = {
+  nefac_backend = {
+    name                 = "nefac-backend"
+    image_tag_mutability = "MUTABLE"
+    scan_on_push         = true
+  }
+  nefac_frontend = {
+    name                 = "nefac-frontend"
+    image_tag_mutability = "MUTABLE"
+    scan_on_push         = true
+  }
+}
+
+# ECS Services
+ecs_services = {
+  backend = {
+    name          = "nefac-backend"
+    desired_count = 2
+    cpu           = 256
+    memory        = 512
+    port_mappings = [{
+      container_port = 8000
+      host_port      = 8000
+      protocol       = "tcp"
+    }]
+    environment_vars = {
+      ENVIRONMENT = "production"
+    }
+  }
+  frontend = {
+    name          = "nefac-frontend"
+    desired_count = 2
+    cpu           = 128
+    memory        = 256
+    port_mappings = [{
+      container_port = 80
+      host_port      = 80
+      protocol       = "tcp"
+    }]
+    environment_vars = {
+      REACT_APP_API_URL = "https://api.nefac.com"
+    }
+  }
+}
+
+# Domain Configuration
+domain_name     = "nefac.com"
+certificate_arn = ""
+
+# Additional Tags
+tags = {
+  Owner       = "NEFAC Team"
+  CostCenter  = "Engineering"
+  Environment = "Development"
+} 

@@ -66,7 +66,9 @@ export const SearchResultItem: React.FC<{ result: SearchResult }> = ({ result })
         <div className="mt-3">
           <h4 className="text-sm font-medium text-gray-700 mb-2">Relevant Content:</h4>
           <div className="bg-white p-3 rounded border-l-2 border-blue-300">
-            <p className="text-sm text-gray-700 leading-relaxed italic">"{result.content}"</p>
+            <p className="text-sm text-gray-700 leading-relaxed italic">
+              &quot;{result.content}&quot;
+            </p>
           </div>
         </div>
       )}

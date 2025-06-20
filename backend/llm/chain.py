@@ -31,10 +31,12 @@ store = {}
 
 seen_documents = set()
 
+
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
     if session_id not in store:
         store[session_id] = ChatMessageHistory()
     return store[session_id]
+
 
 def serialize_aimessagechunk(chunk: Any) -> str:
     if isinstance(chunk, AIMessageChunk):
@@ -44,14 +46,21 @@ def serialize_aimessagechunk(chunk: Any) -> str:
             f"Object of type {type(chunk).__name__} is not correctly formatted for serialization"
         )
 
+
 async def middleware_qa(
-    query: str, convoHistory: str, roleFilter: str = "", contentType: str = "", resourceType: str = ""
+    query: str,
+    convoHistory: str,
+    roleFilter: str = "",
+    contentType: str = "",
+    resourceType: str = "",
 ) -> AsyncGenerator[str, None]:
     model = ChatOpenAI(model=MODEL_NAME, streaming=True)
 
     classify_prompt = ChatPromptTemplate.from_messages(
-    [
-        ("system", """
+        [
+            (
+                "system",
+                """
 Based on the conversation history and the latest user query, determine the user's intent:
 - If the user is requesting specific information, documents, resources, or media on any particular topic, classify it as 'document request'.
 - If the user is asking a general question, making a statement, or seeking broad explanations, classify it as 'general query'.
@@ -66,7 +75,8 @@ Examples:
 - "Do you have documents on data privacy laws?" → document request
 
 Respond with 'document request' or 'general query'.
-"""),
+""",
+            ),
             MessagesPlaceholder(variable_name="chat_history"),
             ("human", "{question}"),
         ]
@@ -75,9 +85,12 @@ Respond with 'document request' or 'general query'.
 
     general_prompt = ChatPromptTemplate.from_messages(
         [
-            ("system", """
+            (
+                "system",
+                """
 You are an AI chatbot for NEFAC, the New England First Amendment Coalition. NEFAC is dedicated to protecting press freedoms and the public's right to know in New England. Provide a helpful response to the user's query based on your knowledge of NEFAC's mission and activities. Do not retrieve documents.
-"""),
+""",
+            ),
             MessagesPlaceholder(variable_name="chat_history"),
             ("human", "{question}"),
         ]
@@ -96,13 +109,15 @@ You are an AI chatbot for NEFAC, the New England First Amendment Coalition. NEFA
             ("human", "{question}"),
         ]
     )
-    contextualize_q_chain = (contextualize_q_prompt | model | StrOutputParser()).with_config(
-        tags=["contextualize_q_chain"]
-    )
+    contextualize_q_chain = (
+        contextualize_q_prompt | model | StrOutputParser()
+    ).with_config(tags=["contextualize_q_chain"])
 
     qa_prompt = ChatPromptTemplate.from_messages(
         [
-            ("system", """
+            (
+                "system",
+                """
 You are an AI assistant for NEFAC, the New England First Amendment Coalition. The user has asked for documents or resources. Your task is to acknowledge their request and indicate that relevant documents are available, without including the document details in your response.
 
 Instructions:
@@ -126,29 +141,27 @@ HOW TO RESPOND:
 
 Retrieved documents (for your reference, not to include in the response):
 {context}
-"""),
+""",
+            ),
             MessagesPlaceholder(variable_name="chat_history"),
             ("human", "{question}"),
         ]
     )
 
     retriever = RunnableLambda(
-        lambda question: vector_store
-            .as_retriever(
-                search_type="similarity",
-                search_kwargs={
-                    "k": NUMBER_OF_NEAREST_NEIGHBORS,
-                    "lambda_mult": LAMBDA_MULT,
-                    "score_threshold": THRESHOLD,
-                }
-            )
-            .invoke(question)
+        lambda question: vector_store.as_retriever(
+            search_type="similarity",
+            search_kwargs={
+                "k": NUMBER_OF_NEAREST_NEIGHBORS,
+                "lambda_mult": LAMBDA_MULT,
+                "score_threshold": THRESHOLD,
+            },
+        ).invoke(question)
     ).with_config(tags=["retriever"])
-
 
     query_classifier = (
         ChatPromptTemplate.from_template(
-        """Analyze the question and choose the best query transformation strategy:
+            """Analyze the question and choose the best query transformation strategy:
         
         You are an assistant for the New England First Amendment Coalition (NEFAC). 
         Your task is to generate exactly 5 search queries that will be used to search through a vector database 
@@ -180,24 +193,21 @@ Retrieved documents (for your reference, not to include in the response):
         6. default - straightforward questions
         Question: {question}
         Respond ONLY with the method name."""
-    ) 
+        )
         | ChatOpenAI(temperature=0, model="gpt-4")
         | StrOutputParser()
     )
-    
+
     retrieval_step = (
-        contextualize_q_chain 
-        | {
-            'question': RunnablePassthrough(),
-            'method': query_classifier
-        }
+        contextualize_q_chain
+        | {"question": RunnablePassthrough(), "method": query_classifier}
         | RunnableBranch(
             (lambda x: "multiquery" in x["method"], get_multi_query_chain(retriever)),
             (lambda x: "decompose" in x["method"], get_decomposition_chain(retriever)),
             (lambda x: "stepback" in x["method"], get_step_back_chain(retriever)),
             (lambda x: "hyde" in x["method"], get_hyDe_chain(retriever)),
             (lambda x: "ragfusion" in x["method"], get_rag_fusion_chain(retriever)),
-            RunnableLambda(lambda x: x['question']) | retriever | format_docs,
+            RunnableLambda(lambda x: x["question"]) | retriever | format_docs,
         )
     ).with_config(tags=["full_retrieval_pipeline"])
 
@@ -211,9 +221,9 @@ Retrieved documents (for your reference, not to include in the response):
     router = RunnableBranch(
         (
             lambda x: "document request" in classify_chain.invoke(x).lower(),
-            retrieval_chain
+            retrieval_chain,
         ),
-        general_chain
+        general_chain,
     )
 
     conversational_chain = RunnableWithMessageHistory(
@@ -228,16 +238,24 @@ Retrieved documents (for your reference, not to include in the response):
     try:
         i = 0
         # type: ignore
-        async for event in conversational_chain.astream_events(input, config={"configurable": {"session_id": "abc123"}}, version="v1"):
-            if "final_answer" in event["tags"] and event["event"] == "on_chat_model_stream":               
+        async for event in conversational_chain.astream_events(
+            input, config={"configurable": {"session_id": "abc123"}}, version="v1"
+        ):
+            if (
+                "final_answer" in event["tags"]
+                and event["event"] == "on_chat_model_stream"
+            ):
                 chunk_content = serialize_aimessagechunk(event["data"]["chunk"])
                 if len(chunk_content) != 0:
                     data_dict = {"message": chunk_content, "order": i}
                     data_json = json.dumps(data_dict)
                     yield f"data: {data_json}\n\n"
 
-            sources_tags = ['seq:step:2', 'main_chain', 'contextualize_q_chain']
-            if all(value in event["tags"] for value in sources_tags) and event["event"] == "on_chat_model_stream":
+            sources_tags = ["seq:step:2", "main_chain", "contextualize_q_chain"]
+            if (
+                all(value in event["tags"] for value in sources_tags)
+                and event["event"] == "on_chat_model_stream"
+            ):
                 chunk_content = serialize_aimessagechunk(event["data"]["chunk"])
                 if len(chunk_content) != 0:
                     data_dict = {"reformulated": chunk_content, "order": i}
@@ -246,7 +264,7 @@ Retrieved documents (for your reference, not to include in the response):
 
             if "retriever" in event["tags"] and event["event"] == "on_retriever_end":
                 logger.info("WE ENDED UP IN THE DOCUMENT OUTPUT")
-                documents = event['data']['output']['documents']
+                documents = event["data"]["output"]["documents"]
                 formatted_documents = []
                 curr_seen_documents = set()
                 for doc in documents:
@@ -255,15 +273,19 @@ Retrieved documents (for your reference, not to include in the response):
                         continue
                     curr_seen_documents.add(chunk_id)
                     formatted_doc = {
-                        'summary': doc.metadata.get('summary', ''),
-                        'link': doc.metadata.get('source', ''),
-                        'type': doc.metadata.get('type', ''),
-                        'title': doc.metadata.get('title', ''),
-                        "timestamp_seconds": doc.metadata.get('page', None) if doc.metadata.get('type', '') == 'youtube' else None,
+                        "summary": doc.metadata.get("summary", ""),
+                        "link": doc.metadata.get("source", ""),
+                        "type": doc.metadata.get("type", ""),
+                        "title": doc.metadata.get("title", ""),
+                        "timestamp_seconds": (
+                            doc.metadata.get("page", None)
+                            if doc.metadata.get("type", "") == "youtube"
+                            else None
+                        ),
                     }
                     formatted_documents.append(formatted_doc)
                 if formatted_documents:
-                    final_output = {'context': formatted_documents, "order": i}
+                    final_output = {"context": formatted_documents, "order": i}
                     data_json = json.dumps(final_output)
                     yield f"data: {data_json}\n\n"
                 seen_documents.clear()
@@ -272,7 +294,7 @@ Retrieved documents (for your reference, not to include in the response):
         logger.error(f"Error in middleware_qa: {e}")
         error_chunk = {
             "message": "An error occurred while processing your query.",
-            "order": 1
+            "order": 1,
         }
         logger.info(f"Yielding error chunk: {error_chunk}")
         yield f"data: {json.dumps(error_chunk)}\n\n"

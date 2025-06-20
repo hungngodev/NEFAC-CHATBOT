@@ -24,7 +24,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 
   useEffect(() => {
     prevLength.current = conversation.length;
-  }, [conversation.length]);
+  }, [conversation.length, prevLength]);
 
   // User messages remain unchanged
   if (isUser) {
@@ -40,7 +40,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           `}
         >
           <div className="text-base leading-relaxed text-white">
-            <ReactMarkdown children={msg.content} remarkPlugins={[remarkGfm]} />
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           `}
         >
           <div className="text-base leading-relaxed text-gray-800">
-            <ReactMarkdown children={msg.content} remarkPlugins={[remarkGfm]} />
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
           </div>
 
           {/* Toggle for detailed sources */}

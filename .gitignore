@@ -133,3 +133,10 @@ dist/
 
 # we may need to eventually remove the documents, database, and pkls from the git
 .cursor
+
+# dotenv
+.env
+.env*.local
+
+# Frontend
+frontend/package-lock.json

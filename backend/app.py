@@ -5,7 +5,7 @@ from fastapi.responses import StreamingResponse
 from llm.main import ask_llm_stream
 from load_env import load_env
 from vector.load import get_loading_status, is_loading
-from .schemas import LoadingStatusResponse
+from schemas import LoadingStatusResponse
 
 load_env()
 
@@ -22,18 +22,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/ask-llm")
 async def ask_llm(
     query: str,
     convoHistory: str = "",
 ):
-    try:        
+    try:
         return StreamingResponse(
             ask_llm_stream(None, query, convoHistory),
             media_type="text/event-stream",
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/loading-status", response_model=LoadingStatusResponse)
 async def get_vector_loading_status():
