@@ -40,10 +40,10 @@ Question: {question}
 def get_hyDe_chain(retriever):
     """Get the HyDE chain."""
     hyde_rag_chain = (
-    # Generate hypothetical document
-    {"context": hyde_generation | retriever, "question": lambda x: x["question"]}
-    | final_prompt
-    | model
-    | StrOutputParser()
+        # Generate hypothetical document
+        {"context": hyde_generation | retriever, "question": lambda x: x["question"]}
+        | final_prompt
+        | model
+        | StrOutputParser()
     )
     return hyde_rag_chain

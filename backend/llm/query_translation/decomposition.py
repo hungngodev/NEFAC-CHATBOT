@@ -6,12 +6,14 @@ from operator import itemgetter
 from load_env import load_env
 from llm.utils import format_docs
 from llm.constant import PROMPT_MODEL_NAME, SUB_MODEL_NAME, BASE_PROMPT
+
 load_env()
 
 model = ChatOpenAI(temperature=0, model_name=PROMPT_MODEL_NAME)
 
 generate_queries_decomposition = (
-    ChatPromptTemplate.from_template( f"""
+    ChatPromptTemplate.from_template(
+        f"""
 You are an expert assistant for the New England First Amendment Coalition (NEFAC). Your role is to break down the user's complex question into exactly 3 focused, independently-answerable sub-questions to retrieve precise documents from our vector database of legal analyses, FOI guides, press-freedom resources, and relevant transcripts.
 {BASE_PROMPT}
 The sub-questions should:
@@ -22,9 +24,10 @@ The sub-questions should:
 Original question: {{question}}
 
 Output (exactly 3 queries, one per line):
-""") 
-    | model 
-    | StrOutputParser() 
+"""
+    )
+    | model
+    | StrOutputParser()
     | (lambda x: x.strip().split("\n"))
 )
 
@@ -55,12 +58,13 @@ rag_chain = (
     {
         "context": itemgetter("context"),
         "sub_question": itemgetter("sub_question"),
-        "q_a_pairs": itemgetter("q_a_pairs")
+        "q_a_pairs": itemgetter("q_a_pairs"),
     }
     | ChatPromptTemplate.from_template(qa_template)
     | rag_model
     | StrOutputParser()
 )
+
 
 def get_decomposition_chain(retriever):
 
@@ -72,17 +76,16 @@ def get_decomposition_chain(retriever):
         q_a_pairs = []
         for i in range(len(sub_questions)):
             current_context = "\n---\n".join(q_a_pairs) if q_a_pairs else ""
-            answer = rag_chain.invoke({
-                "sub_question": sub_questions[i],
-                "q_a_pairs": current_context,
-                "context": contexts[i]
-            })
+            answer = rag_chain.invoke(
+                {
+                    "sub_question": sub_questions[i],
+                    "q_a_pairs": current_context,
+                    "context": contexts[i],
+                }
+            )
             q_a_pairs.append(f"Question: {sub_questions[i]}\nAnswer: {answer}")
 
-        return {
-            "context": "\n---\n".join(q_a_pairs),
-            "question": main_question
-        }
+        return {"context": "\n---\n".join(q_a_pairs), "question": main_question}
 
     final_template = """
     You are a NEFAC legal expert. Given the following sub-questions and answers:
@@ -97,15 +100,12 @@ def get_decomposition_chain(retriever):
 
     return (
         RunnableLambda(lambda x: {"question": x})
-        |
-        {
+        | {
             "question": itemgetter("question"),
-            "sub_questions":
-                {'question': itemgetter("question")}
-                | generate_queries_decomposition
-        } 
-        |
-        {
+            "sub_questions": {"question": itemgetter("question")}
+            | generate_queries_decomposition,
+        }
+        | {
             "sub_questions": itemgetter("sub_questions"),
             "contexts": itemgetter("sub_questions") | (retriever | format_docs).map(),
             "question": itemgetter("question"),
