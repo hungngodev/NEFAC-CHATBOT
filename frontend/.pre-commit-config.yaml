@@ -9,5 +9,6 @@ repos:
     rev: v8.56.0
     hooks:
       - id: eslint
+        args: [--fix]
         additional_dependencies: ['eslint@8.56.0']
         files: \.(js|jsx|ts|tsx)$
