@@ -17,7 +17,6 @@ from llm.constant import (
     NUMBER_OF_NEAREST_NEIGHBORS,
     THRESHOLD,
 )
-from llm.utils import format_docs
 from load_env import load_env
 from prompts import (
     CONTEXTUALIZE_PROMPT,
@@ -61,6 +60,9 @@ async def middleware_qa(
     query: str,
     convoHistory: str,
 ) -> AsyncGenerator[str, None]:
+    # ============================================================================
+    # INITIALIZATION MODEL
+    # ============================================================================
     model = ChatOpenAI(model=MODEL_NAME, streaming=True)
 
     # ============================================================================
@@ -80,9 +82,7 @@ async def middleware_qa(
     # ============================================================================
     # METHOD SELECTION CHAIN
     # ============================================================================
-    method_selection_prompt = ChatPromptTemplate.from_template(METHOD_SELECTION_PROMPT)
-
-    method_selection_chain = method_selection_prompt | model | StrOutputParser()
+    method_selection_chain = ChatPromptTemplate.from_template(METHOD_SELECTION_PROMPT) | model | StrOutputParser()
 
     # ============================================================================
     # QUERY TRANSFORMATION BRANCH
@@ -90,63 +90,64 @@ async def middleware_qa(
     def get_method(x: Any) -> str:
         return str(x.get("method", "")) if isinstance(x, dict) else ""
 
-    def get_question(x: Any) -> str:
-        return str(x.get("question", "")) if isinstance(x, dict) else ""
-
     query_transformation_branch = RunnableBranch(
         (lambda x: "multiquery" in get_method(x), get_multi_query_chain(retriever)),
         (lambda x: "decompose" in get_method(x), get_decomposition_chain(retriever)),
         (lambda x: "stepback" in get_method(x), get_step_back_chain(retriever)),
         (lambda x: "hyde" in get_method(x), get_hyDe_chain(retriever)),
         (lambda x: "ragfusion" in get_method(x), get_rag_fusion_chain(retriever)),
-        (RunnableLambda(get_question) | retriever | format_docs),
+        (get_multi_query_chain(retriever)),
     )
-
-    # ============================================================================
-    # CONTEXTUALIZATION CHAIN
-    # ============================================================================
-    contextualize_chain = (
-        ChatPromptTemplate.from_messages(
-            [
-                ("system", CONTEXTUALIZE_PROMPT),
-                MessagesPlaceholder(variable_name="chat_history"),
-                ("human", "{question}"),
-            ]
-        )
-        | model
-        | StrOutputParser()
-    ).with_config(tags=["contextualize_q_chain"])
 
     # ============================================================================
     # FULL RETRIEVAL PIPELINE
     # ============================================================================
-    retrieval_step = (contextualize_chain | {"question": RunnablePassthrough(), "method": method_selection_chain} | query_transformation_branch).with_config(tags=["full_retrieval_pipeline"])
+    retrieval_step = (
+        (
+            ChatPromptTemplate.from_messages(
+                [
+                    ("system", CONTEXTUALIZE_PROMPT),
+                    MessagesPlaceholder(variable_name="chat_history"),
+                    ("human", "{question}"),
+                ]
+            )
+            | model
+            | StrOutputParser()
+        ).with_config(tags=["contextualize_q_chain"])
+        | {"question": RunnablePassthrough(), "method": method_selection_chain}
+        | query_transformation_branch
+    ).with_config(tags=["full_retrieval_pipeline"])
 
     # ============================================================================
     # RETRIEVAL CHAIN (with document processing)
     # ============================================================================
-    retrieval_prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system", RETRIEVAL_PROMPT),
-            MessagesPlaceholder(variable_name="chat_history"),
-            ("human", "{question}"),
-        ]
+    retrieval_chain = (
+        RunnablePassthrough.assign(context=retrieval_step)
+        | ChatPromptTemplate.from_messages(
+            [
+                ("system", RETRIEVAL_PROMPT),
+                MessagesPlaceholder(variable_name="chat_history"),
+                ("human", "{question}"),
+            ]
+        )
+        | model.with_config(tags=["final_answer"])
+        | (lambda x: {"answer": x})
     )
-
-    retrieval_chain = RunnablePassthrough.assign(context=retrieval_step) | retrieval_prompt | model.with_config(tags=["final_answer"]) | (lambda x: {"answer": x})
 
     # ============================================================================
     # GENERAL CHAIN (for non-document requests)
     # ============================================================================
-    general_prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system", GENERAL_PROMPT),
-            MessagesPlaceholder(variable_name="chat_history"),
-            ("human", "{question}"),
-        ]
+    general_chain = (
+        ChatPromptTemplate.from_messages(
+            [
+                ("system", GENERAL_PROMPT),
+                MessagesPlaceholder(variable_name="chat_history"),
+                ("human", "{question}"),
+            ]
+        )
+        | model.with_config(tags=["final_answer"])
+        | (lambda x: {"answer": x})
     )
-
-    general_chain = general_prompt | model.with_config(tags=["final_answer"]) | (lambda x: {"answer": x})
 
     # ============================================================================
     # INTENT CLASSIFICATION CHAIN
