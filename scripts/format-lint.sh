@@ -65,19 +65,38 @@ run_backend_checks() {
         poetry install
     fi
     
-    # Run Black formatting
-    print_status "Running Black formatter..."
-    poetry run black . --check || {
+    # Run Black formatting check
+    print_status "Running Black formatter (checking for issues)..."
+    if poetry run black . --check --diff; then
+        print_success "Black formatting is correct."
+    else
         print_warning "Black found formatting issues. Running Black to fix..."
         poetry run black .
-    }
+        print_success "Black has fixed the formatting issues."
+    fi
     
     # Run Ruff linting and import sorting
     print_status "Running Ruff linter and import sorter..."
-    poetry run ruff check --fix . || {
-        print_error "Ruff found issues that couldn't be auto-fixed"
+    # First, check if ruff is available
+    if ! poetry run ruff --version >/dev/null 2>&1; then
+        print_error "Ruff is not available. Please ensure it's installed: poetry add --group dev ruff"
         return 1
-    }
+    fi
+    
+    # Run ruff with auto-fix enabled
+    print_status "Running Ruff with auto-fix..."
+    if poetry run ruff check --fix .; then
+        print_success "Ruff completed successfully with no issues."
+    else
+        print_warning "Ruff found and fixed some issues. Checking for remaining problems..."
+        # Run a final check to see what issues remain
+        if poetry run ruff check .; then
+            print_success "All Ruff issues have been resolved."
+        else
+            print_error "Ruff found issues that could not be auto-fixed. Please see the output above."
+            return 1
+        fi
+    fi
     
     # Run autoflake to remove unused imports
     print_status "Running autoflake to remove unused imports..."
