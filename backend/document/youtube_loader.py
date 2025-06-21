@@ -1,5 +1,4 @@
 import logging
-import os
 import random
 import time
 from urllib.parse import parse_qs, urlparse
@@ -10,7 +9,7 @@ from langchain_community.document_loaders.youtube import TranscriptFormat
 from langchain_core.documents import Document
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
-from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api import YouTubeTranscriptApi  # type: ignore
 
 from llm.constant import YOUTUBE_MODEL_NAME
 from load_env import load_env
@@ -25,8 +24,6 @@ load_env()
 llm = ChatOpenAI(
     model=YOUTUBE_MODEL_NAME,
     temperature=0.1,
-    max_tokens=1024,
-    api_key=os.getenv("OPENAI_API_KEY"),
 )
 
 
@@ -46,7 +43,13 @@ def clean_text(text):
     prompt = prompt_template.format(input_text=text)
 
     try:
-        cleaned_text = llm.invoke(prompt).content.strip()
+        response = llm.invoke(prompt)
+        # Handle both string and list responses
+        if isinstance(response.content, str):
+            cleaned_text = response.content.strip()
+        else:
+            # If content is a list, join it or take the first element
+            cleaned_text = str(response.content).strip()
         return cleaned_text
     except Exception as e:
         logger.error(f"Error cleaning text: {str(e)}")
@@ -86,6 +89,9 @@ def check_video_availability(url):
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
+            if info is None:
+                return False, "Could not extract video info"
+
             if info.get("availability") in [
                 "private",
                 "premium_only",
@@ -268,6 +274,9 @@ def get_youtube_metadata(url):
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
+
+            if info is None:
+                return {"title": "Title not found"}
 
             metadata = {
                 "title": info.get("title", "Title not found"),
@@ -488,9 +497,11 @@ def youtubeLoader(url, title_to_chunks, url_to_title):
             content_parts.append(f"Channel: {video_metadata['uploader']}")
 
         if video_metadata.get("duration"):
-            duration_min = video_metadata["duration"] // 60
-            duration_sec = video_metadata["duration"] % 60
-            content_parts.append(f"Duration: {duration_min}m {duration_sec}s")
+            duration = video_metadata["duration"]
+            if isinstance(duration, (int, float)):
+                duration_min = int(duration // 60)
+                duration_sec = int(duration % 60)
+                content_parts.append(f"Duration: {duration_min}m {duration_sec}s")
 
         if video_metadata.get("tags"):
             tags_str = ", ".join(video_metadata["tags"][:10])  # First 10 tags
