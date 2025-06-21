@@ -169,8 +169,7 @@ const SearchBar = () => {
     }
   }
 
-  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handleSearch = async () => {
     const toSearch = inputValue
     setInputValue('')
     await performSearch(toSearch)

@@ -30,12 +30,9 @@ def format_docs(docs: List[Document]) -> str:
         # Format the document with the new metadata
         formatted_doc = "\n".join(
             [
-                f"content: {doc.page_content}",
                 f"title: {metadata['title']}",
-                f"type: {metadata['type']}",
-                f"link: {metadata['link']}",
-                f"timestamp_seconds: {metadata['timestamp_seconds']}",
                 f"summary: {metadata['summary']}",
+                f"content: {doc.page_content}",
             ]
         )
 

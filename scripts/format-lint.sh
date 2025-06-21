@@ -144,10 +144,12 @@ run_frontend_checks() {
     
     # Run ESLint
     print_status "Running ESLint..."
-    npm run lint -- --fix || {
-        print_error "ESLint found issues that could not be auto-fixed."
+    if npm run lint -- --fix; then
+        print_success "ESLint passed."
+    else
+        print_error "ESLint found issues that could not be auto-fixed. Please see the output above."
         return 1
-    }
+    fi
     
     # Run pre-commit hooks if available
     # if command_exists pre-commit; then

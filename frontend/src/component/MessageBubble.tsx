@@ -6,7 +6,6 @@ import ReactMarkdown from 'react-markdown'
 
 import { Message } from '../pages/SearchBar'
 import { SearchResultItem } from './SearchResultItem'
-import { SourceLinks } from './SourceLinks'
 
 interface MessageBubbleProps {
   msg: Message
@@ -61,9 +60,6 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           ${shouldAnimate && 'animate-once-messageIn'}
         `}
       >
-        {/* Source Links Section - Only show if there are results */}
-        {msg.results && msg.results.length > 0 && <SourceLinks results={msg.results} />}
-
         {/* LLM Response Section */}
         <div
           className={`
@@ -74,7 +70,9 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           `}
         >
           <div className="text-base leading-relaxed text-gray-800">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+            <ReactMarkdown className="prose" remarkPlugins={[remarkGfm]}>
+              {msg.content}
+            </ReactMarkdown>
           </div>
 
           {/* Toggle for detailed sources */}

@@ -25,6 +25,7 @@ from prompts import (
     METHOD_SELECTION_PROMPT,
     RETRIEVAL_PROMPT,
 )
+from schemas import IntentClassification
 from vector.load import vector_store
 
 from .query_translation.decomposition import get_decomposition_chain
@@ -51,7 +52,20 @@ def get_session_history(session_id: str) -> BaseChatMessageHistory:
 
 def serialize_aimessagechunk(chunk: Any) -> str:
     if isinstance(chunk, AIMessageChunk):
-        return chunk.content
+        content = chunk.content
+        if isinstance(content, str):
+            return content
+        elif isinstance(content, list):
+            # Handle list content by joining string elements
+            text_parts = []
+            for item in content:
+                if isinstance(item, str):
+                    text_parts.append(item)
+                elif isinstance(item, dict) and "text" in item:
+                    text_parts.append(str(item["text"]))
+            return "".join(text_parts)
+        else:
+            return str(content)
     else:
         raise TypeError(f"Object of type {type(chunk).__name__} is not correctly formatted for serialization")
 
@@ -63,7 +77,11 @@ async def middleware_qa(
     # ============================================================================
     # INITIALIZATION MODEL
     # ============================================================================
-    model = ChatOpenAI(model=MODEL_NAME, streaming=True)
+    model = ChatOpenAI(
+        model=MODEL_NAME,
+        streaming=True,
+        model_kwargs={"timeout": 180},
+    )
 
     # ============================================================================
     # RETRIEVER SETUP
@@ -76,7 +94,9 @@ async def middleware_qa(
                 "lambda_mult": LAMBDA_MULT,
                 "score_threshold": THRESHOLD,
             },
-        ).invoke(question)
+        ).invoke(
+            question
+        )  # type: ignore
     ).with_config(tags=["retriever"])
 
     # ============================================================================
@@ -98,11 +118,11 @@ async def middleware_qa(
                 ).with_config(tags=["contextualize_q_chain"])
                 | {"question": RunnablePassthrough(), "method": (ChatPromptTemplate.from_template(METHOD_SELECTION_PROMPT) | model | StrOutputParser())}
                 | RunnableBranch(
-                    (lambda x: "multiquery" in str(x.get("method", "")) if isinstance(x, dict) else "", get_multi_query_chain(retriever)),
-                    (lambda x: "decompose" in str(x.get("method", "")) if isinstance(x, dict) else "", get_decomposition_chain(retriever)),
-                    (lambda x: "stepback" in str(x.get("method", "")) if isinstance(x, dict) else "", get_step_back_chain(retriever)),
-                    (lambda x: "hyde" in str(x.get("method", "")) if isinstance(x, dict) else "", get_hyDe_chain(retriever)),
-                    (lambda x: "ragfusion" in str(x.get("method", "")) if isinstance(x, dict) else "", get_rag_fusion_chain(retriever)),
+                    (lambda x: "multiquery" in str(x.get("method", "")) if isinstance(x, dict) else "", get_multi_query_chain(retriever)),  # type: ignore
+                    (lambda x: "decompose" in str(x.get("method", "")) if isinstance(x, dict) else "", get_decomposition_chain(retriever)),  # type: ignore
+                    (lambda x: "stepback" in str(x.get("method", "")) if isinstance(x, dict) else "", get_step_back_chain(retriever)),  # type: ignore
+                    (lambda x: "hyde" in str(x.get("method", "")) if isinstance(x, dict) else "", get_hyDe_chain(retriever)),  # type: ignore
+                    (lambda x: "ragfusion" in str(x.get("method", "")) if isinstance(x, dict) else "", get_rag_fusion_chain(retriever)),  # type: ignore
                     (get_multi_query_chain(retriever)),
                 )
             ).with_config(tags=["full_retrieval_pipeline"])
@@ -136,33 +156,33 @@ async def middleware_qa(
     # ============================================================================
     # MAIN ROUTER
     # ============================================================================
+    structured_llm_intent = model.with_structured_output(IntentClassification, method="function_calling")
+    intent_classifier_chain = (
+        ChatPromptTemplate.from_messages(
+            [
+                ("system", INTENT_CLASSIFICATION_PROMPT),
+                MessagesPlaceholder(variable_name="chat_history"),
+                ("human", "{question}"),
+            ]
+        )
+        | structured_llm_intent
+    ).with_config(tags=["doc_request_classifier"])
+
     router = RunnableBranch(
         (
-            lambda x: "document request"
-            in (
-                ChatPromptTemplate.from_messages(
-                    [
-                        ("system", INTENT_CLASSIFICATION_PROMPT),
-                        MessagesPlaceholder(variable_name="chat_history"),
-                        ("human", "{question}"),
-                    ]
-                )
-                | model
-                | StrOutputParser()
-            )
-            .with_config(tags=["doc_request_classifier"])
-            .invoke(x)
-            .lower(),
+            lambda x: x["intent"].intent == "document request",  # type: ignore
             retrieval_chain,
         ),
         general_chain,
     )
 
+    main_chain = RunnablePassthrough.assign(intent=intent_classifier_chain) | router
+
     # ============================================================================
     # CONVERSATIONAL CHAIN WITH HISTORY
     # ============================================================================
     conversational_chain = RunnableWithMessageHistory(
-        router,
+        main_chain,  # type: ignore
         get_session_history,
         input_messages_key="question",
         history_messages_key="chat_history",
@@ -197,7 +217,7 @@ async def middleware_qa(
             # Handle document retrieval
             if "retriever" in event.get("tags", []) and event["event"] == "on_retriever_end":
                 logger.info("WE ENDED UP IN THE DOCUMENT OUTPUT")
-                documents = event["data"]["output"]["documents"]
+                documents = event["data"].get("output", {}).get("documents", [])  # type: ignore
                 formatted_documents = []
                 curr_seen_documents = set()
 

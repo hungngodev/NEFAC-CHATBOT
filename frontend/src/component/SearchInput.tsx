@@ -1,9 +1,7 @@
 import { Send } from 'lucide-react'
 
-import { FormEvent } from 'react'
-
 interface SearchInputProps {
-  handleSearch: (e: React.FormEvent<HTMLFormElement>) => Promise<void>
+  handleSearch: () => Promise<void>
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   inputValue: string
   isLoading: boolean
@@ -17,7 +15,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
 }) => {
   return (
     <div className="p-4 border-t bg-white fixed bottom-0 w-full z-20 shadow-lg">
-      <form onSubmit={handleSearch} className="max-w-4xl mx-auto flex gap-2">
+      <form className="max-w-4xl mx-auto flex gap-2">
         <input
           type="text"
           value={inputValue}
@@ -32,7 +30,6 @@ export const SearchInput: React.FC<SearchInputProps> = ({
           disabled={isLoading}
         />
         <button
-          type="submit"
           disabled={isLoading}
           className="px-4 py-2 bg-blue-500 text-white rounded-lg 
                   transition-all duration-200 ease-in-out
@@ -41,6 +38,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
                   disabled:opacity-50 disabled:cursor-not-allowed
                   disabled:hover:bg-blue-500 disabled:hover:shadow-none disabled:active:scale-100"
+          onClick={() => handleSearch()}
         >
           {isLoading ? (
             <div className="w-6 h-6 border-t-2 border-white rounded-full animate-spin" />

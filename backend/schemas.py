@@ -1,6 +1,6 @@
-from typing import List, Optional
+from typing import List, Literal, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class LoadingStatusResponse(BaseModel):
@@ -39,3 +39,9 @@ class ReformulatedEvent(BaseModel):
 class MessageEvent(BaseModel):
     order: int
     message: str
+
+
+class IntentClassification(BaseModel):
+    """Schema for the intent classification of the user query."""
+
+    intent: Literal["document request", "general"] = Field(description="Classify the user's intent. If they are asking for information that could be found in NEFAC's documents, classify as 'document request'. Otherwise, classify as 'general'.")
