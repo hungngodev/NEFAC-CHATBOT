@@ -10,10 +10,10 @@ from load_env import load_env
 from prompts import RAG_FUSION_PROMPT
 
 load_env()
-
+model = ChatOpenAI(temperature=0, model_name=PROMPT_MODEL_NAME)
 prompt_rag_fusion = ChatPromptTemplate.from_template(RAG_FUSION_PROMPT)
 
-generate_queries = prompt_rag_fusion | ChatOpenAI(model=PROMPT_MODEL_NAME, temperature=0) | StrOutputParser() | (lambda x: x.split("\n"))
+generate_queries = prompt_rag_fusion | model | StrOutputParser() | (lambda x: x.split("\n"))
 
 
 def reciprocal_rank_fusion(results: list[list], k=60):
