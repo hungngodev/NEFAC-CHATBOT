@@ -1,7 +1,8 @@
+import datetime
 import json
 import logging
-import datetime
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict, List, Optional
+
 from .aws_config import get_sqs_client
 
 logger = logging.getLogger(__name__)

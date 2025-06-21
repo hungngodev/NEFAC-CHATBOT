@@ -1,15 +1,17 @@
 import logging
-import faiss
 import os
+import pickle
 import threading
 import time
-from document.loader import load_all_documents
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+import faiss
 from langchain_community.docstore.in_memory import InMemoryDocstore
-from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
+from langchain_openai import OpenAIEmbeddings
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+from document.loader import load_all_documents
 from load_env import load_env
-import pickle
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -46,9 +48,7 @@ class ThreadSafeVectorStore:
 
             def invoke(self, query):
                 with self.wrapped_store.lock:
-                    return self.wrapped_store.vector_store.as_retriever(
-                        **kwargs
-                    ).invoke(query)
+                    return self.wrapped_store.vector_store.as_retriever(**kwargs).invoke(query)
 
         return ThreadSafeRetriever(self)
 
@@ -107,9 +107,7 @@ def process_single_document(doc_name, title_to_chunks, doc_type="unknown"):
         doc_chunks = title_to_chunks[doc_name]
         chunked_docs = chunk_documents(doc_chunks)
 
-        logger.info(
-            f"Processed {doc_name}: {len(doc_chunks)} original chunks -> {len(chunked_docs)} processed chunks"
-        )
+        logger.info(f"Processed {doc_name}: {len(doc_chunks)} original chunks -> {len(chunked_docs)} processed chunks")
         return chunked_docs
 
     except Exception as e:
@@ -157,9 +155,7 @@ def add_documents_sequentially():
                 doc_type = "pdf" if doc_name.endswith(".pdf") else "youtube"
 
                 # Process single document
-                chunked_docs = process_single_document(
-                    doc_name, title_to_chunks, doc_type
-                )
+                chunked_docs = process_single_document(doc_name, title_to_chunks, doc_type)
 
                 if chunked_docs:
                     # Add to vector store
@@ -167,9 +163,7 @@ def add_documents_sequentially():
                         if _vector_store:
                             _vector_store.add_documents(chunked_docs)
 
-                    logger.info(
-                        f"Successfully added document {i}/{len(new_docs_list)}: {doc_name} ({len(chunked_docs)} chunks)"
-                    )
+                    logger.info(f"Successfully added document {i}/{len(new_docs_list)}: {doc_name} ({len(chunked_docs)} chunks)")
                 else:
                     logger.warning(f"No chunks generated for document: {doc_name}")
 
@@ -181,9 +175,7 @@ def add_documents_sequentially():
                 continue
 
         _loading_progress["status"] = "complete"
-        logger.info(
-            f"Sequential document addition complete. Processed {len(new_docs_list)} documents."
-        )
+        logger.info(f"Sequential document addition complete. Processed {len(new_docs_list)} documents.")
 
     except Exception as e:
         logger.error(f"Error in sequential document addition: {e}")

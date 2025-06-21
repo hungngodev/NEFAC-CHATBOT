@@ -1,14 +1,18 @@
-import { Message } from '../pages/SearchBar';
-import { useEffect, useState } from 'react';
-import { SearchResultItem } from './SearchResultItem';
-import { SourceLinks } from './SourceLinks';
-import remarkGfm from 'remark-gfm';
-import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm'
+
+import { useEffect, useState } from 'react'
+
+import ReactMarkdown from 'react-markdown'
+
+import { Message } from '../pages/SearchBar'
+import { SearchResultItem } from './SearchResultItem'
+import { SourceLinks } from './SourceLinks'
+
 interface MessageBubbleProps {
-  msg: Message;
-  index: number;
-  conversation: Message[];
-  prevLength: React.MutableRefObject<number>;
+  msg: Message
+  index: number
+  conversation: Message[]
+  prevLength: React.MutableRefObject<number>
 }
 
 export const MessageBubble: React.FC<MessageBubbleProps> = ({
@@ -17,14 +21,14 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
   conversation,
   prevLength,
 }) => {
-  const isUser = msg.type === 'user';
-  const isLatestMessage = index === conversation.length - 1;
-  const shouldAnimate = isLatestMessage && conversation.length > prevLength.current;
-  const [showDetailedSources, setShowDetailedSources] = useState(false);
+  const isUser = msg.type === 'user'
+  const isLatestMessage = index === conversation.length - 1
+  const shouldAnimate = isLatestMessage && conversation.length > prevLength.current
+  const [showDetailedSources, setShowDetailedSources] = useState(false)
 
   useEffect(() => {
-    prevLength.current = conversation.length;
-  }, [conversation.length, prevLength]);
+    prevLength.current = conversation.length
+  }, [conversation.length, prevLength])
 
   // User messages remain unchanged
   if (isUser) {
@@ -44,7 +48,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   // Assistant messages with new layout: sources at top, response below
@@ -111,5 +115,5 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

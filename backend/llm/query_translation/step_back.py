@@ -1,9 +1,11 @@
+from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, FewShotChatMessagePromptTemplate
 from langchain_core.runnables import RunnableLambda
-from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
+
+from llm.constant import PROMPT_MODEL_NAME
 from load_env import load_env
-from llm.constant import PROMPT_MODEL_NAME, BASE_PROMPT
+from prompts import STEP_BACK_RESPONSE_PROMPT, STEP_BACK_SYSTEM_PROMPT
 
 load_env()
 
@@ -37,12 +39,7 @@ step_back_prompt = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            f"""
-You are an expert in First Amendment law and public records processes in New England.
-Your task is to take a user’s question and “step back” to a broader, more answerable legal framing aligned with NEFAC’s work.
-{BASE_PROMPT}
-Here are examples of reformulating specific questions into broader legal inquiries:
-""",
+            STEP_BACK_SYSTEM_PROMPT,
         ),
         few_shot_prompt,
         ("user", "{question}"),
@@ -52,20 +49,7 @@ Here are examples of reformulating specific questions into broader legal inquiri
 generate_step_back_question = step_back_prompt | model | StrOutputParser()
 
 # Step‑back RAG chain
-response_prompt = ChatPromptTemplate.from_template(
-    """
-Using both the original question and the stepped-back legal context, produce a comprehensive answer based on these sources:
-
-# normal_context (direct retrieval results)
-{normal_context}
-
-# step_back_context (retrieved broader context)
-{step_back_context}
-
-Original Question: {question}
-Answer:
-"""
-)
+response_prompt = ChatPromptTemplate.from_template(STEP_BACK_RESPONSE_PROMPT)
 
 
 def get_step_back_chain(retriever):

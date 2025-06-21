@@ -3,13 +3,13 @@ repos:
     rev: v3.1.0
     hooks:
       - id: prettier
-        additional_dependencies: ['prettier@3.1.0']
-        files: \.(js|jsx|ts|tsx|json|css|md|html)$
+        additional_dependencies: ['prettier@3.3.3', '@trivago/prettier-plugin-sort-imports@4.3.0']
+        files: ^frontend/.*\.(js|jsx|ts|tsx|json|css|md|html)$
   - repo: https://github.com/pre-commit/mirrors-eslint
     rev: v9.0.0
     hooks:
       - id: eslint
-        args: [--fix, --config, frontend/eslint.config.js]
+        args: [--fix, --config, frontend/.eslintrc.cjs]
         additional_dependencies:
           [
             'eslint@9.0.0',
@@ -19,4 +19,4 @@ repos:
             'eslint-plugin-react-hooks@4.6.0',
             'eslint-plugin-react-refresh@0.4.5',
           ]
-        files: frontend/.*\.(js|jsx|ts|tsx)$
+        files: ^frontend/.*\.(js|jsx|ts|tsx)$

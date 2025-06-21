@@ -1,4 +1,5 @@
 import os
+
 from dotenv import load_dotenv
 
 # Load .env file from backend directory
@@ -14,7 +15,13 @@ else:
     print(f"   Value: {api_key}")
 
 # Check other environment variables
-env_vars = ["ENVIRONMENT", "LOG_LEVEL", "DISABLE_AWS_SERVICES", "LANGSMITH_TRACING", "LANGSMITH_ENDPOINT"]
+env_vars = [
+    "ENVIRONMENT",
+    "LOG_LEVEL",
+    "DISABLE_AWS_SERVICES",
+    "LANGSMITH_TRACING",
+    "LANGSMITH_ENDPOINT",
+]
 for var in env_vars:
     value = os.getenv(var)
     print(f"   {var}: {value}")

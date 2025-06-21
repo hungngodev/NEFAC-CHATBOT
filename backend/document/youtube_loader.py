@@ -1,16 +1,19 @@
+import logging
 import os
+import random
+import time
+from urllib.parse import parse_qs, urlparse
+
+import yt_dlp
 from langchain_community.document_loaders import YoutubeLoader
 from langchain_community.document_loaders.youtube import TranscriptFormat
-from langchain_core.prompts import PromptTemplate
 from langchain_core.documents import Document
-import yt_dlp
+from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
-from load_env import load_env
 from youtube_transcript_api import YouTubeTranscriptApi
-from urllib.parse import parse_qs, urlparse
-import time
-import random
-import logging
+
+from load_env import load_env
+from prompts import TRANSCRIPT_CLEANING_PROMPT
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -37,38 +40,7 @@ def clean_text(text):
         str: Cleaned transcript text.
     """
     # Define the prompt template
-    prompt_template = PromptTemplate.from_template(
-        """
-        You are a professional transcript editor specializing in cleaning auto-generated YouTube transcripts for NEFAC (New England First Amendment Coalition). Your task is to:
-        1. Correct grammar, punctuation, and spelling errors.
-        2. Remove filler words (e.g., "um," "uh," "like") and redundant phrases.
-        3. Remove YouTube-specific artifacts (e.g., "[Music]," "[Applause]").
-        4. Standardize proper names to their most likely correct form.
-        5. Ensure the text is clear, concise, and preserves the original meaning.
-        6. Return only the cleaned text, without additional explanations.
-        7. Fix all spellings of NEFAC (e.g. kneefact -> NEFAC)
-
-        Examples:
-        Raw: "Um, so like, we're gonna talk about, uh, AI today and stuff."
-        Cleaned: We're going to talk about AI today.
-
-        Raw: "The, the thing is is that, uh, machine learning is, like, super cool."
-        Cleaned: The thing is that machine learning is very cool.
-
-        Raw: "Okay, let's see.. data science is, um, important. For for example, it helps with, uh, predictions."
-        Cleaned: Data science is important. For example, it helps with predictions.
-
-        Raw: "Next, uh, [Music] we discuss open meetings with John Maran or Marian."
-        Cleaned: Next, we discuss open meetings with John Marian.
-
-        Raw: "kneefact has been working on a new project."
-        Cleaned: NEFAC has been working on a new project.
-
-        Now, clean the following transcript text:
-        Raw: "{input_text}"
-        Cleaned:
-        """
-    )
+    prompt_template = PromptTemplate.from_template(TRANSCRIPT_CLEANING_PROMPT)
 
     prompt = prompt_template.format(input_text=text)
 
@@ -144,9 +116,7 @@ def get_transcript_direct(url, max_retries=3):
             # Add small delay between attempts to avoid rate limiting
             if attempt > 0:
                 delay = random.uniform(1, 3) * attempt
-                logger.info(
-                    f"Retrying transcript fetch after {delay:.1f}s delay (attempt {attempt + 1}/{max_retries})"
-                )
+                logger.info(f"Retrying transcript fetch after {delay:.1f}s delay (attempt {attempt + 1}/{max_retries})")
                 time.sleep(delay)
 
             # Get available transcripts
@@ -205,9 +175,7 @@ def get_transcript_direct(url, max_retries=3):
             elif "private" in error_msg:
                 return None, "Video is private"
             elif "no element found" in error_msg and attempt < max_retries - 1:
-                logger.warning(
-                    f"XML parsing error (attempt {attempt + 1}/{max_retries}): {str(e)}"
-                )
+                logger.warning(f"XML parsing error (attempt {attempt + 1}/{max_retries}): {str(e)}")
                 continue  # Retry for XML parsing errors
             elif attempt == max_retries - 1:
                 return None, f"Transcript error after {max_retries} attempts: {str(e)}"
@@ -221,8 +189,8 @@ def get_transcript_ytdlp(url):
     if not video_id:
         return None, "Invalid video ID"
 
-    import tempfile
     import json
+    import tempfile
     from pathlib import Path
 
     # Try multiple language preferences
@@ -269,8 +237,7 @@ def get_transcript_ytdlp(url):
                             transcript_entries.append(
                                 {
                                     "text": text.strip(),
-                                    "start": event.get("tStartMs", 0)
-                                    / 1000.0,  # Convert to seconds
+                                    "start": event.get("tStartMs", 0) / 1000.0,  # Convert to seconds
                                     "duration": event.get("dDurationMs", 0) / 1000.0,
                                 }
                             )
@@ -418,9 +385,7 @@ def youtubeLoader(url, title_to_chunks, url_to_title):
             chunk_size_seconds=60,
         )
         loaded_clips = loader.load()
-        logger.info(
-            f"Successfully loaded {len(loaded_clips)} clips using LangChain loader for: {title}"
-        )
+        logger.info(f"Successfully loaded {len(loaded_clips)} clips using LangChain loader for: {title}")
 
     except Exception as e:
         logger.warning(f"LangChain loader failed for {title}: {str(e)}")
@@ -430,32 +395,20 @@ def youtubeLoader(url, title_to_chunks, url_to_title):
             logger.info(f"Attempting direct transcript API for: {title}")
             transcript_data, transcript_msg = get_transcript_direct(url)
             if transcript_data:
-                loaded_clips = create_document_from_transcript(
-                    transcript_data, title, url
-                )
-                logger.info(
-                    f"Successfully loaded {len(loaded_clips)} clips using direct API ({transcript_msg}) for: {title}"
-                )
+                loaded_clips = create_document_from_transcript(transcript_data, title, url)
+                logger.info(f"Successfully loaded {len(loaded_clips)} clips using direct API ({transcript_msg}) for: {title}")
             else:
-                logger.warning(
-                    f"Direct transcript API failed for {title}: {transcript_msg}"
-                )
+                logger.warning(f"Direct transcript API failed for {title}: {transcript_msg}")
 
                 # Method 3: Try yt-dlp as final fallback
                 try:
                     logger.info(f"Attempting yt-dlp fallback for: {title}")
                     transcript_data, transcript_msg = get_transcript_ytdlp(url)
                     if transcript_data:
-                        loaded_clips = create_document_from_transcript(
-                            transcript_data, title, url
-                        )
-                        logger.info(
-                            f"Successfully loaded {len(loaded_clips)} clips using yt-dlp ({transcript_msg}) for: {title}"
-                        )
+                        loaded_clips = create_document_from_transcript(transcript_data, title, url)
+                        logger.info(f"Successfully loaded {len(loaded_clips)} clips using yt-dlp ({transcript_msg}) for: {title}")
                     else:
-                        logger.warning(
-                            f"yt-dlp fallback failed for {title}: {transcript_msg}"
-                        )
+                        logger.warning(f"yt-dlp fallback failed for {title}: {transcript_msg}")
                 except Exception as e3:
                     logger.error(f"yt-dlp fallback error for {title}: {str(e3)}")
 
@@ -467,16 +420,10 @@ def youtubeLoader(url, title_to_chunks, url_to_title):
                 logger.info(f"Attempting yt-dlp fallback for: {title}")
                 transcript_data, transcript_msg = get_transcript_ytdlp(url)
                 if transcript_data:
-                    loaded_clips = create_document_from_transcript(
-                        transcript_data, title, url
-                    )
-                    logger.info(
-                        f"Successfully loaded {len(loaded_clips)} clips using yt-dlp ({transcript_msg}) for: {title}"
-                    )
+                    loaded_clips = create_document_from_transcript(transcript_data, title, url)
+                    logger.info(f"Successfully loaded {len(loaded_clips)} clips using yt-dlp ({transcript_msg}) for: {title}")
                 else:
-                    logger.warning(
-                        f"yt-dlp fallback failed for {title}: {transcript_msg}"
-                    )
+                    logger.warning(f"yt-dlp fallback failed for {title}: {transcript_msg}")
             except Exception as e3:
                 logger.error(f"yt-dlp fallback error for {title}: {str(e3)}")
 
@@ -509,17 +456,13 @@ def youtubeLoader(url, title_to_chunks, url_to_title):
 
             # Clean the text using LLM
             try:
-                logger.debug(
-                    f"Cleaning text for clip {i}/{len(loaded_clips)} of: {title}"
-                )
+                logger.debug(f"Cleaning text for clip {i}/{len(loaded_clips)} of: {title}")
                 cleaned_text = clean_text(clip.page_content)
                 logger.debug(f"Original text: {clip.page_content[:100]}...")
                 logger.debug(f"Cleaned text: {cleaned_text[:100]}...")
                 clip.page_content = cleaned_text
             except Exception as e:
-                logger.error(
-                    f"Error cleaning text for {title}: {str(e)}, using original text"
-                )
+                logger.error(f"Error cleaning text for {title}: {str(e)}, using original text")
 
         title_to_chunks[title] = loaded_clips
         url_to_title[url] = title
@@ -528,9 +471,7 @@ def youtubeLoader(url, title_to_chunks, url_to_title):
 
     else:
         # No transcript available - create a basic document with video metadata
-        logger.info(
-            f"No transcript available for {title}, creating metadata-only document"
-        )
+        logger.info(f"No transcript available for {title}, creating metadata-only document")
 
         # Create enhanced content using available metadata
         content_parts = [f"YouTube video: {title}", f"URL: {url}"]

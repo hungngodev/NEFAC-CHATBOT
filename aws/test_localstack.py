@@ -17,11 +17,11 @@ def test_aws_connection():
     """Test basic AWS service connections."""
     try:
         from aws_config import (
-            get_lambda_client,
-            get_sqs_client,
-            get_s3_client,
             get_ecr_client,
             get_ecs_client,
+            get_lambda_client,
+            get_s3_client,
+            get_sqs_client,
         )
 
         # Test Lambda client

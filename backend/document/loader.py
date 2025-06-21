@@ -1,10 +1,11 @@
 import glob
+import logging
 import os
+import pickle
 import shutil
+
 from document.pdf_loader import pdfLoader
 from document.youtube_loader import youtubeLoader
-import pickle
-import logging
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -39,9 +40,7 @@ def load_all_documents():
         new_doc = pdfLoader(pdf_file, title_to_chunks)
         all_documents.update(new_doc)
         new_docs.update(new_doc)
-        shutil.copy(
-            pdf_file, os.path.join(COPY_DESTINATION_PATH, os.path.basename(pdf_file))
-        )  # move to frontend for fetching WONT NEED WHEN WE ARE USING NEFAC WEBSITE
+        shutil.copy(pdf_file, os.path.join(COPY_DESTINATION_PATH, os.path.basename(pdf_file)))  # move to frontend for fetching WONT NEED WHEN WE ARE USING NEFAC WEBSITE
         os.rename(pdf_file, os.path.join(FINISHED_PATH, os.path.basename(pdf_file)))
 
     # Process YouTube URLs
@@ -77,18 +76,14 @@ def load_all_documents():
                 finished.write(url + "\n")
                 logger.info(f"Successfully processed video {idx}/{total_videos}")
             except Exception as e:
-                logger.error(
-                    f"Error processing YouTube URL {url} (video {idx}/{total_videos}): {e}"
-                )
+                logger.error(f"Error processing YouTube URL {url} (video {idx}/{total_videos}): {e}")
                 failed_urls.append(url)
                 continue
 
     # Log completion status
     if total_videos > 0:
         successful_videos = total_videos - len(failed_urls)
-        logger.info(
-            f"YouTube video processing complete: {successful_videos}/{total_videos} successful, {len(failed_urls)} failed"
-        )
+        logger.info(f"YouTube video processing complete: {successful_videos}/{total_videos} successful, {len(failed_urls)} failed")
 
     # Rewrite failed URLs to waiting_room/yt_urls.txt
     with open(yt_urls_file, "w") as waiting_write:

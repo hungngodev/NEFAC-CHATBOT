@@ -1,8 +1,9 @@
 import json
 import logging
-from typing import Dict, List, Any
-import spacy
+from typing import Any, Dict, List
+
 import numpy as np
+import spacy
 from sklearn.decomposition import PCA
 
 # Configure logging

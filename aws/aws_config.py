@@ -1,6 +1,7 @@
 import os
-import boto3
 from typing import Optional
+
+import boto3
 from botocore.config import Config
 
 

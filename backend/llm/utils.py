@@ -1,5 +1,6 @@
 import logging
 from typing import List
+
 from langchain_core.documents import Document
 
 logging.basicConfig(level=logging.INFO)
@@ -10,24 +11,20 @@ def format_docs(docs: List[Document]) -> str:
     """Format documents with default values for missing metadata."""
     formatted_docs: List[str] = []
     for i, doc in enumerate(docs):
-        metadata = doc.metadata
-        title = metadata.get("title", "Unknown Source")
-        source_url = metadata.get("source", "")
-        doc_type = metadata.get("type", "unknown")
-        timestamp = metadata.get("page", None)
+        original_metadata = doc.metadata
+        title = original_metadata.get("title", "Unknown Source")
+        source_url = original_metadata.get("source", "")
+        doc_type = original_metadata.get("type", "unknown")
+        timestamp = original_metadata.get("page", None)
 
         # Store metadata for potential source creation
         metadata = {
             "source_id": i + 1,
             "title": title,
             "type": doc_type,
-            "link": (
-                f"{source_url}&t={timestamp}s"
-                if doc_type == "youtube" and timestamp
-                else source_url
-            ),
+            "link": (f"{source_url}&t={timestamp}s" if doc_type == "youtube" and timestamp else source_url),
             "timestamp_seconds": timestamp if doc_type == "youtube" else None,
-            "summary": metadata.get("summary", None),
+            "summary": original_metadata.get("summary", None),
         }
 
         # Format the document with the new metadata

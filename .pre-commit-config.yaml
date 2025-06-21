@@ -1,43 +1,62 @@
-# This is the single, centralized pre-commit configuration for the entire repository.
+# .pre-commit-config.yaml
+# Root pre-commit configuration for the NEFAC monorepo.
 
 repos:
-  # ===== Python Backend Hooks =====
+  # ===================================================================
+  # Backend Hooks (Python)
+  # ===================================================================
   - repo: https://github.com/psf/black
     rev: 24.4.2
     hooks:
       - id: black
-        language_version: python3
-        # Run only on files in the backend directory
-        files: ^backend/
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.8
-    hooks:
-      - id: ruff
-        args: ["--fix"]
-        language_version: python3
-        # Run only on files in the backend directory
+        # Black will read its configuration from backend/pyproject.toml
         files: ^backend/
 
-  # ===== Frontend Hooks =====
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.1.0 # Using a slightly newer version
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.10
     hooks:
-      - id: prettier
-        # Run only on files in the frontend directory
-        files: ^frontend/.*\.(js|jsx|ts|tsx|json|css|md|html)$
+      - id: ruff
+        args: [--fix]
+        # Ruff will read its configuration from backend/pyproject.toml
+        files: ^backend/
+
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.3.1
+    hooks:
+      - id: autoflake
+        args:
+          [
+            "--remove-all-unused-imports",
+            "--remove-unused-variables",
+            "--in-place",
+            "--exclude=docs,faiss_store,*.pkl,*.pdf,*.txt",
+          ]
+        files: ^backend/
+
+  # ===================================================================
+  # Frontend Hooks (TypeScript/JavaScript)
+  # ===================================================================
+  - repo: local
+    hooks:
+      - id: prettier-frontend
+        name: Prettier (Frontend)
+        language: system
+        entry: npm run check-format --prefix frontend
+        types: [javascript, jsx, ts, tsx, json, css, markdown, html]
+        files: ^frontend/
+
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v8.53.0
+    rev: v8.56.0
     hooks:
       - id: eslint
-        args: [--fix]
+        # The --config flag is needed because we are running from the root.
+        args: [--fix, --config, frontend/.eslintrc.cjs]
         additional_dependencies:
-          - eslint@8.57.0
-          - "@typescript-eslint/eslint-plugin@7.13.0"
-          - "@typescript-eslint/parser@7.13.0"
-          - eslint-plugin-react@7.34.2
-          - eslint-plugin-react-hooks@4.6.2
-          - eslint-plugin-react-refresh@0.4.7
-          - typescript-eslint@7.13.0
-          - globals@15.11.0
+          - "eslint@8.56.0"
+          - "@typescript-eslint/eslint-plugin@7.0.0"
+          - "@typescript-eslint/parser@7.0.0"
+          - "eslint-plugin-react@7.33.0"
+          - "eslint-plugin-react-hooks@4.6.0"
+          - "eslint-plugin-react-refresh@0.4.5"
         # Run only on files in the frontend directory
-        files: ^frontend/.*\.(js|jsx|ts|tsx)$
+        files: ^frontend/

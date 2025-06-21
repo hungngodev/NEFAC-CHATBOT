@@ -1,0 +1,25 @@
+# Ignore artifacts and dependencies
+node_modules
+dist
+build
+coverage
+
+# Ignore lock files
+package-lock.json
+yarn.lock
+
+# Ignore specific config files
+vite.config.ts.timestamp-*
+
+# Ignore large media files
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.mp4
+*.webm
+
+# Ignore logs
+*.log 

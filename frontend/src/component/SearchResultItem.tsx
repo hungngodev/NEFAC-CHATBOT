@@ -1,12 +1,12 @@
-import React from 'react';
+import React from 'react'
 
 interface SearchResult {
-  title: string;
-  link: string;
-  type: string;
-  timestamp_seconds?: number;
-  summary?: string;
-  content?: string;
+  title: string
+  link: string
+  type: string
+  timestamp_seconds?: number
+  summary?: string
+  content?: string
 }
 
 export const SearchResultItem: React.FC<{ result: SearchResult }> = ({ result }) => {
@@ -15,28 +15,28 @@ export const SearchResultItem: React.FC<{ result: SearchResult }> = ({ result })
       return {
         label: 'YouTube',
         className: 'px-2 py-1 text-xs font-medium rounded-full bg-red-400 text-white',
-      };
+      }
     }
 
     if (link && link.toLowerCase().includes('youtube')) {
       return {
         label: 'YouTube',
         className: 'px-2 py-1 text-xs font-medium rounded-full bg-red-400 text-white',
-      };
+      }
     } else if (link && link.toLowerCase().includes('nefac.org')) {
       return {
         label: 'NEFAC Website',
         className: 'px-2 py-1 text-xs font-medium rounded-full bg-blue-500 text-white',
-      };
+      }
     } else {
       return {
         label: 'NEFAC Website',
         className: 'px-2 py-1 text-xs font-medium rounded-full bg-blue-500 text-white',
-      };
+      }
     }
-  };
+  }
 
-  const tagInfo = getTagInfo(result.type, result.link);
+  const tagInfo = getTagInfo(result.type, result.link)
 
   return (
     <div className="p-4 border-l-4 border-blue-200 bg-gray-50 rounded-r-lg">
@@ -80,5 +80,5 @@ export const SearchResultItem: React.FC<{ result: SearchResult }> = ({ result })
         </div>
       )}
     </div>
-  );
-};
+  )
+}

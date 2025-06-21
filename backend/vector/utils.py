@@ -9,9 +9,7 @@ def retrieve_documents(query):
     pass
 
 
-def create_vectorstore_filter(
-    roleFilter="", contentType="", resourceType="", seen_documents=set()
-):
+def create_vectorstore_filter(roleFilter="", contentType="", resourceType="", seen_documents=set()):
     """
     Creates a metadata filter function for vector store retriever to make sure we don't get duplicate documents that don't match the filters
 
