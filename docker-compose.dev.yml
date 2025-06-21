@@ -11,27 +11,36 @@ services:
       - backend
     networks:
       - app-network
+    volumes:
+      # Mount nginx logs for debugging
+      - ./logs/nginx:/var/log/nginx
+    environment:
+      - NGINX_ENV=development
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     restart: always
-    env_file:
-      - ./backend/.env
     environment:
       - AWS_ENDPOINT_URL=http://localstack:4566
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
       - AWS_DEFAULT_REGION=us-east-1
+      - ENVIRONMENT=development
+      - LOG_LEVEL=debug
     depends_on:
       - localstack
     networks:
       - app-network
       - localstack-network
     volumes:
-      # Mount backend .env file for development
-      - ./backend/.env:/app/.env:ro
+      # Mount backend code for hot reloading (if needed)
+      - ./backend:/app
+      - ./logs/backend:/app/logs
+    # For development, you might want to expose the backend directly for debugging
+    ports:
+      - "8000:8000"
 
   localstack:
     image: localstack/localstack:latest
@@ -49,11 +58,29 @@ services:
     volumes:
       - "${TMPDIR:-/tmp}/localstack:/tmp/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+      - ./logs/localstack:/tmp/localstack/logs
     networks:
       - localstack-network
+
+  # Optional: Add a database for development if needed
+  # postgres:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_DB: nefac_dev
+  #     POSTGRES_USER: nefac
+  #     POSTGRES_PASSWORD: nefac123
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   networks:
+  #     - app-network
 
 networks:
   app-network:
     driver: bridge
   localstack-network:
     driver: bridge
+
+volumes:
+  # postgres_data:

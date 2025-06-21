@@ -23,6 +23,12 @@ app.add_middleware(
 )
 
 
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for load balancers and monitoring"""
+    return {"status": "healthy", "service": "nefac-backend"}
+
+
 @app.get("/ask-llm")
 async def ask_llm(
     query: str,
