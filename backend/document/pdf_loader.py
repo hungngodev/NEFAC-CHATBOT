@@ -1,11 +1,10 @@
-from langchain_community.document_loaders import PyPDFLoader
 import os
+
+from langchain_community.document_loaders import PyPDFLoader
 
 
 def pdfLoader(pdf_path, title_to_chunks):
-    doc_title = (
-        os.path.basename(pdf_path)[:-4].strip().replace("_", " ").replace("  ", " ")
-    )
+    doc_title = os.path.basename(pdf_path)[:-4].strip().replace("_", " ").replace("  ", " ")
     if doc_title in title_to_chunks:
         return set()
     loader = PyPDFLoader(pdf_path)

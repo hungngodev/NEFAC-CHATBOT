@@ -1,69 +1,70 @@
-import React, { useState, useEffect } from 'react';
-import { BASE_URL } from '../constant/backend';
+import React, { useEffect, useState } from 'react'
+
+import { BASE_URL } from '../constant/backend'
 
 interface LoadingStatus {
-  current: number;
-  total: number;
-  status: string;
-  is_loading: boolean;
+  current: number
+  total: number
+  status: string
+  is_loading: boolean
 }
 
 const LoadingStatus: React.FC = () => {
-  const [loadingStatus, setLoadingStatus] = useState<LoadingStatus | null>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [loadingStatus, setLoadingStatus] = useState<LoadingStatus | null>(null)
+  const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
     const fetchLoadingStatus = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/loading-status`);
+        const response = await fetch(`${BASE_URL}/loading-status`)
         if (response.ok) {
-          const status: LoadingStatus = await response.json();
-          setLoadingStatus(status);
+          const status: LoadingStatus = await response.json()
+          setLoadingStatus(status)
 
           // Show the status bar if documents are being loaded
-          setIsVisible(status.is_loading || status.status === 'adding_documents');
+          setIsVisible(status.is_loading || status.status === 'adding_documents')
         }
       } catch (error) {
-        console.error('Error fetching loading status:', error);
+        console.error('Error fetching loading status:', error)
       }
-    };
+    }
 
     // Initial fetch
-    fetchLoadingStatus();
+    fetchLoadingStatus()
 
     // Poll every 2 seconds while loading
     const interval = setInterval(() => {
       if (loadingStatus?.is_loading || loadingStatus?.status === 'adding_documents') {
-        fetchLoadingStatus();
+        fetchLoadingStatus()
       }
-    }, 2000);
+    }, 2000)
 
-    return () => clearInterval(interval);
-  }, [loadingStatus?.is_loading, loadingStatus?.status]);
+    return () => clearInterval(interval)
+  }, [loadingStatus?.is_loading, loadingStatus?.status])
 
   if (!isVisible || !loadingStatus) {
-    return null;
+    return null
   }
 
   const getStatusMessage = () => {
     switch (loadingStatus.status) {
       case 'initializing':
-        return 'Initializing vector store...';
+        return 'Initializing vector store...'
       case 'adding_documents':
-        return `Adding documents to knowledge base: ${loadingStatus.current}/${loadingStatus.total}`;
+        return `Adding documents to knowledge base: ${loadingStatus.current}/${loadingStatus.total}`
       case 'complete':
-        return 'Knowledge base ready!';
+        return 'Knowledge base ready!'
       case 'error':
-        return 'Error loading documents';
+        return 'Error loading documents'
       default:
-        return 'Loading...';
+        return 'Loading...'
     }
-  };
+  }
 
   const getProgressPercentage = () => {
-    if (loadingStatus.total === 0) return 0;
-    return Math.round((loadingStatus.current / loadingStatus.total) * 100);
-  };
+    if (loadingStatus.total === 0) return 0
+    return Math.round((loadingStatus.current / loadingStatus.total) * 100)
+  }
 
   return (
     <div className="fixed top-0 left-0 right-0 bg-blue-50 border-b border-blue-200 p-3 z-50">
@@ -109,7 +110,7 @@ const LoadingStatus: React.FC = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoadingStatus;
+export default LoadingStatus

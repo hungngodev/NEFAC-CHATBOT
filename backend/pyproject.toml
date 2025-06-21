@@ -172,3 +172,51 @@ build-backend = "poetry.core.masonry.api"
 black = "^24.4.2"
 ruff = "^0.4.8"
 pre-commit = "^3.7.1"
+autoflake = "^2.3.1"
+
+[tool.black]
+line-length = 300
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | faiss_store
+  | docs
+  | .*\.pkl
+  | .*\.pdf
+  | .*\.txt
+)/
+'''
+
+[tool.ruff]
+line-length = 300
+exclude = [
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".tox",
+    ".venv",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "faiss_store",
+    "docs",
+    "*.pkl",
+    "*.pdf",
+    "*.txt",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501", "W291"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["backend"]

@@ -1,72 +1,74 @@
-import { fetchEventSource } from '@microsoft/fetch-event-source';
-import React, { useEffect, useRef, useState } from 'react';
-import { MessageBubble } from '../component/MessageBubble';
-import { SearchInput } from '../component/SearchInput';
-import LoadingStatus from '../component/LoadingStatus';
-import { BASE_URL } from '../constant/backend';
-import './SearchBar.css';
+import { fetchEventSource } from '@microsoft/fetch-event-source'
+
+import React, { useEffect, useRef, useState } from 'react'
+
+import LoadingStatus from '../component/LoadingStatus'
+import { MessageBubble } from '../component/MessageBubble'
+import { SearchInput } from '../component/SearchInput'
+import { BASE_URL } from '../constant/backend'
+import './SearchBar.css'
 
 export interface SearchResult {
-  title: string;
-  link: string;
-  type: string;
-  timestamp_seconds?: number;
-  summary?: string;
-  content?: string;
+  title: string
+  link: string
+  type: string
+  timestamp_seconds?: number
+  summary?: string
+  content?: string
 }
 
 export interface Message {
-  type: 'user' | 'assistant';
-  content: string;
-  results?: SearchResult[];
+  type: 'user' | 'assistant'
+  content: string
+  results?: SearchResult[]
 }
 
 const SearchBar = () => {
-  const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [inputValue, setInputValue] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const [conversation, setConversation] = useState<Message[]>([
     {
       type: 'assistant',
       results: [],
       content: `Welcome to the New England First Amendment Coalition, the region's leading defender of First Amendment freedoms and government transparency. How can I help you?`,
     },
-  ]);
-  const prevLength = useRef<number>(1);
-  const messageOrderStream = useRef<Set<number>>(new Set());
-  const contextOrderStream = useRef<Set<number>>(new Set());
+  ])
+  const prevLength = useRef<number>(1)
+  const messageOrderStream = useRef<Set<number>>(new Set())
+  const contextOrderStream = useRef<Set<number>>(new Set())
 
-  const contextResultsStream = useRef<SearchResult[]>([]);
-  const conversationEndRef = useRef<HTMLDivElement>(null);
+  const contextResultsStream = useRef<SearchResult[]>([])
+  const conversationEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (conversationEndRef.current) {
-      conversationEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      conversationEndRef.current.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [conversation]);
+  }, [conversation])
 
   useEffect(() => {
-    const last = conversation[conversation.length - 1];
-    const hasResults = last?.results?.length;
+    const last = conversation[conversation.length - 1]
+    const hasResults = last?.results?.length
 
     if (hasResults) {
-      contextResultsStream.current = [];
-      setIsLoading(false);
+      contextResultsStream.current = []
+      setIsLoading(false)
     }
-  }, [conversation]);
+  }, [conversation])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-  };
+    setInputValue(e.target.value)
+  }
 
   const performSearch = async (searchText: string) => {
-    if (!searchText.trim()) return;
+    if (!searchText.trim()) return
 
     setConversation((prev) => [
       ...prev,
       { type: 'user', content: searchText, results: [] },
       { type: 'assistant', content: 'Searching...', results: [] },
-    ]);
-    setIsLoading(true);
+    ])
+    setIsLoading(true)
     try {
       await fetchEventSource(
         BASE_URL +
@@ -81,21 +83,21 @@ const SearchBar = () => {
           },
           onopen: async (res) => {
             if (res.ok && res.status === 200) {
-              console.log('Connection made ', res);
+              console.log('Connection made ', res)
             } else if (res.status >= 400 && res.status < 500 && res.status !== 429) {
-              console.log('Client-side error ', res);
+              console.log('Client-side error ', res)
             }
           },
           onmessage(event) {
-            const parsedData = JSON.parse(event.data);
-            console.log(parsedData);
+            const parsedData = JSON.parse(event.data)
+            console.log(parsedData)
             if (parsedData.context) {
               if (!contextOrderStream.current.has(parsedData.order)) {
                 parsedData.context.forEach((result: SearchResult) => {
                   const exist = contextResultsStream.current.findIndex(
                     (r) =>
                       r.title === result.title && r.timestamp_seconds === result.timestamp_seconds,
-                  );
+                  )
                   if (exist === -1) {
                     contextResultsStream.current.push({
                       title: result.title,
@@ -104,36 +106,36 @@ const SearchBar = () => {
                       timestamp_seconds: result.timestamp_seconds,
                       summary: result.summary,
                       content: result.content,
-                    });
+                    })
                   }
-                });
+                })
               }
-              contextOrderStream.current.add(parsedData.order);
+              contextOrderStream.current.add(parsedData.order)
             }
             if (parsedData.reformulated) {
               // reformulated message received, but not used
             }
             if (parsedData.message) {
-              window.history.scrollRestoration = 'auto';
+              window.history.scrollRestoration = 'auto'
               setConversation((prev) => {
-                const last = prev[prev.length - 1];
+                const last = prev[prev.length - 1]
                 if (messageOrderStream.current.size === 0) {
-                  last.content = parsedData.message;
+                  last.content = parsedData.message
                 } else if (!messageOrderStream.current.has(parsedData.order)) {
-                  last.content += parsedData.message;
+                  last.content += parsedData.message
                 }
-                messageOrderStream.current.add(parsedData.order);
-                return [...prev];
-              });
+                messageOrderStream.current.add(parsedData.order)
+                return [...prev]
+              })
             }
           },
           onclose() {
-            console.log('Connection closed by the server');
-            messageOrderStream.current.clear();
-            contextOrderStream.current.clear();
+            console.log('Connection closed by the server')
+            messageOrderStream.current.clear()
+            contextOrderStream.current.clear()
             setConversation((prev) => {
-              window.history.scrollRestoration = 'manual';
-              const last = prev[prev.length - 1];
+              window.history.scrollRestoration = 'manual'
+              const last = prev[prev.length - 1]
               last.results = contextResultsStream.current.map((result) => ({
                 title: result.title,
                 link: result.link.replace('/waiting_room', ''),
@@ -141,19 +143,19 @@ const SearchBar = () => {
                 timestamp_seconds: result.timestamp_seconds,
                 summary: result.summary,
                 content: result.content,
-              }));
-              last.content = last.content.replace('Searching...', '');
-              return [...prev];
-            });
+              }))
+              last.content = last.content.replace('Searching...', '')
+              return [...prev]
+            })
           },
 
           onerror(err) {
-            console.log('There was an error from server', err);
+            console.log('There was an error from server', err)
           },
         },
-      );
+      )
     } catch (error) {
-      console.error(error);
+      console.error(error)
       setConversation((prev) => [
         ...prev,
         {
@@ -161,18 +163,18 @@ const SearchBar = () => {
           content: 'Sorry, I encountered an error while searching.',
           results: [],
         },
-      ]);
+      ])
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const toSearch = inputValue;
-    setInputValue('');
-    await performSearch(toSearch);
-  };
+    e.preventDefault()
+    const toSearch = inputValue
+    setInputValue('')
+    await performSearch(toSearch)
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -199,7 +201,7 @@ const SearchBar = () => {
         isLoading={isLoading}
       />
     </div>
-  );
-};
+  )
+}
 
-export default SearchBar;
+export default SearchBar

@@ -1,11 +1,12 @@
-import { Send } from 'lucide-react';
-import { FormEvent } from 'react';
+import { Send } from 'lucide-react'
+
+import { FormEvent } from 'react'
 
 interface SearchInputProps {
-  handleSearch: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  inputValue: string;
-  isLoading: boolean;
+  handleSearch: (e: React.FormEvent<HTMLFormElement>) => Promise<void>
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  inputValue: string
+  isLoading: boolean
 }
 
 export const SearchInput: React.FC<SearchInputProps> = ({
@@ -49,5 +50,5 @@ export const SearchInput: React.FC<SearchInputProps> = ({
         </button>
       </form>
     </div>
-  );
-};
+  )
+}

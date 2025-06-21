@@ -1,18 +1,18 @@
-import React from 'react';
+import React from 'react'
 
 interface SourceLinksProps {
   results: {
-    title: string;
-    link: string;
-    type: string;
-    timestamp_seconds?: number;
-    summary?: string;
-  }[];
+    title: string
+    link: string
+    type: string
+    timestamp_seconds?: number
+    summary?: string
+  }[]
 }
 
 export const SourceLinks: React.FC<SourceLinksProps> = ({ results }) => {
   if (!results || results.length === 0) {
-    return null;
+    return null
   }
 
   const getTagInfo = (type: string, link: string) => {
@@ -20,26 +20,26 @@ export const SourceLinks: React.FC<SourceLinksProps> = ({ results }) => {
       return {
         label: 'YouTube',
         className: 'px-1.5 py-0.5 text-xs rounded-full bg-red-400 text-white',
-      };
+      }
     }
 
     if (link && link.toLowerCase().includes('youtube')) {
       return {
         label: 'YouTube',
         className: 'px-1.5 py-0.5 text-xs rounded-full bg-red-400 text-white',
-      };
+      }
     } else if (link && link.toLowerCase().includes('nefac.org')) {
       return {
         label: 'NEFAC Website',
         className: 'px-1.5 py-0.5 text-xs rounded-full bg-blue-500 text-white',
-      };
+      }
     } else {
       return {
         label: 'NEFAC Website',
         className: 'px-1.5 py-0.5 text-xs rounded-full bg-blue-500 text-white',
-      };
+      }
     }
-  };
+  }
 
   return (
     <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
@@ -57,7 +57,7 @@ export const SourceLinks: React.FC<SourceLinksProps> = ({ results }) => {
 
       <div className="space-y-2">
         {results.map((result, index) => {
-          const tagInfo = getTagInfo(result.type, result.link);
+          const tagInfo = getTagInfo(result.type, result.link)
 
           return (
             <div key={index} className="flex items-start space-x-2">
@@ -88,7 +88,7 @@ export const SourceLinks: React.FC<SourceLinksProps> = ({ results }) => {
                 </div>
               </div>
             </div>
-          );
+          )
         })}
       </div>
 
@@ -100,5 +100,5 @@ export const SourceLinks: React.FC<SourceLinksProps> = ({ results }) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
