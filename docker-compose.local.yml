@@ -1,0 +1,46 @@
+version: "3.9"
+services:
+  nginx:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    restart: always
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_BASE_URL=/api
+    networks:
+      - app-network
+    volumes:
+      # Mount nginx logs for debugging
+      - ./logs/nginx:/var/log/nginx
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - ./backend/.env
+    environment:
+      - ENVIRONMENT=development
+      - LOG_LEVEL=debug
+      # Disable AWS services for local development
+      - DISABLE_AWS_SERVICES=true
+    networks:
+      - app-network
+    volumes:
+      # Mount backend code for hot reloading (if needed)
+      - ./backend:/app
+      # Mount backend .env file for development
+      - ./backend/.env:/app/.env:ro
+      - ./logs/backend:/app/logs
+    # Expose backend directly for debugging
+    ports:
+      - "8000:8000"
+
+networks:
+  app-network:
+    driver: bridge
