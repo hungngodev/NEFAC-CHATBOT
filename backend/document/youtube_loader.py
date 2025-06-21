@@ -12,6 +12,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 from youtube_transcript_api import YouTubeTranscriptApi
 
+from llm.constant import YOUTUBE_MODEL_NAME
 from load_env import load_env
 from prompts import TRANSCRIPT_CLEANING_PROMPT
 
@@ -22,7 +23,7 @@ logger = logging.getLogger(__name__)
 load_env()
 
 llm = ChatOpenAI(
-    model="gpt-3.5-turbo",  # Updated to use latest gpt-3.5-turbo
+    model=YOUTUBE_MODEL_NAME,
     temperature=0.1,
     max_tokens=1024,
     api_key=os.getenv("OPENAI_API_KEY"),

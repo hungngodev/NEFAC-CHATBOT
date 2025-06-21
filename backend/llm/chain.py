@@ -11,7 +11,12 @@ from langchain_core.runnables import RunnableBranch, RunnableLambda, RunnablePas
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
-from llm.constant import LAMBDA_MULT, MODEL_NAME, NUMBER_OF_NEAREST_NEIGHBORS, THRESHOLD
+from llm.constant import (
+    LAMBDA_MULT,
+    MODEL_NAME,
+    NUMBER_OF_NEAREST_NEIGHBORS,
+    THRESHOLD,
+)
 from llm.utils import format_docs
 from load_env import load_env
 from prompts import (
@@ -55,9 +60,6 @@ def serialize_aimessagechunk(chunk: Any) -> str:
 async def middleware_qa(
     query: str,
     convoHistory: str,
-    roleFilter: str = "",
-    contentType: str = "",
-    resourceType: str = "",
 ) -> AsyncGenerator[str, None]:
     model = ChatOpenAI(model=MODEL_NAME, streaming=True)
 
@@ -80,7 +82,7 @@ async def middleware_qa(
     # ============================================================================
     method_selection_prompt = ChatPromptTemplate.from_template(METHOD_SELECTION_PROMPT)
 
-    method_selection_chain = method_selection_prompt | ChatOpenAI(temperature=0, model="gpt-4") | StrOutputParser()
+    method_selection_chain = method_selection_prompt | model | StrOutputParser()
 
     # ============================================================================
     # QUERY TRANSFORMATION BRANCH
@@ -157,7 +159,7 @@ async def middleware_qa(
                 ("human", "{question}"),
             ]
         )
-        | ChatOpenAI(temperature=0)
+        | model
         | StrOutputParser()
     ).with_config(tags=["doc_request_classifier"])
 

@@ -9,7 +9,7 @@ model = ChatOpenAI(temperature=0, model_name=PROMPT_MODEL_NAME)
 
 hyde_prompt = ChatPromptTemplate.from_template(HYDE_GENERATION_PROMPT)
 
-hyde_generation = hyde_prompt | ChatOpenAI(temperature=0) | StrOutputParser()
+hyde_generation = hyde_prompt | model | StrOutputParser()
 
 final_prompt = ChatPromptTemplate.from_template(HYDE_FINAL_PROMPT)
 

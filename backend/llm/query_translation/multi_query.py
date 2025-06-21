@@ -10,9 +10,10 @@ from prompts import MULTI_QUERY_PERSPECTIVES_PROMPT
 
 load_env()
 
+model = ChatOpenAI(temperature=0, model_name=PROMPT_MODEL_NAME)
 prompt_perspectives = ChatPromptTemplate.from_template(MULTI_QUERY_PERSPECTIVES_PROMPT)
 
-generate_queries = prompt_perspectives | ChatOpenAI(model=PROMPT_MODEL_NAME, temperature=0) | StrOutputParser() | (lambda x: x.split("\n"))
+generate_queries = prompt_perspectives | model | StrOutputParser() | (lambda x: x.split("\n"))
 
 
 def get_unique_union(documents: list[list]):
