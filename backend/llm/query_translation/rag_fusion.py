@@ -4,13 +4,13 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
-from llm.constant import PROMPT_MODEL_NAME
+from llm.constant import QUERY_TRANSLATION_MODEL_NAME
 from llm.utils import format_docs
 from load_env import load_env
 from prompts import RAG_FUSION_PROMPT
 
 load_env()
-model = ChatOpenAI(temperature=0, model_name=PROMPT_MODEL_NAME)
+model = ChatOpenAI(temperature=0, model_name=QUERY_TRANSLATION_MODEL_NAME)
 prompt_rag_fusion = ChatPromptTemplate.from_template(RAG_FUSION_PROMPT)
 
 generate_queries = prompt_rag_fusion | model | StrOutputParser() | (lambda x: x.split("\n"))

@@ -2,10 +2,10 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
-from llm.constant import PROMPT_MODEL_NAME
+from llm.constant import QUERY_TRANSLATION_MODEL_NAME
 from prompts import HYDE_FINAL_PROMPT, HYDE_GENERATION_PROMPT
 
-model = ChatOpenAI(temperature=0, model_name=PROMPT_MODEL_NAME)
+model = ChatOpenAI(temperature=0, model_name=QUERY_TRANSLATION_MODEL_NAME)
 
 hyde_prompt = ChatPromptTemplate.from_template(HYDE_GENERATION_PROMPT)
 

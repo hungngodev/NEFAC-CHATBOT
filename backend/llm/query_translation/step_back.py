@@ -3,13 +3,13 @@ from langchain_core.prompts import ChatPromptTemplate, FewShotChatMessagePromptT
 from langchain_core.runnables import RunnableLambda
 from langchain_openai import ChatOpenAI
 
-from llm.constant import PROMPT_MODEL_NAME
+from llm.constant import QUERY_TRANSLATION_MODEL_NAME
 from load_env import load_env
 from prompts import STEP_BACK_RESPONSE_PROMPT, STEP_BACK_SYSTEM_PROMPT
 
 load_env()
 
-model = ChatOpenAI(temperature=0, model_name=PROMPT_MODEL_NAME)
+model = ChatOpenAI(temperature=0, model_name=QUERY_TRANSLATION_MODEL_NAME)
 
 # Step‑back reformulation examples in a NEFAC/legal context
 examples = [
