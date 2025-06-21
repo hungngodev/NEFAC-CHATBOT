@@ -1,0 +1,24 @@
+{
+  "total_documents": 525,
+  "downloaded_documents": 525,
+  "failed_downloads": 0,
+  "quarantined_documents": 0,
+  "document_types": {},
+  "sources": {
+    "wordpress_rest_api": 208,
+    "graphql_api": 0,
+    "graphql_authenticated": 938,
+    "web_scraping": 0,
+    "link_discovery": 0,
+    "content_extraction": 111
+  },
+  "start_time": "2025-06-21 16:21:54.851370",
+  "end_time": "2025-06-21 16:23:11.396376",
+  "mime_types": {
+    "application/pdf": 398,
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": 15,
+    "text/csv": 1,
+    "unknown": 111
+  },
+  "duration_seconds": 76.545006
+}
