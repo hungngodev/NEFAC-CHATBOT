@@ -45,3 +45,9 @@ class IntentClassification(BaseModel):
     """Schema for the intent classification of the user query."""
 
     intent: Literal["document request", "general"] = Field(description="Classify the user's intent. If they are asking for information that could be found in NEFAC's documents, classify as 'document request'. Otherwise, classify as 'general'.")
+
+
+class MethodSelection(BaseModel):
+    """Schema for the query construction method selection."""
+
+    method: Literal["multiquery", "decompose", "stepback", "hyde", "ragfusion", "default"] = Field(description="The selected query construction method.")

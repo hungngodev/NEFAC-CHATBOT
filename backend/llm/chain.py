@@ -25,7 +25,7 @@ from prompts import (
     METHOD_SELECTION_PROMPT,
     RETRIEVAL_PROMPT,
 )
-from schemas import IntentClassification
+from schemas import IntentClassification, MethodSelection
 from vector.load import vector_store
 
 from .query_translation.decomposition import get_decomposition_chain
@@ -116,7 +116,7 @@ async def middleware_qa(
                     | model
                     | StrOutputParser()
                 ).with_config(tags=["contextualize_q_chain"])
-                | {"question": RunnablePassthrough(), "method": (ChatPromptTemplate.from_template(METHOD_SELECTION_PROMPT) | model | StrOutputParser())}
+                | {"question": RunnablePassthrough(), "method": (ChatPromptTemplate.from_template(METHOD_SELECTION_PROMPT) | model.with_structured_output(MethodSelection, method="function_calling") | StrOutputParser())}
                 | RunnableBranch(
                     (lambda x: "multiquery" in str(x.get("method", "")) if isinstance(x, dict) else "", get_multi_query_chain(retriever)),  # type: ignore
                     (lambda x: "decompose" in str(x.get("method", "")) if isinstance(x, dict) else "", get_decomposition_chain(retriever)),  # type: ignore
@@ -156,27 +156,25 @@ async def middleware_qa(
     # ============================================================================
     # MAIN ROUTER
     # ============================================================================
-    structured_llm_intent = model.with_structured_output(IntentClassification, method="function_calling")
-    intent_classifier_chain = (
-        ChatPromptTemplate.from_messages(
-            [
-                ("system", INTENT_CLASSIFICATION_PROMPT),
-                MessagesPlaceholder(variable_name="chat_history"),
-                ("human", "{question}"),
-            ]
-        )
-        | structured_llm_intent
-    ).with_config(tags=["doc_request_classifier"])
 
-    router = RunnableBranch(
+    main_chain = RunnablePassthrough.assign(
+        intent=(
+            ChatPromptTemplate.from_messages(
+                [
+                    ("system", INTENT_CLASSIFICATION_PROMPT),
+                    MessagesPlaceholder(variable_name="chat_history"),
+                    ("human", "{question}"),
+                ]
+            )
+            | model.with_structured_output(IntentClassification, method="function_calling")
+        ).with_config(tags=["doc_request_classifier"])
+    ) | RunnableBranch(
         (
             lambda x: x["intent"].intent == "document request",  # type: ignore
             retrieval_chain,
         ),
         general_chain,
     )
-
-    main_chain = RunnablePassthrough.assign(intent=intent_classifier_chain) | router
 
     # ============================================================================
     # CONVERSATIONAL CHAIN WITH HISTORY
