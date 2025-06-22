@@ -1,6 +1,6 @@
 # NEFAC Document Crawler - Complete Package
 
-A comprehensive, self-contained crawler that archives ALL content from the New England First Amendment Coalition (NEFAC) website, including documents, images, blog posts, and web pages.
+A comprehensive, self-contained crawler that archives ALL content from the New England First Amendment Coalition (NEFAC) website, including documents, images, blog posts, web pages, and YouTube videos.
 
 ## 🚀 Features
 
@@ -11,6 +11,7 @@ A comprehensive, self-contained crawler that archives ALL content from the New E
 - **Link Discovery**: Comprehensive URL discovery using the integrated `link-scraper` tool.
 - **Selenium Scraping**: Browser automation for extracting clean text from JavaScript-rendered content.
 - **Content Extraction**: Robust parsing of post content to find linked documents.
+- **YouTube Channel Crawling**: Complete archive of NEFAC YouTube channel with transcript extraction.
 
 ### Content Types Archived
 
@@ -19,6 +20,7 @@ A comprehensive, self-contained crawler that archives ALL content from the New E
 - **Blog Posts**: Complete, clean HTML of all posts with rich metadata.
 - **Web Pages**: All other discoverable HTML pages, saved with meaningful filenames.
 - **Plain Text**: Clean text content extracted from key pages via Selenium.
+- **YouTube Videos**: Complete video metadata, transcripts, and channel information.
 - **Comprehensive Metadata**: Detailed metadata for all content types in separate JSON files.
 
 ## 📁 Directory Structure
@@ -38,6 +40,7 @@ crawler/
     ├── documents/               # PDFs and other documents (by year)
     ├── images/                  # All image files
     ├── content/                 # Blog posts and web pages (HTML and plain text)
+    ├── youtube/                 # YouTube video transcripts and metadata
     ├── metadata/                # All metadata JSON files
     └── quarantine/              # Corrupted files
 ```
@@ -66,10 +69,39 @@ This command runs all discovery methods and downloads all content and metadata.
 python3 nefac-document-crawler.py
 ```
 
-### Command-Line Options
+### YouTube-Only Crawl
+
+To crawl only the NEFAC YouTube channel, use the `--youtube-only` flag. This is much faster if you only need video transcripts and metadata.
+
+```bash
+# Crawl YouTube with a 10-15 second delay between videos (default and recommended)
+python3 nefac-document-crawler.py --youtube-only
+
+# Adjust the delay (e.g., 20-25 seconds for extra caution)
+python3 nefac-document-crawler.py --youtube-only --delay 20
+```
+
+### Using a Proxy for YouTube Crawling
+
+If you are running the crawler from a cloud server (AWS, GCP, etc.) or are still getting blocked by YouTube, you can use a rotating residential proxy. The crawler has built-in support for [Webshare.io](https://www.webshare.io/).
+
+1.  Sign up for a Webshare "Residential" proxy plan.
+2.  Get your proxy username and password from your Webshare account.
+3.  Add your credentials to your `.env` file:
+    ```
+    WEBSHARE_USERNAME=your_webshare_username
+    WEBSHARE_PASSWORD=your_webshare_password
+    ```
+4.  The crawler will automatically use these credentials when fetching YouTube transcripts. You can also provide them via the command line:
+    ```bash
+    python3 nefac-document-crawler.py --youtube-only --webshare-username "user" --webshare-password "pass"
+    ```
+
+### Other Command-Line Options
 
 - `--metadata-only`: Run all discovery methods but only generate the metadata files without downloading the actual documents, images, or content files. This is useful for a quick run to see what content is available.
 - `--skip-web-scraping`: Skip the broad link-discovery and Selenium scraping phases. This will only fetch content directly from the WordPress APIs.
+- `--delay SECONDS`: Set a custom base delay (in seconds) between YouTube requests.
 
 ---
 
@@ -110,10 +142,14 @@ The crawler produces a separate, detailed metadata file for each type of content
 - **`images_metadata.json`**: For all downloaded image files.
 - **`html_pages_metadata.json`**: For generic web pages discovered by the link scraper.
 - **`selenium_content_metadata.json`**: For the plain text files extracted by Selenium.
+- **`youtube_metadata.json`**: For all YouTube videos with comprehensive metadata including view counts, likes, comments, transcripts, and video information.
 - **`crawl_summary.json`**: A summary of the entire crawl operation, including counts and timing.
 
 ## 🔍 Troubleshooting
 
+- **YouTube IP Bans:** If you see `RequestBlocked` or `IpBlocked` errors in the log, your IP has been temporarily blocked by YouTube.
+  - **Solution 1 (Recommended):** Use the `--delay` flag to slow down requests (e.g., `--delay 15`). The default is 10 seconds.
+  - **Solution 2 (Most Reliable):** Use a rotating residential proxy service like [Webshare.io](https://www.webshare.io/) as described in the "Usage" section. This is the best long-term solution.
 - **Missing Faust Key:** If you see errors related to GraphQL, ensure your `.env` file exists and contains a valid `FAUST_SECRET_KEY`.
 - **Permission Errors:** Ensure you have write access to the `crawler` directory.
 - **Selenium Issues:** The `setup.py` script uses `webdriver-manager` to automatically handle the Chrome driver. If you encounter issues, ensure you have Google Chrome installed. For headless servers, you may need to install it manually.

@@ -1,0 +1,358 @@
+[5.04s] Hello everyone. I'm Justin Silverman of
+[6.96s] the New England First Amendment
+[8.16s] Coalition. Thank you for joining us for
+[10.64s] another 30inut skills. For those joining
+[13.36s] us for the first time, welcome. These
+[15.68s] monthly lessons are a quick and
+[17.20s] efficient way to hone your reporting
+[18.88s] skills and build on your First Amendment
+[20.72s] knowledge. But they're also more than
+[22.40s] that. As those who join us every month
+[24.64s] already know, these lessons are a way
+[26.32s] for you to reconnect with a community of
+[28.24s] journalists, researchers, attorneys, and
+[30.60s] academics. To everyone, please use the
+[33.04s] chat to introduce yourself, showcase
+[34.80s] your own work, and connect with others.
+[37.44s] Also, make sure you register for our
+[39.20s] upcoming lessons such as how to start
+[41.20s] your own podcast, how to create a
+[43.12s] nonprofit newsroom, and how to use the
+[45.28s] Signal messaging app. Registration links
+[47.92s] can be found at nefac.org.
+[50.80s] Previous 30inut skills are available at
+[53.64s] nephac.org and on our YouTube channel
+[56.32s] five freedoms. Today's presentation is
+[59.20s] about the basics of education reporting.
+[61.84s] It's supported in part by the estate of
+[63.60s] Gloria L. Negri. Gloria was a
+[65.92s] trailblazing journalist at the Boston
+[67.44s] Globe for more than 50 years. This
+[69.60s] program is part of her legacy of
+[71.12s] newsroom education and her lifelong
+[73.12s] commitment to local journalism. You can
+[75.44s] learn more about Gloria and all other
+[77.52s] NEAC supporters at nefac.org/.
+[80.84s] org/supportters. During today's
+[82.48s] presentation, I again encourage you to
+[84.24s] introduce yourself in the chat and share
+[86.08s] your own experiences and resources. You
+[89.44s] can also use the chat or the Q&A button
+[91.36s] to ask questions of our instructor and
+[93.20s] we'll get to as many of those questions
+[94.96s] as possible. We have a lot to cover and
+[97.36s] not a lot of time. So, let's get
+[98.80s] started. Megan, all yours.
+[102.24s] Thanks, Justin. And hats off to Gloria
+[104.64s] Negri, a former colleague at the Boston
+[107.20s] Globe and uh an
+[109.40s] inspiration. Uh hello and welcome. This
+[112.64s] is a 30 minute skills segment on
+[114.48s] education reporting. I'm Meg Woolhouse,
+[117.04s] education editor at GBH News. This is a
+[120.08s] big beat that's changing even as I
+[122.16s] speak. So let's go.
+[128.08s] Ed reporters need a blend of
+[129.60s] journalistic skills, an understanding of
+[132.72s] the education landscape, and a deep
+[135.20s] sense of empathy. On top of that, there
+[137.92s] are complexities of education history
+[140.00s] and policy and the need to stay aware of
+[142.56s] emerging
+[145.48s] trends. This is a broad overview because
+[148.24s] there are systems within systems for
+[150.16s] reporters to navigate. I'll offer up
+[152.56s] some reporting strategies and look at
+[154.64s] some of the challenges education
+[156.32s] reporters are likely to face. Then we
+[158.72s] might have time for a question or
+[163.88s] two. So, where do we
+[166.28s] start? Keep on top of what's happening
+[168.96s] by reading up and following other ed
+[171.40s] reporters. Here are some recent stories
+[173.84s] highlighting issues that aren't going
+[175.60s] away anytime soon.
+[180.08s] On the left, a New York Times story
+[181.92s] looking at AI in schools. It raises the
+[184.88s] really key question, is technology the
+[187.44s] answer to a rise in student
+[189.96s] suicide? From the 74, you see that
+[192.88s] student enrollment declines often mean
+[195.36s] school closures? Are schools in your
+[197.60s] district closing? Are they closing
+[199.36s] equitably? Are families
+[202.12s] devastated? And finally, we see
+[204.32s] Chalkbeat offering another resource to
+[206.56s] reporters. This story looks at teacher
+[209.04s] turnover, burnout, and hiring, and how
+[212.00s] those issues remain a problem, and how
+[214.24s] one super large school district is
+[216.24s] dealing with it and overcoming
+[218.84s] it. There are also persistent teacher
+[221.52s] shortages in math and science around the
+[223.60s] US. And many schools are struggling to
+[226.16s] meet diversity goals in teaching in
+[228.40s] their teaching force, even as studies
+[230.56s] find that it benefits student learning
+[232.32s] to be in a classroom with a teacher that
+[234.00s] looks like you.
+[237.36s] The US K12 system is organized around
+[239.84s] the concept of local control. So we have
+[242.32s] a system of nearly 100,000 public
+[244.48s] schools operating generally under their
+[247.20s] own rules, policies, and values and
+[250.00s] funding them through property
+[252.28s] taxes. Private and religious schools
+[254.88s] operate separately, although there are
+[256.96s] still state and federal requirements.
+[259.68s] Charter schools are publicly funded, but
+[261.68s] operate independently of school
+[263.28s] districts and their policies. And then
+[266.08s] there are also a growing number of
+[267.84s] students who are attending
+[271.88s] homeschool. You can see here with local
+[274.16s] control that there are pluses and
+[276.96s] minuses of the system that we use. One
+[279.84s] is that we have a lot of community
+[281.52s] engagement. Parents and families are
+[283.52s] encouraged to be a part of their school
+[285.20s] community or at least they should be. On
+[288.16s] the downside, you can have districts
+[290.16s] with varying standards, varying
+[292.52s] curriculums, and different values. You
+[295.44s] might even see uh uh dramatic
+[297.64s] differences in what schools can offer
+[300.80s] because of their
+[305.48s] funding. It's also important for an
+[307.76s] education reporter to track down the key
+[309.76s] players on the beat. Just going to give
+[311.92s] you a really good example in Boston.
+[314.24s] This is G. Maguire. She's a Boston
+[316.40s] legend and a key figure in the city's
+[318.56s] education and civil rights space. She's
+[321.44s] the first black woman to sit on Boston's
+[323.28s] school committee that was in the 70s and
+[325.76s] went on to lead me, a desegregation
+[328.00s] program that sends city kids to schools
+[330.40s] in Boston's majority white suburbs. That
+[333.52s] program continues to this day. Now, Gan
+[336.56s] is in her 90s, and she's a huge resource
+[339.52s] because she understands school policy
+[342.04s] issues. Uh she understands the history.
+[344.96s] She understands uh how how the school
+[347.76s] system affects students of color in
+[350.16s] Boston and she's understood that now for
+[352.72s] four or five decades, maybe longer. Um
+[355.52s] she's in her 90s, like I said, and a
+[357.60s] real
+[361.16s] treasure. Right now, we're also seeing
+[363.52s] federal oversight of schools come into
+[365.52s] question with changes in the dismantling
+[367.76s] of the US Department of Education. It's
+[370.56s] a good time to ask whether your state
+[372.48s] can or will assume those
+[374.36s] responsibilities and what is lost in
+[376.48s] this process of dismantling the
+[378.08s] department of
+[380.36s] ed. You need to talk with people on all
+[382.88s] sides of an
+[384.12s] issue. And there are many places to go.
+[387.28s] The school committee and state board of
+[389.04s] ed meetings offer up public comment
+[390.96s] periods. You can ask for written remarks
+[393.36s] that are submitted by community members.
+[395.84s] It's also worthwhile to observe how much
+[398.16s] time is allocated for feedback at
+[401.00s] meetings and even how that feedback is
+[403.44s] received by people in the district or
+[406.00s] people at the state
+[407.40s] level. Build your
+[410.04s] sources over time and understand that
+[412.64s] the currents and forces behind decision
+[414.72s] making can vary. But here are a few
+[417.68s] ideas for sources. You can see teachers,
+[421.52s] teachers aids, unions, district leaders,
+[424.60s] administrators, principles are a key
+[426.68s] resource, school committee members,
+[428.88s] state board of education members, youth
+[431.36s] workers, and community organizers in the
+[433.36s] city or town where you live, as well as
+[435.44s] school
+[436.60s] counselors. They all have rich
+[441.88s] perspectives. When you dive in, know
+[444.08s] that it's a freewheeling beat with a lot
+[445.84s] of groups and individuals committed to
+[447.60s] the cause of education.
+[450.64s] My one note would be to stay aware of
+[453.52s] who is funding an organization. There's
+[456.00s] a big difference between an organization
+[457.92s] funded by say parents and family dues
+[461.04s] and one that's funded through a
+[463.20s] political action committee or a
+[464.72s] foundation that may have an
+[466.52s] agenda. There's also all sorts of new
+[468.88s] parents groups uh like uh Moms for
+[472.48s] Liberty and Fair that have sprouted up.
+[475.92s] Um, Moms for Liberty in particular
+[477.92s] advocates against LGBTQ curricula as
+[480.96s] well as LGBTQ student rights, race and
+[484.32s] ethnicity, DEI and mask mandates. There
+[487.36s] are nearly 300 chapters in the US, maybe
+[490.00s] more. And they also advocate for book
+[492.40s] bands. So, if you were using some of
+[494.48s] their commentary, it would be important
+[495.84s] to make sure that you get all sides of
+[497.52s] the issues that you're covering. Most
+[499.44s] importantly, in the school landscape,
+[501.20s] students and parents, they're on the
+[503.68s] ground. They're the end consumers and
+[505.52s] the people with the greatest stake in
+[506.96s] the educational system's
+[508.84s] effectiveness. This is a mom and
+[510.72s] daughter I spoke to about bullying a few
+[513.04s] years back. I just took a phone call to
+[515.52s] a student organizer and suddenly I was
+[517.92s] in touch with a family and really
+[519.76s] learning a lot about um what was
+[522.32s] happening inside that student school.
+[525.20s] You can also harvest state and federal
+[527.28s] data although some of this information
+[529.12s] is in limbo. Uh today the US Department
+[532.48s] of Education lost about half of its
+[534.48s] staff lawyers from the office of civil
+[536.56s] rights uh in the Trump purging of the
+[539.28s] department and the national center for
+[541.52s] education statistics has been more or
+[543.52s] less dismantled under Trump. There are
+[545.84s] other alternatives here too and you can
+[547.92s] see from the slide you can go to the US
+[550.32s] census bureau uh your state department
+[552.80s] of education the center for disease
+[555.20s] control and you also find uh information
+[558.16s] available through universities and
+[560.32s] university
+[562.04s] research. Then there are are large
+[564.84s] foundations like the Pew Trust and
+[568.12s] Brookings the list goes on and on. um
+[570.80s] you can see uh that will also offer up a
+[574.08s] perspective and data that they call from
+[576.88s] various sources. There are clearly
+[579.52s] challenges on the education beat access
+[582.48s] to classrooms or inside a school can be
+[585.12s] difficult if not impossible. Sometimes
+[587.52s] it's impossible for parents even to be
+[589.44s] in schools. On the bright side, I would
+[592.00s] say you have social media where you can
+[594.08s] be in better communication with parents
+[596.40s] and parents groups who are gaining
+[598.88s] bigger and bigger voice in what's going
+[601.28s] on in districts. Public records requests
+[604.64s] may or may not get responses. Uh that's
+[608.24s] just part of the business, I think, now.
+[610.96s] But local officials are keenly aware
+[613.44s] that people are looking at a community
+[615.60s] schools, their reputation, and putting a
+[618.56s] lot of pressure on reporters and
+[621.20s] districts and people involved to keep up
+[623.44s] the reputation of their community. On
+[626.08s] top of this, some issues in ed reporting
+[628.16s] are quite loaded, like mental health or
+[631.20s] gender identity. And it's important to
+[633.52s] move ethically and with a sense of
+[635.20s] sensitivity through the landscape as
+[637.36s] you're talking to people.
+[639.68s] One important and key thing I I want to
+[642.08s] stress is the need to get parental or
+[644.72s] guardian permission when speaking with
+[646.84s] minors. No parent wants a surprise
+[649.52s] hearing their child uh quoted in a story
+[652.56s] or on the radio or on a YouTube
+[654.92s] presentation. There are still many
+[656.88s] windows into how schools operate in ways
+[659.20s] to get public
+[660.92s] information. I just want to outline a
+[663.04s] few of them here. School committee
+[664.56s] minutes, emails from official accounts,
+[667.52s] curricula, records related to lawsuits,
+[670.56s] teacher trainings, complaints, a
+[673.44s] school's budget and spending, grants,
+[676.56s] contracts, reports. You just have to
+[679.60s] stick with it and keep your focus on
+[681.60s] whatever uh your your subject is. And uh
+[685.76s] uh resources will find their way to you
+[687.76s] or you'll find your way to them ideally.
+[690.08s] Here's a story, a chalkbeat story that
+[692.88s] looked at contracts for computers. It
+[695.28s] might seem on the surface like getting a
+[697.52s] contract could be something quite
+[699.12s] boring, but clearly it's not dry in this
+[702.32s] story. Uh, and that's because it wasn't
+[705.52s] a story about a contract. It was a story
+[707.84s] about the people affected by that
+[709.68s] contract. You can see that the schools
+[712.80s] uh uh spent a lot of money on computers
+[715.20s] that never reached children. Uh it also
+[718.72s] prompted an inspector uh an inspector a
+[722.00s] state inspector's report uh in Chicago
+[725.68s] uh that led to uh led public officials
+[729.12s] and everyone to better understand that
+[731.04s] there were millions of dollars in
+[733.04s] resources that were supposed to go to
+[734.56s] students that didn't. Next here again
+[737.60s] these are records about absenteeism that
+[740.48s] tell about half the story. This is an AP
+[742.88s] story on how schools have made slow
+[744.64s] progress on record absenteeism.
+[748.08s] I'll give you an example here in
+[749.80s] Massachusetts. Since 2019, the state
+[753.00s] seen 72% rise in chronic
+[756.68s] absenteeism. That means a students that
+[759.96s] means that more students are missing
+[762.80s] more than 18 days of school a year. Uh
+[766.64s] you know, where are these kids going and
+[769.68s] why are they missing school? Their
+[772.24s] coverage through the APA has been
+[773.68s] phenomenal on this. I would encourage
+[775.52s] you to read it and then bring those
+[777.12s] questions to your own district. Uh it
+[780.08s] also raises the question, what can and
+[782.08s] should a school district do to turn this
+[784.40s] situation
+[786.20s] around? Situations involving uh parents
+[789.60s] and parent and district interaction are
+[792.16s] always interesting. Uh and you'll find a
+[794.72s] lot of parents who want districts to do
+[796.72s] more. Here are a few other resources
+[799.20s] that can specifically help new education
+[801.84s] reporters. Uh, I want to also point out
+[804.64s] the solutions journalism network is an
+[807.60s] amazing resource because in education
+[810.00s] often we're covering the problems or
+[811.68s] what's missing in a district and
+[813.52s] solutions journalism actually gives us a
+[816.00s] chance to um cast a wider net and help
+[820.00s] people in districts uh expand their
+[822.80s] thinking and perhaps their programming
+[825.28s] because they find out about something
+[827.28s] that works. There's also the
+[829.36s] investigative reporters and editors uh
+[831.68s] NIKAR conference and uh the education
+[835.36s] writers association which has plenty of
+[837.68s] free programming and programming
+[839.44s] targeted um to uh reporters covering all
+[843.36s] sorts of school districts uh with all
+[845.84s] sorts of uh resources for you to to um
+[849.76s] benefit from and it's all
+[852.04s] free. So, thank you very much. Good
+[854.56s] luck, Meg. Thank you so much for this
+[856.72s] lesson and many thanks to everyone for
+[859.12s] joining us today. We provide these
+[861.12s] lessons as a public service to you. So
+[863.76s] please return the favor and encourage
+[865.52s] your colleagues and friends to join us
+[867.20s] each month. We have a lot to learn from
+[869.20s] each other and I look forward to seeing
+[870.40s] you all again soon. On behalf of Nephac,
+[873.28s] thank you for all you do and we'll see
+[875.76s] you next month for our next 30 minute
+[878.16s] skills. Take care everyone.

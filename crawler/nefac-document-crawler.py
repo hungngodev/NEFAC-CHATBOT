@@ -22,6 +22,12 @@ using multiple endpoints and sources with optional Faust secret key authenticati
    - Link discovery using existing tools
    - Selenium-based content extraction
 
+4. YouTube Channel Crawling:
+   - Crawls NEFAC YouTube channel for all videos
+   - Extracts transcripts, metadata, and video information
+   - Organizes content in youtube/ folder
+   - Comprehensive metadata following existing schema
+
 Features:
 - Fetches all document types (PDFs, Word docs, Excel, etc.)
 - Downloads files with organized directory structure
@@ -33,6 +39,7 @@ Features:
 - Web scraping integration for complete coverage
 - Optional Faust secret key for enhanced GraphQL access
 - Content extraction from post text
+- YouTube channel crawling with transcript extraction
 """
 
 import os
@@ -40,7 +47,7 @@ import json
 import requests
 import time
 from datetime import datetime
-from urllib.parse import urlparse, urljoin
+from urllib.parse import urlparse, urljoin, parse_qs
 from pathlib import Path
 import argparse
 from typing import List, Dict, Any, Optional
@@ -50,11 +57,25 @@ import subprocess
 import sys
 import mimetypes
 from dotenv import load_dotenv
+import random
 try:
     import PyPDF2
 except ImportError:
     print("PyPDF2 is not installed. Please install it with: pip install PyPDF2")
     sys.exit(1)
+
+# YouTube-specific imports
+yt_dlp = None
+YouTubeTranscriptApi = None
+WebshareProxyConfig = None
+try:
+    import yt_dlp
+    from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
+    from youtube_transcript_api.proxies import WebshareProxyConfig
+    import json
+    import tempfile
+except ImportError:
+    print("YouTube dependencies not installed. Please install with: pip install yt-dlp youtube-transcript-api")
 
 # Configure logging
 logging.basicConfig(
@@ -68,7 +89,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class NEFACDocumentCrawler:
-    def __init__(self, output_dir: str = "nefac_documents", download_files: bool = True, faust_key: Optional[str] = None):
+    def __init__(self, output_dir: str = "nefac_documents", download_files: bool = True, faust_key: Optional[str] = None, youtube_delay: float = 10.0, webshare_username: Optional[str] = None, webshare_password: Optional[str] = None):
         self.base_url = "https://nefac.org"
         self.output_dir = Path(output_dir)
         self.download_files = download_files
@@ -129,7 +150,8 @@ class NEFACDocumentCrawler:
                 "web_scraping": 0,
                 "link_discovery": 0,
                 "content_extraction": 0,
-                "selenium_scraper": 0
+                "selenium_scraper": 0,
+                "youtube_channel": 0
             },
             "start_time": datetime.now(),
             "end_time": None,
@@ -139,6 +161,30 @@ class NEFACDocumentCrawler:
         # Track discovered documents to avoid duplicates
         self.discovered_documents = set()
         
+        # YouTube channel configuration
+        self.youtube_channel_url = "https://www.youtube.com/@nefac"
+        self.youtube_dir = self.output_dir / "youtube"
+        self.youtube_dir.mkdir(parents=True, exist_ok=True)
+        self.youtube_delay = youtube_delay
+        self.webshare_username = webshare_username
+        self.webshare_password = webshare_password
+        
+    def normalize_transcript(self, transcript):
+        """Normalize transcript entries to consistent dictionary format"""
+        normalized = []
+        for entry in transcript:
+            if hasattr(entry, 'text'):
+                # Convert object to dict
+                normalized.append({
+                    'text': entry.text,
+                    'start': entry.start,
+                    'duration': entry.duration
+                })
+            elif isinstance(entry, dict):
+                # Already a dict, keep as is
+                normalized.append(entry)
+        return normalized
+    
     def get_graphql_headers(self):
         """Get headers for authenticated GraphQL requests."""
         headers = {
@@ -1292,6 +1338,735 @@ class NEFACDocumentCrawler:
         
         return processed_files
 
+    def extract_video_id(self, url: str) -> Optional[str]:
+        """Extract video ID from YouTube URL"""
+        try:
+            parsed_url = urlparse(url)
+            if parsed_url.hostname in ["youtu.be"]:
+                return parsed_url.path[1:]
+            elif parsed_url.hostname in ["www.youtube.com", "youtube.com"]:
+                if parsed_url.path == "/watch":
+                    return parse_qs(parsed_url.query)["v"][0]
+                elif parsed_url.path.startswith("/embed/"):
+                    return parsed_url.path.split("/")[2]
+                elif parsed_url.path.startswith("/v/"):
+                    return parsed_url.path.split("/")[2]
+            return None
+        except Exception:
+            return None
+    
+    def get_youtube_transcript(self, video_id: str, max_retries: int = 3) -> Optional[List[Dict]]:
+        """Get transcript for a YouTube video using multiple free methods"""
+        if not YouTubeTranscriptApi and not yt_dlp:
+            logger.warning("YouTube dependencies not available")
+            return None
+            
+        # Method 1: YouTube Transcript API (Primary method - most reliable)
+        if YouTubeTranscriptApi:
+            transcript = self._get_transcript_youtube_api(video_id, max_retries)
+            if transcript:
+                logger.info(f"Transcript found using YouTube Transcript API for {video_id}")
+                return transcript
+        
+        # Method 2: yt-dlp subtitle extraction (Secondary method)
+        if yt_dlp:
+            transcript = self._get_transcript_ytdlp(video_id)
+            if transcript:
+                logger.info(f"Transcript found using yt-dlp for {video_id}")
+                return transcript
+        
+        # Method 3: YouTube's internal API endpoints
+        transcript = self._get_transcript_alternative_methods(video_id)
+        if transcript:
+            logger.info(f"Transcript found using YouTube internal API for {video_id}")
+            return transcript
+        
+        # Method 4: Free online transcript services (Fallback)
+        transcript = self._get_transcript_online_services(video_id)
+        if transcript:
+            logger.info(f"Transcript found using online services for {video_id}")
+            return transcript
+        
+        logger.warning(f"No transcript found for video {video_id} using any method")
+        return None
+    
+    def _get_transcript_youtube_api(self, video_id: str, max_retries: int = 3) -> Optional[List[Dict]]:
+        """Get transcript using YouTube Transcript API (primary method)"""
+        # Initialize the API client
+        ytt_api = None
+        if self.webshare_username and self.webshare_password:
+            logger.info("Using Webshare proxy for YouTube requests.")
+            try:
+                ytt_api = YouTubeTranscriptApi(
+                    proxy_config=WebshareProxyConfig(
+                        proxy_username=self.webshare_username,
+                        proxy_password=self.webshare_password,
+                    )
+                )
+            except Exception as e:
+                logger.error(f"Failed to initialize Webshare proxy: {e}")
+                # Fallback to a direct client
+                ytt_api = YouTubeTranscriptApi()
+        else:
+            ytt_api = YouTubeTranscriptApi()
+        
+        # Language preferences in order of preference
+        language_preferences = ["en", "en-US", "en-GB", "en-orig"]
+        
+        for attempt in range(max_retries):
+            try:
+                # Add small delay between attempts to avoid rate limiting
+                if attempt > 0:
+                    delay = random.uniform(1, 3) * attempt
+                    logger.info(f"Retrying transcript fetch after {delay:.1f}s delay (attempt {attempt + 1}/{max_retries})")
+                    time.sleep(delay)
+                
+                # Get available transcripts
+                transcript_list = ytt_api.list_transcripts(video_id)
+                
+                # Try preferred languages first
+                for lang in language_preferences:
+                    try:
+                        transcript = transcript_list.find_transcript([lang])
+                        transcript_data = transcript.fetch()
+                        return transcript_data
+                    except Exception as e:
+                        if "no element found" not in str(e).lower():
+                            continue  # Try next language
+                        else:
+                            raise e  # Propagate XML parsing errors for retry
+                
+                # If no preferred language found, try manual transcripts first
+                try:
+                    for transcript in transcript_list:
+                        if not transcript.is_generated:  # Manual transcripts
+                            transcript_data = transcript.fetch()
+                            return transcript_data
+                except Exception as e:
+                    if "no element found" not in str(e).lower():
+                        pass  # Continue to auto-generated
+                    else:
+                        raise e  # Propagate XML parsing errors for retry
+                
+                # Finally try any auto-generated transcript
+                try:
+                    for transcript in transcript_list:
+                        if transcript.is_generated:  # Auto-generated transcripts
+                            transcript_data = transcript.fetch()
+                            return transcript_data
+                except Exception as e:
+                    if "no element found" not in str(e).lower():
+                        pass
+                    else:
+                        raise e  # Propagate XML parsing errors for retry
+                
+                return None
+                
+            except Exception as e:
+                error_msg = str(e).lower()
+                if "disabled" in error_msg:
+                    return None
+                elif "unavailable" in error_msg:
+                    return None
+                elif "private" in error_msg:
+                    return None
+                elif "no element found" in error_msg and attempt < max_retries - 1:
+                    logger.warning(f"XML parsing error (attempt {attempt + 1}/{max_retries}): {str(e)}")
+                    continue  # Retry for XML parsing errors
+                elif attempt == max_retries - 1:
+                    logger.error(f"Transcript error after {max_retries} attempts: {str(e)}")
+                    return None
+        
+        return None
+    
+    def _get_transcript_ytdlp(self, video_id: str) -> Optional[List[Dict]]:
+        """Get transcript using yt-dlp subtitle extraction"""
+        if not yt_dlp:
+            return None
+            
+        video_url = f"https://www.youtube.com/watch?v={video_id}"
+        
+        # Try multiple language preferences
+        language_preferences = [
+            ["en"],  # English first
+            ["en-US"],  # US English
+            ["en-GB"],  # UK English
+            ["en-orig"],  # Original English
+        ]
+        
+        for lang_pref in language_preferences:
+            try:
+                with tempfile.TemporaryDirectory() as temp_dir:
+                    ydl_opts = {
+                        "quiet": True,
+                        "no_warnings": True,
+                        "skip_download": True,
+                        "writeautomaticsub": True,
+                        "subtitleslangs": lang_pref,
+                        "subtitlesformat": "json3",  # JSON format for easier parsing
+                        "outtmpl": f"{temp_dir}/%(id)s.%(ext)s",
+                    }
+
+                    if self.webshare_username and self.webshare_password:
+                        proxy_url = f"http://{self.webshare_username}:{self.webshare_password}@p.webshare.io:8080"
+                        ydl_opts['proxy'] = proxy_url
+                        logger.info("Using Webshare proxy for yt-dlp requests.")
+
+                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                        ydl.download([video_url])
+
+                        # Look for subtitle files
+                        subtitle_files = list(Path(temp_dir).glob(f"{video_id}.*.json3"))
+                        if not subtitle_files:
+                            continue  # Try next language preference
+                        
+                        # Read and parse the JSON subtitle file
+                        with open(subtitle_files[0], "r", encoding="utf-8") as f:
+                            subtitle_data = json.load(f)
+
+                        # Convert to transcript format
+                        transcript_entries = []
+                        for event in subtitle_data.get("events", []):
+                            if "segs" in event:
+                                # Combine all segments in this event
+                                text = "".join(seg.get("utf8", "") for seg in event["segs"])
+                                if text.strip():
+                                    transcript_entries.append(
+                                        {
+                                            "text": text.strip(),
+                                            "start": event.get("tStartMs", 0) / 1000.0,  # Convert to seconds
+                                            "duration": event.get("dDurationMs", 0) / 1000.0,
+                                        }
+                                    )
+                        
+                        if transcript_entries:
+                            logger.info(f"Successfully extracted transcript using yt-dlp for {video_id} with lang {lang_pref}")
+                            return self.normalize_transcript(transcript_entries)
+
+            except Exception as e:
+                logger.debug(f"yt-dlp extraction with lang {lang_pref} failed: {str(e)}")
+                continue  # Try next language preference
+        
+        logger.warning(f"yt-dlp could not extract transcript for {video_id} with any language preference.")
+        return None
+    
+    def _get_transcript_online_services(self, video_id: str) -> Optional[List[Dict]]:
+        """Get transcript using free online services"""
+        video_url = f"https://www.youtube.com/watch?v={video_id}"
+        
+        # List of free transcript services to try
+        services = [
+            {
+                "name": "YouTube Transcript API (alternative)",
+                "url": f"https://www.youtube.com/api/timedtext?v={video_id}&lang=en",
+                "method": "xml"
+            },
+            {
+                "name": "DownSub",
+                "url": f"https://downsub.com/?url={video_url}",
+                "method": "scrape"
+            },
+            {
+                "name": "YouTube Transcript",
+                "url": f"https://youtubetranscript.com/?v={video_id}",
+                "method": "scrape"
+            },
+            {
+                "name": "SaveFrom",
+                "url": f"https://en.savefrom.net/{video_url}",
+                "method": "scrape"
+            },
+            {
+                "name": "YouTube Transcript Finder",
+                "url": f"https://transcript.yt/{video_id}",
+                "method": "scrape"
+            }
+        ]
+        
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Accept-Encoding': 'gzip, deflate',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+        }
+        
+        for service in services:
+            try:
+                logger.debug(f"Trying {service['name']} for video {video_id}")
+                response = requests.get(service['url'], timeout=15, headers=headers)
+                
+                if response.status_code == 200:
+                    content = response.text
+                    
+                    if service['method'] == 'xml':
+                        # Parse XML transcript data
+                        transcript = self._parse_xml_transcript(content)
+                        if transcript:
+                            logger.info(f"Found transcript using {service['name']}")
+                            return transcript
+                    
+                    elif service['method'] == 'scrape':
+                        # Try to extract transcript from HTML content
+                        transcript = self._parse_html_transcript(content, video_id)
+                        if transcript:
+                            logger.info(f"Found transcript using {service['name']}")
+                            return transcript
+                            
+            except Exception as e:
+                logger.debug(f"Service {service['name']} failed: {str(e)}")
+                continue
+        
+        # Method: Try scraping from YouTube's embedded player
+        try:
+            embed_url = f"https://www.youtube.com/embed/{video_id}"
+            response = requests.get(embed_url, timeout=10, headers=headers)
+            
+            if response.status_code == 200:
+                content = response.text
+                transcript = self._parse_html_transcript(content, video_id)
+                if transcript:
+                    logger.info(f"Found transcript in embedded player for {video_id}")
+                    return transcript
+        except Exception as e:
+            logger.debug(f"Embedded player scraping failed: {str(e)}")
+        
+        return None
+    
+    def _parse_xml_transcript(self, xml_content: str) -> Optional[List[Dict]]:
+        """Parse XML transcript data"""
+        try:
+            from xml.etree import ElementTree
+            root = ElementTree.fromstring(xml_content)
+            transcript_entries = []
+            
+            for text_element in root.findall('.//text'):
+                start = float(text_element.get('start', 0))
+                duration = float(text_element.get('dur', 0))
+                text = text_element.text or ""
+                
+                if text.strip():
+                    transcript_entries.append({
+                        "text": text.strip(),
+                        "start": start,
+                        "duration": duration
+                    })
+            
+            return transcript_entries if transcript_entries else None
+        except Exception as e:
+            logger.debug(f"XML parsing failed: {str(e)}")
+            return None
+    
+    def _parse_html_transcript(self, html_content: str, video_id: str) -> Optional[List[Dict]]:
+        """Parse transcript data from HTML content"""
+        try:
+            # Look for common transcript patterns in HTML
+            import re
+            
+            # Pattern 1: Look for transcript text in common formats
+            patterns = [
+                r'<div[^>]*class="[^"]*transcript[^"]*"[^>]*>(.*?)</div>',
+                r'<span[^>]*class="[^"]*caption[^"]*"[^>]*>(.*?)</span>',
+                r'<p[^>]*class="[^"]*subtitle[^"]*"[^>]*>(.*?)</p>',
+                r'data-text="([^"]*)"',
+                r'data-transcript="([^"]*)"',
+            ]
+            
+            for pattern in patterns:
+                matches = re.findall(pattern, html_content, re.IGNORECASE | re.DOTALL)
+                if matches:
+                    # Clean up the found text
+                    cleaned_text = []
+                    for match in matches:
+                        # Remove HTML tags
+                        clean_text = re.sub(r'<[^>]+>', '', match)
+                        clean_text = re.sub(r'&[^;]+;', ' ', clean_text)  # Remove HTML entities
+                        clean_text = re.sub(r'\s+', ' ', clean_text).strip()  # Normalize whitespace
+                        
+                        if clean_text and len(clean_text) > 10:  # Minimum meaningful text
+                            cleaned_text.append(clean_text)
+                    
+                    if cleaned_text:
+                        # Create transcript entries with estimated timing
+                        transcript_entries = []
+                        for i, text in enumerate(cleaned_text):
+                            transcript_entries.append({
+                                "text": text,
+                                "start": i * 5.0,  # Estimate 5 seconds per entry
+                                "duration": 5.0
+                            })
+                        return transcript_entries
+            
+            # Pattern 2: Look for JSON transcript data
+            json_patterns = [
+                r'window\.__INITIAL_DATA__\s*=\s*({.*?});',
+                r'ytInitialData\s*=\s*({.*?});',
+                r'"transcript":\s*(\[.*?\])',
+                r'"captions":\s*(\[.*?\])',
+            ]
+            
+            for pattern in json_patterns:
+                matches = re.findall(pattern, html_content, re.IGNORECASE | re.DOTALL)
+                for match in matches:
+                    try:
+                        data = json.loads(match)
+                        if isinstance(data, list):
+                            # Direct transcript array
+                            return self._parse_json_transcript(data)
+                        elif isinstance(data, dict):
+                            # Look for transcript in nested structure
+                            transcript = self._find_transcript_in_json(data)
+                            if transcript:
+                                return transcript
+                    except json.JSONDecodeError:
+                        continue
+            
+            return None
+            
+        except Exception as e:
+            logger.debug(f"HTML parsing failed: {str(e)}")
+            return None
+    
+    def _parse_json_transcript(self, data: List[Dict]) -> Optional[List[Dict]]:
+        """Parse transcript data from JSON structure"""
+        try:
+            transcript_entries = []
+            
+            for item in data:
+                if isinstance(item, dict):
+                    text = item.get('text', '') or item.get('content', '') or item.get('caption', '')
+                    start = item.get('start', 0) or item.get('time', 0) or item.get('timestamp', 0)
+                    duration = item.get('duration', 0) or item.get('dur', 0)
+                    
+                    if text and isinstance(text, str) and text.strip():
+                        transcript_entries.append({
+                            "text": text.strip(),
+                            "start": float(start) if start else 0,
+                            "duration": float(duration) if duration else 0
+                        })
+            
+            return transcript_entries if transcript_entries else None
+            
+        except Exception as e:
+            logger.debug(f"JSON transcript parsing failed: {str(e)}")
+            return None
+    
+    def _find_transcript_in_json(self, data: Dict) -> Optional[List[Dict]]:
+        """Recursively search for transcript data in JSON structure"""
+        try:
+            # Common keys that might contain transcript data
+            transcript_keys = ['transcript', 'captions', 'subtitles', 'text', 'content']
+            
+            for key in transcript_keys:
+                if key in data:
+                    value = data[key]
+                    if isinstance(value, list):
+                        return self._parse_json_transcript(value)
+                    elif isinstance(value, dict):
+                        result = self._find_transcript_in_json(value)
+                        if result:
+                            return result
+            
+            # Recursively search nested objects
+            for key, value in data.items():
+                if isinstance(value, dict):
+                    result = self._find_transcript_in_json(value)
+                    if result:
+                        return result
+                elif isinstance(value, list) and value and isinstance(value[0], dict):
+                    for item in value:
+                        result = self._find_transcript_in_json(item)
+                        if result:
+                            return result
+            
+            return None
+            
+        except Exception as e:
+            logger.debug(f"JSON search failed: {str(e)}")
+            return None
+    
+    def _get_transcript_alternative_methods(self, video_id: str) -> Optional[List[Dict]]:
+        """Additional alternative methods for transcript extraction"""
+        # Method: Try using YouTube's internal API endpoints
+        try:
+            # YouTube's internal transcript endpoint (may not always work)
+            transcript_url = f"https://www.youtube.com/api/timedtext?v={video_id}&lang=en"
+            response = requests.get(transcript_url, timeout=10)
+            
+            if response.status_code == 200 and response.text.strip():
+                # Parse XML transcript data
+                from xml.etree import ElementTree
+                try:
+                    root = ElementTree.fromstring(response.text)
+                    transcript_entries = []
+                    
+                    for text_element in root.findall('.//text'):
+                        start = float(text_element.get('start', 0))
+                        duration = float(text_element.get('dur', 0))
+                        text = text_element.text or ""
+                        
+                        if text.strip():
+                            transcript_entries.append({
+                                "text": text.strip(),
+                                "start": start,
+                                "duration": duration
+                            })
+                    
+                    if transcript_entries:
+                        return transcript_entries
+                except Exception as e:
+                    logger.debug(f"XML parsing failed: {str(e)}")
+        except Exception as e:
+            logger.debug(f"Alternative transcript method failed: {str(e)}")
+        
+        return None
+    
+    def get_youtube_metadata(self, url: str) -> Dict[str, Any]:
+        """Get comprehensive YouTube video metadata using yt-dlp"""
+        if not yt_dlp:
+            logger.warning("yt-dlp not available")
+            return {"title": "Title not found"}
+            
+        ydl_opts = {
+            "quiet": True,
+            "no_warnings": True,
+            "skip_download": True,
+        }
+        try:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(url, download=False)
+                
+                if info is None:
+                    return {"title": "Title not found"}
+                
+                metadata = {
+                    "title": info.get("title", "Title not found"),
+                    "description": info.get("description", ""),
+                    "duration": info.get("duration", 0),
+                    "view_count": info.get("view_count", 0),
+                    "upload_date": info.get("upload_date", ""),
+                    "uploader": info.get("uploader", ""),
+                    "channel": info.get("channel", ""),
+                    "channel_id": info.get("channel_id", ""),
+                    "tags": info.get("tags", []),
+                    "categories": info.get("categories", []),
+                    "language": info.get("language", ""),
+                    "subtitles_available": bool(info.get("automatic_captions", {})),
+                    "like_count": info.get("like_count", 0),
+                    "age_limit": info.get("age_limit", 0),
+                    "video_id": info.get("id", ""),
+                    "webpage_url": info.get("webpage_url", url),
+                    "thumbnail": info.get("thumbnail", ""),
+                    "uploader_url": info.get("uploader_url", ""),
+                    "channel_url": info.get("channel_url", ""),
+                    "availability": info.get("availability", ""),
+                    "live_status": info.get("live_status", ""),
+                    "release_timestamp": info.get("release_timestamp", ""),
+                    "comment_count": info.get("comment_count", 0),
+                    "chapters": info.get("chapters", []),
+                    "heatmap": info.get("heatmap", {}),
+                }
+                return metadata
+        except Exception as e:
+            logger.error(f"Error fetching metadata for {url}: {str(e)}")
+            return {"title": "Title not found"}
+    
+    def save_youtube_transcript(self, video_id: str, transcript_data: List[Dict], metadata: Dict[str, Any]) -> str:
+        """Save transcript data to file and return file path"""
+        # Create filename from title
+        title = metadata.get("title", "Unknown")
+        safe_title = re.sub(r'[^\w\s-]', '', title).strip()
+        safe_title = re.sub(r'[-\s]+', '-', safe_title)
+        
+        # Add video ID to ensure uniqueness
+        filename = f"{safe_title}_{video_id}.txt"
+        filepath = self.youtube_dir / filename
+        
+        # Save transcript as text
+        with open(filepath, 'w', encoding='utf-8') as f:
+            for entry in transcript_data:
+                start_time = entry.get("start", 0)
+                text = entry.get("text", "")
+                f.write(f"[{start_time:.2f}s] {text}\n")
+        
+        return str(filepath)
+    
+    def crawl_youtube_channel(self) -> List[Dict]:
+        """Crawl NEFAC YouTube channel for all videos"""
+        if not yt_dlp:
+            logger.warning("yt-dlp not available, skipping YouTube crawl")
+            return []
+            
+        logger.info("Starting YouTube channel crawl...")
+        
+        # Get channel videos
+        ydl_opts = {
+            "quiet": True,
+            "no_warnings": True,
+            "skip_download": True,
+            "extract_flat": True,
+            "playlist_items": "1-1000",  # Get up to 1000 videos
+        }
+        
+        try:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                # Extract channel info
+                channel_info = ydl.extract_info(self.youtube_channel_url, download=False)
+                
+                if not channel_info or 'entries' not in channel_info:
+                    logger.error("Could not extract channel videos")
+                    return []
+                
+                videos = channel_info['entries']
+                logger.info(f"Found {len(videos)} videos in channel")
+                
+                youtube_documents = []
+                
+                for i, video in enumerate(videos, 1):
+                    if not video:
+                        continue
+                        
+                    video_url = video.get('url', '')
+                    if not video_url:
+                        continue
+                    
+                    logger.info(f"Processing video {i}/{len(videos)}: {video.get('title', 'Unknown')}")
+                    
+                    try:
+                        # Get full metadata
+                        full_metadata = self.get_youtube_metadata(video_url)
+                        video_id = full_metadata.get("video_id", "")
+                        
+                        if not video_id:
+                            logger.warning(f"Could not get video ID for {video_url}")
+                            continue
+                        
+                        # Get transcript
+                        transcript_data = self.get_youtube_transcript(video_id)
+                        
+                        # Normalize transcript data to consistent format
+                        if transcript_data:
+                            transcript_data = self.normalize_transcript(transcript_data)
+                        
+                        # Create document info
+                        document_info = {
+                            'id': f"youtube_{video_id}",
+                            'title': full_metadata.get("title", "Unknown"),
+                            'source_url': video_url,
+                            'mime_type': 'text/plain',
+                            'date': full_metadata.get("upload_date", ""),
+                            'modified': full_metadata.get("upload_date", ""),
+                            'alt_text': '',
+                            'description': full_metadata.get("description", ""),
+                            'caption': '',
+                            'source': 'youtube_channel',
+                            'file_size': 0,
+                            'youtube_metadata': full_metadata,
+                            'transcript_available': transcript_data is not None,
+                            'video_id': video_id,
+                            'channel': full_metadata.get("channel", ""),
+                            'channel_id': full_metadata.get("channel_id", ""),
+                            'duration': full_metadata.get("duration", 0),
+                            'view_count': full_metadata.get("view_count", 0),
+                            'like_count': full_metadata.get("like_count", 0),
+                            'comment_count': full_metadata.get("comment_count", 0),
+                            'tags': full_metadata.get("tags", []),
+                            'categories': full_metadata.get("categories", []),
+                            'thumbnail': full_metadata.get("thumbnail", ""),
+                            'uploader': full_metadata.get("uploader", ""),
+                            'uploader_url': full_metadata.get("uploader_url", ""),
+                            'availability': full_metadata.get("availability", ""),
+                            'live_status': full_metadata.get("live_status", ""),
+                            'release_timestamp': full_metadata.get("release_timestamp", ""),
+                            'chapters': full_metadata.get("chapters", []),
+                            'heatmap': full_metadata.get("heatmap", {}),
+                        }
+                        
+                        # Save transcript if available
+                        if transcript_data:
+                            transcript_file = self.save_youtube_transcript(video_id, transcript_data, full_metadata)
+                            document_info['transcript_file'] = transcript_file
+                            document_info['transcript_length'] = len(transcript_data)
+                            
+                            # Calculate transcript word count
+                            total_words = sum(len(entry.get("text", "").split()) for entry in transcript_data)
+                            document_info['transcript_word_count'] = total_words
+                        
+                        youtube_documents.append(document_info)
+                        self.stats['sources']['youtube_channel'] += 1
+                        
+                        # Be respectful to YouTube servers
+                        # Use a randomized delay to appear more human
+                        delay = random.uniform(self.youtube_delay, self.youtube_delay + 5.0)
+                        logger.info(f"Waiting for {delay:.2f} seconds before next video...")
+                        time.sleep(delay)
+                        
+                    except Exception as e:
+                        logger.error(f"Error processing video {video_url}: {e}")
+                        # Optional: Add a longer delay on error
+                        time.sleep(self.youtube_delay * 2)
+                        continue
+                
+                logger.info(f"Successfully processed {len(youtube_documents)} YouTube videos")
+                return youtube_documents
+                
+        except Exception as e:
+            logger.error(f"Error crawling YouTube channel: {e}")
+            return []
+    
+    def save_youtube_metadata(self, youtube_documents: List[Dict]):
+        """Save YouTube metadata to JSON file"""
+        if not youtube_documents:
+            return
+            
+        metadata_file = self.output_dir / "metadata" / "youtube_metadata.json"
+        metadata_file.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Format metadata to match existing schema
+        formatted_metadata = []
+        for doc in youtube_documents:
+            formatted_doc = {
+                "id": doc.get("id", ""),
+                "title": doc.get("title", ""),
+                "video_id": doc.get("video_id", ""),
+                "source_url": doc.get("source_url", ""),
+                "date": doc.get("date", ""),
+                "modified": doc.get("modified", ""),
+                "description": doc.get("description", ""),
+                "duration": doc.get("duration", 0),
+                "view_count": doc.get("view_count", 0),
+                "like_count": doc.get("like_count", 0),
+                "comment_count": doc.get("comment_count", 0),
+                "uploader": doc.get("uploader", ""),
+                "channel": doc.get("channel", ""),
+                "channel_id": doc.get("channel_id", ""),
+                "tags": doc.get("tags", []),
+                "categories": doc.get("categories", []),
+                "thumbnail": doc.get("thumbnail", ""),
+                "uploader_url": doc.get("uploader_url", ""),
+                "availability": doc.get("availability", ""),
+                "live_status": doc.get("live_status", ""),
+                "release_timestamp": doc.get("release_timestamp", ""),
+                "chapters": doc.get("chapters", []),
+                "heatmap": doc.get("heatmap", {}),
+                "transcript_available": doc.get("transcript_available", False),
+                "transcript_file": doc.get("transcript_file", ""),
+                "transcript_length": doc.get("transcript_length", 0),
+                "transcript_word_count": doc.get("transcript_word_count", 0),
+                "mime_type": doc.get("mime_type", "text/plain"),
+                "source": doc.get("source", "youtube_channel"),
+                "download_date": datetime.now().isoformat(),
+                "crawler_version": "2.0",
+                "file_size": doc.get("file_size", 0)
+            }
+            formatted_metadata.append(formatted_doc)
+        
+        with open(metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(formatted_metadata, f, indent=2, ensure_ascii=False)
+        
+        logger.info(f"Saved YouTube metadata: {len(formatted_metadata)} videos")
+
     def crawl(self):
         """Main crawling method that fetches from all sources."""
         logger.info("Starting comprehensive NEFAC document crawl...")
@@ -1371,6 +2146,10 @@ class NEFACDocumentCrawler:
             logger.error(f"Error in Selenium scraper: {e}")
             logger.info("Continuing with other sources...")
         
+        # 10. Crawl YouTube channel
+        youtube_documents = self.crawl_youtube_channel()
+        all_documents.extend(youtube_documents)
+        
         # Remove duplicates based on source_url
         unique_documents = []
         seen_urls = set()
@@ -1396,6 +2175,7 @@ class NEFACDocumentCrawler:
         self.save_metadata(unique_documents)
         self.save_images_metadata()
         self.save_summary()
+        self.save_youtube_metadata(youtube_documents)
         
         logger.info("Comprehensive crawl completed!")
         logger.info(f"Total documents found: {self.stats['total_documents']}")
@@ -1414,12 +2194,18 @@ def main():
     parser.add_argument("--document-types", nargs="+", help="Specific document types to fetch")
     parser.add_argument("--skip-web-scraping", action="store_true", help="Skip web scraping (API only)")
     parser.add_argument("--faust-key", help="Faust secret key for authenticated GraphQL access")
+    parser.add_argument("--youtube-only", action="store_true", help="Only crawl the NEFAC YouTube channel and save transcripts/metadata")
+    parser.add_argument("--delay", type=float, default=10.0, help="Base delay in seconds between YouTube requests to avoid rate limiting.")
+    parser.add_argument("--webshare-username", help="Webshare proxy username.")
+    parser.add_argument("--webshare-password", help="Webshare proxy password.")
     
     args = parser.parse_args()
     
     # Use provided Faust key or try to get from environment
     faust_key = args.faust_key or os.getenv('FAUST_SECRET_KEY')
-    
+    webshare_username = args.webshare_username or os.getenv('WEBSHARE_USERNAME')
+    webshare_password = args.webshare_password or os.getenv('WEBSHARE_PASSWORD')
+
     if faust_key:
         logger.info("Using Faust secret key for enhanced GraphQL access")
     else:
@@ -1428,12 +2214,32 @@ def main():
     crawler = NEFACDocumentCrawler(
         output_dir=args.output_dir,
         download_files=not args.metadata_only,
-        faust_key=faust_key
+        faust_key=faust_key,
+        youtube_delay=args.delay,
+        webshare_username=webshare_username,
+        webshare_password=webshare_password
     )
     
     if args.document_types:
         crawler.document_types = {k: v for k, v in crawler.document_types.items() 
                                 if any(dt in k for dt in args.document_types)}
+    
+    if args.youtube_only:
+        crawler = NEFACDocumentCrawler(
+            output_dir=args.output_dir,
+            download_files=not args.metadata_only,
+            faust_key=faust_key,
+            youtube_delay=args.delay,
+            webshare_username=webshare_username,
+            webshare_password=webshare_password
+        )
+        # Set the correct NEFAC channel URL
+        crawler.youtube_channel_url = "https://www.youtube.com/@nefac"
+        youtube_documents = crawler.crawl_youtube_channel()
+        crawler.save_youtube_metadata(youtube_documents)
+        print(f"\nYouTube crawl completed! Found {len(youtube_documents)} videos.")
+        print(f"Check the '{args.output_dir}/youtube' and '{args.output_dir}/metadata/youtube_metadata.json' for results.")
+        return
     
     documents = crawler.crawl()
     
