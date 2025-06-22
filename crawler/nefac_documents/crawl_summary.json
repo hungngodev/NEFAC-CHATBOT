@@ -1,24 +1,24 @@
 {
-  "total_documents": 525,
-  "downloaded_documents": 525,
-  "failed_downloads": 0,
-  "quarantined_documents": 0,
+  "total_documents": 648,
+  "downloaded_documents": 1182,
+  "failed_downloads": 88,
+  "quarantined_documents": 3,
   "document_types": {},
   "sources": {
     "wordpress_rest_api": 208,
     "graphql_api": 0,
     "graphql_authenticated": 938,
     "web_scraping": 0,
-    "link_discovery": 0,
-    "content_extraction": 111
+    "link_discovery": 246,
+    "content_extraction": 228,
+    "selenium_scraper": 0
   },
-  "start_time": "2025-06-21 16:21:54.851370",
-  "end_time": "2025-06-21 16:23:11.396376",
+  "start_time": "2025-06-21T17:52:35.917340",
+  "end_time": "2025-06-21T17:55:47.773386",
   "mime_types": {
-    "application/pdf": 398,
+    "application/pdf": 632,
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": 15,
-    "text/csv": 1,
-    "unknown": 111
+    "text/csv": 1
   },
-  "duration_seconds": 76.545006
+  "duration_seconds": 191.856046
 }

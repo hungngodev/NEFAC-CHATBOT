@@ -128,7 +128,8 @@ class NEFACDocumentCrawler:
                 "graphql_authenticated": 0,
                 "web_scraping": 0,
                 "link_discovery": 0,
-                "content_extraction": 0
+                "content_extraction": 0,
+                "selenium_scraper": 0
             },
             "start_time": datetime.now(),
             "end_time": None,
@@ -198,8 +199,8 @@ class NEFACDocumentCrawler:
         
         all_media = []
         
-        # Fetch all media items
-        media_items = self.fetch_with_pagination(self.endpoints["media"])
+        # Fetch all media items -
+        media_items = self.fetch_with_pagination(self.endpoints["media"], params={'per_page': 100})
         
         for item in media_items:
             mime_type = item.get('mime_type', '')
@@ -353,22 +354,48 @@ class NEFACDocumentCrawler:
                         node {
                             name
                             slug
+                            uri
+                            description
                         }
                     }
                     categories {
                         nodes {
                             name
                             slug
+                            description
+                            count
                         }
                     }
                     tags {
                         nodes {
                             name
                             slug
+                            description
+                            count
                         }
                     }
                     uri
                     link
+                    commentCount
+                    featuredImage {
+                        node {
+                            id
+                            databaseId
+                            title
+                            altText
+                            sourceUrl
+                            mediaDetails {
+                                width
+                                height
+                                sizes {
+                                    name
+                                    sourceUrl
+                                    width
+                                    height
+                                }
+                            }
+                        }
+                    }
                 }
                 pageInfo {
                     hasNextPage
@@ -390,20 +417,24 @@ class NEFACDocumentCrawler:
             
             try:
                 response = self.graphql_request(query, variables)
-                if not response or 'data' not in response:
-                    logger.error("Invalid GraphQL response")
+                if not response or 'data' not in response or not response['data'].get('posts'):
+                    logger.error(f"Invalid or empty GraphQL response for posts: {response}")
                     break
                     
                 data = response['data']['posts']
-                posts = data['nodes']
-                page_info = data['pageInfo']
+                posts = data.get('nodes', [])
+                page_info = data.get('pageInfo', {})
                 
+                if not posts:
+                    logger.info("No posts returned in this page, ending fetch.")
+                    break
+
                 all_posts.extend(posts)
                 
-                has_next_page = page_info['hasNextPage']
-                after_cursor = page_info['endCursor']
+                has_next_page = page_info.get('hasNextPage', False)
+                after_cursor = page_info.get('endCursor')
                 
-                logger.info(f"Fetched {len(posts)} posts (total: {len(all_posts)})")
+                logger.info(f"Fetched {len(posts)} posts (total: {len(all_posts)}), hasNextPage: {has_next_page}")
                 
             except Exception as e:
                 logger.error(f"Error fetching posts: {e}")
@@ -411,75 +442,113 @@ class NEFACDocumentCrawler:
         
         logger.info(f"Total posts fetched: {len(all_posts)}")
         
-        # Save content files and extract documents
         documents_found = []
         content_metadata = []
         
         for post in all_posts:
             try:
-                # Save the content to a file
-                post_id = post['databaseId']
-                filename = f"{post_id}.html"
+                post_id = post.get('databaseId')
+                if not post_id:
+                    logger.warning(f"Skipping post with no databaseId: {post.get('title')}")
+                    continue
+
+                title = post.get('title', 'Untitled')
+                slug = post.get('slug')
+                
+                # Correctly generate a flat filename for HTML content files
+                if title and title != "Untitled":
+                    clean_title = re.sub(r'[^\w\s-]', '', title).strip()
+                    filename = f"{re.sub(r'\s+', '_', clean_title)[:100]}.html"
+                elif slug:
+                    filename = f"{slug}.html"
+                else:
+                    filename = f"post_{post_id}.html"
+
                 filepath = self.content_dir / filename
                 
-                # Create content metadata entry
+                html_content = post.get('content')
+                if not html_content:
+                    html_content = ""
+                    logger.warning(f"Post {post_id} has no content.")
+
+                featured_image_info = None
+                if post.get('featuredImage') and post['featuredImage'].get('node'):
+                    img_node = post['featuredImage']['node']
+                    featured_image_info = {
+                        "id": img_node.get('databaseId'),
+                        "title": img_node.get('title'),
+                        "alt_text": img_node.get('altText'),
+                        "source_url": img_node.get('sourceUrl'),
+                        "width": img_node.get('mediaDetails', {}).get('width'),
+                        "height": img_node.get('mediaDetails', {}).get('height'),
+                        "sizes": img_node.get('mediaDetails', {}).get('sizes', [])
+                    }
+                
+                author_node = post.get('author', {}).get('node', {})
                 content_meta = {
                     "id": post_id,
-                    "title": post['title'],
-                    "slug": post['slug'],
-                    "date": post['date'],
-                    "modified": post['modified'],
-                    "uri": post['uri'],
-                    "link": post['link'],
-                    "excerpt": post['excerpt'],
-                    "author": post['author']['node']['name'] if post['author'] and post['author']['node'] else None,
-                    "author_slug": post['author']['node']['slug'] if post['author'] and post['author']['node'] else None,
-                    "categories": [cat['name'] for cat in post['categories']['nodes']] if post['categories'] else [],
-                    "category_slugs": [cat['slug'] for cat in post['categories']['nodes']] if post['categories'] else [],
-                    "tags": [tag['name'] for tag in post['tags']['nodes']] if post['tags'] else [],
-                    "tag_slugs": [tag['slug'] for tag in post['tags']['nodes']] if post['tags'] else [],
-                    "content_length": len(post['content']),
-                    "source_url": f"https://nefac.org{post['uri']}",
+                    "graphql_id": post.get('id'),
+                    "title": title,
+                    "slug": slug,
+                    "filename": filename,
+                    "file_path": str(filepath.relative_to(self.output_dir)),
+                    "date": post.get('date'),
+                    "modified": post.get('modified'),
+                    "uri": post.get('uri'),
+                    "link": post.get('link'),
+                    "source_url": f"https://nefac.org{post.get('uri')}" if post.get('uri') else post.get('link'),
+                    "excerpt": post.get('excerpt'),
+                    "content_length": len(html_content),
+                    "author": {
+                        "name": author_node.get('name'),
+                        "slug": author_node.get('slug'),
+                        "uri": author_node.get('uri'),
+                        "description": author_node.get('description')
+                    },
+                    "categories": post.get('categories', {}).get('nodes', []),
+                    "tags": post.get('tags', {}).get('nodes', []),
+                    "featured_image": featured_image_info,
+                    "comment_count": post.get('commentCount', 0),
                     "mime_type": "text/html",
                     "source": "graphql_content",
-                    "file_path": str(filepath.relative_to(self.output_dir)),
-                    "file_size": 0  # Will be updated after saving
+                    "download_date": datetime.now().isoformat(),
+                    "crawler_version": "2.0",
                 }
                 
-                # Save the HTML content
                 with open(filepath, 'w', encoding='utf-8') as f:
-                    f.write(post['content'])
+                    f.write(html_content)
                 
-                # Update file size
                 content_meta['file_size'] = filepath.stat().st_size
                 content_metadata.append(content_meta)
-                
-                # Extract document links from content
-                doc_links = self.extract_documents_from_content(post['content'])
-                for link in doc_links:
-                    document_info = {
-                        'title': f"Document from {post['title']}",
-                        'source_url': link,
-                        'date': post['date'],
-                        'modified': post['modified'],
-                        'source': 'content_extraction',
-                        'post_id': post_id,
-                        'post_title': post['title'],
-                        'post_url': f"https://nefac.org{post['uri']}"
-                    }
-                    documents_found.append(document_info)
-                
+
+                links = self.extract_documents_from_content(html_content)
+                if links:
+                    logger.info(f"Found {len(links)} document links in post {post_id}")
+                    for link in links:
+                        document_info = {
+                            'id': f"content-{post_id}-{os.path.basename(link)}",
+                            'title': self.extract_title_from_url(link),
+                            'source_url': link,
+                            'mime_type': self.guess_mime_type(link),
+                            'date': post.get('date'),
+                            'modified': post.get('modified'),
+                            'source': 'content_extraction',
+                            'description': f"Extracted from post: {title}",
+                        }
+                        documents_found.append(document_info)
+                        self.stats['sources']['content_extraction'] += 1
+                        
             except Exception as e:
-                logger.error(f"Error processing post {post.get('databaseId', 'unknown')}: {e}")
-        
-        # Save content metadata
+                logger.error(f"Error processing post {post.get('databaseId')}: {e}", exc_info=True)
+                
         content_metadata_file = self.metadata_dir / "content_metadata.json"
-        with open(content_metadata_file, 'w', encoding='utf-8') as f:
-            json.dump(content_metadata, f, indent=2, ensure_ascii=False)
-        
-        logger.info(f"Saved metadata for {len(content_metadata)} content files to {content_metadata_file}")
-        logger.info(f"Extracted {len(documents_found)} document links from content")
-        
+        try:
+            with open(content_metadata_file, 'w', encoding='utf-8') as f:
+                json.dump(content_metadata, f, indent=2, default=str)
+            logger.info(f"Saved metadata for {len(content_metadata)} content files to {content_metadata_file}")
+        except Exception as e:
+            logger.error(f"Error saving content metadata: {e}")
+
         return documents_found
     
     def fetch_posts_with_attachments(self) -> List[Dict]:
@@ -558,50 +627,44 @@ class NEFACDocumentCrawler:
         """Run the existing link-scraper tool to discover document links."""
         logger.info("Running link-scraper tool to discover document links...")
         
-        try:
-            # Check if the link-scraper tool exists
-            link_scraper_path = Path("tools/link-scraper/main.py")
-            if not link_scraper_path.exists():
-                logger.warning("Link-scraper tool not found at tools/link-scraper/main.py")
-                return []
-            
-            # Run the link-scraper with attachment discovery
-            output_file = self.output_dir / "link_discovery_results.json"
-            cmd = [
-                sys.executable, str(link_scraper_path),
-                self.base_url,
-                "--include-attachments",
-                "--max-depth", "3",
-                "--output", str(output_file)
-            ]
-            
-            logger.info(f"Running: {' '.join(cmd)}")
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
-            
-            if result.returncode == 0:
-                logger.info("Link-scraper completed successfully")
-                
-                # Parse the results to find document links
-                if output_file.exists():
-                    with open(output_file, 'r') as f:
-                        link_data = json.load(f)
+        # Run link-scraper tool if available
+        link_scraper_path = Path("../tools/link-scraper/main.py")
+        if link_scraper_path.exists():
+            logger.info("Running link-scraper tool to discover document links...")
+            try:
+                result = subprocess.run(
+                    [sys.executable, str(link_scraper_path), self.base_url, "--max-depth", "4", "--verbose", "--include-attachments", "--output", "link_discovery_results.json"],
+                    capture_output=True,
+                    text=True,
+                    cwd=self.output_dir
+                )
+                if result.returncode == 0:
+                    logger.info("Link-scraper tool completed successfully")
                     
-                    document_links = []
-                    for url, data in link_data.items():
-                        if self.is_document_url(url):
-                            document_links.append(url)
-                    
-                    logger.info(f"Found {len(document_links)} document links via link-scraper")
-                    return document_links
+                    # Parse the JSON output to extract document links
+                    output_file = self.output_dir / "link_discovery_results.json"
+                    if output_file.exists():
+                        with open(output_file, 'r', encoding='utf-8') as f:
+                            link_data = json.load(f)
+                        
+                        document_links = []
+                        for url, data in link_data.items():
+                            if self.is_document_url(url):
+                                document_links.append(url)
+                        
+                        logger.info(f"Found {len(document_links)} document links via link-scraper")
+                        return document_links
+                    else:
+                        logger.warning("Link-scraper output file not found")
+                        return []
                 else:
-                    logger.warning("Link-scraper output file not found")
+                    logger.warning(f"Link-scraper tool failed: {result.stderr}")
                     return []
-            else:
-                logger.error(f"Link-scraper failed: {result.stderr}")
+            except Exception as e:
+                logger.error(f"Error running link-scraper tool: {e}")
                 return []
-                
-        except Exception as e:
-            logger.error(f"Error running link-scraper: {e}")
+        else:
+            logger.warning(f"Link-scraper tool not found at {link_scraper_path}")
             return []
     
     def is_document_url(self, url: str) -> bool:
@@ -780,6 +843,35 @@ class NEFACDocumentCrawler:
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
 
+            # Add comprehensive file system metadata
+            stat = filepath.stat()
+            document_info.update({
+                'file_size': stat.st_size,
+                'file_created': datetime.fromtimestamp(stat.st_ctime).isoformat(),
+                'file_modified': datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                'file_path': str(filepath.relative_to(self.output_dir)),
+                'filename': base_filename,
+                'download_date': datetime.now().isoformat(),
+                'processing_timestamp': datetime.now().timestamp(),
+                'crawler_version': '2.0',
+                'http_status_code': response.status_code,
+                'http_headers': dict(response.headers),
+                'content_length_header': response.headers.get('content-length'),
+                'last_modified_header': response.headers.get('last-modified'),
+                'etag_header': response.headers.get('etag'),
+                'server_header': response.headers.get('server'),
+                'content_encoding': response.headers.get('content-encoding'),
+                'content_disposition': response.headers.get('content-disposition'),
+                'cache_control': response.headers.get('cache-control'),
+                'expires': response.headers.get('expires'),
+                'file_extension': file_extension,
+                'file_type_category': self.get_file_type_category(file_extension),
+                'is_image': file_extension in self.image_extensions,
+                'is_document': file_extension in ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.csv', '.txt'],
+                'is_archive': file_extension in ['.zip', '.rar', '.7z', '.tar', '.gz'],
+                'validation_status': 'pending'
+            })
+
             logger.info(f"Successfully downloaded to {filepath}")
             self.stats['downloaded_documents'] += 1
             
@@ -792,11 +884,30 @@ class NEFACDocumentCrawler:
             self.stats['failed_downloads'] += 1
             return False
     
+    def get_file_type_category(self, extension: str) -> str:
+        """Categorize file types."""
+        if extension in self.image_extensions:
+            return 'image'
+        elif extension in ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.csv', '.txt']:
+            return 'document'
+        elif extension in ['.zip', '.rar', '.7z', '.tar', '.gz']:
+            return 'archive'
+        elif extension in ['.html', '.htm']:
+            return 'web_page'
+        else:
+            return 'other'
+    
     def generate_filename(self, document_info: Dict) -> str:
-        """Generate a filename for the document."""
-        title = document_info['title']
-        date = document_info['date'][:4]  # Year
-        mime_type = document_info['mime_type']
+        """Generate a meaningful filename for the document."""
+        title = document_info.get('title', 'Unknown Document')
+        date = document_info.get('date', '')
+        mime_type = document_info.get('mime_type', '')
+        source = document_info.get('source', 'unknown')
+        
+        # Extract year from date
+        year = "unknown"
+        if date and len(date) >= 4:
+            year = date[:4]
         
         # Get file extension
         extension = "pdf"  # default
@@ -805,11 +916,47 @@ class NEFACDocumentCrawler:
                 extension = ext
                 break
         
-        # Clean title for filename
-        clean_title = re.sub(r'[^\w\s-]', '', title)
-        clean_title = re.sub(r'[-\s]+', '-', clean_title).strip('-')
+        # If we have a URL, try to get extension from it
+        source_url = document_info.get('source_url', '')
+        if source_url:
+            url_ext = Path(urlparse(source_url).path).suffix.lower()
+            if url_ext and url_ext in ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.csv', '.txt', '.jpg', '.jpeg', '.png', '.gif']:
+                extension = url_ext[1:]  # Remove the dot
         
-        return f"{date}/{clean_title}.{extension}"
+        # Clean title for filename
+        if title and title != "Unknown Document":
+            # Remove special characters but keep spaces and hyphens
+            clean_title = re.sub(r'[^\w\s\-_.]', '', title)
+            # Replace multiple spaces/hyphens with single
+            clean_title = re.sub(r'[-\s]+', '-', clean_title)
+            # Remove leading/trailing hyphens
+            clean_title = clean_title.strip('-')
+            # Limit length
+            clean_title = clean_title[:80]
+        else:
+            # Generate title from source URL if available
+            if source_url:
+                parsed_url = urlparse(source_url)
+                path_parts = parsed_url.path.strip('/').split('/')
+                if path_parts and path_parts[-1]:
+                    clean_title = Path(path_parts[-1]).stem
+                    clean_title = re.sub(r'[^\w\s\-_.]', '', clean_title)
+                    clean_title = re.sub(r'[-\s]+', '-', clean_title)
+                    clean_title = clean_title.strip('-')[:80]
+                else:
+                    clean_title = f"document_{source.replace('_', '-')}"
+            else:
+                clean_title = f"document_{source.replace('_', '-')}"
+        
+        # Add source identifier if it's not a standard source
+        if source not in ['wordpress_rest_api', 'graphql_api', 'graphql_authenticated']:
+            clean_title = f"{clean_title}_{source.replace('_', '-')}"
+        
+        # Ensure we have a valid filename
+        if not clean_title or clean_title == '':
+            clean_title = f"document_{year}"
+        
+        return f"{year}/{clean_title}.{extension}"
     
     def update_statistics(self, document_info: Dict):
         """Update crawl statistics."""
@@ -823,68 +970,327 @@ class NEFACDocumentCrawler:
         
         # Update MIME type statistics
         mime_type = document_info.get('mime_type', 'unknown')
-        if mime_type not in self.stats['mime_types']:
-            self.stats['mime_types'][mime_type] = 0
-        self.stats['mime_types'][mime_type] += 1
+        self.stats["mime_types"][mime_type] = self.stats["mime_types"].get(mime_type, 0) + 1
     
     def save_metadata(self, documents: List[Dict]):
         """Save document metadata to JSON file."""
         metadata_file = self.metadata_dir / "documents_metadata.json"
         
-        with open(metadata_file, 'w', encoding='utf-8') as f:
-            json.dump(documents, f, indent=2, ensure_ascii=False)
-        
-        logger.info(f"Saved metadata for {len(documents)} documents to {metadata_file}")
-    
-    def save_summary(self):
-        """Save crawler summary statistics."""
-        self.stats['end_time'] = datetime.now()
-        duration = self.stats['end_time'] - self.stats['start_time']
-        self.stats['duration_seconds'] = duration.total_seconds()
-        
-        summary_file = self.output_dir / "crawl_summary.json"
-        
-        with open(summary_file, 'w', encoding='utf-8') as f:
-            json.dump(self.stats, f, indent=2, default=str)
-        
-        logger.info(f"Saved crawl summary to {summary_file}")
-    
-    def save_images_metadata(self):
-        """Scan the images folder and save metadata for all images."""
-        images_metadata = []
-        images_dir = self.images_dir
-        # Load document metadata for cross-referencing
-        doc_meta_path = self.metadata_dir / "documents_metadata.json"
-        doc_meta = []
-        if doc_meta_path.exists():
-            with open(doc_meta_path, 'r', encoding='utf-8') as f:
+        # Load existing metadata if file exists
+        if metadata_file.exists():
+            with open(metadata_file, 'r', encoding='utf-8') as f:
                 try:
-                    doc_meta = json.load(f)
-                except Exception:
-                    doc_meta = []
-        doc_meta_by_filename = {Path(d['source_url']).name: d for d in doc_meta if d.get('source_url')}
-        for img_file in images_dir.glob("*.jpg"):
-            meta = {
-                "filename": img_file.name,
-                "relative_path": str(img_file.relative_to(self.output_dir)),
-                "file_size": img_file.stat().st_size,
-                "mime_type": "image/jpeg",
-                "source_url": None,
-                "title": None,
-                "source": None
-            }
-            # Try to find source info from doc metadata
-            doc_info = doc_meta_by_filename.get(img_file.name)
-            if doc_info:
-                meta["source_url"] = doc_info.get("source_url")
-                meta["title"] = doc_info.get("title")
-                meta["source"] = doc_info.get("source")
-            images_metadata.append(meta)
+                    existing_data = json.load(f)
+                    # Ensure it's a list
+                    if not isinstance(existing_data, list):
+                        existing_data = []
+                except json.JSONDecodeError:
+                    existing_data = []
+        else:
+            existing_data = []
+            
+        # Create a set of existing IDs for faster lookup
+        existing_ids = {doc['id'] for doc in existing_data if 'id' in doc}
+        
+        # Add new documents, avoiding duplicates
+        new_docs_added = 0
+        for doc in documents:
+            if doc['id'] not in existing_ids:
+                existing_data.append(doc)
+                existing_ids.add(doc['id'])
+                new_docs_added += 1
+                
+        logger.info(f"Added {new_docs_added} new documents to metadata file.")
+        
+        with open(metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(existing_data, f, indent=2, default=str)
+            
+    def save_summary(self):
+        """Save crawl statistics to a summary file."""
+        summary_file = self.output_dir / "crawl_summary.json"
+        self.stats['end_time'] = datetime.now()
+        self.stats['duration_seconds'] = (self.stats['end_time'] - self.stats['start_time']).total_seconds()
+        
+        # Convert start_time and end_time to strings for JSON serialization
+        summary_data = self.stats.copy()
+        summary_data['start_time'] = summary_data['start_time'].isoformat()
+        summary_data['end_time'] = summary_data['end_time'].isoformat()
+        
+        with open(summary_file, 'w') as f:
+            json.dump(summary_data, f, indent=2, default=str)
+            
+    def save_images_metadata(self):
+        """Scan images folder and generate comprehensive metadata."""
+        logger.info("Generating metadata for all images...")
+        images_metadata_file = self.metadata_dir / "images_metadata.json"
+        all_images_metadata = []
+
+        # Load document metadata to find matches
+        documents_metadata_file = self.metadata_dir / "documents_metadata.json"
+        doc_metadata = []
+        if documents_metadata_file.exists():
+            with open(documents_metadata_file, 'r') as f:
+                try:
+                    doc_metadata = json.load(f)
+                except json.JSONDecodeError:
+                    logger.warning("Could not parse documents_metadata.json")
+
+        # Create a lookup table from source_url to metadata
+        metadata_lookup = {item['source_url']: item for item in doc_metadata if 'source_url' in item}
+
+        # Scan the images directory
+        for image_file in self.images_dir.glob('**/*'):
+            if image_file.is_file():
+                # Basic file info
+                file_info = {
+                    "filename": image_file.name,
+                    "file_path": str(image_file.relative_to(self.output_dir)),
+                    "file_size": image_file.stat().st_size,
+                    "file_extension": image_file.suffix,
+                    "file_created": datetime.fromtimestamp(image_file.stat().st_ctime).isoformat(),
+                    "file_modified": datetime.fromtimestamp(image_file.stat().st_mtime).isoformat()
+                }
+
+                # Find a matching record in the downloaded metadata
+                # This is tricky because we don't have a direct URL mapping
+                # We can try to match by filename, but it's not foolproof
+                
+                # Heuristic: try to reconstruct a possible source_url
+                # This is a guess and may not be accurate
+                potential_url_path = f"/wp-content/uploads/{image_file.name}"
+                potential_url = urljoin(self.base_url, potential_url_path)
+
+                matched_meta = metadata_lookup.get(potential_url)
+
+                if matched_meta:
+                    # Merge metadata
+                    full_meta = {**matched_meta, **file_info}
+                    full_meta['metadata_source'] = 'merged_from_documents_metadata'
+                else:
+                    # Create a basic record
+                    full_meta = file_info
+                    full_meta['title'] = image_file.stem
+                    full_meta['source_url'] = None # We don't know the original URL
+                    full_meta['metadata_source'] = 'generated_from_filesystem'
+
+                all_images_metadata.append(full_meta)
+
+        with open(images_metadata_file, 'w') as f:
+            json.dump(all_images_metadata, f, indent=2)
+            
+        logger.info(f"Saved metadata for {len(all_images_metadata)} images.")
+
+    def download_html_pages_from_links(self) -> List[Dict]:
+        """Download HTML content from all discovered URLs using link-scraper results."""
+        logger.info("Downloading HTML content from discovered links...")
+        link_results_path = self.output_dir / "link_discovery_results.json"
+        html_pages_metadata = []
+
+        if not link_results_path.exists():
+            logger.warning("Link discovery results not found. Run link-scraper first.")
+            return []
+
+        with open(link_results_path, 'r') as f:
+            try:
+                link_data = json.load(f)
+                urls_to_scrape = link_data.get("urls", [])
+            except json.JSONDecodeError:
+                logger.error("Could not parse link_discovery_results.json")
+                return []
+        
+        logger.info(f"Found {len(urls_to_scrape)} URLs to scrape from link discovery results.")
+        
+        for url in urls_to_scrape:
+            try:
+                if self.is_document_url(url) or urlparse(url).path.startswith('/wp-content/uploads/'):
+                    logger.info(f"Skipping document/media URL: {url}")
+                    continue
+
+                response = requests.get(url, timeout=20)
+                response.raise_for_status()
+
+                html_content = response.text
+                
+                # Generate a meaningful filename
+                page_title = self.extract_title_from_html(html_content)
+                if not page_title:
+                    page_title = self.extract_title_from_url(url)
+                
+                filename_info = {'title': page_title, 'source_url': url}
+                filename = self.generate_filename(filename_info)
+                
+                filepath = self.content_dir / filename
+                
+                with open(filepath, 'w', encoding='utf-8') as f:
+                    f.write(html_content)
+
+                page_meta = {
+                    "source_url": url,
+                    "title": page_title,
+                    "filename": filename,
+                    "file_path": str(filepath.relative_to(self.output_dir)),
+                    "file_size": filepath.stat().st_size,
+                    "download_date": datetime.now().isoformat(),
+                    "source": "link_scraper",
+                    "http_status_code": response.status_code,
+                    "content_type": response.headers.get('Content-Type')
+                }
+                html_pages_metadata.append(page_meta)
+                
+                logger.info(f"Saved HTML from {url} to {filepath}")
+                time.sleep(0.5)
+
+            except requests.RequestException as e:
+                logger.error(f"Failed to download HTML from {url}: {e}")
+            except Exception as e:
+                logger.error(f"An unexpected error occurred while processing {url}: {e}")
+
         # Save metadata
-        images_meta_path = self.metadata_dir / "images_metadata.json"
-        with open(images_meta_path, 'w', encoding='utf-8') as f:
-            json.dump(images_metadata, f, indent=2, ensure_ascii=False)
-        logger.info(f"Saved metadata for {len(images_metadata)} images to {images_meta_path}")
+        html_metadata_file = self.metadata_dir / "html_pages_metadata.json"
+        with open(html_metadata_file, 'w') as f:
+            json.dump(html_pages_metadata, f, indent=2)
+            
+        logger.info(f"Saved metadata for {len(html_pages_metadata)} HTML pages.")
+        
+        return html_pages_metadata
+
+    def extract_title_from_html(self, html_content: str) -> str:
+        """Extract title from HTML content."""
+        try:
+            # Simple regex to extract title
+            title_match = re.search(r'<title[^>]*>(.*?)</title>', html_content, re.IGNORECASE | re.DOTALL)
+            if title_match:
+                title = title_match.group(1).strip()
+                # Clean up the title
+                title = re.sub(r'\s+', ' ', title)  # Replace multiple spaces
+                return title
+        except Exception:
+            pass
+        return "Untitled"
+
+    def run_selenium_scraper(self):
+        """Run the Selenium-based scraper to extract text content from web pages."""
+        selenium_scraper_path = Path("tools/selenium-scraper/nefac_scraper.py")
+        if not selenium_scraper_path.exists():
+            logger.warning(f"Selenium scraper not found at {selenium_scraper_path}")
+            return []
+        
+        logger.info("Running Selenium scraper for text content extraction...")
+        
+        try:
+            # Run the Selenium scraper
+            result = subprocess.run(
+                [sys.executable, str(selenium_scraper_path)],
+                capture_output=True,
+                text=True,
+                cwd=self.output_dir,
+                timeout=300  # 5 minute timeout
+            )
+            
+            if result.returncode == 0:
+                logger.info("Selenium scraper completed successfully")
+                
+                # Run cleanup to remove error pages
+                cleanup_path = Path("tools/selenium-scraper/cleanup.py")
+                if cleanup_path.exists():
+                    logger.info("Running cleanup to remove error pages...")
+                    subprocess.run(
+                        [sys.executable, str(cleanup_path)],
+                        cwd=self.output_dir
+                    )
+                
+                # Process the extracted text files
+                return self.process_selenium_output()
+            else:
+                logger.warning(f"Selenium scraper failed: {result.stderr}")
+                return []
+                
+        except subprocess.TimeoutExpired:
+            logger.warning("Selenium scraper timed out")
+            return []
+        except Exception as e:
+            logger.error(f"Error running Selenium scraper: {e}")
+            return []
+
+    def process_selenium_output(self):
+        """Process the output from the Selenium scraper."""
+        output_dir = self.output_dir / "output"
+        if not output_dir.exists():
+            return []
+        
+        processed_files = []
+        
+        for txt_file in output_dir.glob("*.txt"):
+            try:
+                with open(txt_file, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                
+                # Extract URL from the first line
+                lines = content.split('\n')
+                if lines and lines[0].startswith('Source URL: '):
+                    url = lines[0].replace('Source URL: ', '')
+                    text_content = '\n'.join(lines[2:])  # Skip URL line and empty line
+                else:
+                    url = str(txt_file.stem)
+                    text_content = content
+                
+                # Create metadata for the text file
+                metadata = {
+                    'url': url,
+                    'filename': txt_file.name,
+                    'content_type': 'text_content',
+                    'source': 'selenium_scraper',
+                    'extracted_at': datetime.now().isoformat(),
+                    'file_size': txt_file.stat().st_size,
+                    'word_count': len(text_content.split())
+                }
+                
+                # Move file to content directory with better naming
+                safe_name = self.generate_filename({'title': url.replace('https://www.nefac.org', '').strip('/')})
+                if not safe_name or safe_name == "Untitled":
+                    safe_name = txt_file.stem
+                
+                new_filename = f"{safe_name}.txt"
+                new_path = self.output_dir / "content" / new_filename
+                
+                # Ensure content directory exists
+                new_path.parent.mkdir(parents=True, exist_ok=True)
+                
+                # Move and rename the file
+                txt_file.rename(new_path)
+                
+                processed_files.append({
+                    'url': url,
+                    'title': safe_name,
+                    'extracted_at': metadata['extracted_at'],
+                    'file_size': metadata['file_size'],
+                    'word_count': metadata['word_count'],
+                    'new_path': str(new_path)
+                })
+                
+                logger.info(f"Processed Selenium output: {new_filename}")
+                
+            except Exception as e:
+                logger.error(f"Error processing Selenium output file {txt_file}: {e}")
+        
+        # Save metadata for Selenium content
+        if processed_files:
+            selenium_metadata = {
+                'source': 'selenium_scraper',
+                'extracted_at': datetime.now().isoformat(),
+                'total_files': len(processed_files),
+                'files': processed_files
+            }
+            
+            metadata_file = self.output_dir / "metadata" / "selenium_content_metadata.json"
+            metadata_file.parent.mkdir(parents=True, exist_ok=True)
+            
+            with open(metadata_file, 'w', encoding='utf-8') as f:
+                json.dump(selenium_metadata, f, indent=2, ensure_ascii=False)
+            
+            logger.info(f"Saved Selenium content metadata: {len(processed_files)} files")
+        
+        return processed_files
 
     def crawl(self):
         """Main crawling method that fetches from all sources."""
@@ -937,14 +1343,43 @@ class NEFACDocumentCrawler:
         web_documents = self.scrape_web_pages_for_documents()
         all_documents.extend(web_documents)
         
+        # 8. Download HTML pages from discovered URLs
+        html_pages_metadata = self.download_html_pages_from_links()
+        all_documents.extend(html_pages_metadata)
+        
+        # 9. Run Selenium scraper for text content extraction
+        try:
+            selenium_documents = self.run_selenium_scraper()
+            for doc in selenium_documents:
+                document_info = {
+                    'id': f"selenium_{len(all_documents)}",
+                    'title': doc.get('title', 'Unknown'),
+                    'source_url': doc.get('url', ''),
+                    'mime_type': 'text/plain',
+                    'date': doc.get('extracted_at', datetime.now().isoformat()),
+                    'modified': doc.get('extracted_at', datetime.now().isoformat()),
+                    'alt_text': '',
+                    'description': f'Found via Selenium scraper',
+                    'caption': '',
+                    'source': 'selenium_scraper',
+                    'file_size': doc.get('file_size', 0),
+                    'word_count': doc.get('word_count', 0)
+                }
+                all_documents.append(document_info)
+                self.stats['sources']['selenium_scraper'] += 1
+        except Exception as e:
+            logger.error(f"Error in Selenium scraper: {e}")
+            logger.info("Continuing with other sources...")
+        
         # Remove duplicates based on source_url
         unique_documents = []
         seen_urls = set()
         
         for doc in all_documents:
-            if doc['source_url'] not in seen_urls:
+            source_url = doc.get('source_url', '')
+            if source_url not in seen_urls:
                 unique_documents.append(doc)
-                seen_urls.add(doc['source_url'])
+                seen_urls.add(source_url)
         
         logger.info(f"Found {len(unique_documents)} unique documents")
         
