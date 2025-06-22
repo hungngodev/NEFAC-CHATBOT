@@ -1,0 +1,2208 @@
+{
+  "https://nefac.org": {
+    "path": [
+      "https://nefac.org"
+    ],
+    "depth": 0
+  },
+  "https://nefac.org/report": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/report"
+    ],
+    "depth": 1
+  },
+  "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments"
+    ],
+    "depth": 1
+  },
+  "https://nefac.org/": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/"
+    ],
+    "depth": 1
+  },
+  "https://nefac.org/news/nefac-meets-with-peruvian-journalists-to-discuss-common-free-press-problems": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-meets-with-peruvian-journalists-to-discuss-common-free-press-problems"
+    ],
+    "depth": 1
+  },
+  "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island"
+    ],
+    "depth": 1
+  },
+  "https://nefac.org/news/nefac-leads-transparency-lesson-delegation-government-officials-24-countries": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-leads-transparency-lesson-delegation-government-officials-24-countries"
+    ],
+    "depth": 1
+  },
+  "https://nefac.org/press": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press"
+    ],
+    "depth": 1
+  },
+  "https://nefac.org/nefac-report-archives": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/report",
+      "https://nefac.org/nefac-report-archives"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/subscribe": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/report",
+      "https://nefac.org/subscribe"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/civility-and-government-meetings-how-towns-in-new-hampshire-region-are-addressing-public-commentary": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/civility-and-government-meetings-how-towns-in-new-hampshire-region-are-addressing-public-commentary"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/news/nefac-aclu-to-nashua-officials-repeal-unconstitutional-civility-ordinance": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/news/nefac-aclu-to-nashua-officials-repeal-unconstitutional-civility-ordinance"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/amicus-briefs": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/1afreepress": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-meets-with-peruvian-journalists-to-discuss-common-free-press-problems",
+      "https://nefac.org/1afreepress"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/foiguide-rhodeisland": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/nefac-testimony-in-support-of-rhode-island-apra-reform": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/nefac-testimony-in-support-of-rhode-island-apra-reform"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/press-coverage-2011": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2011"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/press-coverage-2014": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2014"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/press-coverage-2010": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2010"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/press-coverage-2023": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2023"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/press-coverage-2012": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2012"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/press-coverage-2021": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2021"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/press-coverage-2017": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2017"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/press-coverage-2024": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2024"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/press-coverage-2022": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2022"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/press-coverage-2013": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2013"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/press-coverage-2020": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2020"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/press-coverage-2015": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2015"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/press-coverage-2018": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2018"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/press-coverage-2019": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2019"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/press-coverage-2016": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2016"
+    ],
+    "depth": 2
+  },
+  "https://nefac.org/amicus-briefs-and-letters-2014": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2014"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/amicus-briefs-letters-2017": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/amicus-briefs-letters-2012": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2012"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/amicus-briefs-letters-2011": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2011"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/amicus-briefs-and-letters-2019": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/amicus-briefs-and-letters-2024": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2024"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/amicus-briefs-and-letters-2023": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2023"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/amicus-briefs-letters-2016": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2016"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/news/nefac-mass-partners-endorse-boston-city-council-sunshine-week-resolution": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/news/nefac-mass-partners-endorse-boston-city-council-sunshine-week-resolution"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/amicus-briefs-letters-2015": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2015"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/amicus-briefs-letters-2013": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2013"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/amicus-briefs-and-letters-2021": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2021"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/amicus-briefs-and-letters-2022": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2022"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/amicus-briefs-and-letters-2020": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2020"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/amicus-briefs-letters-2018": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/first-amendment-and-the-free-press-2024": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-meets-with-peruvian-journalists-to-discuss-common-free-press-problems",
+      "https://nefac.org/1afreepress",
+      "https://nefac.org/first-amendment-and-the-free-press-2024"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/first-amendment-and-the-free-press-2023": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-meets-with-peruvian-journalists-to-discuss-common-free-press-problems",
+      "https://nefac.org/1afreepress",
+      "https://nefac.org/first-amendment-and-the-free-press-2023"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/foiguide-vermont": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-vermont"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/rhodeisland-foi-legis": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/rhodeisland-foi-legis"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/foiguide-federalfoia": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-federalfoia"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/foiguide-newhampshire": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-newhampshire"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/foiguide-connecticut": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-connecticut"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/rhodeisland-foi-resources": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/rhodeisland-foi-resources"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/rhode-island-open-meetings": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/rhode-island-open-meetings"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/foiguide-maine": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-maine"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/police-misconduct-records-in-rhode-island": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/police-misconduct-records-in-rhode-island"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/foiguide-massachusetts": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-massachusetts"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/rhodeisland-public-records": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/rhodeisland-public-records"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/foiguide": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/rhodeisland-public-records-caselaw": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/rhodeisland-public-records-caselaw"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/celebrating-the-student-journalist": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2024",
+      "https://nefac.org/celebrating-the-student-journalist"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/dont-think-open-government-matters-to-you-this-sunshine-week-think-again": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2024",
+      "https://nefac.org/dont-think-open-government-matters-to-you-this-sunshine-week-think-again"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/files/2015/03/gardnernews22115.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2015",
+      "https://nefac.org/files/2015/03/gardnernews22115.pdf"
+    ],
+    "depth": 3
+  },
+  "https://nefac.org/files/2013/04/RI-eFiling-Comments.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2014",
+      "https://nefac.org/files/2013/04/RI-eFiling-Comments.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/Holder-OLC-Memo-Appeal-Letter-Final.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2014",
+      "https://nefac.org/files/2013/04/Holder-OLC-Memo-Appeal-Letter-Final.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2014/11/Courthouse-News-v-Planet.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2014",
+      "https://nefac.org/files/2014/11/Courthouse-News-v-Planet.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/2014-09-22-DOJ-Ferguson.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2014",
+      "https://nefac.org/files/2013/04/2014-09-22-DOJ-Ferguson.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/2014_Court_Electronic_Filing_Testimony.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2014",
+      "https://nefac.org/files/2013/04/2014_Court_Electronic_Filing_Testimony.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/risen_petition.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2014",
+      "https://nefac.org/files/2013/04/risen_petition.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2017/12/2017-DOA-APRA-rules-testimony-1117.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2017/12/2017-DOA-APRA-rules-testimony-1117.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/106_RCFP-Amicus.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2013/04/106_RCFP-Amicus.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/student-press-071717.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2013/04/student-press-071717.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/Press-Freedom-Statement.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2013/04/Press-Freedom-Statement.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/2017-letter-to-Governor-on-S-765-and-S-401.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2013/04/2017-letter-to-Governor-on-S-765-and-S-401.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2017/02/NH-HB-97-Letter-01-25-17.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2017/02/NH-HB-97-Letter-01-25-17.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2017/11/November-14-2017-ACCESS-RI-EG-TC-Agenda-Ltr.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2017/11/November-14-2017-ACCESS-RI-EG-TC-Agenda-Ltr.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/biddeford-letter-101617.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2013/04/biddeford-letter-101617.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2017/05/BRIEF.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2017/05/BRIEF.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2017/12/mainecourts121517.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2017/12/mainecourts121517.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2017/09/9-27-17-Letter-to-Judicial-Branch-Transparency-and-Privacy-Task-Force.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2017/09/9-27-17-Letter-to-Judicial-Branch-Transparency-and-Privacy-Task-Force.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2017/11/17-1.-Proposed-Memo-of-Amicus-Curiae.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2017/11/17-1.-Proposed-Memo-of-Amicus-Curiae.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/16-402-tsac-Reporters-Committee-for-Freedom-of-the-Press.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2013/04/16-402-tsac-Reporters-Committee-for-Freedom-of-the-Press.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/2017-07-17-Ltr-Raimondo-H-6323.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2013/04/2017-07-17-Ltr-Raimondo-H-6323.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2017/03/Higginbotham-Amici-Filed-Brief-03-17-17.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2017/03/Higginbotham-Amici-Filed-Brief-03-17-17.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2017/02/2017-01-24-steinmetz-v-coyle-caron-inc.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2017/02/2017-01-24-steinmetz-v-coyle-caron-inc.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/TESTIMONY-ON-OPT-IN-MASS-DELIVERIES-ORDINANCE-010317.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2013/04/TESTIMONY-ON-OPT-IN-MASS-DELIVERIES-ORDINANCE-010317.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2017/01/probate-rule-letter.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2017/01/probate-rule-letter.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/Coalition-Letter_Private-Prison-Information-Sharing-Act-of-2017-S.1728.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2013/04/Coalition-Letter_Private-Prison-Information-Sharing-Act-of-2017-S.1728.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/Coalition-Letter_DOJ-request-for-J20-data-Aug24-Final.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2013/04/Coalition-Letter_DOJ-request-for-J20-data-Aug24-Final.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2017/04/LD1432_NEFAC.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2017/04/LD1432_NEFAC.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2017/10/CityofBostonNovember18Rally-October24-1.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2017/10/CityofBostonNovember18Rally-October24-1.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/017_RCFP-Amicus-Brief.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2013/04/017_RCFP-Amicus-Brief.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2017/06/2017-06-07-Letter-to-SJC-re-defendants-petition-for-rehearing.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2017/06/2017-06-07-Letter-to-SJC-re-defendants-petition-for-rehearing.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2017/04/Letter-to-State-House-Facilities-Committee-on-audio-recordings-2017.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2017/04/Letter-to-State-House-Facilities-Committee-on-audio-recordings-2017.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2017/12/FINAL-RCFP-Comments-to-Maine-Supreme-Judicial-Court.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2017/12/FINAL-RCFP-Comments-to-Maine-Supreme-Judicial-Court.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/2017-07-07-cns-v-planet.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2013/04/2017-07-07-cns-v-planet.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2017/05/s.0401-s.0765-testimony.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2017/05/s.0401-s.0765-testimony.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/VT-Cameras-Court-Comments.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2017",
+      "https://nefac.org/files/2013/04/VT-Cameras-Court-Comments.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/2012-09-04-ccr-v-us.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2012",
+      "https://nefac.org/files/2013/04/2012-09-04-ccr-v-us.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/SJC-11062_03_Amicus_MA_Newspapr_Brief.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2011",
+      "https://nefac.org/files/2013/04/SJC-11062_03_Amicus_MA_Newspapr_Brief.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/2ndFloorFrontScanner@orr-reno.com_20110425_123800.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2011",
+      "https://nefac.org/files/2013/04/2ndFloorFrontScanner@orr-reno.com_20110425_123800.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2019/05/MFOIC-LD-1575-and-1414.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/files/2019/05/MFOIC-LD-1575-and-1414.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2019/02/cns-amicus.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/files/2019/02/cns-amicus.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2019/03/bill970_nefac.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/files/2019/03/bill970_nefac.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2019/05/Gubarev-v.-BuzzFeed-Brief-Amici-Curiae-of-the-RCFP-and-32-Media-Companies-and-Organizations.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/files/2019/05/Gubarev-v.-BuzzFeed-Brief-Amici-Curiae-of-the-RCFP-and-32-Media-Companies-and-Organizations.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2019/04/NEFAC-Online-Records-Comments.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/files/2019/04/NEFAC-Online-Records-Comments.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2019/01/vsc-011419.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/files/2019/01/vsc-011419.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2019/10/Coalition-Letter_Private-Prison-Information-Sharing-Act.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/files/2019/10/Coalition-Letter_Private-Prison-Information-Sharing-Act.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2019/03/3-27-19-MFOIC-Letter-re-Comments-on-Maine-Digital-Court-Records-Access-Rules.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/files/2019/03/3-27-19-MFOIC-Letter-re-Comments-on-Maine-Digital-Court-Records-Access-Rules.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2019/10/RCFP-Amicus_Martin-v-Rollins_Filed.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/files/2019/10/RCFP-Amicus_Martin-v-Rollins_Filed.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2019/03/2019-03-25-RCFP-Amicus-Brief.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/files/2019/03/2019-03-25-RCFP-Amicus-Brief.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/news/nefac-media-organizations-demand-same-day-access-to-u-s-supreme-court-audio-recordings": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/news/nefac-media-organizations-demand-same-day-access-to-u-s-supreme-court-audio-recordings"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2019/02/ACLU-Amicus-final-finalDPR-edits.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/files/2019/02/ACLU-Amicus-final-finalDPR-edits.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2019/07/NEFAC-H2740-S1899.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/files/2019/07/NEFAC-H2740-S1899.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2019/02/interior-dept-amicus.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/files/2019/02/interior-dept-amicus.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2019/09/45699613_v-1_Amicus-Curiae-Brief.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/files/2019/09/45699613_v-1_Amicus-Curiae-Brief.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2019/11/Congress-PIO-letter-11062019-FINAL.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/files/2019/11/Congress-PIO-letter-11062019-FINAL.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2019/08/ACCESS-Letter-to-AG.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/files/2019/08/ACCESS-Letter-to-AG.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2019/05/letter.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/files/2019/05/letter.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2019/07/HB2120_MNPA_NEFAC_NENPA.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2019",
+      "https://nefac.org/files/2019/07/HB2120_MNPA_NEFAC_NENPA.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/news/nefac-mass-open-government-advocates-criticize-municipal-empowerment-acts-approach-to-public-meeting-reforms": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2024",
+      "https://nefac.org/news/nefac-mass-open-government-advocates-criticize-municipal-empowerment-acts-approach-to-public-meeting-reforms"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/testimony-in-support-hybrid-access-for-public-meetings-in-massachusetts": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2023",
+      "https://nefac.org/testimony-in-support-hybrid-access-for-public-meetings-in-massachusetts"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2016/04/rideout_amicus.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2016",
+      "https://nefac.org/files/2016/04/rideout_amicus.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2016/03/Pinkham-v.-MDOT-Amicus-Brief-of-MFOIC-and-NEFAC-2.12.16.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2016",
+      "https://nefac.org/files/2016/03/Pinkham-v.-MDOT-Amicus-Brief-of-MFOIC-and-NEFAC-2.12.16.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2016/12/gawker-bankruptcy-amicus-brief-and-motion-2016-12-05.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2016",
+      "https://nefac.org/files/2016/12/gawker-bankruptcy-amicus-brief-and-motion-2016-12-05.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/2016-07-29-boal-v-united-states.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2016",
+      "https://nefac.org/files/2013/04/2016-07-29-boal-v-united-states.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/2016-5-4-LTR-Lauriat-Re-Access-Rules.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2016",
+      "https://nefac.org/files/2013/04/2016-5-4-LTR-Lauriat-Re-Access-Rules.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2016/06/2016-revenge-porn-veto-letter.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2016",
+      "https://nefac.org/files/2016/06/2016-revenge-porn-veto-letter.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/earnest-letter-09122016-final.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2016",
+      "https://nefac.org/files/2013/04/earnest-letter-09122016-final.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2016/08/Letter-to-AG-and-RISP-on-release-of-38-Studio-documents-FINAL-red.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2016",
+      "https://nefac.org/files/2016/08/Letter-to-AG-and-RISP-on-release-of-38-Studio-documents-FINAL-red.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2016/07/maine_cdc_comment.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2016",
+      "https://nefac.org/files/2016/07/maine_cdc_comment.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2016/12/950-CMR-32-00-2017-Edition-MassFOIA-comments.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2016",
+      "https://nefac.org/files/2016/12/950-CMR-32-00-2017-Edition-MassFOIA-comments.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/COURTHOUSE_NEWS_AMICUS_BRIEF_ECF.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2016",
+      "https://nefac.org/files/2013/04/COURTHOUSE_NEWS_AMICUS_BRIEF_ECF.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/16-706-tsac-ReportersCommittee-2.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2016",
+      "https://nefac.org/files/2013/04/16-706-tsac-ReportersCommittee-2.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/sunshine-week-2025": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/news/nefac-mass-partners-endorse-boston-city-council-sunshine-week-resolution",
+      "https://nefac.org/sunshine-week-2025"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2015/03/ppia-letter.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2015",
+      "https://nefac.org/files/2015/03/ppia-letter.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2015/08/obama-letter-final-08102015.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2015",
+      "https://nefac.org/files/2015/08/obama-letter-final-08102015.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2015/05/nefac-testimony-re-mass-public-records.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2015",
+      "https://nefac.org/files/2015/05/nefac-testimony-re-mass-public-records.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2015/03/Sunshine-Week-Joint-Letter-Final.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2015",
+      "https://nefac.org/files/2015/03/Sunshine-Week-Joint-Letter-Final.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2015/03/2015-01-23-detroit-free-press-v-us-depart.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2015",
+      "https://nefac.org/files/2015/03/2015-01-23-detroit-free-press-v-us-depart.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2015/05/ctletter.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2015",
+      "https://nefac.org/files/2015/05/ctletter.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2015/10/Letter_to_Governor_on_APRA_issues.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2015",
+      "https://nefac.org/files/2015/10/Letter_to_Governor_on_APRA_issues.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2015/05/20150501.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2015",
+      "https://nefac.org/files/2015/05/20150501.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2015/04/2015-04-21-NEFAC-Lucas-amicus.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2015",
+      "https://nefac.org/files/2015/04/2015-04-21-NEFAC-Lucas-amicus.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2016/03/Letter-to-Senator-Cardin-on-closing-the-FOIA-loophole-on-private-prisons.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2015",
+      "https://nefac.org/files/2016/03/Letter-to-Senator-Cardin-on-closing-the-FOIA-loophole-on-private-prisons.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2015/05/2160848_2.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2015",
+      "https://nefac.org/files/2015/05/2160848_2.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/Amicus-Brief.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2013",
+      "https://nefac.org/files/2013/04/Amicus-Brief.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2013/04/White-House-Photo-Letter-Final-00591175.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2013",
+      "https://nefac.org/files/2013/04/White-House-Photo-Letter-Final-00591175.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/13192-2": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2021",
+      "https://nefac.org/13192-2"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/news/nefac-testifies-in-support-of-in-person-public-press-access-to-vermont-legislature": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2021",
+      "https://nefac.org/news/nefac-testifies-in-support-of-in-person-public-press-access-to-vermont-legislature"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2021/01/Testimony-before-Senate-Judiciary-on-SB-39.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2021",
+      "https://nefac.org/files/2021/01/Testimony-before-Senate-Judiciary-on-SB-39.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2021/01/NEFAC_NENPA_011921.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2021",
+      "https://nefac.org/files/2021/01/NEFAC_NENPA_011921.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2021/01/1.25.21-Response-to-Broth-Amendment.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2021",
+      "https://nefac.org/files/2021/01/1.25.21-Response-to-Broth-Amendment.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2020/06/6-16-20-Final-Press-Letter-on-Denver-Police-Assaults.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2020",
+      "https://nefac.org/files/2020/06/6-16-20-Final-Press-Letter-on-Denver-Police-Assaults.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2020/07/police-accountability-letter-nefac.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2020",
+      "https://nefac.org/files/2020/07/police-accountability-letter-nefac.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2020/06/Statement-on-law-enforcement-transparency-and-accountability-issues-June-2020-2.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2020",
+      "https://nefac.org/files/2020/06/Statement-on-law-enforcement-transparency-and-accountability-issues-June-2020-2.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2020/03/132-Organizations-Sign-Statement-on-Government-Coronavirus-Emergency-Transparency-and-Access-March-20-2020.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2020",
+      "https://nefac.org/files/2020/03/132-Organizations-Sign-Statement-on-Government-Coronavirus-Emergency-Transparency-and-Access-March-20-2020.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2020/01/HB-1157-NEFAC.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2020",
+      "https://nefac.org/files/2020/01/HB-1157-NEFAC.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2020/01/2020.01.20_Karem_RCFP_Amici_Brief_AS_FILED.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2020",
+      "https://nefac.org/files/2020/01/2020.01.20_Karem_RCFP_Amici_Brief_AS_FILED.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2020/08/nefac0819testimony.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2020",
+      "https://nefac.org/files/2020/08/nefac0819testimony.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2020/06/6-2-20-News-Media-Letter-to-MN-Officials.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2020",
+      "https://nefac.org/files/2020/06/6-2-20-News-Media-Letter-to-MN-Officials.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2020/03/032420-letters.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2020",
+      "https://nefac.org/files/2020/03/032420-letters.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2020/09/9-16-20-SCOTUS-Live-Access-Letter-FINAL.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2020",
+      "https://nefac.org/files/2020/09/9-16-20-SCOTUS-Live-Access-Letter-FINAL.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2020/04/4-27-20-Letter-to-Gov.-Mills-Dr.-Shah-re-Public-Access-to-COVID-19-Data.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2020",
+      "https://nefac.org/files/2020/04/4-27-20-Letter-to-Gov.-Mills-Dr.-Shah-re-Public-Access-to-COVID-19-Data.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2020/05/Letter-to-Governor-re-APRA-EO-20-25-FINAL.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2020",
+      "https://nefac.org/files/2020/05/Letter-to-Governor-re-APRA-EO-20-25-FINAL.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2020/06/6-6-20-New-York-City-Press-Letter.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2020",
+      "https://nefac.org/files/2020/06/6-6-20-New-York-City-Press-Letter.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2020/08/2020-08-07-Knight-and-RCFP-Amicus-Br.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2020",
+      "https://nefac.org/files/2020/08/2020-08-07-Knight-and-RCFP-Amicus-Br.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2020/06/nefac_vt_police_transparency.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2020",
+      "https://nefac.org/files/2020/06/nefac_vt_police_transparency.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2020/01/1-16-20-Impeachment-Senate-Press-Access-Letter-FINAL.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-and-letters-2020",
+      "https://nefac.org/files/2020/01/1-16-20-Impeachment-Senate-Press-Access-Letter-FINAL.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/01/2018-letter-to-Governor-re-S765.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/01/2018-letter-to-Governor-re-S765.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/03/hb-700-letter.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/03/hb-700-letter.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/04/nefac-house-bill-7452.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/04/nefac-house-bill-7452.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/12/068_RCFP-Amicus-Br-Final-as-Filed.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/12/068_RCFP-Amicus-Br-Final-as-Filed.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/05/Amici-Curiae-Reply-to-Defendants-Objection.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/05/Amici-Curiae-Reply-to-Defendants-Objection.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/04/carman-memo.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/04/carman-memo.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/02/AMICI-CURIAE-BRIEF.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/02/AMICI-CURIAE-BRIEF.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/01/2018-DPS-APRA-regulations-testimony.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/01/2018-DPS-APRA-regulations-testimony.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/04/courthouse-amicus.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/04/courthouse-amicus.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/05/Amici-Curiae-Memorandum-SUBMITTED.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/05/Amici-Curiae-Memorandum-SUBMITTED.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/04/ECF-391-Motion-to-Participate-as-Amicus-Curiae-on-Public-Access-Ex.-A-4_6_18.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/04/ECF-391-Motion-to-Participate-as-Amicus-Curiae-on-Public-Access-Ex.-A-4_6_18.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/12/Globe-v-DPH-2018-12-21-brief-amici-cuiriae-media-organizations.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/12/Globe-v-DPH-2018-12-21-brief-amici-cuiriae-media-organizations.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/10/Amicus-Curiae-Brief-in-the-US-Supreme-Court-for-18-Organizations.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/10/Amicus-Curiae-Brief-in-the-US-Supreme-Court-for-18-Organizations.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/05/RI-ACLU-et-al-Amici-Brief-In-Re-38-Studios.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/05/RI-ACLU-et-al-Amici-Brief-In-Re-38-Studios.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/news/nefac-spj-oppose-efforts-new-hampshire-prosecutors-obtain-reporters-interview-notes": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/news/nefac-spj-oppose-efforts-new-hampshire-prosecutors-obtain-reporters-interview-notes"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/09/nefac-ma-public-records.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/09/nefac-ma-public-records.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/10/2018-10-26-Colorado-Independent.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/10/2018-10-26-Colorado-Independent.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/03/A-Condemnation-of-Threats-to-Openness.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/03/A-Condemnation-of-Threats-to-Openness.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/news/reaffirming-our-commitment-to-journalism-after-shooting-at-capital-gazette-newspaper": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/news/reaffirming-our-commitment-to-journalism-after-shooting-at-capital-gazette-newspaper"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/06/RI-H.B.-7452-and-S.B.-2581-Legal__-Memo-to-Governor-Supporting-Veto-Request-FINAL.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/06/RI-H.B.-7452-and-S.B.-2581-Legal__-Memo-to-Governor-Supporting-Veto-Request-FINAL.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/07/Coalition-Letter_Private-Prison-Information-Sharing-Act-of-2017-S.1728.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/07/Coalition-Letter_Private-Prison-Information-Sharing-Act-of-2017-S.1728.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/04/LMG-RI-LR-to-Judge-Keough-20180430.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/04/LMG-RI-LR-to-Judge-Keough-20180430.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/news/nefac-calls-on-brown-university-sen-warren-to-remove-media-restrictions-during-campus-speech": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/news/nefac-calls-on-brown-university-sen-warren-to-remove-media-restrictions-during-campus-speech"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/03/s2450-nefac.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/03/s2450-nefac.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/news/nefac-demands-white-house-return-credential-to-cnn-reporter-uphold-first-amendment-rights-of-press": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/news/nefac-demands-white-house-return-credential-to-cnn-reporter-uphold-first-amendment-rights-of-press"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/files/2018/06/2018-revenge-porn-veto-request-letter-FINAL.pdf": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/files/2018/06/2018-revenge-porn-veto-request-letter-FINAL.pdf"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/news/statement-removal-student-press-article-burlington-high-school": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/manchester-board-of-mayor-and-aldermen-votes-to-remove-limits-on-public-comments",
+      "https://nefac.org/amicus-briefs",
+      "https://nefac.org/amicus-briefs-letters-2018",
+      "https://nefac.org/news/statement-removal-student-press-article-burlington-high-school"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/vermont-open-meetings": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-vermont",
+      "https://nefac.org/vermont-open-meetings"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/police-misconduct-records-in-vermont": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-vermont",
+      "https://nefac.org/police-misconduct-records-in-vermont"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/vermont-public-records-caselaw": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-vermont",
+      "https://nefac.org/vermont-public-records-caselaw"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/vermont-foi-resources": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-vermont",
+      "https://nefac.org/vermont-foi-resources"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/vermont-foi-legis": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-vermont",
+      "https://nefac.org/vermont-foi-legis"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/vermont-public-records": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-vermont",
+      "https://nefac.org/vermont-public-records"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/rhode-island-foi-legislation-all": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/rhodeisland-foi-legis",
+      "https://nefac.org/rhode-island-foi-legislation-all"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/rhode-island-foi-legislation-publicrecords": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/rhodeisland-foi-legis",
+      "https://nefac.org/rhode-island-foi-legislation-publicrecords"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/contact": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/rhodeisland-foi-legis",
+      "https://nefac.org/contact"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/rhode-island-foi-legislation-openmeetings": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/rhodeisland-foi-legis",
+      "https://nefac.org/rhode-island-foi-legislation-openmeetings"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/rhode-island-foi-legislation-freedomofinformation": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/rhodeisland-foi-legis",
+      "https://nefac.org/rhode-island-foi-legislation-freedomofinformation"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/newhampshire-foi-legis": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-newhampshire",
+      "https://nefac.org/newhampshire-foi-legis"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/newhampshire-foi-resources": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-newhampshire",
+      "https://nefac.org/newhampshire-foi-resources"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/police-misconduct-records-in-new-hampshire": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-newhampshire",
+      "https://nefac.org/police-misconduct-records-in-new-hampshire"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/newhampshire-public-records": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-newhampshire",
+      "https://nefac.org/newhampshire-public-records"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/newhampshire-public-records-caselaw": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-newhampshire",
+      "https://nefac.org/newhampshire-public-records-caselaw"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/police-misconduct-records-in-connecticut": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-connecticut",
+      "https://nefac.org/police-misconduct-records-in-connecticut"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/ct-foi-legis": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-connecticut",
+      "https://nefac.org/ct-foi-legis"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/connecticut-public-records": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-connecticut",
+      "https://nefac.org/connecticut-public-records"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/connecticut-public-records-caselaw": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-connecticut",
+      "https://nefac.org/connecticut-public-records-caselaw"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/connecticut-foi-resources": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-connecticut",
+      "https://nefac.org/connecticut-foi-resources"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/maine-public-records": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-maine",
+      "https://nefac.org/maine-public-records"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/maine-foi-resources": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-maine",
+      "https://nefac.org/maine-foi-resources"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/maine-foi-legis": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-maine",
+      "https://nefac.org/maine-foi-legis"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/police-misconduct-records-in-maine": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-maine",
+      "https://nefac.org/police-misconduct-records-in-maine"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/maine-public-records-caselaw": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-maine",
+      "https://nefac.org/maine-public-records-caselaw"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/maine-open-meetings": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-maine",
+      "https://nefac.org/maine-open-meetings"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/news/nefac-r-i-open-government-groups-leobor-bills-take-a-step-backward-in-transparency": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/police-misconduct-records-in-rhode-island",
+      "https://nefac.org/news/nefac-r-i-open-government-groups-leobor-bills-take-a-step-backward-in-transparency"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/massachusetts-public-records": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-massachusetts",
+      "https://nefac.org/massachusetts-public-records"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/massachusetts-clerk-magistrate-show-cause-hearings/ ": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-massachusetts",
+      "https://nefac.org/massachusetts-clerk-magistrate-show-cause-hearings/ "
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/massachusetts-public-records-caselaw": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-massachusetts",
+      "https://nefac.org/massachusetts-public-records-caselaw"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/massachusetts-foi-legis": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-massachusetts",
+      "https://nefac.org/massachusetts-foi-legis"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/massachusetts-foi-resources": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/news/nefac-testifies-in-support-of-common-sense-practical-public-records-law-reform-in-rhode-island",
+      "https://nefac.org/foiguide-rhodeisland",
+      "https://nefac.org/foiguide-massachusetts",
+      "https://nefac.org/massachusetts-foi-resources"
+    ],
+    "depth": 4
+  },
+  "https://nefac.org/mentors": {
+    "path": [
+      "https://nefac.org",
+      "https://nefac.org/press",
+      "https://nefac.org/press-coverage-2024",
+      "https://nefac.org/celebrating-the-student-journalist",
+      "https://nefac.org/mentors"
+    ],
+    "depth": 4
+  }
+}
