@@ -1,0 +1,780 @@
+[3.30s] welcome everyone I'm Justin Silverman of
+[5.94s] the New England First Amendment
+[6.96s] Coalition thank you for joining us for
+[9.54s] another 30-minute skills as a reminder
+[12.24s] all of our 30-minute skills are
+[14.16s] available at kneefact.org 30-minute
+[17.16s] skills they include data cleaning data
+[19.80s] visualization Privacy Law Microsoft
+[22.56s] Excel Basics how to diversify your
+[24.84s] sources how to protect yourself as a
+[26.82s] journalist among many other topics
+[29.34s] you can also find at kneefact.org a
+[31.68s] growing list of upcoming presentations
+[33.78s] and events focused on the first
+[35.64s] amendment in journalism nearly all of
+[38.46s] them are free and open to the public so
+[40.08s] please check them out and consider
+[41.88s] joining us
+[43.32s] today we'll be discussing ways to dig a
+[45.90s] Little Deeper as a broadcast journalist
+[47.94s] the mindset needed to best share your
+[50.16s] reporting but one that takes into
+[51.84s] account the unique challenges of
+[53.82s] broadcasting we have a lot to cover and
+[56.34s] not a lot of time so let's get started
+[58.08s] Kevin all yours
+[60.66s] great
+[61.74s] hello everybody thanks for joining
+[63.48s] briefly
+[64.86s] about myself
+[66.54s] um
+[67.74s] uh I am a uh reform newspaper reporter
+[72.00s] so my background's a little bit
+[73.20s] different in broadcast where I started
+[75.24s] out uh my training was in print I was a
+[78.00s] print reporter for a number of years I
+[79.98s] had a couple of Beats uh politics crime
+[83.04s] education
+[84.96s] um and then in the the mid-2000s I made
+[87.42s] the leap to broadcast not something that
+[89.82s] I had uh planned to do uh first at our
+[92.64s] local Fox affiliate and now at the Abc
+[95.40s] affiliate here in the Boston area at
+[98.16s] wcbb uh both times for the investigative
+[101.34s] team
+[102.90s] um at these uh respective stations
+[105.60s] and
+[107.58s] um it's given to be a little bit of a
+[109.02s] unique perspective where I've been able
+[110.88s] to see and work in both of the the
+[113.52s] cultures and see how management at least
+[117.24s] by respective shops
+[119.58s] work with and deal with Enterprise and
+[122.16s] investigative reporting uh and uh
+[126.36s] um what I'm hopeful folks may be able to
+[129.18s] get out of uh the presentation today is
+[133.26s] how to bring a little bit more of a
+[137.34s] little bit of investigative reporting a
+[138.78s] little bit Enterprise reporting and a
+[141.12s] little bit more uh
+[143.78s] uh reporting that holds people
+[146.46s] accountable uh embed that a little bit
+[148.74s] more into Broadcast News uh because
+[151.26s] there's a lot of challenges to uh to
+[153.60s] doing that
+[154.86s] so
+[157.14s] um one of the things that's tough for
+[159.12s] those of you that work at broadcast know
+[160.80s] uh there's so many uh other things we
+[163.98s] have to deal with in addition to the
+[165.90s] content of the story uh we have the how
+[168.66s] much time we have for the story we have
+[170.58s] how much time we have to collect it and
+[173.46s] uh there's a lot of problems with
+[175.92s] getting to the uh the why of what
+[178.14s] happened like we're all familiar with
+[179.34s] the 5ws who what where when when why
+[182.94s] um what with a minute 20 story or minute
+[184.92s] 30 story and maybe a couple hours to put
+[186.78s] it together
+[188.58s] um sometimes getting to that why is just
+[191.28s] impossible so
+[192.90s] uh we had an unfortunate uh give an
+[196.62s] example last week we had an unfortunate
+[198.48s] uh domestic violence murder suicide
+[201.18s] where uh a part one partner murdered
+[203.82s] another and then killed himself
+[206.46s] um
+[207.18s] and it was almost impossible in that
+[209.58s] time frame to understand what may have
+[212.04s] happened uh before then uh to understand
+[215.90s] the story so what was in their
+[218.46s] relationship what was in there uh their
+[221.16s] history uh what supports may or may not
+[224.04s] there have been and
+[227.76s] it was the kind of story where if there
+[229.98s] was a little more time a little more
+[231.12s] resources a little bit more digging
+[232.56s] might have shed uh shed some more light
+[235.08s] on it
+[236.28s] uh think about any breaking news
+[238.62s] situation you may have covered a bridge
+[240.48s] collapse a motor vehicle crash uh any
+[243.90s] anything breaking news there's a reason
+[245.94s] why it happened and how can we
+[248.94s] try to find out a little bit more and
+[250.44s] tell our viewers a little bit more about
+[252.24s] why that may have happened and how maybe
+[255.54s] have could have been prevented
+[259.92s] so I'm sure if you're working in
+[262.08s] broadcast you're familiar with all these
+[263.64s] issues uh it's a very fast-paced
+[266.22s] environment uh you may have a few hours
+[268.14s] to put something together and there's a
+[270.54s] lot of other considerations in addition
+[272.58s] to fact Gathering you've got your
+[274.62s] shooting your editing uh you gotta maybe
+[277.08s] you find your live shot
+[279.38s] and you don't have a lot of time to tell
+[281.46s] the story uh you may have a minute
+[283.68s] minute and a half you may be given a vo
+[285.96s] or a vocad
+[287.90s] and when you talk about digging into
+[290.72s] things like records and documents
+[294.36s] they're not very visual either but
+[296.82s] certainly a challenge in our business
+[298.26s] it's a visual business so
+[300.90s] um
+[301.56s] I I have a feel I feel like there's a
+[304.20s] lot of pushback to looking into
+[306.48s] documents and looking at the records and
+[308.22s] asking for records because it's not an
+[310.44s] obvious it's not going to be a visual
+[312.48s] story
+[313.98s] um
+[314.82s] and there's also I think a little bit of
+[317.94s] a knowledge Gap where
+[319.98s] um sometimes this stuff is hard you may
+[322.02s] need some expertise or you need to find
+[324.12s] someone with expertise someone to
+[326.10s] interpret some technical documents or a
+[327.96s] court document and again you have all
+[330.84s] these other challenges of you know
+[332.76s] another time you don't have you don't
+[335.22s] have the resources so you're sort of
+[337.02s] stuck with
+[338.06s] uh not being able to dig in as much as
+[340.98s] maybe you'd like
+[344.22s] so there's a couple strategies that I've
+[346.98s] tried to develop over the years and as
+[350.28s] we go through uh various things in this
+[352.50s] presentation uh I'll say it here and
+[354.30s] I'll say it again these are some of the
+[356.58s] things that I've done to sort of help
+[358.20s] myself over the years as I work in a
+[360.44s] fast-paced news environment and uh for
+[363.84s] those of you that are working on uh in
+[365.70s] the industry too maybe you have your own
+[367.56s] ideas and I'd love to have a a little
+[370.80s] time at the end to be able to share uh
+[373.74s] share resources and share ideas about uh
+[376.62s] how to make all of our reporting better
+[380.22s] so
+[382.56s] one thing that I think is helpful is
+[385.64s] maybe difficult but
+[388.50s] um work to change expectations
+[391.50s] um so if you're in the seminar you're
+[394.32s] probably already interested in
+[395.64s] Enterprise and investigative reporting
+[398.64s] um I'm guessing if you're in broadcast
+[400.14s] there's some frustration you may have
+[402.18s] felt as I have that
+[404.82s] you're you're sort of alone in your
+[406.74s] interest
+[408.12s] um and
+[409.92s] it's if there's a way to keep
+[412.86s] communicating to your producers to your
+[415.14s] executive producers to your news
+[416.46s] director
+[417.56s] that there is more to do than the
+[420.42s] breaking news that with a little bit of
+[422.52s] time and a little bit of resources you
+[424.32s] can get more and better than
+[427.80s] um than maybe what has been done in the
+[429.54s] past
+[430.98s] um that's something I would certainly
+[432.48s] encourage it's an it's an incremental
+[434.22s] battle and it's a difficult one but just
+[437.16s] having this these conversations uh when
+[439.98s] you can with other people in The
+[441.72s] Newsroom I think helps raise awareness
+[444.18s] that there is
+[446.04s] um maybe a more to include or a better
+[448.92s] way to do things
+[450.56s] uh
+[452.16s] another thing when you're on the run
+[454.20s] it's hard to file a public records uh
+[457.62s] request
+[459.36s] um for those of you that maybe haven't
+[460.74s] done it so far the neffac has a great
+[463.38s] guide there's plenty of guides out there
+[465.26s] SBJ and some other resources but having
+[469.92s] that template either in an email form or
+[472.80s] a Word document so you know it's it's
+[476.70s] easy to send out
+[478.34s] and you have most of what you need
+[480.66s] already and you could just fill in the
+[482.40s] blanks of what exactly you're looking
+[483.90s] for
+[485.04s] can help speed things up
+[487.50s] um
+[488.16s] at least the way that I work if I get
+[490.14s] out this foia get out this public
+[491.82s] records request when I'm thinking about
+[493.92s] it the day that it comes up uh it's much
+[496.50s] more likely to get out because tomorrow
+[497.94s] is a whole new day and a whole new
+[499.80s] battle
+[500.64s] so that's helpful another thing
+[503.88s] seems obvious but bookmark these online
+[507.00s] sources of info and data where uh these
+[511.20s] resources that are going to help you dig
+[512.52s] a little bit deeper
+[514.50s] um and so you don't have to go hunting
+[516.60s] for them over and over and over again
+[518.16s] I'll say this is a lesson I've learned
+[520.14s] the hard way as I've been stuck looking
+[522.66s] for something I know I've seen and uh
+[525.12s] it's just it's a waste of time on uh
+[527.34s] when I don't have it
+[529.08s] uh
+[530.76s] be able to get the graphics on the air
+[532.38s] on your own if you can so this is going
+[535.08s] to be obviously very specific to uh to
+[537.72s] your situation and your station
+[540.36s] um but
+[541.80s] when there are
+[543.66s] document heavy uh bits of information or
+[547.20s] data heavy bits of information
+[549.96s] um your ability to sort of
+[552.72s] leverage that onto the air in a short
+[555.00s] period of time can really be helped by
+[557.22s] you being able to manage the graphics
+[560.10s] um whether it's a chart or bullet points
+[563.10s] or whatever the case may be if you have
+[566.46s] to because that just makes it that much
+[568.86s] easier
+[570.60s] um for you to make sure that you're
+[571.92s] getting this information that you took
+[573.30s] the time uh to dig onto your own
+[577.44s] and last but not least know your sources
+[580.38s] know your courts know your public
+[581.82s] records law
+[583.50s] um
+[584.88s] it may seem obvious but it's also a huge
+[587.28s] Time Saver
+[589.08s] um when if you know what your rights are
+[591.18s] and you know who has the information to
+[593.40s] the best extent that you can
+[595.88s] then you may not get pushed into a
+[599.28s] battle uh public records battle that you
+[601.44s] don't have time for that maybe you can
+[604.20s] talk a court clerk into providing
+[606.06s] records that should be provided because
+[607.62s] you know what your rights are that came
+[610.38s] up with me just the other week
+[612.62s] where
+[614.34s] um
+[615.54s] uh in this example it was in
+[618.66s] Massachusetts each court has to have a
+[621.54s] an index of criminal defendants uh
+[624.48s] something I know from
+[627.12s] just something I know and so when a
+[629.52s] court clerk said the computer was down
+[631.62s] and I
+[632.94s] nobody could help me find a case I could
+[636.06s] say well the trial rules are that
+[639.24s] there's got to be a an index that's
+[640.80s] searchable by the public and so she did
+[643.14s] the looking herself
+[645.12s] um
+[646.14s] and to know uh I I love these court
+[649.98s] documents on breaking news things like
+[651.90s] search warrants uh Records that come
+[654.96s] along with dangerousness hearings uh
+[657.18s] motions that may have been filed
+[658.56s] pre-trial so in Massachusetts these uh
+[661.98s] all mostly all become public unless
+[663.90s] they're sealed and they have they're
+[665.22s] great sources of information
+[667.08s] and they're not readily available
+[668.76s] they're not uh they don't sort of show
+[671.22s] up in court when someone's arraigned but
+[673.38s] if you know to look for them
+[675.60s] um then there can be huge sources of
+[678.42s] information that let you dig deeper into
+[680.28s] uh a court situation or maybe pass Court
+[683.22s] situation
+[686.82s] another problem lack of time to tell the
+[689.04s] story I only got a buck 20 to tell the
+[691.08s] story how am I supposed to fit in all
+[692.46s] this other stuff uh we're talking about
+[694.44s] getting
+[695.94s] um
+[696.84s] there's no easy answer here uh we've had
+[699.66s] some success with maybe doing an anchor
+[702.30s] breakout after the main story so the
+[704.40s] main story is the breaking news and uh
+[708.24s] now I'm going to write up a vo or a
+[711.18s] vosat for the anchors uh with
+[715.02s] um some details about the records that I
+[716.76s] found or some data that I went through
+[718.70s] uh it sort of uh
+[722.04s] helps in our Newsroom which is very our
+[724.14s] newscast rather which is very fast-paced
+[727.38s] um that helps keep the pace fast uh
+[730.32s] helps keep the reporter focused on the
+[732.00s] story that they have to tell but then
+[734.34s] let's just give that extra uh context
+[738.00s] um that uh that we're hoping to do
+[740.42s] I'm sure your online folks would love to
+[743.04s] have exclusive online content if you
+[745.20s] can't fit it on the air and uh why not
+[748.14s] it gets it out there it it does turn out
+[751.56s] to be a lot of work for you but it also
+[754.32s] not only gets the information out but I
+[756.18s] think again speaks to maybe helping
+[759.18s] change the culture a little bit and the
+[761.04s] expectation and the realization among
+[763.74s] the EPs and the the desk and all those
+[767.16s] folks that uh there's a lot of good
+[769.50s] stuff out there to be had that no one
+[771.54s] else is getting
+[773.16s] um maybe if you get online this time
+[774.54s] maybe the next time it comes up maybe
+[776.40s] that can be your uh on uh on air story
+[780.12s] uh can it be safe for another day again
+[782.70s] not an easy to say not always easy to do
+[785.82s] when you're getting assigned uh hither
+[788.22s] and yawn but um
+[790.44s] uh again uh speaking to trying to change
+[793.92s] the culture a little bit maybe uh if you
+[796.44s] get some good information and you can do
+[798.54s] a follow-up story to the big story of
+[800.40s] the day
+[801.84s] um try not to maybe you don't cram it
+[803.40s] all in on on day one and maybe you can
+[805.20s] talk about what you think you can do on
+[807.36s] uh day two or week two uh when you get
+[810.12s] that information together uh again have
+[812.40s] these conversations with your managers
+[814.28s] and uh hopefully they'll be listening
+[817.74s] and all those fails just bake for
+[820.14s] another 20 30 seconds say you got good
+[822.48s] stuff and hopefully you can deliver
+[826.56s] okay
+[828.30s] records data
+[830.76s] not visual what are we going to see how
+[833.16s] are we going to cover this story
+[835.56s] um
+[836.46s] with all this uh when you're making
+[838.14s] these records requests and you're going
+[839.52s] through paper records
+[841.08s] well
+[842.34s] uh
+[843.84s] especially today compared to the 70s 80s
+[846.78s] 40s 50s 60s
+[849.24s] photos and videos of public records too
+[851.34s] so uh don't limit yourself to thinking
+[855.24s] that you're only going to be getting a
+[856.44s] stack of paper
+[858.12s] um
+[859.14s] whatever the topic you may be looking in
+[861.18s] May well have digital photos may have
+[863.10s] videos uh lots of visuals so uh the uh
+[867.30s] what you're seeing on the screen is a
+[868.86s] screen grab it was um a video sequence
+[872.76s] that I got from a public records request
+[874.68s] to a police department and uh that's a
+[877.86s] former police chief hiding some clothes
+[880.68s] in a shopping cart as he goes about
+[883.50s] shoplifting at his local Kohl's
+[886.02s] department store
+[888.42s] um
+[889.38s] so we had done some stories about uh uh
+[892.62s] that the police found him and how the
+[895.20s] case uh went to court and the magistrate
+[898.56s] didn't issue the charge
+[900.30s] you get the video uh that's way better
+[902.70s] than any police report which we had to
+[905.34s] um but we had this whole video from a
+[906.78s] public records request and uh it was
+[910.56s] great
+[912.06s] um
+[913.44s] Graphics again I mentioned to see if you
+[916.26s] can do the graphics yourself we can do
+[918.72s] some simple I can do some simple
+[920.04s] Graphics in a system that we have here
+[922.08s] at uh at our station at our company
+[925.56s] um but uh
+[927.66s] uh don't don't be afraid of uh putting
+[930.90s] up graphics and and talking about them
+[933.00s] um if you have the goods if you have
+[934.38s] some exclusive information and
+[935.82s] interesting information and good context
+[937.62s] to a story that's in the news especially
+[940.44s] uh I don't think you need uh I think you
+[944.16s] I think you're okay a lot of people try
+[946.08s] to avoid it but I think you're going to
+[947.64s] be okay
+[948.96s] um and that's what I mean by be brave
+[950.34s] like not everything has to be a uh has
+[954.06s] to have great visuals you can have great
+[955.98s] information if you're concise if it's
+[958.56s] relevant and you're making the case to
+[960.24s] the viewer why they should know this
+[961.74s] then
+[963.30s] um don't shy away from the good info on
+[965.52s] because you can you can only put up some
+[967.26s] graphics
+[971.22s] okay
+[972.60s] uh I don't understand this stuff I don't
+[975.48s] have time to figure it out I've got this
+[977.28s] huge stack of Records it's technical uh
+[980.52s] this is not exclusive to broadcast by
+[982.68s] any means
+[984.36s] um but uh think about how you're going
+[986.88s] to get some help understanding and
+[988.98s] explaining to your viewer what this
+[991.32s] stuff means whether it's a motion filed
+[994.02s] in court whether it's a database that
+[997.44s] has some tricky things that you're not
+[999.24s] quite understanding uh so find your Guru
+[1002.12s] find uh find someone who does understand
+[1004.10s] it and who can explain it to you
+[1006.68s] um the advocacy groups are a great start
+[1010.22s] um I have been known to type into Google
+[1013.36s] Association of fill in the blank
+[1015.98s] whatever the uh topic is that I'm
+[1018.50s] looking for accountants uh machinists
+[1021.98s] whatever whatever you want to
+[1024.44s] they probably have an association and
+[1026.72s] their job is to promote and speak in the
+[1030.98s] interest of whatever that group is and
+[1033.62s] chances are they have a press person and
+[1035.36s] can explain some things to you
+[1038.12s] um asked to speak on background with uh
+[1040.70s] you may be dealing with a press person
+[1042.08s] but asked to speak with their expert on
+[1045.68s] background or off the Record just
+[1047.66s] explain I just want to make sure I'm
+[1049.22s] explaining this accurately
+[1050.80s] I don't want to I want to put it in the
+[1053.54s] right context and can you put up your
+[1056.06s] data expert can you put up your engineer
+[1057.86s] just go through this with me
+[1060.92s] uh
+[1062.60s] and sometimes I will read uh part of the
+[1065.78s] script back to someone who I interviewed
+[1068.60s] that we interviewed
+[1070.76s] um it's something you have to do
+[1072.56s] carefully because you don't want to open
+[1074.36s] up the script to
+[1076.82s] um
+[1077.90s] having the source change it uh to fit
+[1080.36s] their uh to fit their interests which is
+[1084.02s] why you don't give sources you don't
+[1086.78s] tell them what the story is they don't
+[1088.22s] give another chance to read it but
+[1091.28s] people may disagree I find nothing wrong
+[1093.56s] with reading back the language you're
+[1095.72s] using to describe something Technical
+[1097.88s] and factual
+[1099.98s] um not necessarily an interpretation of
+[1101.78s] it but uh and let them weigh in on it
+[1104.36s] and I don't feel like I've ever been
+[1106.40s] burned by it I feel like the sources
+[1108.38s] appreciate uh what I'm doing they
+[1110.72s] haven't tried to push me this way or
+[1112.34s] that way
+[1113.42s] um that I've done that with some success
+[1115.40s] sometimes
+[1117.26s] uh my last little bullet point here is
+[1119.90s] really about uh if you're looking at uh
+[1123.04s] semi-large sources of data
+[1126.02s] um
+[1126.86s] not necessarily like breaking news and
+[1129.20s] uh maybe a simple data set that you may
+[1131.30s] have come across but if there's
+[1132.44s] something a little more complex with a
+[1133.88s] lot of fields that aren't totally clear
+[1136.70s] um this is really a caution to everybody
+[1138.62s] uh to really
+[1140.72s] get your questions out as soon as
+[1142.76s] possible
+[1143.86s] if you've done some analysis get the
+[1146.78s] analysis out uh you got to be fair to
+[1149.72s] the source and there's a lot of errors
+[1151.70s] that come up in data not necessarily
+[1154.04s] your analysis of it and
+[1156.76s] you're going to find some corrections
+[1159.26s] and some uh maybe some misunderstandings
+[1161.48s] and you got to give your sources
+[1163.76s] time to get back to you
+[1166.04s] um
+[1166.64s] a quick example here uh I was on a daily
+[1169.52s] story with uh about some stuff that fell
+[1172.70s] from a bridge uh and hit a car uh some
+[1176.42s] concrete on an Old Bridge
+[1178.22s] the state of Massachusetts put a lot of
+[1181.70s] data online including Bridge inspection
+[1183.32s] data
+[1184.40s] so I could I could find the bridge in
+[1186.14s] the data I could see the data last
+[1187.64s] inspection and I sent it off to the uh
+[1191.06s] to the pr person and they said where'd
+[1194.24s] you get this this isn't right the bridge
+[1197.00s] has been inspected since then
+[1199.10s] well I was reading the data right it
+[1201.56s] just hadn't been updated so by getting
+[1204.50s] that out there soon enough just asking
+[1206.24s] about it we were able to correct it was
+[1209.42s] really their error and not up uh
+[1212.06s] updating their data
+[1214.34s] but who's ever error it was that stopped
+[1216.56s] us from putting out inaccurate
+[1217.82s] information on the air even if it wasn't
+[1219.80s] necessarily our fault
+[1221.54s] um and that example always stuck with me
+[1223.16s] as a it would have been so easy to do to
+[1225.50s] just report on what was in front of us
+[1227.12s] and uh
+[1229.76s] but just getting that question out
+[1231.26s] sooner rather than later I think saved
+[1233.78s] us from that that error
+[1238.16s] okay
+[1239.78s] um
+[1241.22s] let's talk about some of the uh some of
+[1243.38s] the examples of breaking news and think
+[1245.66s] about how we could be digging deeper on
+[1248.24s] uh some breaking news uh stories that
+[1251.30s] may come your way
+[1253.10s] uh I've mentioned this example before
+[1255.08s] like in the uh the murder suicide if
+[1258.20s] you're dealing with a really significant
+[1260.18s] crime
+[1261.56s] um
+[1262.22s] and uh you want to find out more about
+[1265.04s] the perpetrator
+[1266.72s] obviously going to dig into the past
+[1268.40s] cases
+[1269.48s] um that's a regular uh uh sort of job of
+[1273.02s] ours and a lot of other uh reporters out
+[1276.14s] there uh to go dig into the background
+[1278.90s] while maybe a general assignment
+[1280.40s] reporter is covering the the actual
+[1282.74s] event
+[1283.82s] um
+[1284.84s] I'm going to court I'm looking at past
+[1286.76s] cases finding sources people that knew
+[1289.40s] the person
+[1291.44s] um and I say use with caution because uh
+[1294.62s] there's obviously uh so much court cases
+[1297.38s] isn't the entirety of their history uh
+[1300.68s] so uh just something to be sort of
+[1303.20s] sensitive to
+[1304.46s] uh make a list of your cases and follow
+[1306.68s] them uh so when the case does break uh
+[1310.46s] if your Newsroom is anything like ours
+[1312.50s] it's uh sometimes we forget about stuff
+[1315.44s] we move on to the next thing and just
+[1318.14s] being able to follow your cases
+[1319.76s] hopefully online check to see if there's
+[1322.28s] been any updates or major filings uh may
+[1325.10s] get you a nice story down the road after
+[1327.02s] the uh the story is broken
+[1329.56s] uh again talking about crime the uh I
+[1334.22s] think it's pretty typical that a an open
+[1336.26s] investigation an open case is uh not
+[1339.32s] subject to public records law in many
+[1341.24s] locations certainly that's the case in
+[1343.10s] Massachusetts but once it's closed
+[1345.98s] um that is a uh the police files the
+[1348.92s] DA's files are public records uh at
+[1352.16s] least in Massachusetts and a treasure
+[1354.14s] Trove of
+[1355.76s] of Records
+[1357.44s] um so whatever is part of that case uh
+[1359.78s] photos videos many many documents
+[1363.74s] um again you're talking about a crime
+[1365.42s] maybe you can take a look at and before
+[1368.12s] the before it happens be aware of where
+[1370.10s] you can find the information that will
+[1372.26s] tell you be able to put this crime in
+[1373.76s] context
+[1374.90s] um
+[1375.80s] is crime go is there was a high profile
+[1378.08s] murder well her murder is going up and
+[1379.70s] down on the court in the community
+[1382.28s] um what put it in the context of uh
+[1386.24s] Public Safety rather than the individual
+[1388.64s] uh incident
+[1390.44s] uh airplane or motor vehicle crashes
+[1392.96s] again we're digging into The Who and the
+[1395.30s] why who owns that airplane uh
+[1399.08s] as a driver it did something bad on a
+[1401.42s] road what's the driver's driving record
+[1403.10s] our registered motor vehicles can can
+[1405.56s] tell you that with a little bit of
+[1406.64s] information
+[1407.72s] Trucking uh Trucking commercial Trucking
+[1411.32s] is highly regulated lots of Records uh
+[1413.96s] civilian complaints about
+[1416.90s] um an intersection where there was a
+[1418.40s] crash was where civilians complaining
+[1420.38s] before
+[1421.30s] uh you get the idea pick any breaking
+[1424.52s] news topic and there's some digging that
+[1426.32s] can be done into it
+[1428.24s] um
+[1428.90s] uh politics and government well you're
+[1431.60s] reporting on a bill that's filed or a
+[1433.76s] piece of legislation or a state house
+[1435.32s] event well how about looking into some
+[1437.36s] of the money behind it
+[1439.46s] um
+[1440.12s] you get the idea
+[1444.74s] okay
+[1446.48s] see here documents state of mind that's
+[1449.42s] a uh an old saying in investigative
+[1451.64s] journalism from uh invented by a pair of
+[1454.64s] sort of famous
+[1456.26s] uh newspaper investigative journalist
+[1458.60s] Bartlett Steele
+[1460.64s] don't it's a it's a turn off for
+[1463.22s] broadcasters documents documents
+[1464.72s] documents think of it as record state of
+[1466.28s] mind
+[1467.30s] um records are created from birth to
+[1470.00s] death the government is making uh
+[1471.86s] Records about everything and anything
+[1473.30s] and
+[1475.82s] if you uh
+[1477.86s] uh but think of it as not just words on
+[1480.02s] paper videos photos even objects
+[1483.32s] um there may be uh you know we had
+[1485.36s] access to murder weapons in uh in court
+[1488.78s] uh a box in court
+[1491.72s] um so uh Edwards are okay too don't be
+[1494.78s] afraid of the words I know we're getting
+[1496.58s] short on time
+[1498.08s] uh here's an example of uh a document a
+[1501.92s] record from Court
+[1503.78s] um
+[1504.56s] we looked at a court filing a court case
+[1507.08s] from a closed case that went to trial in
+[1510.62s] Middlesex County about uh for a series
+[1512.60s] we did on human trafficking and this was
+[1515.54s] a evidence photo that uh of the proceeds
+[1518.72s] from a spa where prostitution was going
+[1521.18s] on
+[1524.00s] real quick I want to touch on uh well
+[1526.58s] maybe I won't
+[1527.90s] um be careful of data that's the data
+[1530.24s] unicorn you see in my screen which means
+[1532.58s] uh there's no Miracles and data be
+[1536.06s] careful about using data quickly if
+[1538.10s] you're not familiar with it because
+[1539.18s] there's a can be a lot of problems and a
+[1541.64s] lot of managers people that don't aren't
+[1543.26s] familiar with data are
+[1545.30s] I think that it's a magic uh you know
+[1547.28s] the Unicorn that you could just go look
+[1548.72s] at it and crank out stories
+[1551.54s] okay uh I didn't get to some of the
+[1554.66s] um some of the uh ways that we have used
+[1558.02s] data and Graphics to tell stories with
+[1560.54s] numbers and Records
+[1562.64s] um but uh I was going to sort of throw
+[1564.80s] that out there to the crowd uh anybody
+[1567.80s] had any success stories to share about
+[1570.14s] using data in broadcast or records and
+[1572.48s] broadcasts but I feel like I should stop
+[1574.76s] now and uh answer any questions or if
+[1578.18s] anybody has anything they want to share
+[1579.38s] Hey Kevin uh no questions just yet uh
+[1582.50s] down to the last couple minutes so maybe
+[1584.06s] if there are some yeah and takeaways you
+[1586.88s] or uh you know two or three you know
+[1589.40s] very specific uh suggestions you haven't
+[1591.32s] hit on yet that you could address in the
+[1593.48s] time that we have remaining that might
+[1594.62s] be helpful I have some examples of um
+[1598.12s] uh how we've used data in broadcast
+[1601.30s] uh we have the Good Fortune of having a
+[1604.10s] designer graphic designer in-house that
+[1607.40s] has really helped us visualize uh
+[1610.40s] visualize the data analysis that we've
+[1612.80s] done
+[1614.06s] um
+[1615.08s] so here's a map that he made uh that
+[1617.96s] goes along with a track that says that
+[1620.96s] talks about a uh you know fairly
+[1623.12s] detailed data analysis we did and boiled
+[1626.36s] down to how many
+[1629.12s] um
+[1629.72s] what percentage of people charged with
+[1632.12s] prostitution offenses so either uh women
+[1636.56s] who were trafficked or the Johns who
+[1638.90s] paid for it
+[1640.28s] um so who was being prosecuted and in
+[1642.74s] some of these communities you can see it
+[1644.00s] was 90 women
+[1646.10s] um
+[1648.92s] uh this was also made by our designer
+[1651.32s] but it doesn't have to be animated or
+[1654.62s] fancy or you don't need a designer uh
+[1657.44s] necessarily super simple and it just it
+[1659.96s] tells the story that we were uh that we
+[1663.14s] were trying to tell where we with the
+[1665.54s] help in this case of the Stanford open
+[1667.22s] police project had uh analyzed state
+[1671.12s] police traffic stops simple bar graph
+[1673.46s] look how uh look at the disparity and
+[1676.10s] how uh the race of drivers at State
+[1678.20s] Police were searching
+[1680.30s] I think we're just about out of time uh
+[1682.82s] so unless there's anything else Justin
+[1684.14s] and everybody else wants to go over I'll
+[1685.84s] uh hold off there great thank you Kevin
+[1689.12s] uh just one quick question before we
+[1691.34s] wrap up today today I know uh most of
+[1693.98s] what we discussed and the resources that
+[1695.78s] we shared are relevant to work in the
+[1699.02s] the US are there any like International
+[1701.24s] organizations you can think of or any
+[1703.58s] other resources that might be available
+[1705.50s] to those that are working outside of the
+[1708.56s] states
+[1710.02s] well I I can't speak to the um you know
+[1713.66s] the availability of Records in in other
+[1715.82s] countries the the International
+[1717.98s] journalists that are joining this call
+[1719.42s] thank you uh you know would know that
+[1722.06s] better
+[1722.96s] um
+[1723.86s] but I I think it's just Universal just
+[1725.66s] to keep
+[1727.10s] just keep pushing
+[1728.60s] um I think there's a there's a little
+[1730.46s] bit of a at least in the broadcast shops
+[1732.74s] I've been at there's a little bit of a
+[1733.94s] cultural resistance to
+[1735.68s] uh this kind of digging and
+[1737.48s] investigative and uh things like that
+[1740.48s] and and I think the message I'm just
+[1741.98s] trying to get out is
+[1743.90s] um just keep trying I think uh at least
+[1746.66s] in my experience the
+[1748.94s] the managers that may not be embracing
+[1750.86s] it when they see what you can do they
+[1753.20s] love it so
+[1754.88s] they say no just do it anyway and maybe
+[1757.10s] they'll like it whatever country you're
+[1758.54s] in
+[1759.74s] right well thank you so much Kevin I
+[1761.78s] appreciate all these suggestions all
+[1763.64s] this help very informative I also want
+[1766.46s] to thank everybody who joined us today
+[1768.44s] if you found today's class helpful in
+[1770.84s] any way I want to ask you to please
+[1773.00s] consider becoming a sustaining member of
+[1775.16s] neefac you can do so at knifac.org join
+[1779.24s] that annual support is what helps make
+[1781.70s] classes like this happen so thank you
+[1784.22s] again for attending today and Kevin
+[1786.26s] thank you for being here appreciate your
+[1788.54s] time we'll see you all next month for
+[1790.94s] our next 30 minute skills take care
+[1792.98s] everybody thank you

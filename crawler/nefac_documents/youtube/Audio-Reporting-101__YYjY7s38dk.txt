@@ -1,0 +1,740 @@
+[5.04s] hello everyone I'm Justin Silverman of
+[7.00s] the New England First Amendment
+[8.08s] Coalition thank you for joining us for
+[10.20s] another 30 minute skills for those of
+[13.44s] you joining for the first time a big
+[15.76s] welcome to you these monthly lessons are
+[18.20s] a quick and efficient way to hone your
+[19.84s] reporting skills and build on your first
+[21.64s] amendment knowledge so thank you for
+[22.92s] joining us uh these classes are also
+[25.20s] more than that though there are a way
+[26.76s] for you to reconnect with a community of
+[28.80s] journalists research Searchers attorneys
+[31.00s] and academics who regularly attend these
+[33.52s] lessons so to everyone here today please
+[36.80s] use the chat to introduce yourself
+[38.64s] showcase your own work connect with
+[40.68s] others and provide any kind of resources
+[43.16s] or additional materials that you think
+[45.24s] is relevant to today's discussion also
+[48.80s] make sure you register for our upcoming
+[50.72s] lessons registration links can be found
+[53.64s] at nea.org as a reminder previous 30
+[57.44s] minute skills are available at nea.org
+[59.24s] and onor YouTube channel five freedoms
+[61.92s] lessons include data cleaning Privacy
+[64.04s] Law Microsoft Excel Basics and how to
+[66.76s] diversify sources among many other
+[69.24s] topics today's presentation is focused
+[71.88s] on audio reporting and it's supported in
+[74.72s] part by the estate of Gloria l negri
+[78.24s] Gloria was a trailblazing journalist at
+[80.28s] the Boston Globe for more than 50 years
+[83.00s] this program is part of her Legacy of
+[85.20s] Newsroom education and her lifelong
+[87.12s] commitment to local journalism you can
+[89.48s] learn more about Gloria and other neac
+[91.60s] supporters at nea.org
+[94.28s] supporters during today's presentation I
+[96.92s] again encourage you to introduce
+[98.32s] yourself in the chat and share your own
+[100.36s] experiences and resources you can also
+[102.88s] use the chat or the Q&A button to ask
+[105.04s] questions of our instructor and we'll
+[106.56s] get to as many of those questions as
+[109.00s] possible we have a lot to cover and not
+[111.12s] a lot of time so let's get started Jeff
+[113.96s] all yours thanks Justin and thanks Sy
+[117.08s] effect for having me here um my name's
+[118.88s] Jeff and let's get going let's keep I
+[121.04s] have my clock we'll keep it to time uh
+[123.36s] if you could take away one thing from
+[125.04s] this entire presentation it's that this
+[126.84s] is not that difficult if I can do it you
+[129.00s] can do it uh you can do it better maybe
+[130.88s] than you have been doing it or than than
+[132.56s] you have uh expected but um I'm a
+[137.04s] newspaper reporter at heartt that's how
+[138.48s] I started and so we'll go into that uh
+[140.36s] briefly just to get a sense of if I can
+[142.12s] do that um I started in newspapers in
+[144.96s] 2001 at the Meridan record journal in
+[146.64s] Meridan Connecticut uh I was at the
+[148.64s] heart for current for and a half years
+[150.56s] or so uh and telling story uh for the
+[154.36s] eyes and not for the ears really was uh
+[156.96s] how I was trained and um so there is a
+[160.56s] difference there and we'll talk more
+[162.00s] about that and then in 2010 I I went to
+[163.80s] Connecticut public radio where I stayed
+[165.32s] for about 13 years and I've been here
+[168.04s] now at WB where I manage our local
+[171.08s] programs I manage the people who manage
+[172.96s] the local programs that's all things
+[174.52s] considered Morning
+[176.16s] Edition uh our show radio Boston our
+[179.08s] weekend news shows and all of our
+[180.72s] newscasts so it's a great job suddenly
+[183.24s] uh like all reporters I've ascended to
+[186.80s] uh middle management who would have
+[188.12s] thought
+[189.52s] good uh so what are we GNA cover how do
+[191.72s] I get sound what is good sound and how
+[193.32s] do I turn good sound into a story um and
+[197.40s] thanks by the way to Justin uh I have
+[199.68s] the ideas he was able to actually make a
+[201.88s] Google slide that didn't look as
+[203.36s] horrific as the ones that that I made um
+[206.92s] good sound doesn't need to be uh getting
+[209.08s] good sound is not part um it's not
+[211.56s] intimidating you can use your laptop on
+[213.64s] Zoom you can use a handheld recorder you
+[215.80s] can use your your phone you can use a
+[217.84s] fancier recorder let me just look ahead
+[219.48s] real quick I'm going to stop here I'll
+[221.56s] just spend a second on this one look if
+[223.72s] you want to do an interview uh with
+[225.40s] someone there are ways that you can and
+[227.24s] they're not with you there are ways that
+[228.72s] you can do it that are more complicated
+[230.40s] than Zoom but honestly right now
+[232.64s] recording a zoom interview um and
+[235.20s] ensuring that you get good audio uh is
+[238.52s] probably your easiest bet unless they're
+[240.20s] going to have a different kind of setup
+[243.04s] uh you could just use the record my
+[246.24s] interview session on zoom and then
+[248.28s] download the files and work off those
+[250.68s] files uh if you want to get slightly
+[253.00s] fancier you can have them um record
+[257.28s] themselves on their phone as a voice
+[260.12s] memo while you're interviewing them on
+[262.08s] zoom and then they send you that file
+[264.20s] that's something that happens all the
+[265.36s] time you are dependent on them not
+[268.00s] banging around their phone
+[270.40s] blowing air into their microphone um so
+[274.08s] it's a bit of a dice roll because you
+[275.76s] can't also hear where whereas the
+[277.40s] benefit on Zoom is you're listening
+[279.24s] along as you're interviewing them uh but
+[282.12s] I do there are other like I said other
+[284.72s] ways to record streaming audio off your
+[287.88s] laptop at for what you're doing my guess
+[290.12s] is that Zoom is going to be enough you
+[291.92s] can use uh in person all manner of
+[295.44s] handheld recorders um you can use a
+[298.76s] fancier public radio quality reporter
+[300.80s] but I have also in a bind when my
+[302.60s] batteries died used my phone and guess
+[306.56s] what uh nobody at NPR noticed or maybe
+[311.16s] they did and they didn't say anything
+[312.64s] and so um you know being there just as
+[316.32s] in any part of Journalism is the part
+[317.92s] that matters getting the sound is what
+[320.56s] matters I'd rather you get sound in an
+[322.96s] imperfect way then avoid getting sound
+[325.68s] because your conditions aren't perfect
+[328.32s] um let's keep going here so when you're
+[332.48s] getting sound let's say you're in the
+[333.92s] field you need to be listening along to
+[336.00s] the best of your ability you can't
+[337.28s] really listen along necessarily with a
+[339.28s] phone um you whatever your microphone is
+[343.28s] if it's your phone if it's your an
+[346.36s] actual microphone if it's a it's it
+[349.12s] would be a phone or a handheld
+[350.32s] microphone I wouldn't use a lavalier in
+[352.56s] this case um and um you got to get close
+[357.40s] with your microphone you know your
+[358.60s] microphone is here that's where it is
+[361.12s] now if your microphone is right here if
+[362.64s] you put your hands here and you say the
+[364.48s] word you know poosh or something and you
+[367.80s] can feel the air hitting your hand that
+[370.44s] will that's called aive and that will
+[372.56s] will hear that on the air you don't want
+[374.00s] to do that so you're kind of be a little
+[375.16s] off to the side with your microphone so
+[377.24s] that the air passes by your microphone
+[380.60s] so we don't hear all those what we would
+[382.40s] call popping peas as you're interviewing
+[385.92s] um always make sure you're recording
+[388.04s] sometimes uh recorders have like this
+[390.44s] flashing light that says I'm ready to
+[392.32s] record and people mistake that for
+[393.84s] recording make sure you're recording
+[395.44s] because you'll be pretty bummed out if
+[396.56s] you get to the end of it and you haven't
+[397.76s] been recording I often stop and start a
+[399.96s] lot during an interview people don't
+[401.32s] notice it but I would hit start I would
+[403.12s] stop recording and hit start again to
+[405.88s] create several different files just in
+[408.60s] case one of the files were to get
+[409.80s] corrupted you don't want like a two-hour
+[411.60s] file and then your batteries die at
+[414.68s] minute 15 you know at one hour and 59
+[416.84s] minutes and then you've lost it all so
+[419.80s] that might be just my anxiety and my OCD
+[422.84s] uh you know coming out but there it is
+[426.92s] um you know don't interrupt I'm a I'm a
+[430.04s] chronic interruptor so uh but don't
+[432.84s] interrupt uh use your face if you want
+[435.40s] to
+[437.60s] agree show surprise use your face
+[440.48s] because if you're stepping on your
+[441.52s] interview it's gonna make it very hard
+[443.08s] for you to cut up their sound uh in a
+[445.96s] way that makes sense um so you know have
+[449.80s] a free form conversation sure give them
+[452.88s] a chance to finish a thought L they
+[454.40s] finish the most saying the most
+[455.80s] brilliant thing that you've gotten on
+[457.24s] tape and you step on the end of it and
+[459.56s] have to cut it out uh keep your you know
+[462.32s] if you're using a microphone don't bang
+[463.96s] it around in your hands know that if
+[466.28s] your cable is at your hip and it's you
+[468.52s] know banging at your hip the microphone
+[470.68s] will pick up that vibration and you
+[472.64s] won't be able to use it um uh so just be
+[476.08s] aware of all these things watch your
+[477.56s] levels levels are the uh the readout
+[481.44s] that it'll go from green to Red I'm sure
+[483.08s] you're familiar with it you want to be
+[484.68s] in the healthy level if you're seeing a
+[486.36s] lot of red tone down your microphone a
+[488.68s] little bit turn down your level your
+[490.08s] input so you're not topping out you top
+[492.52s] out it sounds really loud and you can't
+[495.68s] again it's going to be hard to use
+[498.68s] um in some cases it can be cleaned up
+[501.20s] but let's not rely on that room tone
+[504.24s] Ambi this is a strange one that you
+[505.72s] probably don't know who've not worked in
+[506.96s] radio but if I'm interviewing someone
+[508.96s] I'm in this little soundproof booth
+[510.88s] right I need the sound of this booth
+[513.84s] there is a sound here uh even though
+[516.48s] it's soundproof I need the sound of this
+[518.32s] booth to run under an interview very
+[521.24s] often because it helps uh soften it the
+[524.00s] transitions so it doesn't sound like I'm
+[525.72s] going from Jeff telling a story back
+[528.24s] into the booth and Jeff telling a story
+[529.96s] and back into the booth it helps create
+[531.32s] a sense of continuity you always need in
+[533.88s] every interview you do 30 minute 30
+[536.08s] seconds to a minute of just telling the
+[538.24s] person hey this is your moment of
+[540.40s] relaxation for the day we're going to
+[542.08s] sit here quietly and I'm going to record
+[544.20s] the room don't say anything and I'll let
+[546.08s] you know when I'm done uh and you can
+[548.20s] use your finger this means you know
+[549.88s] don't talk uh and that's that's one way
+[552.56s] of doing it and if the sound changes so
+[555.04s] like if you're interviewing someone in
+[556.16s] their
+[556.96s] kitchen and there's a
+[559.56s] refrigerator and then halfway through
+[561.28s] the interview the refrigerator stops
+[563.92s] it's you know
+[566.04s] running the motor stops you need to
+[568.52s] capture both of those room
+[570.68s] tones um because it's all going to be
+[573.44s] essential to pulling your story together
+[574.76s] in the end
+[576.92s] um then the last Point what they're
+[578.84s] saying versus how they say it so um
+[581.88s] there is if they say something really
+[584.52s] well if they say something in 30 seconds
+[586.40s] but they say essentially the same thing
+[588.00s] in far fewer words uh in a more
+[590.16s] persuasive way in 10 seconds that's the
+[592.28s] clip you want because we're really this
+[594.60s] is this is the Communication business
+[596.56s] right so then there's what is a good
+[598.60s] sound you have to a scene uh it's this
+[601.48s] think of your anecdotal lead you have to
+[603.68s] find an example that helps me illustrate
+[605.84s] the entire story uh at the top and you
+[608.64s] have to grab your listener we know that
+[610.32s] listeners are very finicky and will
+[612.32s] change the dial really quickly if you're
+[614.96s] not grabbing them at the outset so you
+[617.44s] have to use sound to get there it's not
+[619.96s] background noise it's not like traffic
+[621.84s] moving by unless you're doing a story
+[624.08s] about traffic uh it's not a gimmick
+[626.88s] sound is scene and scene is is emotion
+[630.04s] it's activity it's people doing things
+[632.40s] and it's things that are representative
+[634.16s] of the story that you plan on
+[636.36s] telling so with your sound it helps you
+[639.32s] show and not tell right it helps you um
+[642.96s] we'll come to this later in some things
+[644.20s] that you can listen to but uh done
+[646.32s] poorly as I did in one story uh about
+[650.16s] wine making um I didn't create I didn't
+[653.04s] capture enough of the scene and so I had
+[655.00s] to use my words to describe it I had to
+[656.92s] tell a little more than I was able to
+[658.96s] show with my scene and that was kind of
+[660.44s] a bummer but we were still able to get
+[662.04s] it on the air but really your scene is
+[665.72s] um your sens of place is exceptionally
+[668.80s] important in radio
+[670.44s] storytelling bring me there introduce me
+[673.20s] to humans if they're from greater Bost
+[675.36s] and I want to hear I want to hear them
+[677.12s] right if they're from New Orleans where
+[678.48s] I'm from you want to hear the difference
+[680.12s] in the sound um you want to hear
+[684.60s] um people speaking in their voice if
+[687.12s] you've ever written a story in a
+[688.48s] newspaper and you get that quote and
+[690.60s] you're like man this thing is going to
+[691.96s] fly off the page it really does right it
+[694.44s] hits you in the gut when you realize how
+[695.92s] intense that quote is when you hear
+[697.84s] someone actually saying it and this took
+[700.40s] me a while to
+[701.48s] learn it's even more impressive it's
+[703.84s] even it leaves even more of an an
+[705.76s] imprint so I want to hear from people as
+[708.32s] they're thinking as they're um as their
+[711.28s] thoughts are evolving in in their in in
+[715.04s] they don't have to sound brilliant they
+[716.48s] have to sound like themselves and that's
+[718.56s] the same for you
+[721.04s] um writing for broadcast you are writing
+[724.44s] for listeners you are not writing for
+[727.72s] readers what does that mean you keep it
+[730.52s] simple you're telling one story you're
+[732.36s] not going to be able to make every
+[733.64s] nuanced point that you might make in a
+[735.92s] 30-inch story but news flash people
+[739.32s] probably aren't reading to the bottom of
+[740.60s] your 30-inch story and you might not
+[742.28s] also as a reader do that and that's as a
+[744.28s] as an as a writer that's hard but I have
+[746.72s] to remember that the people that we're
+[747.88s] talking to in their cars are driving
+[750.96s] they're getting coffee they're yelling
+[753.04s] at they got maybe they got Road Rage or
+[755.32s] I mean they're they could be distracted
+[757.52s] and for us to effectively communicate
+[759.36s] the important things that we have to
+[760.52s] communicate to them we have to keep it
+[762.52s] simple um and they can't go back like if
+[765.24s] they skip something in a in a newspaper
+[767.28s] script and and they go back up a
+[768.76s] newspaper story they go back up to read
+[770.12s] it again you don't do that in radio you
+[771.88s] don't really get that chance you get one
+[773.96s] chance to to get them and keep them and
+[775.56s] you don't want to lose them so you got
+[776.72s] to keep it simple think about your
+[778.40s] audience and not your sources just
+[780.36s] because you talk to them doesn't mean
+[781.32s] you have to use it it can inform some of
+[783.68s] the copy that you write um but it
+[786.08s] doesn't necessarily have to make it into
+[787.72s] your story if it's more about serving
+[789.80s] the fact that you spoke with someone as
+[791.84s] opposed to serving your listener like I
+[794.00s] said to the same point you can't use
+[795.32s] everything in your notebook you can't
+[796.84s] use the bottom of your story as a
+[798.20s] dumpster and the tape is rarely longer
+[802.12s] the tape of an individual speaking in
+[803.92s] the context of say a four or five minute
+[805.64s] story rarely going to be longer than 20
+[807.72s] or 25 seconds
+[810.28s] so these are some examples that you can
+[812.28s] um listen to later the first one is uh a
+[817.68s] profile that I did uh of a family whose
+[822.36s] uh middle-aged son lived with
+[825.52s] schizophrenia and uh ended up committing
+[828.52s] suicide and um and I use this as an
+[831.92s] example because there's a lot of talking
+[833.40s] but I didn't necessarily create a scene
+[834.96s] I'd be curious if you do get a chance to
+[836.72s] listen to it tell me if if it worked
+[838.88s] what could have done better um sometimes
+[841.20s] you you make the best with what you got
+[842.68s] right here's this wine making story I
+[844.80s] had to write the scene because I didn't
+[846.68s] get a enough active sound it was a
+[849.08s] challenge to get active sound um at
+[852.48s] least at that point when I was there and
+[854.12s] I probably should have stayed longer um
+[856.84s] but uh so you can listen to there
+[860.04s] um this profile I have to listen back to
+[864.16s] I don't remember exactly who I profiled
+[866.44s] I will come back to that uh but voicing
+[868.52s] is important when you voice a story uh
+[871.20s] just like good column writing just like
+[872.76s] any good writing but especially column
+[875.04s] writing
+[878.40s] um don't try too hard sound like
+[882.12s] yourself be yourself you're not going to
+[884.72s] be Robert seagull no one wants you to be
+[886.92s] Robert seagull Robert seagull doesn't
+[888.48s] want you to be Robert seagull I want you
+[890.20s] to be you uh and I want to be able to
+[893.20s] pick up the newspaper and know that the
+[894.80s] column I'm reading is written by a
+[896.44s] certain person not because I saw their
+[897.56s] by line but because I know they're I
+[899.12s] know their style and that's the same way
+[902.00s] with when you voice a story um you're
+[904.80s] not reading a script you're telling
+[906.60s] someone a story um so in here you can
+[910.72s] hear you know differences in voicing if
+[912.68s] you compare them to my to a couple to
+[914.68s] one of these earlier stories you'll get
+[915.96s] a sense of maybe some of the confidence
+[918.04s] that I hopefully gained over time and
+[919.72s] then the last one is um is the Shameless
+[922.48s] self-promotion when we'll click through
+[924.24s] when I when my daughters were little one
+[925.92s] of them cut off my old my older daughter
+[927.68s] cut off my younger daughter's hair I
+[929.32s] interviewed them like a good reporter
+[931.24s] made a story out of it and uh might just
+[933.68s] make you laugh if you've never heard it
+[935.60s] uh kind of went viral 15 years ago and
+[938.20s] now my kids are in college and don't
+[940.72s] like to talk about
+[942.32s] it do uh you can reach out to me anytime
+[945.76s] I got my clock here Justin I want to
+[947.20s] make sure we save time for questions
+[949.08s] thanks Jee and and just a reminder to
+[950.52s] everybody the links to the stories Jeff
+[952.64s] just mentioned those will be in the
+[954.20s] video notes so you'll have those links
+[956.52s] you'll have the slides you can go
+[958.00s] through all that material
+[959.48s] on your own time and and really digest
+[961.56s] it and and learn from it uh Jeff
+[964.00s] question here you you gave a lot of
+[965.68s] great guidance and tips but for somebody
+[967.68s] who's never collected audio ever are
+[970.36s] there any good practice exercises or
+[973.52s] anything that you would suggest somebody
+[974.96s] could do uh leaving this presentation
+[977.56s] here this afternoon go out do
+[979.68s] immediately just to get a feel for how
+[981.48s] things work and and maybe try some of
+[983.56s] the uh suggestions that you provided
+[985.56s] today you know it's it's going to be
+[988.00s] simple pick a story maybe it's cooking
+[990.44s] dinner at home maybe you're going to
+[991.92s] tell a short story
+[994.52s] about the process of making dinner for
+[996.92s] your family uh and practice Gathering
+[999.48s] sound in a low Lake in a low stakes
+[1001.40s] environment
+[1003.40s] um
+[1005.12s] um you know you're going to have to
+[1007.12s] figure out what your story is but you're
+[1008.32s] have to figure that out in whatever
+[1009.32s] you're doing right the the Gathering of
+[1011.28s] the sound honestly should be the least
+[1013.44s] frightening thing I want you focused on
+[1015.56s] your story as you would be in any
+[1018.44s] journalist environment and less focused
+[1021.40s] on the technical aspects of making the
+[1023.60s] story I was just talking with someone in
+[1025.24s] the kitchen here at WB and I said I was
+[1027.64s] going to give a presentation on on what
+[1030.52s] we're talking about and he said just
+[1032.04s] stick the microphone in their face right
+[1033.44s] isn't that what you tell him I'm like
+[1034.88s] yeah you pretty much you stick the
+[1035.96s] microphone in their face like
+[1040.52s] um that would be my answer just fair
+[1043.16s] enough so so you stick the microphone in
+[1044.88s] their face you you start simple basic um
+[1048.48s] and then have the the audio when you're
+[1051.44s] going through that audio for the first
+[1052.96s] time what are some of the things that
+[1054.60s] one might look for to find tuned for the
+[1057.04s] next time if there's like one or two
+[1058.80s] things that you should uh look for First
+[1061.36s] on that that at that initial recording
+[1064.16s] that's great well what I'll say is
+[1065.36s] process matters so how you want to be
+[1066.80s] really organized when you're cutting up
+[1068.20s] your tape you might use so if you're
+[1070.36s] recording and you've got a two-hour
+[1072.28s] interview I don't want you manually
+[1074.68s] transcribing two hours you can use a
+[1076.96s] transcription service they exist now
+[1078.60s] they that they're fairly useful but you
+[1081.60s] have to always double check yourself
+[1083.24s] when you're going through it what I want
+[1085.48s] you doing is listening as you're going
+[1087.28s] and putting Time Records in your notes
+[1089.96s] so you know by the time you go sit down
+[1091.92s] you already know what you're going to
+[1092.96s] pick by and large uh as the most
+[1095.28s] effective parts of their tape so you're
+[1097.64s] looking for important things moving
+[1101.52s] things uh insightful things told
+[1104.96s] well and told well
+[1107.24s] matters uh said well matters and um you
+[1112.84s] really do write around your best
+[1115.56s] tape
+[1117.36s] um one big difference between print
+[1119.88s] writing and radio writing is you get out
+[1121.64s] of the way of your best tape in radio
+[1124.36s] reporting um the less writing I can do
+[1127.44s] the better really I'm facilitating a
+[1130.08s] conversation of my tape that's that's
+[1132.88s] going to go on a narrative Arc and um
+[1136.64s] the less of my beautiful Pros that has
+[1138.52s] to in there to make that happen the
+[1141.28s] better got it so along those lines I'm
+[1144.48s] getting a number of questions here I'll
+[1145.76s] try to get to as many of them as
+[1146.92s] possible but one question is um along
+[1150.32s] the lines of okay well we've got a lot
+[1152.36s] of tape and it's all very powerful stuff
+[1156.24s] great recording great tape what are some
+[1159.00s] tips that you have as far as going
+[1160.48s] through all of it and determining
+[1162.40s] because it's all very strong very
+[1163.84s] powerful determining what to use and how
+[1166.32s] to cut it down so this is more I guess
+[1168.36s] of a an editing question for you yeah
+[1171.24s] it's really no different than if you're
+[1173.32s] figuring out which quote to use in your
+[1174.60s] print
+[1175.36s] story
+[1176.88s] um um you've only you're only going to
+[1180.16s] make typically a point once in a story
+[1182.24s] right you're you're you're sourcing your
+[1183.76s] source is the people you're talking to
+[1185.56s] you're not going to have the same person
+[1186.76s] saying the same thing over and over
+[1187.96s] again you got to figure out what exactly
+[1189.32s] is your story
+[1191.60s] and you
+[1193.72s] know kill all the other things no matter
+[1197.76s] you have to be exceptionally judicious
+[1200.52s] we just put in some story length
+[1202.04s] guidelines that we initiated here at bu
+[1205.24s] to help our reporters know some
+[1207.28s] Benchmark guidelines because radio is a
+[1209.48s] clock and R stories fit or they don't
+[1211.76s] fit and if they don't fit we can make
+[1213.16s] them fit but it's much harder you have
+[1215.40s] to do the work and be your toughest
+[1216.88s] critic and say this is the point of my
+[1219.68s] story this is the information I'm trying
+[1221.28s] to get across this thing is told really
+[1223.56s] well it's off
+[1225.44s] topic kill it all right so so let's get
+[1228.92s] even more specific because I have one
+[1230.44s] reporter here today she says I'm
+[1232.56s] primarily in in digital uh written and
+[1235.20s] image oriented news Gathering I love the
+[1237.88s] idea of enhancing stories with straight
+[1239.68s] audio but what is the ideal length of a
+[1242.32s] clip to capture the voice and thoughts
+[1244.84s] of the person I'm interviewing that
+[1247.36s] doesn't go on too long is there an ideal
+[1249.84s] length no it really depends on the thing
+[1252.08s] you're making public radio kind of is
+[1253.64s] we're making these are pretty you know
+[1256.20s] our broadcasts are kind of little well
+[1258.60s] established puzzles and there are it can
+[1260.12s] be a little formulaic unfortunately at
+[1262.04s] times uh if you're think if you're
+[1263.96s] talking about sound on the internet what
+[1265.64s] I would say is how often are you
+[1266.84s] listening to sound on the internet um on
+[1268.88s] your phone and in in what I would
+[1271.88s] say approach it not as a maker but as a
+[1274.56s] as a
+[1275.92s] listener are you gonna listen like are
+[1278.92s] you gonna listen to seven
+[1280.72s] minutes when are you gonna listen to
+[1282.64s] seven minutes where are you when you're
+[1284.84s] listening um
+[1288.80s] look shorter in our business shorter is
+[1290.40s] always better and and I know it's it's
+[1292.12s] an attention span problem but it it is
+[1294.88s] um it should be no longer than it needs
+[1297.48s] to be to be excellent what a terrible
+[1299.56s] answer but that's the
+[1301.92s] answer fair enough uh a couple technical
+[1305.48s] um questions for actually regarding
+[1307.48s] software uh the first is uh
+[1310.04s] transcription do you have a favorite
+[1311.48s] transcription app like otter that can
+[1314.40s] record incoming
+[1316.68s] calls uh uh incoming calls I mean the
+[1320.92s] one thing you're going to get here is I
+[1322.28s] haven't been in the field as a reporter
+[1324.12s] in a while an incoming call on a phone I
+[1327.28s] think Apple actually does it now I used
+[1329.88s] to use a thing called tapac call I think
+[1333.24s] um but if you get an incoming call and
+[1335.84s] it's a hot source and you just need to
+[1337.36s] get it I would use one of those I'm not
+[1340.04s] I'm not up I'm not the most up at the
+[1342.16s] moment on apps on the phones but I would
+[1344.48s] say hey can I'm going to send you a text
+[1345.88s] with a link to zoom and it's Frank L
+[1348.76s] it's going to be a cleaner audio because
+[1351.52s] you're not going to be using the
+[1352.92s] cellular network for the you're not
+[1355.44s] going to sound like a cell phone you're
+[1356.48s] going to sound a little more internet
+[1358.24s] but it that's what I would say and I
+[1360.64s] people use descript for
+[1363.20s] transcription that's what we use
+[1364.80s] internally you can also use it for an
+[1366.52s] editing they have ways of editing within
+[1368.92s] it I personally like editing in Adobe
+[1372.20s] Audition Garage Band all these things
+[1374.20s] are very similar you're just cutting and
+[1375.72s] pasting sound
+[1378.68s] yeah and actually that leads into my
+[1379.76s] next question about editing software um
+[1382.28s] is there any editing software that you
+[1384.56s] would recommend particularly uh
+[1386.56s] inexpensive editing software and then
+[1389.24s] just as a followup to that for those
+[1391.48s] that want to take everything that you
+[1392.76s] suggested here um are there any other
+[1396.12s] tutorials or resources online that you
+[1398.60s] could direct people
+[1399.92s] to so uh the software I I have used
+[1403.68s] audition for my entire career I think
+[1405.52s] maybe I used
+[1408.56s] something else earlier but I don't even
+[1409.80s] remember what it was we use Protools
+[1411.88s] in-house any cheap sound editing
+[1414.16s] software is going to get you where you
+[1415.32s] need to go um we have not talked a lot
+[1418.64s] about sound editing Justin I'd be happy
+[1420.56s] to do a different conversation on that
+[1423.20s] but it's a fairly technical
+[1425.16s] experience
+[1427.48s] um um so I won't go too deep into that
+[1431.20s] but you know again I'm less concerned
+[1434.00s] about the the technical specs audition
+[1436.12s] is fine I'm less concerned about that
+[1438.08s] than in about you going out and being a
+[1439.60s] great reporter and getting the best
+[1440.64s] sound you can got it well there we go
+[1443.24s] I've got an idea for a future 30 minute
+[1445.40s] skills lesson and you on the shoulder
+[1447.80s] for that one oh and it's fine and then
+[1449.84s] in terms of training resources I think
+[1451.48s] it's npr.org
+[1453.80s] trining they've got a just a huge log
+[1459.24s] of fairly well
+[1461.36s] organized um training resources
+[1465.40s] there that's great to know and and for
+[1467.64s] everyone I'll I'll provide a link to
+[1469.28s] that uh that site in addition to the
+[1471.68s] stories that Jeff mentioned uh got one
+[1474.04s] more question here before we wrap up and
+[1476.36s] and again I I I know you're not an
+[1478.00s] attorney here so you can't speak to a
+[1479.92s] lot of the legality in getting
+[1481.52s] recordings but maybe you could uh
+[1483.52s] provide us just some best practices as
+[1485.60s] far as uh getting permission uh if in
+[1489.36s] writing if necessary from those that
+[1491.44s] we're speaking to uh particularly if
+[1493.40s] you're you're talking to minors are
+[1495.48s] there any best practices outside of by
+[1497.64s] know you're not giving legal advice but
+[1499.48s] best practices should know I'm not a
+[1501.92s] lawyer but I can fake one on this
+[1503.40s] webinar right um always record it so
+[1507.84s] leaving miners aside whenever I'm doing
+[1509.80s] a an interview I make it exceptionally
+[1512.28s] clear that I'm recording now and I
+[1514.52s] record me saying so we're clear I'm
+[1517.32s] recording now especially on a phone call
+[1520.24s] uh because your phone call you might
+[1521.40s] like hello you can't depending on your
+[1523.68s] two-party consent one party consent
+[1525.44s] State you don't want to start recording
+[1527.88s] until you told them that you're
+[1528.96s] recording lest you be in violation of of
+[1531.64s] of the law so you start off and you're
+[1534.16s] not recording you warm them up a little
+[1535.96s] bit you loosen them up a little bit you
+[1537.36s] ask them what they had for breakfast
+[1538.48s] that kind of thing and then you tell
+[1539.56s] them very clearly I'm recording now just
+[1541.72s] so you're clear and they say Okay um and
+[1544.92s] then you hit the button and then you can
+[1546.12s] just say all right just confirming I'm
+[1547.80s] recording now uh if you wouldn't
+[1550.52s] mind count to 10 that kind of thing so
+[1553.96s] that you've got a recording that very
+[1555.64s] clearly establishes the fact that
+[1557.60s] they're un that they understand that
+[1559.52s] they're being reported and when it comes
+[1561.60s] to miners that's a more delicate thing
+[1563.64s] that would involve waivers sometimes
+[1565.56s] doesn't always um and that's really more
+[1568.92s] about your institutional policy I would
+[1570.88s] say on interviewing miners whether it be
+[1574.36s] for radio or for print that that's an
+[1576.12s] organization by organization
+[1578.28s] thing thank you actually gonna sneak in
+[1580.60s] one more question here um let's go u i
+[1583.04s] I've got uh a uh producers joining us
+[1586.24s] today uh from whmp and uh is asking uh
+[1590.76s] is mentioning that uh previously you you
+[1592.92s] said that your radio stories can be
+[1595.16s] pretty
+[1596.24s] formulaic can you can you expand on that
+[1598.92s] and describe more detail what you
+[1601.48s] meant yeah I mean there's an NPR style
+[1605.12s] uh and um what I would encourage you to
+[1608.68s] do is to find your own style and to
+[1610.56s] break out
+[1612.04s] of to push as hard as you can to break
+[1614.68s] out of the Norms while also recognizing
+[1617.56s] that the Norms exist just because um we
+[1621.04s] understand over time what a listener
+[1623.76s] behavior is
+[1627.08s] um so you know you know that if you're
+[1630.04s] calling an editor at a National
+[1631.72s] Organization they're going to have a
+[1633.12s] certain expectation of what your story
+[1634.40s] is going to be and you're going to have
+[1635.32s] to work within that at a local level you
+[1637.76s] can have somewhat more flexibility it
+[1639.28s] depends on your editor um but I would
+[1641.72s] always encourage
+[1644.24s] um some experimentation within the form
+[1650.32s] um yeah all right well we're uh we're at
+[1653.92s] just about 30 minutes so we're going to
+[1656.00s] uh stop there Jeff thank you so much for
+[1658.60s] this lesson really appreciate it uh
+[1661.36s] everyone who joined us today many thanks
+[1663.72s] uh as a rem reminder we provide these
+[1665.20s] lessons as a public service to you so
+[1668.24s] please please return the favor encourage
+[1670.84s] your colleagues and friends to join us
+[1672.48s] each month we have a lot to learn from
+[1674.44s] each other and I look forward to seeing
+[1676.44s] you all again soon on behalf of neac
+[1679.96s] thank you for all that you do and we'll
+[1682.48s] see you next month for our next 30
+[1685.08s] minute skills take care every

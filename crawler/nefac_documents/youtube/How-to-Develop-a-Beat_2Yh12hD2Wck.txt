@@ -1,0 +1,858 @@
+[3.64s] I'm Justin Silverman of the New England
+[5.20s] First Amendment Coalition thank you for
+[7.56s] joining us for another 30 minute skills
+[10.40s] for those of us joining us for the first
+[12.28s] time welcome these monthly lessons are a
+[15.00s] quick and efficient way to hone your
+[16.96s] reporting skills and build on your first
+[19.04s] amendment knowledge but there're also
+[21.32s] more than that there a way for you to
+[22.88s] reconnect with the community of
+[24.16s] journalists researchers attorneys and
+[26.40s] academics who regularly attend these
+[28.16s] lessons so to everyone pleas use the
+[30.44s] chat to introduce yourself showcase your
+[32.16s] own work and connect with others also
+[35.52s] make sure you register for our upcoming
+[37.40s] lessons on how to protect yourself
+[38.96s] online and how to begin audio reporting
+[42.08s] registration links can be found at
+[44.04s] nea.org as a reminder links to previous
+[47.72s] 30 minute skills are available at
+[49.16s] nea.org and on our YouTube channel by
+[52.08s] freedoms lessons include data cleaning
+[55.00s] Privacy Law Microsoft Excel Basics and
+[57.64s] how to diversify sources among many
+[60.04s] other topics today's presentation is
+[63.12s] focused on how to develop a beat and
+[65.52s] it's supported in part by the estate of
+[67.64s] Gloria neger Gloria was a trailblazing
+[71.08s] journalist at the Boston Globe for more
+[72.76s] than 50 years this program is part of
+[76.08s] her Legacy of Newsroom education and her
+[78.68s] lifelong commitment to local journalism
+[81.56s] you can learn more about Gloria and all
+[83.52s] of neac supporters at nea.org
+[86.84s] supporters we have a lot to cover and
+[88.80s] not a lot of time so let's get started
+[91.40s] Alexa all yours I'm Alexa gagas and I'm
+[93.76s] a business reporter out of the Boston
+[95.32s] Globes Rhode Island Bureau I'm focusing
+[97.64s] on everything from housing and
+[99.20s] homelessness the business of food and
+[101.68s] restaurants development and health care
+[104.84s] for a bit about myself I've been working
+[106.96s] as a professional journalist for less
+[108.52s] than a decade I graduated from grad
+[110.80s] school in 2020 in Boston in the middle
+[113.32s] of lockdown and I thought I would be
+[115.36s] going off to Washington DC to be
+[117.20s] covering politics in Congress but
+[119.52s] instead said because of the pandemic I
+[122.40s] applied to what seems like almost 200
+[124.52s] different journalism jobs across the
+[126.56s] country until the Providence business
+[128.76s] news called me and offered me a
+[130.20s] reporting gig covering Healthcare in the
+[132.04s] middle of a global pandemic I moved to
+[134.40s] Rhode Island and started covering
+[135.76s] business which are two things I
+[137.92s] definitely did not expect I was in
+[139.80s] completely unknown territory after six
+[142.72s] months of working in the business paper
+[145.08s] I was laid off and the globe picked me
+[147.04s] up almost immediately to help them break
+[148.84s] news and expand coverage in Rhode Island
+[151.56s] um because I was so new to the state and
+[153.72s] to the city the beats that I was
+[155.52s] covering I felt like I was really
+[157.28s] starting from scratch on everything I
+[159.44s] had no institutional knowledge I had
+[161.56s] zero sources and I really didn't
+[164.20s] understand how small this state was I'm
+[166.16s] still learning that every day everyone
+[168.32s] is within two to three degrees of
+[170.04s] separation um Justin if you could just
+[171.88s] click the next
+[173.80s] slide so when diving into something new
+[176.56s] I tell everyone to read the coverage
+[178.36s] that already existed who has been quoted
+[180.92s] who hasn't been quoted if you're
+[182.60s] covering a business beat go beyond the
+[184.84s] spokesperson ask to interview the CEO or
+[187.28s] executive director of a company or
+[189.12s] nonprofit but then also get to know the
+[191.28s] seite members some of those folks are my
+[193.80s] most valuable sources who call me on a
+[195.60s] weekly basis and you always want to find
+[197.96s] people who will be impacted you're going
+[200.36s] to want to find the traditional data
+[202.08s] sources and reports um and then look at
+[204.28s] who wrote them ask to speak to the
+[206.00s] authors who funded the report look at
+[208.32s] who is studying the beat your working on
+[210.20s] locally and then ask if they could be a
+[212.28s] source or expert for your coverage
+[214.68s] sometimes you're quoting them sometimes
+[216.12s] you're just calling them up and saying
+[217.44s] please help me understand how this all
+[219.52s] works um so here's just one example of
+[222.16s] this when I moved to Rhode Island one of
+[224.28s] the most important business and people
+[226.28s] stories that was about to break was that
+[228.56s] the lifespan and Care New England Rhode
+[230.44s] Island's two largest Hospital Systems in
+[232.32s] the state were going to attempt to merge
+[235.40s] if they were to be successful they would
+[237.36s] have controlled about 80% of the
+[239.32s] hospital beds in the state and they
+[241.52s] would have been Rhode Island's largest
+[242.96s] employer next slide Executives were
+[246.08s] saying that they had to merge because of
+[248.00s] the financial pressures that they were
+[249.32s] facing in a state like Rhode Island
+[251.00s] where the reimbursement rates were low
+[253.12s] and because of the pandemic but critics
+[255.48s] were saying that they were going to
+[256.80s] create a monopoly that mergers rarely
+[258.96s] ever improved patient care and usually
+[261.24s] led to higher prices at the same time I
+[263.92s] was 22 years old I had never before
+[266.28s] written anything about health care or
+[268.52s] health insurance for that matter matter
+[270.60s] um I didn't know anything about mergers
+[272.12s] or Acquisitions so again I was really
+[274.40s] starting from zero like any big story I
+[277.68s] really dove into the research first I
+[279.48s] read anything that I could get my hands
+[280.76s] on about the hospitals I requested to
+[282.80s] see their quarterly Finance reports I
+[285.00s] asked everyone why every other merger
+[287.36s] attempt had failed over the last 20
+[289.00s] years and I looked at the people who had
+[291.16s] already been quoted before and made a
+[292.68s] note that I should reach out to them but
+[294.20s] then looked beyond that to understand
+[296.48s] how mergers and Acquisitions and
+[297.92s] healthcare administration all worked
+[300.08s] especially for someone who was young in
+[301.68s] my career I contacted a professor at
+[304.12s] Providence College who taught a graduate
+[306.12s] seminar in hospital management and this
+[308.88s] guy to this day is my Lifesaver I asked
+[311.72s] a lot of dumb questions and in that
+[314.24s] first time that we ever spoke it was not
+[316.16s] an interview um it was just me simply
+[318.84s] asking him how can I understand this and
+[321.88s] then put it in layman's terms for a
+[323.16s] general news audience he practically
+[325.52s] sent me all of these readings for his
+[327.68s] entire graduate seminar and I realized
+[330.48s] while going through the other coverage
+[332.32s] among other outlets uh locally that this
+[335.64s] deal and the existing reporting was just
+[337.92s] not really breaking it down for a
+[339.80s] general news audience um people in Rhode
+[342.28s] Island were not gravitating toward
+[344.00s] Hospital merger stories and I can't
+[345.52s] really say that I blame them um they
+[347.52s] were not well read but it was really
+[350.00s] because people genuinely didn't
+[352.16s] understand what the deal would mean um
+[354.68s] because it just wasn't being explained
+[356.00s] to them properly um they didn't
+[357.96s] understand how it would affect them so
+[359.64s] so I really started some of this
+[361.48s] coverage with the most basic information
+[364.24s] and I was writing a lot of these simple
+[365.80s] explainers where I felt like I was
+[367.60s] almost interviewing myself and my
+[369.36s] sources like five ways that the proposed
+[371.96s] merger could impact patients for example
+[374.60s] or impact prices um another story was
+[377.72s] how this merger could impact employees
+[379.80s] where I spoke to union leaders and
+[381.36s] Frontline workers the CEOs and observers
+[384.20s] about how this could impact Healthcare
+[385.96s] and employment in Rhode Island next
+[388.16s] slide
+[389.76s] in 2022 that deal was actually rejected
+[392.16s] by the Attorney General's office and the
+[394.16s] federal Trad commission due to how much
+[396.00s] Market power this new entity would have
+[398.44s] if these systems actually merged and
+[400.72s] actually the FTC filed a lawsuit um
+[403.12s] blocking any type of deal so basically
+[405.60s] the C the CEOs after saying that they
+[408.00s] would be shutting down hospitals or they
+[410.56s] would be bleeding money um they were
+[412.76s] stopped completely by Regulators from
+[414.68s] trying to merge together so I covered
+[417.32s] all of this Fallout but it didn't mean
+[419.16s] that that story ended these two systems
+[421.80s] have been telling Rhode Islanders that
+[423.20s] they were in so much financial trouble
+[424.72s] that they were going to lose you know
+[426.24s] Women and Infants Hospital which is
+[428.28s] where 80% of the babies in Rhode Island
+[430.08s] are born that would have a huge impact
+[432.72s] but even though this deal was blocked
+[435.04s] none of these things happened so I
+[437.24s] continued speaking to those CEOs
+[439.04s] constantly both of them eventually
+[441.00s] stepped down both of them were replaced
+[442.96s] by leaders from Boston I did exit
+[444.88s] interviews with both and I did intro
+[446.56s] interviews with both the CEOs it doesn't
+[448.92s] mean that a story was written for every
+[450.72s] single one of those interviews but it
+[452.36s] means that I was establishing a
+[453.60s] connection with each of these leaders
+[456.00s] for future coverage um in December of
+[458.84s] 2022 one of those CEOs was retiring um
+[462.64s] the one over from Caren New England and
+[465.24s] I had my exit interview with him on the
+[467.72s] very day that he was retiring it was in
+[469.64s] the final two hours of his time at Ken
+[472.12s] New England and I figured that he would
+[474.64s] finally come clean with how he never
+[477.08s] believed that the health system was
+[478.56s] actually going to be able to merge he
+[480.72s] would talk about some of the mistakes
+[482.20s] that he personally made or that the
+[483.84s] leaders made and he would just be able
+[485.76s] to reflect on the future of Healthcare
+[488.00s] in Rhode Island so we did all that but
+[491.52s] also Dr fali Who I've talked to so many
+[494.68s] times over the years um and really have
+[497.60s] made him into one of my own closest
+[499.44s] sources let me in on a secret he had
+[501.68s] been diagnosed with stage four lung
+[503.28s] cancer as someone who had never smoked
+[505.20s] before and he didn't want anyone to know
+[507.68s] yet so he pleaded with me don't tell
+[509.84s] anyone and I said to him when you're
+[512.28s] ready to go public give me a call um
+[515.04s] next
+[516.08s] slide and I'm just showing this as an
+[518.40s] example of why it's so important to stay
+[520.32s] in touch with your sources even after
+[522.32s] you think that you won't have to contact
+[523.92s] them anymore um obviously that's a lot
+[526.20s] harder to do the more beats and sources
+[528.12s] you have but months after Dr finale and
+[531.40s] I spoke it was just um actually it was
+[533.72s] almost two years after we spoke he
+[535.76s] reached out and he said he was ready to
+[537.60s] go public with his diagnosis he wanted
+[539.92s] to know the world he wanted the world to
+[541.64s] know that he was dying um and this story
+[544.32s] was really a scoop um but it was a story
+[547.04s] about you know not just a human story
+[549.12s] about a man who had a lot of power at
+[550.92s] one point in the state um but he was
+[553.32s] ready to talk about life and what he was
+[555.60s] going through and it shows that me as a
+[558.24s] reporter on this beat not only developed
+[561.00s] this Source from a hospital CEO a
+[563.08s] powerful man in the state who kind of
+[565.00s] held the power of employment and
+[566.68s] Healthcare in his palm um but really
+[569.44s] somebody who did not always like my
+[571.24s] reporting at all was able to allow me to
+[573.44s] share his personal story with the world
+[575.64s] for the first time and this kind of
+[578.08s] reporting really pays off because that
+[580.08s] was the number one piece on the globe's
+[582.12s] website that week um next
+[585.68s] slide when it comes to driving coverage
+[588.60s] this is my personal favorite I don't
+[590.88s] want to ever follow anyone on a story I
+[594.04s] don't care how small or large it is I I
+[596.28s] don't want to follow anyone I like
+[598.60s] getting exclusive I like driving the
+[600.60s] coverage and conversation I prefer to be
+[603.24s] proactive in a lot of the stories that
+[605.08s] I'm doing instead of just reacting to
+[606.76s] breaking news like a lot of other
+[608.16s] reporters are doing at that point in
+[609.96s] time but in order to do this you like
+[612.16s] have to get organized I have learned
+[614.40s] this the hard way so many times so you
+[616.88s] want to start putting alerts in your
+[618.16s] calendar today about anything that's
+[620.20s] coming up if you cover politics you want
+[622.68s] to put in the deadlines for campaign
+[624.24s] Finance reports the deadline for when
+[626.04s] they come out you want to um put in
+[628.20s] deadlines for when the candidate file
+[629.72s] with election clerks and any other
+[631.64s] notable dates it doesn't mean that
+[633.76s] there's a story for every time your
+[635.60s] calendar is pinging a notification at
+[637.64s] you but it just means that you're on top
+[639.44s] of everything in case something um
+[641.44s] squirrely goes on so and if you're
+[643.80s] covering business and you're looking
+[645.60s] into a regulatory issue like such as the
+[647.76s] hospital marger I was just talking about
+[649.76s] then you want to put it on your calendar
+[651.36s] for different dates and deadlines that
+[652.88s] the businesses have to meet as well as
+[654.56s] The Regulators um to when they issue a
+[657.16s] decision you just want to be on top of
+[658.84s] everything so that you're checking in
+[660.04s] with folks and saying how's that going
+[661.84s] are you even close to filing that
+[663.24s] application yet what's next um if
+[665.88s] there's a report that comes out annually
+[667.68s] like the crime stats filed by the FBI
+[669.92s] that you have to cover put it on your
+[671.64s] calendar for that week or that month
+[673.52s] every single year going forward um so
+[675.68s] you don't even have to think about it
+[676.76s] you just know that it's coming up um if
+[679.40s] there's a big development that you're
+[681.12s] looking into or want to start covering
+[682.84s] real estate you want to make sure that
+[684.56s] you're going to like your Capital City's
+[686.40s] planning board meetings and just put
+[688.20s] them on the calendar and doesn't mean
+[689.64s] you're writing a story about like the
+[691.04s] meeting minutes of that planning board
+[693.00s] meeting but it just gets you in the
+[695.40s] habit of attending and understanding
+[696.92s] what kind of developments are being
+[698.08s] proposed and then also putting you in
+[700.00s] the room with those developers with
+[701.96s] their attorneys so that you can be you
+[704.36s] know the the regular face on who's
+[706.36s] covering this beat um you don't want to
+[708.84s] be following another news Outlet or TV
+[711.16s] station just because they got there in
+[713.12s] person and you didn't because it slipped
+[714.92s] your mind or you're just late to the
+[716.48s] party so I really really um and a
+[719.40s] proponent of like building out a
+[720.88s] calendar over the course of the next
+[722.80s] year um you want to always be several
+[724.76s] months ahead um you also want to find
+[727.40s] the holes in the coverage that currently
+[729.28s] exists so if I write a breaking news
+[731.20s] story I read my story and then I compare
+[733.48s] it to what other outlets are already
+[734.96s] writing I look at what population or
+[737.64s] topic or even location that isn't being
+[740.28s] covered you just want to be more
+[741.92s] proactive instead of reactive to
+[743.60s] everything next
+[746.56s] slide um here's just one example of that
+[749.52s] in December of 2022 there was a homeless
+[752.56s] encampment that was built on the Rhode
+[754.56s] Island state house steps and the
+[756.48s] governor's staff handed out eviction
+[757.96s] notices to all the people who were
+[759.76s] sleeping or staying out on the Plaza but
+[762.72s] I knew that we had a homeless Bill of
+[764.72s] Rights in Rhode Island and I wondered if
+[766.72s] the governor was what he was doing was
+[769.00s] actually legal or not so I wrote a story
+[771.56s] asking that very question interviewing
+[773.80s] different lawyers in Rhode Island but
+[775.68s] also um everywhere else trying to gain a
+[778.48s] perspective on what else was going on in
+[780.64s] the United States what other cases are
+[782.52s] out there um you know there's been
+[785.12s] obviously so many homeless encampments
+[786.76s] that have been either destroyed before
+[788.44s] or they've been like evicted um from the
+[791.92s] the camp site so I just wanted to see
+[794.12s] like was this legal on the State House
+[795.88s] grounds which is technically like the
+[797.60s] people's house it's supposed to be a
+[799.32s] place for the public um and then when
+[801.80s] there was a lawsuit that followed that
+[803.52s] story I covered that aggressively too
+[805.96s] next
+[807.60s] slide um another example of that there
+[810.36s] was a tenant Union that was formed in
+[812.32s] Cranston Rhode Island recently due to um
+[814.68s] what the tenants were calling just
+[815.96s] absolutely horrendous conditions um the
+[818.40s] tenants were currently in a battle with
+[820.16s] their landlord they went to court but I
+[823.04s] went just beyond that um with that
+[825.64s] property instead of tenants and I wrote
+[827.60s] this Enterprise piece um last month
+[830.20s] where I looked at the growth of tenant
+[832.08s] unions across New England and showed how
+[834.40s] they found success in States like
+[836.08s] Connecticut for the most part but in
+[838.00s] Rhode Island I covered how there was
+[840.00s] nothing in the law that actually forced
+[842.28s] landlords to work with tenant unions um
+[845.04s] I interviewed landlords about their
+[846.44s] feelings about these tenant unions I
+[848.08s] looked at the history of tenant unions
+[849.52s] in Rhode Island both in public and
+[851.04s] private housing um Etc so I really
+[853.80s] looked at this one development and
+[855.48s] instead of hyper loing uh hyper
+[858.04s] localizing it even more I just brought
+[860.08s] in the story to the entire region and it
+[862.32s] honestly worked it was kind of a hit but
+[864.36s] also educated me and educated the
+[866.36s] readers um and then I would also just
+[868.84s] say that to get in the habit of asking
+[870.60s] sources to give you the exclusives and
+[872.56s] Scoops all the time it doesn't mean that
+[875.00s] it's going to happen or that they're
+[876.40s] going to agree to it but if a source
+[878.44s] says um or knows that you know say Alexa
+[881.04s] gig is from the Boston Globe will not
+[883.12s] cover this one topic or will not cover
+[886.16s] the press conference that you're
+[887.72s] scheduling unless you give them some
+[889.84s] type of exclusive or you allow them to
+[892.12s] interview the CEO um or the governor a
+[895.44s] whole day ahead then you're really
+[897.08s] driving that conversation people can can
+[899.20s] know readers can know that you're going
+[900.76s] to have it first um so in this this
+[903.68s] slide that we're on right now is
+[905.04s] actually an example of how I kind of
+[906.72s] have driven this housing coverage in
+[908.56s] Rhode Island um Frankly Speaking I am
+[912.20s] definitely one of the youngest reporters
+[914.44s] in the market um definitely one of the
+[916.44s] youngest at the globe other than our
+[918.04s] interns and for a long time I kind of
+[920.72s] had this chip on my shoulder um and used
+[923.40s] it to my advantage uh the reason why
+[925.96s] I've been pretty successful in covering
+[928.04s] homelessness and housing is because for
+[930.08s] a long time I was the only reporter
+[932.40s] willing to go where no one else was and
+[935.24s] I mean these are not sexy places they
+[937.40s] are homeless encampments where I'm
+[938.80s] carrying Naran around I'm going into
+[940.92s] homeless shelters I'm going into like CD
+[943.20s] motels just to talk to anyone and
+[945.64s] everyone um and one of those places was
+[948.00s] called operation hunker down which you
+[949.64s] see this picture here um it was a
+[951.76s] makeshift homeless shelter in an old
+[953.80s] Lithuanian Social Club so I basically
+[956.96s] just kind of not invited myself the
+[959.72s] volunteers who had built it had said
+[962.28s] come on down and take a look at this
+[964.12s] place and I instead of just going and
+[967.20s] interviewing a couple people and then
+[968.40s] posting a story the very next day I had
+[970.60s] embedded myself into the shelter with a
+[973.72s] photographer for an entire week and I
+[976.56s] kind of acted as like a fly on the wall
+[978.24s] of the shelter for several days every
+[981.12s] day go in in the morning stay all day I
+[983.84s] would stay into the night one time
+[985.76s] overnight and my photographer and I
+[988.68s] basic basically had this feeling that it
+[990.16s] was almost like mass and Cass but inside
+[992.84s] and for those who don't know what mass
+[994.00s] and Cass are it's um it's a like known
+[996.72s] as methodone Mile in Boston um it's just
+[1000.00s] where a lot of Social Services are it's
+[1002.60s] also where um methadone clinics are a
+[1006.12s] large concentration of them are up in
+[1007.80s] Boston um but here in Rhode Island it
+[1010.04s] was like we were just seeing so much
+[1011.96s] fentanyl use in operation hunker down in
+[1014.68s] the social club um there were a lot of
+[1016.88s] people who were also working full-time
+[1018.96s] but they were unfortunately homeless
+[1021.40s] because they were getting priced out of
+[1023.00s] wherever they lived so we really just
+[1025.28s] documented that place and after a week
+[1028.68s] of being there I published two stories
+[1031.28s] one was about how these private citizens
+[1033.60s] um volunteers who built this operation
+[1036.24s] hunker down who literally knew nothing
+[1038.48s] about being homeless or were in
+[1040.48s] positions of power of any kind took the
+[1042.68s] matter into their own hands and provided
+[1044.68s] a space where they could for dozens of
+[1047.20s] um unhoused people in Rhode Island
+[1049.88s] during like the coldest months of the
+[1051.36s] year and that sounds like the novelty
+[1054.04s] story of Good Samaritans the way that
+[1055.80s] I'm kind of describing it but it was an
+[1058.52s] accountability story that truly showed
+[1060.64s] that truly showed that Rhode Island um
+[1063.12s] had the realities of what being
+[1064.52s] homelessness is and how it wasn't going
+[1067.48s] away and frankly how some thought that
+[1069.60s] the government was actually not putting
+[1071.80s] enough funding or resources toward the
+[1074.24s] problem which was growing um the Second
+[1077.08s] Story which we published that same day
+[1079.36s] were vignettes of different people I
+[1082.04s] profiled volunteers and the people who
+[1084.12s] were staying there about why they were
+[1085.96s] there and their journey into
+[1087.04s] homelessness so that man in the picture
+[1089.36s] is Michael he was he's a veteran who did
+[1092.80s] several tours um over the years and he
+[1096.24s] battled alcoholism due to PTSD and we
+[1099.08s] wrote that story and it kind of I heard
+[1102.00s] from readers that it almost just clicked
+[1103.72s] for them like why some people end up on
+[1106.68s] the streets um so and that was just one
+[1109.00s] story of many um next
+[1112.08s] slide and then over Labor Day weekend of
+[1115.40s] 2022 I met this family in a Motel 6 in
+[1118.80s] Warwick it was two parents and their
+[1121.12s] four young kids both parents worked they
+[1123.52s] made $80,000 the year before and yet
+[1126.80s] they were homeless and cramped into this
+[1128.80s] really crappy motel that was riddled
+[1130.92s] with crime and drugs and you know they
+[1133.28s] were just kind of terrified about being
+[1135.16s] there and they allowed me to start
+[1137.56s] following their life with a photographer
+[1139.96s] where I documented how they were evicted
+[1142.16s] from their apartment at no fault of
+[1143.96s] their own and then spent the next year
+[1146.32s] spending tens of thousands of dollars on
+[1149.16s] hotel stays thousands of dollars in
+[1151.52s] application fees for apartments and
+[1153.52s] we're just trying to do their best to
+[1155.36s] raise their children and we showed how
+[1157.68s] they went from Motel 6 to sleeping
+[1159.96s] outside um for months they had been
+[1162.32s] calling the state's hotline asking for
+[1164.60s] shelter space for their family and I
+[1167.48s] kept getting uh they kept kept getting
+[1169.04s] told that they would not qualify to be
+[1171.44s] put at the top of the priority list for
+[1173.28s] family shelter unless they were
+[1174.76s] literally sleeping outside or in their
+[1176.68s] cars so they didn't have a car so they
+[1179.24s] did exactly what they were told and they
+[1180.84s] got some tents and they went out into
+[1182.76s] the middle of the woods and slept with
+[1184.28s] their kids outside they never actually
+[1187.16s] qualified for shelter and that's what
+[1189.68s] that story um really looked at was how
+[1192.44s] this family two working parents $80,000
+[1195.52s] in income can still end up homeless um
+[1198.40s] and I think that this story really just
+[1200.80s] hit not only Rhode Islanders but it it
+[1202.68s] hit a lot of Americans because I heard
+[1204.56s] from them all um about you know how they
+[1208.00s] never expected that anyone could end up
+[1209.80s] homeless um they saw themselves in this
+[1212.00s] family and they said this could be me
+[1214.36s] and a few months after the story
+[1216.36s] published the speaker of the house here
+[1218.04s] in Rhode Island called for a press
+[1219.92s] conference and he unveiled his housing
+[1222.00s] legislation package where he actually
+[1224.24s] gave credit to me to the Boston Globe
+[1226.60s] but to the strong family um about why he
+[1229.64s] was introducing a bill that would ban
+[1232.00s] apartment application fees in Rhode
+[1234.48s] Island for good and he said that there's
+[1237.08s] no reason why a family um should spend
+[1240.16s] thousands of dollars in a year to try to
+[1243.80s] find an apartment by filling out these
+[1245.84s] applications but still have nowhere to
+[1247.80s] go um the strong family who I'm still in
+[1250.84s] touch with they actually testified in
+[1252.84s] support of that bill while they were in
+[1255.16s] while they were still homeless and couch
+[1257.16s] surfing with their kids they couldn't
+[1258.96s] afford child care so all of their
+[1260.60s] children were in tow and I was covering
+[1263.04s] the whole thing um that pill that bill
+[1265.72s] passed unanimously and a GoFundMe was
+[1268.24s] put together by Globe readers and raised
+[1271.20s] like $660,000 for that family um but I
+[1274.72s] just kind of continued telling that
+[1276.84s] story and that really that story
+[1278.92s] solidified like me being an
+[1280.44s] authoritative voice on this beat um next
+[1284.12s] slide using social media is just so
+[1286.92s] incredibly important I think I use it to
+[1289.12s] cover just about anything and everything
+[1292.28s] I'm obviously tracking down sources on
+[1294.48s] social media like any of you are you're
+[1296.84s] finding them messaging them on any
+[1298.72s] platform that you can um but sometimes
+[1301.48s] I'm also just simply sharing a thread on
+[1303.76s] Twitter about my story and breaking it
+[1306.00s] down over two to three tweets to try to
+[1308.00s] explain what the story is about so it
+[1310.20s] kind of gets them to click on it and
+[1311.84s] read it um I have my colleague share it
+[1314.80s] but then people are just naturally
+[1316.24s] interacting with you like oh my gosh I
+[1317.92s] can't believe that the case or oh I have
+[1319.64s] a similar story to that um so I also
+[1323.00s] just get in the habit of um just asking
+[1325.44s] people questions on social media whether
+[1327.68s] it's on Twitter in a single tweet or on
+[1330.16s] an Instagram story or in a neighborhood
+[1332.52s] Facebook group or even on Reddit um one
+[1336.08s] example Rhode Island's marketing
+[1337.96s] campaign recently had these life-size
+[1340.48s] stuffies which are stuffed clams um be
+[1343.68s] created and put in airports all around
+[1345.64s] the country to kind of boost their
+[1347.44s] tourism and and I thought that they
+[1349.36s] looked interesting to say the least and
+[1352.24s] I asked red Islanders what they thought
+[1353.84s] of these stuffies just write on Reddit
+[1356.24s] WR on Twitter WR in Facebook and I said
+[1358.88s] let me know all your thoughts I want to
+[1360.52s] hear if you love them or hate them and
+[1362.28s] why and said let me know by messaging me
+[1366.12s] or emailing me and posted it everywhere
+[1368.92s] and I think it took like an hour to be
+[1371.20s] flooded with messages um and we posted
+[1374.88s] that story within an hour of me putting
+[1377.68s] out that call
+[1379.28s] um on a Friday before a long weekend
+[1381.68s] when I know that everyone realizes that
+[1383.68s] readership is usually like way down
+[1385.64s] unless something insane happens um and
+[1388.84s] it was just this hilarious Story full of
+[1390.88s] these quotes about what everyday Rhode
+[1392.24s] Islanders thought of this like
+[1393.40s] ridiculous marketing campaign and it was
+[1395.88s] one of the most read stories of the week
+[1397.72s] which was absolutely ridiculous it has
+[1400.24s] nothing to do with my average beats but
+[1402.12s] it was just a fun story with a play on
+[1404.36s] business um and a play on just like what
+[1406.64s] everyday people have to say so um the
+[1410.12s] last thing that I'll just say is like
+[1411.36s] while covering all of these Enterprise
+[1413.12s] stories on housing and Healthcare I also
+[1415.60s] launched the entire food and dining
+[1417.44s] section in Rhode Island for the Boston
+[1419.24s] Globe and restaurants are just so
+[1422.12s] critical in Rhode Island um the food
+[1424.60s] scene the food food system in the state
+[1426.92s] is just so vast and impressive that
+[1429.20s] coming out of Co I thought that it
+[1430.60s] needed to be covered uh in a different
+[1432.84s] way thinking more Innovative um so we
+[1436.36s] launched this newsletter that I am the
+[1438.72s] author of called the food Club um I do
+[1441.16s] different q&as with chefs I'm still
+[1443.44s] breaking news in a different way like
+[1445.40s] who's buying that new popular restaurant
+[1447.68s] or who's opening the next great spot or
+[1450.48s] what have you so I'm still like taking
+[1452.52s] everything that I usually do for my
+[1454.40s] business reporting it and just really
+[1456.32s] Translating that into restaurants um so
+[1459.60s] I've kind of become this restaurant
+[1461.00s] reporter by accident as well um but
+[1463.80s] something that has been really helpful
+[1465.40s] in developing my restaurant coverage is
+[1467.44s] honestly going exactly to where my
+[1469.68s] sources are on social media and that's
+[1472.36s] not just like in restaurants but it's
+[1474.08s] really on Instagram I have like 4,000
+[1476.84s] followers which is nothing in the grand
+[1478.52s] scheme of things but that's where all of
+[1481.68s] my sources kind of live it's the
+[1483.68s] business owners it's the chefs it's the
+[1485.48s] bartenders it's the people with their
+[1487.08s] ears on the ground and I'm constantly
+[1489.20s] posting things on my story like where
+[1491.44s] are the new restaurants opening or I'm
+[1493.52s] sharing my stories on there or I'm
+[1495.12s] messaging back and forth of the
+[1496.80s] bartender um and that's honestly how
+[1499.00s] people have gotten to know me they've
+[1500.68s] gotten to know my work and now they're
+[1502.52s] reaching out to me and saying hey I'm
+[1504.28s] planning on doing this or hey we're
+[1506.52s] getting rid of our tipping model this
+[1508.16s] just happened last week and we're
+[1509.20s] getting rid of our tipping model we're
+[1510.76s] raising our prices and this is why um
+[1514.00s] and it's just kind of like an
+[1515.04s] interesting food story that fits into
+[1516.72s] the broader conversation over like the
+[1519.60s] same topics that National Restaurant
+[1521.48s] reporters are covering um so like even
+[1524.72s] though I don't have this massive
+[1526.00s] following on social media I'm able to to
+[1528.48s] kind of just Target my audience see
+[1530.84s] where they are and then connect with
+[1532.48s] them right there if I need to connect
+[1534.52s] with people on Reddit it's usually where
+[1536.56s] I'm sharing like the housing and
+[1538.32s] homelessness coverage I'm sharing the
+[1540.36s] development stories because people have
+[1542.00s] a lot to say about development in Rhode
+[1543.76s] Island and in Providence and in like
+[1545.92s] some of the suburbs so any of like my
+[1548.16s] wacky or very emotional gripping stories
+[1551.40s] um they can go all to Reddit so it's
+[1554.08s] just like really meeting your audience
+[1556.04s] where they are at this point um next
+[1559.00s] slide or that should be it actually
+[1561.24s] Justin so I just really appreciate you
+[1563.64s] all for listening I feel like I just
+[1565.44s] threw so much at everyone while trying
+[1568.64s] to show a few examples um I did list my
+[1571.76s] email on there so I'm always happy to
+[1573.92s] chat if people want to reach out but
+[1576.00s] hopefully I can take a couple questions
+[1578.12s] yeah thank you Alissa you did throw a
+[1579.88s] lot out there but a lot of really great
+[1581.44s] stuff that I think is going to be very
+[1583.00s] helpful to us all um so uh one question
+[1586.68s] um how do you connect with people
+[1588.32s] outside of social media and how do you
+[1590.48s] show up in those spaces what are some
+[1592.44s] places to frequent to meet people in the
+[1594.80s] community and to develop potential
+[1597.44s] sources sure um so because I cover
+[1600.24s] development in real estate I go to like
+[1602.32s] every single Providence planning board
+[1604.40s] meeting you can imagine um and again it
+[1606.72s] doesn't mean that a story is coming out
+[1608.24s] of it it just means that those
+[1609.84s] developers and those attorneys and those
+[1611.92s] Architects they know who I am and when
+[1614.20s] they have something really interesting
+[1615.76s] like they want to this is not true but
+[1617.76s] like just as an example if they want to
+[1619.08s] tear down the Superman building in
+[1620.96s] Providence and then put some some other
+[1622.88s] skyrise up there they know who to call
+[1625.40s] um so that's one thing I I don't tend to
+[1628.76s] go to City Council because I don't I
+[1630.48s] don't cover politics like that anymore
+[1633.92s] um but I will meet anyone for coffee um
+[1637.08s] so what I typically do is if there's
+[1639.60s] someone who's kind of like known as a
+[1641.16s] thought leader in the state that I
+[1642.36s] haven't met yet or that I've heard about
+[1645.04s] that I should connect with I just kind
+[1647.04s] of reach out to them calling and say hey
+[1649.44s] we should meet for coffee and we I can
+[1651.68s] always say like I'm willing to meet off
+[1654.16s] the Record just for coffee like let's
+[1656.20s] just talk about what you do your job you
+[1657.96s] can get to know me that establishes a
+[1660.20s] little bit of trust and and a
+[1661.72s] relationship between your source and
+[1663.96s] yourself as a reporter um that is only
+[1666.32s] going to be beneficial in the end so I
+[1668.84s] try to show my face to everything
+[1670.48s] whether it's press conferences planning
+[1671.84s] board meetings Etc but also just I cold
+[1674.36s] call people I reach out to people and
+[1675.96s] say hey we haven't met yet let's go grab
+[1678.44s] a cup of
+[1679.44s] joe great advice I got another question
+[1682.12s] here um along the line of of sourcing as
+[1684.84s] well you mentioned earlier in the
+[1686.48s] presentation your Reliance on Experts to
+[1689.44s] quickly get educated about a particular
+[1691.56s] topic how do you find those experts how
+[1693.84s] do you determine who has the most
+[1696.08s] knowledge on a specific topic that
+[1698.52s] you're reporting on and where you can
+[1700.12s] find them yeah I mean I definitely don't
+[1703.24s] just rely on like one expert po per um
+[1706.48s] per story or per issue per beat per
+[1709.56s] topic I am relying on so many different
+[1711.84s] people sometimes it's really just a
+[1713.20s] quick Google search um about like
+[1715.32s] looking for law professors who
+[1717.04s] specialize in real estate law or
+[1719.12s] something or when it comes to hospital
+[1721.44s] management Healthcare Management in New
+[1723.00s] England we have a plethora of
+[1724.60s] universities who focus on this there's a
+[1726.68s] lot of research centers that focus on
+[1728.36s] this so it's really easy to find those
+[1730.16s] folks um sometimes you are reaching out
+[1732.28s] to like the media relations person at
+[1734.84s] various universities asking hey do you
+[1736.52s] have an expert in this I'm just looking
+[1738.36s] to like try to understand something or
+[1740.16s] I'm looking um for somebody who I could
+[1742.12s] quote in this story um but also I do
+[1745.76s] look at Medical journals or I will look
+[1748.92s] at research papers on housing um and I
+[1751.84s] will reach out to the authors and say
+[1754.20s] hey um what did you look into how did
+[1756.08s] you find this data can you help me break
+[1758.24s] this down can I quote you on this so
+[1760.40s] it's really any way anywhere anyhow that
+[1763.76s] I try to find these sources great one
+[1766.44s] last question before we wrap up Alexa
+[1768.16s] appreciate your time um do you have any
+[1770.88s] advice or or quick resources for those
+[1773.60s] that are not only trying to develop a
+[1775.28s] new beat but are entirely new to a
+[1777.72s] specific area maybe they've gone from
+[1780.20s] Rhode Island uh you know Providence to
+[1782.56s] Boston or now they're up in Manchester
+[1785.24s] Portland you know they've got an
+[1786.52s] entirely new community that they're
+[1788.04s] covering where do they start oh my gosh
+[1791.72s] I know this way too well um go in person
+[1795.08s] everywhere go on nice long walks when
+[1797.28s] you're not working or when you're on
+[1799.08s] your lunch break just to get to know the
+[1800.76s] area go to any little tiny stupid public
+[1804.92s] meeting you can imagine just to get to
+[1807.72s] know the players and the people um dig
+[1811.28s] into the archives of you know the news
+[1814.00s] outlet that you're working for whether
+[1815.44s] it's the TV station or the um the paper
+[1819.36s] that you're working for uh look at the
+[1821.64s] competition look at what they're
+[1823.20s] covering look at what they're not
+[1824.28s] covering um and ask your uh older
+[1827.40s] colleagues who been there for a really
+[1828.88s] long time about where they see the holes
+[1831.64s] hey where have we not invested what
+[1833.44s] beats um have has no one looked at or
+[1836.20s] hey I'm taking on this new beat and I
+[1837.52s] know nothing about it do you know who
+[1838.88s] covered it before me and then maybe even
+[1840.92s] reach out to that reporter I have done
+[1842.56s] that and trust me it was so useful so um
+[1846.00s] just be anywhere be willing to do
+[1848.00s] anything no matter how small or large
+[1849.92s] the story is and find the gaps because
+[1852.28s] there are so many gaps in news coverage
+[1854.56s] even in New England where there's a
+[1855.72s] plethora of outlets and um trust me you
+[1858.96s] can find them even in a beat that is
+[1861.08s] well covered so um that's that's the
+[1863.60s] biggest advice that I would say thank
+[1865.84s] you and thank you so much for your time
+[1867.80s] today Alexa I appreciate this lesson all
+[1869.68s] this advice and guidance great stuff uh
+[1872.64s] and to everyone who joined us many
+[1874.12s] thanks to all of you uh we provide these
+[1876.52s] lessons as a public service every single
+[1879.08s] month so please return the favor and
+[1880.84s] encourage your colleagues and friends to
+[1882.76s] join us we have a lot to learn from each
+[1885.00s] other and I look forward to seeing you
+[1886.56s] all again on behalf of neac thank you
+[1889.60s] for all you do and we'll see you next
+[1891.56s] month for our next 30 minute skills bye
+[1894.28s] now thanks all

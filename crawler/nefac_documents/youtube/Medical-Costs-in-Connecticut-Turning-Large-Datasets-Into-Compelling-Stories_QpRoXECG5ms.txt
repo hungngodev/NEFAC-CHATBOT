@@ -1,0 +1,448 @@
+[0.24s] i think it's an important transparency
+[2.24s] effort because
+[4.00s] again the federal government
+[5.76s] started requiring that these prices be
+[7.68s] posted but then
+[9.68s] there there is no central location where
+[11.60s] where all this data should live or can
+[13.68s] live
+[14.64s] um so it's really up to journalists and
+[18.08s] researchers and whoever really has the
+[19.68s] interest to to take this on
+[22.54s] [Music]
+[27.44s] i'm justin silverman of the new england
+[29.12s] first amendment coalition the following
+[31.44s] conversation is part of our first
+[33.04s] amendment and free press program where
+[35.44s] we pull the newsroom carton back and
+[37.20s] explain how journalists do their jobs
+[39.44s] and the role that they play in our
+[40.80s] democracy you can view all of our
+[42.88s] discussions at nefac.org
+[45.52s] 1a free press i'm here today with mary
+[48.48s] katherine wilderman a reporter at hearst
+[50.40s] connecticut media group mary catherine
+[52.00s] thanks for joining us
+[53.28s] thanks so much for having me
+[55.20s] mary kathryn you recently took a
+[57.12s] comprehensive look at local hospital and
+[59.60s] insurance costs
+[61.12s] a topic that i think most people
+[63.60s] probably don't give a whole lot of
+[64.72s] thought to but a topic that affects all
+[66.96s] of us and can affect us differently
+[68.96s] depending on the community in which we
+[70.96s] live
+[71.76s] can you tell us a bit more about the
+[73.92s] story give us the background of your
+[75.92s] reporting and what you found
+[78.00s] yeah so a lot of journalists are
+[80.08s] probably aware that um in january of
+[83.04s] 2021
+[84.88s] hospitals had to start disclosing
+[87.28s] the rates that they
+[89.28s] previously secretly negotiated with with
+[92.08s] health insurance plans
+[94.00s] um
+[94.88s] this is big data a lot of hospitals
+[96.96s] didn't comply right in the beginning
+[99.52s] um but at this point at least in
+[100.88s] connecticut uh most hospitals are
+[102.96s] sharing some of those rates at least so
+[104.80s] the effort on my end was to
+[107.44s] compile data from it's about 30
+[110.08s] hospitals in the state
+[112.32s] again detailing the the rates that they
+[114.32s] have set with with various insurance
+[116.64s] plans and so i i brought those
+[119.92s] pieces of data together and my goal was
+[122.40s] to sort of make it comparable
+[124.56s] um so you can start to get an idea of
+[126.64s] how much you might pay for a certain
+[128.08s] service
+[129.28s] at one hospital or with one insurance
+[131.12s] plan compared to another
+[132.80s] prior to 2020 this information wasn't
+[135.52s] available and then becomes available
+[138.40s] how did you get the information what was
+[139.92s] your first step in the reporting process
+[142.32s] yeah so
+[143.52s] uh these prices are were required are
+[146.48s] required to be shared on each hospital's
+[148.96s] individual website
+[150.56s] um different hospitals are more um
+[154.32s] upfront with those prices uh than others
+[157.52s] that most are now
+[159.28s] shared on some sort of price
+[160.64s] transparency page that each hospital
+[162.72s] maintains so the long and short of it is
+[164.64s] that you have to go to each hospital
+[166.88s] and collect the information in order to
+[170.08s] uh to gather there's no central location
+[172.40s] where you can get this data so that was
+[174.16s] one of the challenges that i had to
+[175.84s] overcome for sure you have 30 hospitals
+[178.56s] that you're you're trying to get
+[179.60s] information on and so you have to go to
+[181.92s] 30 different websites when you get there
+[183.52s] is it a simple you know
+[185.84s] you know click of a button and all the
+[187.68s] data downloads for you or
+[190.08s] what does it look like when you get to
+[191.36s] these individual hospital web pages
+[193.84s] yeah it's that's another thing that
+[195.28s] varied depending on the hospital so for
+[196.96s] some it really was exactly that easy and
+[199.28s] then for others not at all um some are
+[202.96s] shared and
+[204.48s] kind of web friendly formats called json
+[207.60s] some journalists might be familiar with
+[209.76s] that but and then others are csvs that
+[212.40s] are you know relatively easy to work
+[214.32s] with
+[215.28s] um but actually one of the biggest
+[217.04s] problems that i had to deal with was
+[219.20s] just the size the data in a lot of cases
+[222.08s] um
+[223.04s] some hospitals really just like kind of
+[224.56s] dumped all of their information on the
+[225.84s] website which is not a bad thing um for
+[228.72s] journalists and reach researchers
+[230.24s] necessarily
+[231.76s] but it does lead to some big data
+[233.92s] um issues so that was another thing i
+[236.24s] sort of had to contend with
+[240.00s] so describe for us some of those
+[241.52s] challenges because now you have you have
+[243.20s] data from 30 different hospitals you may
+[246.00s] have had to jump through some hoops to
+[248.00s] get the data from individual ones but
+[250.08s] now finally you have all of this data in
+[252.16s] front of you what does that data look
+[254.16s] like and how did you then go about
+[256.32s] trying to manage that or uh
+[259.44s] work with that data in a way that would
+[261.12s] allow you to do the reporting you did
+[263.36s] it was probably the part of the process
+[264.96s] that took the longest to be honest um
+[267.44s] you know acquiring and cleaning the data
+[269.52s] was definitely a big undertaking but
+[271.52s] then
+[272.32s] the question becomes like what do i do
+[274.32s] with all of this and so
+[276.08s] i had to choose
+[277.92s] ways essentially killing your darlings
+[279.68s] like choosing ways to narrow down the
+[281.44s] analysis and
+[283.20s] just pick out some services some
+[285.84s] essentially building codes that are
+[287.20s] going to be i felt would be relevant to
+[289.76s] people
+[291.52s] and then finding ways to describe them
+[293.92s] to readers um which can be tough the the
+[296.72s] medical lexicon is not very reader
+[298.64s] friendly so
+[300.40s] um that was another serious undertaking
+[302.80s] but yeah it was it was kind of a lesson
+[305.12s] for me and um
+[306.80s] in
+[307.76s] choosing it just being willing to choose
+[310.24s] uh how to narrow down an analysis right
+[312.64s] when you have so much data and
+[314.00s] information in front of you you really
+[315.28s] just have to
+[316.56s] make your choices right about what to
+[318.40s] include and what not to include and
+[320.32s] maybe leave the rest for follow-ups and
+[321.92s] just understand that you know more can
+[323.92s] be done with the data later on it can be
+[325.92s] kind of like a gift that keeps on giving
+[327.60s] so so again that was kind of a long
+[329.52s] process but
+[330.80s] i think we got there and i think moving
+[332.32s] forward i can do that more efficiently
+[335.60s] um just by being more willing to make
+[337.68s] decisions so
+[340.48s] once you clean the data you format it in
+[342.56s] a way where it's all consistent and you
+[345.12s] can
+[346.08s] view it accurately and start to make
+[348.56s] some
+[349.44s] uh
+[350.64s] some decisions about what to focus in on
+[353.12s] yeah um
+[354.32s] how did you go about making those
+[355.84s] decisions as to what your focus would be
+[358.16s] what would be of most interest to your
+[360.72s] your readers how did you decide just
+[363.12s] looking at all these numbers you know
+[364.88s] how did you determine what was most
+[366.24s] important
+[367.36s] yeah that's a great question i think it
+[369.76s] was kind of a continuous process where i
+[371.92s] would choose some things that i
+[373.92s] knew would feel important to readers and
+[376.08s] then others that
+[377.44s] made sense for other reasons like i
+[380.96s] first of all i created a cutoff so if if
+[383.84s] the procedure wasn't
+[385.68s] reported by more than one hospital or
+[387.44s] more than one healthcare system then i
+[388.96s] just got rid of it
+[390.56s] um because again the goal of this effort
+[393.28s] was comparison so if only one shares it
+[396.08s] then it doesn't make sense to include
+[397.84s] include it
+[398.96s] um and then in general my focus was just
+[402.00s] picking services that
+[404.32s] um
+[405.20s] people could shop for
+[406.64s] right so uh one one example that we
+[409.28s] highlighted in the lead of the story was
+[410.96s] a c-section we kind of like looked at
+[413.04s] various maternity care
+[414.88s] procedures throughout the story to kind
+[416.88s] of give it like a common vein
+[418.88s] um so c-section is an example of
+[421.04s] something that um people can shop for
+[423.76s] sometimes they don't right of course
+[425.36s] depending on their situation
+[427.12s] um so it just felt like a good example
+[428.64s] for that reason and i kind of put
+[430.80s] um the data through the ringer that way
+[432.56s] and tried to pick things that kind of
+[434.24s] fit that mold included for example like
+[436.40s] critical care services because i think
+[439.44s] that felt really relevant
+[441.36s] um to readers and their needs
+[444.24s] of course with really high health care
+[445.76s] costs if you need a critical care
+[447.52s] service
+[448.80s] and then other things like just
+[449.76s] psychiatry appointments and therapy and
+[452.32s] physical therapy and things like that
+[454.16s] that you do typically
+[456.16s] you know shop for and schedule so i
+[458.16s] tried to give it a mix
+[460.08s] no and i'll have you get to the
+[461.04s] takeaways in just a moment but uh tell
+[463.28s] us from that from the moment that you
+[464.48s] decided okay this is a story this is
+[466.40s] something i need to look into these
+[467.84s] records are now available
+[470.08s] getting those records cleaning those
+[471.92s] records and then you know sorting them
+[474.48s] arranging them processing them to the
+[476.80s] point where you can write a story how
+[478.24s] long did that process take how much time
+[480.96s] was invested to that point
+[482.88s] um it was a lot of time but as most any
+[486.96s] local reporter
+[488.56s] can attest it's something where you're
+[490.40s] juggling this in addition to a bunch of
+[492.32s] other stuff you're working on right so
+[494.32s] all told the process probably took me
+[495.92s] like roughly six months but that doesn't
+[497.60s] mean that i was working on it all the
+[498.96s] time every day right so
+[501.12s] um so yeah it took a lot of time and i
+[503.76s] would have to
+[504.88s] step away from it and come back to it
+[506.72s] and then um could see it with a little
+[508.88s] bit of a clearer mind because again it's
+[510.56s] just one of those things where you have
+[511.68s] to be willing to kill your darling so
+[513.12s] that's really hard to do in the moment
+[514.48s] you come back to it you're like never
+[516.16s] mind i don't need any of that so
+[518.80s] um so again that was probably the
+[520.48s] longest part of the process and um
+[524.08s] yeah it took me it probably took me a
+[526.08s] few weeks of done you know dedicated
+[527.84s] work
+[528.64s] all right and for um i i know many
+[530.88s] journalists are struggling to do this
+[532.80s] kind of investigatory comprehensive work
+[536.00s] in addition to their day-to-day you know
+[538.16s] responsibilities and deadlines they need
+[539.84s] to meet any uh advice to them on how you
+[542.80s] can juggle it all and and make it all
+[545.76s] happen given uh daily deadline pressure
+[549.04s] uh it's a great question i mean i'm
+[551.20s] probably about six years into my
+[552.80s] journalism career so there are people
+[554.88s] who've been doing this for their entire
+[556.24s] career
+[557.68s] i'm sure have the magic
+[559.60s] words for that for that really difficult
+[561.84s] question but for me
+[564.00s] what i guess i try to do is pick topics
+[567.04s] that
+[568.08s] i am
+[569.04s] morbidly interested in
+[570.88s] um just being an example and then it
+[573.12s] just gives you the energy to
+[575.44s] dedicate all this extra time
+[577.52s] to it right not necessarily outside of
+[579.60s] work hours i mean just um
+[582.08s] something that really drives you and
+[583.84s] makes you feel engaged
+[585.92s] on the issue
+[587.20s] and that can do wonders in terms of
+[589.28s] getting the work done and getting it out
+[590.72s] there because you care
+[592.24s] um and this is something i really care
+[594.24s] about so
+[596.64s] all right so let's get back to the
+[597.76s] reporting what did you find after all of
+[599.60s] this time invested all this work uh what
+[602.24s] were some of the takeaways from your
+[603.44s] reporting
+[604.64s] well
+[605.76s] it's it's interesting data and um i
+[608.48s] think that the the firmness takeaway we
+[610.88s] have right now is just that
+[612.80s] um prices can vary really widely by many
+[615.68s] thousands of dollars really without a
+[618.08s] lot of explanation as to why um we're
+[621.20s] going to be doing some follow-up
+[622.56s] reporting hopefully creating some more
+[624.48s] analysis and investigating for example
+[626.72s] whether certain health systems or
+[628.24s] hospitals tend to be more expensive than
+[630.00s] others
+[631.36s] that can be very hard to do but for
+[633.20s] example
+[634.24s] i'll just go back to the c-section
+[635.84s] example we found that
+[638.08s] um even within the same health care
+[639.68s] system so hartford healthcare system the
+[641.52s] price for a c-section
+[643.20s] could vary by something like 14 000
+[646.16s] depending on which hospital they're
+[647.28s] going to hartford healthcare
+[649.92s] owns a number of hospitals in
+[651.84s] connecticut um so so that's concerning
+[654.72s] because
+[656.08s] um
+[657.12s] i tried to pinpoint examples that that
+[658.80s] didn't make a lot of sense and and
+[660.72s] that's kind of the common vein again
+[662.40s] that we see
+[663.76s] um with these prices and these rates is
+[665.60s] that it's just it's it's very hard to
+[668.00s] understand or explain
+[669.68s] why prices should vary so much so in
+[672.00s] another example we highlighted
+[674.56s] that um at the manchester memorial
+[676.56s] hospital
+[677.52s] one hour of critical care
+[679.76s] um could cost anything between 800 and
+[682.72s] almost 4 000
+[684.72s] from the same insurer just depending
+[686.80s] that is aetna depending on whether an
+[688.80s] hmo or ppo is paying and so these are
+[692.00s] these are prices
+[693.36s] differences in prices that patients
+[694.88s] would expect to see i think
+[697.04s] um and that's an example of one that
+[699.60s] can't be explained by a difference in
+[701.12s] quality right because it's the same
+[702.96s] hospital you're going to
+[704.72s] um and the same ultimately the same
+[706.80s] insurance company that's that's
+[708.40s] negotiated the right
+[710.00s] right so i just tried to highlight
+[711.60s] examples that um
+[713.60s] really point out these confounding
+[716.16s] differences in price and um
+[718.88s] it's going to take more follow-up
+[720.00s] reporting and research really
+[722.40s] to understand what else the data can
+[724.48s] tell us i think
+[725.84s] why is this reporting important why
+[728.72s] should readers care about all of this
+[731.44s] information that you're providing
+[735.60s] uh consumers have
+[737.68s] choices to make about their health care
+[740.00s] right um they can choose where they go
+[742.72s] to get care
+[744.48s] in some circumstances they can choose
+[746.08s] what plan
+[747.20s] they
+[748.72s] have right but a lot of times
+[751.68s] they don't actually um and a lot of us
+[754.24s] don't have the time and effort
+[756.32s] available to us to to make
+[758.56s] the lowest price decision it's really
+[760.96s] challenging so my goal was really just
+[763.12s] to point out um
+[765.44s] the extremely high healthcare costs that
+[767.52s] people can be exposed to for
+[769.92s] reasons that you know i couldn't
+[771.52s] pinpoint that i don't think that anyone
+[772.96s] could pinpoint and so then in addition
+[775.20s] to that um
+[777.28s] it's it's
+[778.40s] i think it's an important transparency
+[780.40s] effort because
+[782.16s] again the federal government
+[783.92s] started requiring that these prices be
+[785.84s] posted but then
+[788.08s] there is no central location where where
+[790.00s] all this data should live or can live
+[792.88s] um so it's really up to journalists and
+[796.40s] researchers and whoever really has the
+[798.00s] interest to to take this on um and so i
+[800.88s] think that we should do that you know we
+[802.72s] should um
+[803.76s] commit to
+[805.52s] pulling together this public data and
+[807.92s] making it available to patients who do
+[809.68s] want to try to make their own decisions
+[811.92s] about where to get health care and drive
+[814.08s] their own
+[815.20s] costs down um
+[816.96s] so it's i think it's those two things
+[818.80s] mostly
+[820.08s] thank you and we should note that
+[821.52s] through your reporting you created this
+[823.52s] really valuable database with all of the
+[826.24s] information that you gather and so
+[828.16s] readers don't have to do what you did
+[829.52s] and go to 30 different websites 30
+[831.44s] different hospitals they can go simply
+[833.60s] to this one database that you created
+[835.44s] it's available to the public everyone
+[837.44s] can access it
+[839.76s] why the decision to do that well i just
+[842.56s] said that you know transparency is
+[844.08s] really important in this data
+[846.48s] um so i wanted to make it transparent
+[849.20s] and so that's what i did i put it on my
+[851.68s] personal github which is mary kay wilde
+[854.80s] um so you can you can search me there
+[856.88s] and you'd be able to download the the
+[858.64s] data set as well as some of my
+[860.48s] how i got their process
+[862.64s] um and then in addition we do have if
+[865.12s] you're not a data user data literate um
+[867.68s] we do have the prices as a subset of
+[870.48s] them posted on ct insider as well
+[873.28s] um so you can go there to explore it and
+[875.28s] you know find me on twitter too or
+[876.96s] anywhere else and i'm more than willing
+[879.04s] to help journalists who are interested
+[880.96s] in
+[882.00s] finding this data or even using what i
+[884.40s] created so
+[885.68s] um yeah they should absolutely reach out
+[887.60s] to me if they need help with it because
+[889.12s] it is a bit challenging
+[892.48s] great well thank you for that mary
+[893.76s] catherine this is a great example of
+[896.72s] public service reporting appreciate all
+[898.72s] you do and thanks for being here today
+[900.80s] thanks so much justin really appreciate
+[902.16s] your time
+[903.96s] [Music]

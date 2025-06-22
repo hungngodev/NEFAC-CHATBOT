@@ -1,0 +1,855 @@
+[5.12s] i'm justin silverman of the new england
+[6.80s] first amendment coalition
+[8.64s] thank you for joining us for this series
+[10.64s] on state public record laws and the
+[12.24s] federal freedom of information act
+[14.64s] these lessons are brought to you by
+[16.24s] nefac with help from the society
+[18.08s] professional journalists foundation
+[20.16s] muckrock sbj new england and the new
+[22.80s] england society of news editors
+[25.28s] each lesson is a continuation of
+[27.28s] previous classes so if you haven't
+[29.04s] already please visit nefac.org
+[32.80s] foi guide
+[34.64s] you'll find their growing library of
+[36.48s] video tutorials and other freedom of
+[38.48s] information resources
+[40.40s] thank you again for joining us
+[42.32s] now here's nefax emily sweeney to
+[44.48s] introduce you to our instructor hey
+[46.48s] everybody i'm emily sweeney from the
+[48.40s] boston globe and i want to thank you all
+[50.40s] for joining us for this webinar which is
+[52.40s] part of our ongoing series on public
+[54.32s] records laws this session is going to
+[56.40s] focus on the appeals process and what
+[58.48s] you can do when your foia request is
+[60.72s] denied
+[61.84s] and with me is michael morrissey who's
+[65.12s] an expert on this topic and he's the
+[67.28s] co-founder and chief executive of one of
+[69.44s] my favorite websites muckrock
+[72.40s] michael thank you so much for joining us
+[74.24s] today
+[75.20s] oh it's it's such a pleasure to be here
+[76.96s] and it's one of my favorite favorite
+[79.28s] topics um
+[80.80s] a because it's i think something not a
+[82.88s] lot of journalists take advantage of but
+[85.20s] because it began to be so productive so
+[87.28s] i'm really looking forward to diving in
+[90.08s] um and thank you everybody for attending
+[92.00s] today and watching after the fact uh and
+[94.96s] i hope that everybody kind of goes home
+[96.56s] and and gets excited about the
+[99.20s] potential to to get more information out
+[101.52s] of government and into
+[103.60s] your hands and ultimately the the hands
+[105.52s] of your readers
+[106.96s] so i briefly just titled this
+[108.64s] presentation toy appeals when the end is
+[111.04s] just the beginning because a lot of
+[112.88s] times to actually get the records you
+[115.12s] need it's ideally it should be you ask
+[117.76s] they answer you get things uh one day i
+[121.36s] envision that public records and
+[123.04s] government transparency will look a lot
+[124.88s] more like google than it looks like a
+[127.76s] bad fax machine or
+[129.52s] process but for now a lot of times it is
+[133.04s] persistence that pays off it's
+[134.72s] persistence in terms of waiting for the
+[136.40s] request and then it's persistence in
+[138.40s] pushing through those initial denials
+[142.64s] because transparency can be a very
+[144.80s] challenging process we've seen
+[146.88s] every year we do sort of a series of
+[149.60s] valentine's themed
+[151.36s] foia themed valentine's card just
+[153.60s] because that this process can break your
+[156.00s] heart time and time again but it is
+[158.40s] something that is worth kind of pushing
+[160.48s] through and it's something where a
+[162.16s] little bit of knowledge a little bit of
+[163.76s] sort of going a little bit further than
+[165.92s] other people will when it comes to an
+[168.24s] initial rejection will pay off in all
+[170.56s] sorts of really exciting and amazing
+[172.64s] ways
+[174.48s] the first part of that process is just
+[176.24s] understanding the rejection not all
+[178.16s] rejections are equal as as we've
+[181.12s] discovered and understanding sort of
+[183.52s] what happened with that request what was
+[185.60s] your actual denial from the agency is it
+[188.72s] actually a denial um
+[191.28s] and understanding sort of the language
+[193.28s] that that agency has put in and sort of
+[195.52s] what you're up against is a really good
+[198.08s] starting point so when you get back
+[200.72s] documents or when you don't get back
+[202.32s] documents
+[203.92s] trying to think through sort of what is
+[205.36s] the rejection that you're pushing back
+[207.36s] on
+[208.56s] did they cite a specific exemption
+[211.04s] under the law there are nine specific
+[213.52s] foia exemptions uh at the federal level
+[216.48s] we'll be talking through a number of
+[217.84s] those later
+[219.76s] sometimes though a rejection isn't
+[222.16s] actually
+[223.28s] based on an exemption though maybe they
+[224.80s] just didn't get you back anything at all
+[226.48s] maybe they've never responded and you're
+[228.48s] gonna have a very different type of
+[230.08s] response you're gonna have a different
+[231.36s] appeal strategy based on sort of what
+[233.76s] they actually cite
+[235.44s] in that letter if they cite anything
+[238.96s] sometimes these rejections don't even
+[240.88s] matter though um and so we'll talk a
+[243.28s] little bit about sort of how to identify
+[245.44s] what is and is not worth the fight
+[248.00s] and sometimes when you are successful a
+[250.40s] request it is still worth appealing
+[253.20s] maybe because they gave you a bunch of
+[254.72s] documents and said hey here's a full
+[256.56s] complete grant of your request but you
+[258.96s] think that they still have some more
+[260.32s] stuff out there
+[262.08s] going back for that is is can be a
+[264.32s] really important strategy at that point
+[267.60s] one thing that federal agencies have
+[269.36s] gotten a lot better at in the past few
+[271.36s] years is actually listing out sort of
+[274.00s] what your appeal rights are which is has
+[276.32s] been a great move and also some of what
+[278.72s] the
+[279.44s] alternatives to appealing are and so
+[281.84s] taking a look at that exemption letter
+[283.92s] taking a look at that rejection letter
+[285.68s] or that response letter and seeing what
+[287.84s] are the options that they lay out uh
+[290.32s] probably will not be comprehensive but
+[292.40s] it will be a pretty good starting point
+[295.60s] and then most importantly is what are
+[297.44s] you actually trying to get out of the
+[298.96s] foia process
+[300.48s] if you are on deadline and you need
+[302.56s] something shortly and this agency says
+[304.24s] this is going to take months and months
+[306.24s] then maybe you want to appeal that
+[308.72s] sometimes if the agency gives you some
+[311.04s] stuff and rejects other stuff maybe you
+[313.36s] already got what you want um
+[316.00s] and so you don't need to appeal uh even
+[318.32s] then but it is important throughout this
+[320.64s] process to kind of keep in mind what do
+[322.32s] you as a requester want both out of the
+[325.68s] request itself and those documents but
+[327.76s] then also sometimes it is important that
+[330.00s] requesters take principled stance so if
+[332.64s] you are going after some information
+[334.40s] maybe your story is passed but you still
+[336.72s] think it's important that that
+[337.84s] information get out to the public i've
+[339.76s] seen a lot of journalists and other
+[341.52s] requesters continue to fight just out of
+[343.84s] principle to kind of make sure that the
+[345.84s] agencies can't kind of run out the clock
+[348.16s] on public records requests
+[350.72s] so that's a lot to kind of take out of
+[352.64s] uh sometimes just an initial one-page
+[354.72s] letter and and that sort of thing but
+[356.24s] just kind of taking some time
+[358.24s] sort of like if it was a wine tasting
+[360.08s] kind of like that that time when you're
+[361.44s] just kind of like smelling the wine and
+[363.28s] kind of figuring out how it is that's
+[364.48s] kind of how i feel about these rejection
+[366.16s] letters sort of look for sort of what's
+[368.00s] the nuance there what are you what kind
+[369.60s] of notes are you picking up
+[371.28s] um before you kind of then figure out
+[373.60s] sort of what's the next step of your
+[374.96s] strategy
+[376.40s] but very often that next step will be
+[378.96s] filing an appeal um
+[381.68s] nate jones who used to be at the
+[383.52s] national security archive and is now at
+[385.92s] the washington post
+[387.84s] shared that
+[389.76s] you know one out of three appeals ends
+[392.56s] up getting more information so one out
+[394.56s] of three times when people you know push
+[396.96s] back and just take this sort of free
+[399.04s] administrative step um they get back
+[401.84s] more documents but the reality is that a
+[403.68s] very small percentage of requesters ever
+[406.56s] file any appeals and so there's a lot of
+[409.44s] information that's out there that
+[411.92s] could be released that's probably not
+[413.52s] getting released just because people
+[414.80s] don't take the time to
+[416.56s] think through um
+[418.88s] asking for more information going back
+[420.32s] to the agency and one of the great
+[422.16s] things about appeals is one of the
+[424.24s] things i love about floyd is you don't
+[425.84s] need to be a lawyer you don't need to
+[428.08s] have any sort of special credential it
+[430.32s] is a process that is open to everybody
+[433.20s] and
+[434.80s] you don't need to kind of uh
+[437.52s] you know put a ton of investment into
+[439.52s] kind of taking advantage of these
+[441.20s] process this is beyond kind of doing a
+[443.60s] little research uh thinking through
+[445.76s] reading closely and being willing to
+[448.40s] kind of assert your rights and um the
+[451.20s] the appeals process is a really really
+[453.12s] valuable aspect of public records and in
+[455.92s] the freedom information act
+[459.04s] the first step is after you've kind of
+[460.80s] read through that letter kind of take it
+[462.64s] take a stance take a sense of where
+[464.64s] things stand right now
+[466.48s] and a lot of times the first thing
+[468.08s] you're going to want to do is actually
+[469.68s] not write another letter at all but
+[472.72s] see if sometimes getting somebody on the
+[474.72s] phone to kind of talk through the
+[476.64s] questions you have one of the things
+[478.80s] we've found is that a lot of times
+[481.60s] agencies uh misunderstand what
+[484.32s] requesters are going after or requesters
+[486.96s] misunderstand what agencies are trying
+[488.64s] to convey to them and so
+[490.56s] not every time you file a request or
+[492.56s] every time you get a rejection is the
+[494.56s] phone gonna be
+[496.32s] the right answer but a lot of times
+[499.20s] thinking through and trying to get
+[500.72s] clarification is a really good starting
+[503.12s] point i've seen a lot of times where a
+[505.04s] requester will think that an agency is
+[506.80s] trying to stonewall them or
+[508.88s] there's going to be sort of like this
+[510.32s] major fee that the requester doesn't
+[512.08s] want to deal with and a lot of times
+[514.08s] those issues can be resolved by calling
+[516.40s] up the agency and say hey can you
+[518.08s] explain why this request is going to
+[519.76s] cost five thousand dollars or can we
+[522.00s] talk about the scope of my request on
+[524.32s] why you think it's going to take two
+[525.60s] years to complete
+[527.12s] and that starts a negotiation because a
+[529.60s] lot of times
+[531.12s] requesters are kind of think of foia as
+[533.60s] sort of a binary you get the documents
+[535.28s] or you don't get the documents but for
+[537.52s] agency personnel this is usually a
+[539.68s] negotiation with the resources that they
+[542.32s] have with the timetables that they're on
+[545.12s] what are the things that they can get
+[546.72s] you within those parameters and so
+[548.80s] especially if it's not an outright
+[550.64s] rejection but it's a
+[553.36s] agency kind of saying this is going to
+[554.96s] take us three years or it's going to
+[556.64s] cost a ton of money or
+[559.12s] we looked and we couldn't find what
+[560.64s] you're actually asking for
+[563.20s] giving the agency a phone call can be
+[565.04s] really helpful
+[566.80s] every federal agency now has what's
+[568.80s] called a foia public liaison
+[571.20s] and as the name implies it's that person
+[573.92s] is kind of a little more senior position
+[576.40s] and their job is to kind of talk with
+[578.80s] requesters help see if they can figure
+[580.48s] out some sort of solution to the
+[582.72s] requesting challenges you have and that
+[584.96s] means that they're there to kind of
+[587.04s] not necessarily be your advocate but to
+[589.44s] try to talk through and see if they can
+[591.12s] come to a better resolution uh before
+[594.24s] you file an appeal or certainly before
+[596.72s] you you get a uh file a lawsuit and
+[599.68s] they're there to kind of like help
+[601.44s] troubleshoot things so if it's just
+[603.04s] miscommunication issue they can be
+[605.12s] really helpful there
+[606.56s] now throughout this process ideally
+[608.80s] you'll find a way to just resolve it but
+[610.56s] even if you can't get the agency to kind
+[612.96s] of come and see the way
+[614.88s] you see things it's an amazing chance to
+[617.28s] just get more information right and so
+[619.68s] if they say oh this is stored in an
+[621.76s] off-site facility or oh what you're
+[624.32s] asking for there's going to be thousands
+[625.84s] and thousands of documents for us to
+[627.44s] review
+[628.40s] um that can be discouraging or that can
+[630.96s] feel like an excuse but as a requester
+[633.52s] that's more information and anytime you
+[635.76s] get more information about how the
+[637.36s] agency set up how those eight records
+[639.20s] are configured that knowledge is is
+[641.52s] really powerful
+[644.48s] let's talk about some of the specific
+[645.92s] types of rejections that you might be
+[647.60s] facing now
+[649.28s] one of those types of rejections is you
+[651.12s] just don't hear anything at all or the
+[653.68s] agency does not respond and give you the
+[656.16s] documents in a timely manner that's
+[658.40s] called a constructive denial at the
+[660.48s] federal level agencies have 20 working
+[663.12s] business days to give you a response to
+[666.32s] your request they can ask for an
+[668.64s] extension to that timeline and a lot of
+[670.64s] times they'll get that but generally
+[673.04s] speaking agencies should not be dragging
+[675.36s] requests out for months and certainly
+[677.04s] not for years that's called as i said a
+[679.84s] constructive denial and that's just
+[681.44s] basically where they haven't given you a
+[684.24s] an explicit denial but by the fact that
+[686.72s] you still don't have those records
+[688.48s] it still cancels a denial
+[690.56s] now you can
+[691.92s] appeal those types of rejections but
+[693.92s] most agencies have a long backlog and
+[696.56s] they'll just say you know look they
+[698.16s] can't respond to all the requests in a
+[700.48s] timely manner and they're they've put it
+[703.20s] into a first in first out queue and so
+[706.16s] there's not a whole lot that can be done
+[708.08s] there
+[709.36s] and constructive denial appeals
+[711.52s] generally aren't aren't super successful
+[713.60s] but it is one way to kind of
+[716.32s] raise some pressure on the agency in
+[718.08s] some cases or if it's a particularly
+[720.00s] egregious
+[721.12s] delay if there's something that's not
+[723.12s] related to the foia office that's
+[724.64s] delaying that request sometimes it can
+[726.64s] be helpful but there some of the other
+[728.72s] methods the phone calls to the agency
+[731.20s] trying to get more information trying to
+[732.88s] treat this as a negotiation is usually a
+[735.04s] more successful route to go
+[739.84s] some of the other rejections that we see
+[742.08s] aren't actually rejections but
+[743.52s] classifications at the federal level
+[745.44s] there's three fee categories there's
+[748.00s] media and scientific requesters uh that
+[750.64s] includes sort of academic groups and and
+[752.64s] people who are using foia for research
+[754.80s] that as part of an institution as well
+[756.80s] as journalists reporters
+[760.00s] um then there's commercial requesters
+[762.40s] and that's sort of commercial entities
+[763.76s] using foia to power their business then
+[766.32s] there's all other requesters and that's
+[767.92s] people who are doing genealogy research
+[769.68s] or stuff for their own interest one of
+[772.16s] the really important things as a media
+[773.92s] requester if you are a journalist using
+[775.84s] these documents for a story or reporting
+[778.00s] purposes is making sure that you're
+[780.16s] classified as a journalist
+[782.56s] that is going to be really important to
+[784.16s] make sure that the agency can't come
+[785.84s] back to you as really large fee
+[787.52s] estimates or kind of hit you with uh
+[790.64s] it's kind of unexpected costs
+[793.28s] if you see that usually it's something
+[796.00s] you want to notice in an initial
+[797.36s] acknowledgement letter and then kind of
+[798.64s] say look you classified me as all other
+[800.72s] you classified me as a commercial i'm
+[802.72s] filing this request as a journalist and
+[804.72s] i should be given the media fee category
+[807.36s] status
+[808.56s] now that's really important because the
+[810.48s] next type of rejection we see a lot is a
+[812.72s] fee waiver a lot of times people get
+[814.32s] those confused right so people say oh
+[816.88s] i'm a journalist i should get a fee
+[818.48s] waiver
+[819.52s] fee waivers
+[820.80s] legally speaking have a pretty high bar
+[822.96s] to get you need to kind of
+[825.44s] prove out a strong public interest and
+[827.84s] it's a fairly complicated legal test and
+[830.48s] a lot of times people focus on that fee
+[832.32s] waiver but some agencies are pretty
+[834.96s] generous with fee waivers others
+[838.32s] very very rarely if ever give them out
+[840.56s] because
+[841.52s] maybe they think it's a short request
+[843.44s] they give you a feed waiver and then
+[844.56s] there's millions of pages they're now on
+[846.24s] the hook to process all that
+[848.56s] and so a lot of times agencies will
+[850.88s] fight tooth and nail to not give a
+[853.20s] blanket fee waiver but if you are in the
+[856.08s] media fee category status they are very
+[858.80s] limited in the types of charges that
+[860.64s] they can assess anyway and generally
+[862.80s] speaking they won't be able to charge
+[864.08s] you anything so go for the fee category
+[866.96s] typically speaking i tell people don't
+[869.04s] bother appealing the fee waiver request
+[871.52s] as long as you're properly categorized
+[873.36s] as a media requester because you're just
+[875.36s] setting yourself up for a larger fight
+[877.52s] and a longer kind of drawn out request
+[879.36s] process that at the end is probably not
+[881.76s] going to matter
+[886.08s] those are some of the most common types
+[887.68s] we've seen but if if you get something
+[890.56s] that's a specific rejection if you're
+[892.16s] dealing with something else before i
+[893.52s] kind of get into some of the specific
+[894.96s] categories i did kind of want to point
+[896.72s] talk about some general resources that
+[898.64s] we found super super helpful because i
+[901.76s] think a lot of times people see legal
+[903.52s] citations or they'll see court cases or
+[905.76s] they'll kind of see some legalese and
+[907.60s] get a little freaked out and to be
+[909.68s] honest i completely understand that as i
+[911.76s] mentioned earlier i'm not a lawyer i
+[913.92s] i've just kind of learned this through
+[915.36s] lots of mistakes over the years but
+[918.16s] there's some really fantastic resources
+[920.64s] out there to kind of help you navigate
+[922.24s] this stuff and you do some basic
+[923.60s] searches and reading it's actually not
+[926.16s] that hard to parse as you kind of get
+[928.24s] used to it
+[929.36s] foia.wiki is a resource that's
+[931.28s] collaboratively run by the reporters
+[932.80s] committee for the free of the press and
+[934.24s] a variety of other organizations
+[935.76s] including mukbrock that has detailed
+[938.24s] information on a variety of both federal
+[941.12s] exemptions as well as sort of um
+[944.24s] other ways that requests can be rejected
+[946.40s] and it goes deep on so you can kind of
+[948.16s] go there search through a category and
+[950.32s] get some really great information
+[952.24s] the department of justice affirmation
+[954.88s] office of information policy is sort of
+[957.12s] the
+[958.64s] federal
+[960.32s] lawyer's perspective on foia exemptions
+[963.44s] and best practices and that's a really
+[965.92s] readable kind of resource that also goes
+[968.00s] into
+[969.12s] sort of how exemptions should and should
+[970.64s] not be applied and then finally the
+[972.48s] office of government information
+[973.76s] services has a lot of decisions that
+[975.92s] they've published over the years that
+[977.60s] detail sort of how exemptions are
+[979.28s] applied and sort of what are some
+[980.72s] resources that you can use and so the
+[983.20s] great thing about those letters is that
+[984.56s] you can search for something you've run
+[986.48s] into take it back to the agency and say
+[989.28s] hey look actually based on this earlier
+[991.76s] decision you should have decided this um
+[994.32s] earlier and ogis does not actually kind
+[997.36s] of like decide a verdict it's not sort
+[999.92s] of like a normal appeal process so it's
+[1002.16s] just a helpful resource that kind of um
+[1005.68s] has a lot of good citations and data
+[1008.24s] um so we're going to do some lightning
+[1010.08s] rounds kind of looking at some of the
+[1011.84s] the most common types of federal
+[1013.76s] exemptions there's nine federal
+[1015.36s] exemptions uh the first one is one of
+[1017.52s] the most annoying national security um
+[1020.32s] so if you get something that's rejected
+[1022.08s] under exemption one or exemption b1 all
+[1024.96s] the exemptions start with b based on the
+[1027.04s] sort of subcategory of the code that
+[1028.56s] they're in
+[1029.76s] that's a really tough one to to kind of
+[1031.84s] push back because it means that
+[1034.40s] the government has decided that this is
+[1036.40s] classified information um
+[1039.52s] now what you can do is you can sort of
+[1042.40s] file what's called a mandatory
+[1044.08s] classification review which is a process
+[1046.48s] that sort of like runs parallel to foia
+[1048.72s] that says if something is no longer a
+[1051.76s] national secret or doesn't need to be
+[1054.64s] classified anymore they'll kind of go
+[1056.64s] through and kind of re-review that
+[1058.48s] information so if you google mdr that's
+[1061.04s] a pretty good resource unfortunately
+[1063.20s] b1 is is usually a place that's very
+[1065.44s] hard to kind of get appealed because
+[1066.80s] that is sort of
+[1068.56s] information that is properly classified
+[1071.76s] um
+[1072.72s] next exemption b2 internal practices
+[1075.36s] right the government says that if
+[1077.04s] something is just like hey what's our
+[1078.80s] internal lunch menu or something like
+[1080.40s] that if it's something that has no
+[1082.24s] bearing on the public if it's an
+[1084.24s] internal policy that is technically
+[1086.56s] exempt from foia i don't usually see b2
+[1089.52s] cited a lot because it's not a super
+[1092.08s] strong exemption because there is now
+[1093.84s] also a
+[1095.36s] no foreseeable harm standard and a lot
+[1097.52s] of ways that foia exemptions are applied
+[1100.48s] and so
+[1102.40s] here you would just want to make an
+[1103.76s] argument about actually you know it does
+[1105.84s] matter sort of like this policy because
+[1108.08s] it does have sort of externally facing
+[1110.56s] outcomes and so what you need to do is
+[1112.16s] kind of argue that there is a public
+[1113.76s] interest in this material
+[1116.96s] uh my least favorite exemption is b3
+[1120.24s] because basically b3 is
+[1122.88s] we talk about there's nine
+[1124.80s] foia exemptions b3 basically says if any
+[1127.36s] other law beyond these foia exceptions
+[1130.08s] um
+[1131.52s] uh says that something is not releasable
+[1133.84s] under foia then it's also not subject to
+[1136.88s] foia so it's like why bother having
+[1138.96s] those other nine
+[1140.40s] but here again a lot of times it pays to
+[1143.76s] actually go and look at what do those
+[1145.92s] other laws say because agencies a lot of
+[1147.92s] times misinterpret them or there's some
+[1150.40s] kind of like
+[1152.00s] detail that will give you an exemption
+[1153.52s] to that exemption so you can sort of say
+[1155.60s] oh this information is exempted but
+[1158.24s] maybe the agency that submits that
+[1159.84s] information to this agency is not
+[1161.44s] exempted so i can go to this other
+[1162.88s] agency for that information
+[1165.28s] the liberative process
+[1167.20s] this is where agencies want to have some
+[1169.28s] sort of internal leeway to kind of
+[1171.52s] debate and kind of brainstorm ideas
+[1173.84s] without the fear that this information
+[1175.52s] will eventually be made public and this
+[1177.68s] gives them a chance to kind of spit ball
+[1179.20s] things and that sort of thing
+[1182.16s] here what you want to do is sort of look
+[1184.00s] for sort of what are the arguments that
+[1186.80s] they were have using facts to kind of
+[1188.72s] drive these decisions because
+[1190.64s] deliberative process only applies to
+[1192.72s] sort of opinions and pre-decisional
+[1194.40s] information but any decision that a
+[1196.96s] government
+[1197.92s] make a decision-maker is going to be
+[1199.92s] making is going to be based off data
+[1202.32s] that they have and that data that
+[1204.00s] information that they're basing those
+[1205.44s] decisions on is not actually exempt from
+[1207.92s] b5 and what we found is that if you can
+[1210.40s] start proving that pieces of that
+[1212.00s] document are not fully exempt under b5
+[1215.04s] is that agencies eventually will kind of
+[1217.36s] relent on most of the other data and so
+[1219.84s] once you've kind of found one way into
+[1221.84s] that
+[1222.80s] maybe that sort of copy of any studies
+[1224.56s] that contributed to this decision or any
+[1226.48s] kind of
+[1227.68s] other sort of factual materials a lot of
+[1230.08s] times you'll find that you kind of get
+[1231.84s] into a whole range of other really
+[1233.92s] interesting documents as well
+[1237.04s] another one
+[1238.48s] b7 law enforcement sensitive information
+[1241.92s] so records are information compiled for
+[1243.92s] law enforcement purposes
+[1246.56s] that could be interfere with a an
+[1248.88s] investigation that could um impugn
+[1251.76s] somebody's right to a fair trial uh
+[1254.80s] violate privacy
+[1256.72s] all these different things that agencies
+[1258.48s] can claim are law enforcement sensitive
+[1260.96s] and so what you want to do here is kind
+[1262.72s] of look for indications that pieces of
+[1265.52s] this information have come out before or
+[1267.76s] make an argument that the release of
+[1270.00s] this information is not going to
+[1272.56s] jeopardize an investigation or
+[1274.24s] jeopardize future investigations one of
+[1276.64s] the things here though is that a lot of
+[1278.08s] times law enforcement at the federal
+[1279.92s] level has to coordinate with law
+[1281.36s] enforcement at the local level and so
+[1283.28s] one thing we found is that looking at
+[1285.52s] state or local agencies that might have
+[1287.36s] coordinated with that federal agency
+[1289.36s] they'll release that at the state or
+[1290.80s] local level
+[1292.08s] even if the federal agency might claim
+[1293.92s] that that is is exempt and so thinking
+[1296.08s] about other paths towards the documents
+[1298.00s] you want
+[1300.24s] speaking of which
+[1301.44s] making sure agencies are actually citing
+[1303.28s] valid exemptions this doesn't happen as
+[1304.96s] much at the federal level but sometimes
+[1306.56s] an agency will say oh this is
+[1308.24s] copyrighted material or they'll say
+[1310.80s] something else that is sounds legalish
+[1312.96s] but it's not actually a foia exemption
+[1315.28s] and so make sure the thing that they're
+[1316.72s] saying actually is a exemption to
+[1319.44s] release of those documents
+[1321.84s] part of a document being exempt does not
+[1323.60s] mean that all of a document is being
+[1325.28s] exempt there's something called segregal
+[1327.44s] information within
+[1329.04s] the world of foia and so if
+[1331.12s] they say oh that this is pre-decisional
+[1333.84s] well
+[1334.56s] you know the footnotes on that that
+[1336.80s] document or whatever else are not going
+[1338.40s] to be the page numbers are not there's
+[1340.40s] always something that's probably not
+[1342.16s] exempt and so pushing them to actually
+[1344.16s] kind of go through and only redact the
+[1346.48s] information that is truly exempt is
+[1348.72s] important
+[1350.00s] and then a lot of times if you kind of
+[1351.52s] do this basic research if you look at
+[1353.20s] some of the resources we talked about
+[1354.56s] earlier you'll quickly be able to kind
+[1356.72s] of think through
+[1359.12s] ways to kind of get around these
+[1360.48s] exemptions and push back against those
+[1362.88s] rejections
+[1364.40s] and then just very very briefly uh i did
+[1366.96s] want to kind of just note that the
+[1369.44s] official administrative appeals process
+[1371.68s] is not the only way to kind of get
+[1373.52s] around a rejection
+[1375.36s] at the federal level there's the office
+[1377.12s] of government information services which
+[1379.20s] is kind of like a marriage counselor for
+[1380.88s] requesters and agencies they do
+[1383.20s] mediation so they don't do decisions
+[1385.44s] they don't kind of like come out with
+[1386.96s] sort of orders and that sort of thing
+[1388.72s] but a lot of times they can help start a
+[1390.40s] conversation and kind of help people
+[1392.48s] take a step back and sort of look
+[1394.24s] through okay what can we do to actually
+[1396.00s] kind of get to a better resolution for
+[1397.68s] this process
+[1399.04s] there's also as i mentioned before mdr
+[1401.04s] is the mandatory declassification review
+[1403.28s] process and that says if something is
+[1405.52s] currently classified any member of the
+[1407.68s] public can ask for that to be reviewed
+[1409.84s] and see does this need to stay
+[1411.52s] classified not many people know about
+[1413.76s] this law it's pretty cool to be able to
+[1415.44s] kind of like spur something to get
+[1416.88s] reviewed and get released um pretty
+[1419.04s] exciting
+[1420.32s] there's ferpa which is a federal law
+[1422.08s] that applies to educational records you
+[1424.08s] can ask an educational institution for
+[1426.48s] documents about yourself so if you're in
+[1428.40s] college
+[1429.68s] if you're if you have a source that's in
+[1431.36s] college or recently graduated you can
+[1433.76s] file a ferpa request and they can get
+[1436.40s] information about themselves
+[1438.24s] similarly you have extended rights to
+[1440.40s] information about yourself from the
+[1442.08s] federal government under the privacy act
+[1444.32s] so if you're asking for documents about
+[1445.92s] yourself or if you're working with a
+[1447.44s] source you can have them file what's
+[1449.44s] called a privacy act request it usually
+[1451.20s] goes to the same office as a foia
+[1452.80s] request and that forces the agency to
+[1455.52s] kind of give them more information than
+[1457.12s] they would give the general public
+[1459.60s] and then finally think about ways to
+[1461.52s] kind of go around that problem look at
+[1463.20s] what other agencies might have access to
+[1465.60s] the information that you care about what
+[1467.60s] other agencies might have um you know
+[1471.04s] ways kind of in so if one agency is not
+[1473.28s] giving you what you want think about who
+[1475.28s] else might have those documents and kind
+[1477.12s] of go after them
+[1478.72s] and most importantly always be filing
+[1481.04s] both requests but also appeals not
+[1483.60s] enough people are taking advantage of
+[1485.04s] this process there's a ton of really
+[1486.88s] amazing ways to kind of like use the
+[1489.04s] appeals process to get access to more
+[1490.80s] information uh and but it won't work
+[1494.16s] unless you actually take the time to
+[1495.76s] kind of file that appeal and push back
+[1498.16s] against that initial rejection
+[1500.40s] so we've got a few minutes i would love
+[1501.84s] to see if there's any specific questions
+[1503.52s] that people have and and uh happy to try
+[1506.16s] and workshop projections or or talk
+[1508.40s] through specific questions that have
+[1510.40s] come up
+[1512.00s] um
+[1512.88s] okay um so we nick want to ask
+[1516.56s] maybe he missed this but can you explain
+[1518.96s] challenging the search process
+[1521.60s] uh great question so we did not i didn't
+[1523.92s] get into that so
+[1525.36s] a lot of times agencies one of the most
+[1527.36s] common rejections we see is agencies
+[1529.20s] saying we couldn't find this information
+[1530.96s] and that sort of thing
+[1532.56s] now that can be tough right you're as a
+[1534.40s] requester on the outside and you don't
+[1536.80s] know sort of like how the agency is
+[1538.48s] structuring things
+[1540.40s] so i think it can depend i think there's
+[1541.92s] a few different strategies here uh one
+[1544.64s] if you're really curious about an
+[1545.84s] agency's research process you can file a
+[1548.72s] cop a new request for a copy of their
+[1550.48s] foia processing notes and a lot of times
+[1552.72s] that can give you really amazing
+[1554.24s] insights into sort of how the agency did
+[1556.40s] or did not
+[1558.08s] search for your documents um
+[1561.04s] you can also
+[1562.40s] a lot of times i find being able to
+[1564.24s] point to evidence that these documents
+[1566.08s] exist is really really valuable um and
+[1568.72s] so being able to say um you know
+[1572.08s] look uh you said there was no responsive
+[1574.08s] documents uh
+[1575.92s] the president said that these documents
+[1577.84s] existed or like these documents are
+[1579.52s] referenced in this format or the this
+[1582.48s] program couldn't exist unless these this
+[1584.88s] data existed
+[1586.32s] um
+[1587.60s] pointing to evidence that those
+[1589.04s] documents exist pointing to some sort of
+[1591.04s] citation or just making some argument
+[1593.28s] that this information exists
+[1595.36s] uh is probably the best path you have to
+[1598.08s] kind of pushing back against
+[1600.48s] searches that were not well done if you
+[1602.72s] don't have that however it's still worth
+[1604.64s] filing an appeal and saying look i filed
+[1607.52s] this request i still believe that these
+[1609.28s] documents exist i don't believe that
+[1611.36s] they did a sufficient search and just
+[1614.08s] putting whatever if you don't have other
+[1615.76s] additional information that you can give
+[1617.12s] them putting that in and i've seen that
+[1619.12s] work i once had an agency reject a
+[1622.72s] request that we saw and then the user
+[1625.28s] just responded yes you do have those
+[1626.88s] documents search again and then like two
+[1629.04s] months later they got 90 pages of
+[1630.64s] documents and so it was a very uh
+[1632.72s] curt appeal didn't have additional
+[1634.56s] information but it was still effective
+[1636.08s] and so i think
+[1637.28s] if you've got more just pointing out
+[1639.52s] sort of what's there pointing out sort
+[1641.28s] of like
+[1642.32s] logically that those documents must
+[1644.24s] exist is your best path but if you can't
+[1646.24s] do that still appeal still worth it
+[1649.76s] gene has asked for statistical
+[1651.52s] information from
+[1653.20s] the bop i'm assuming that's bureau of
+[1655.36s] prisons
+[1656.32s] seven months ago and she was told her
+[1658.48s] request was complex quote unquote
+[1661.52s] i was not giving a specific timeline
+[1664.72s] ridiculous the information either exists
+[1667.12s] or it doesn't i have called and got
+[1668.88s] nowhere is bop particularly
+[1671.20s] obstructionist
+[1673.04s] bop is particularly obstructionist i i
+[1675.68s] found bop one of
+[1678.08s] the bizarrely most
+[1680.24s] hard to get information out of and then
+[1682.96s] also uh you know a lot of the jails and
+[1686.00s] and prisons get a very large number of
+[1688.88s] requests from prisoners and so they do
+[1691.04s] tend to be more backlogged but bureau of
+[1692.88s] prisons just process wise i haven't
+[1695.36s] thought about them in a while but
+[1696.40s] they're they're pretty bad to deal with
+[1698.72s] um i think there it it is
+[1702.00s] um
+[1703.84s] you know trying to kind of figure out
+[1705.44s] sort of what leverage and leverage i
+[1707.60s] think
+[1708.40s] uh trying to escalate to a foia public
+[1710.64s] liaison i don't have any experience
+[1712.56s] there but trying to also use things like
+[1715.68s] uh the office of government information
+[1717.76s] services to kind of open some mediation
+[1720.16s] a lot of times what you want to do is
+[1722.16s] kind of be the squeaky wheel now you
+[1723.92s] don't want to be
+[1725.04s] uh too aggressive or too kind of like
+[1727.36s] pulling a china shop about this but i
+[1729.12s] think figuring out sort of what can you
+[1730.88s] do to kind of like escalate the
+[1733.20s] importance and highlight you know your
+[1735.12s] persistence as a requester can be
+[1736.96s] important um unfortunately statistical
+[1739.84s] information
+[1741.04s] and a number of agencies can be exempted
+[1743.68s] uh just so that they can get candid
+[1745.60s] responses and that that can be a tough
+[1747.44s] one but
+[1748.56s] if if something's kind of like held up
+[1750.88s] there one thing i've also seen that can
+[1752.64s] be helpful is filing a new request again
+[1755.52s] for the foia processing notes and one
+[1757.76s] thing i've seen is that a lot of times
+[1759.52s] if something's stalled it's not because
+[1761.28s] of a problem within the foia office it's
+[1763.44s] because the foia office can't get a
+[1764.96s] response from somebody else within the
+[1766.40s] agency and so by asking for these
+[1768.72s] details that kind of tends to prompt it
+[1770.72s] to start moving along
+[1772.40s] uh in some cases in a surprisingly
+[1775.28s] effective way
+[1776.56s] thank you so much michael for everything
+[1778.88s] that you went over this was really
+[1780.24s] enlightening so thank you
+[1782.80s] it's my pleasure and looking forward to
+[1784.56s] hearing all the appeal success stories
+[1787.12s] excellent all right take care everybody

@@ -1,0 +1,608 @@
+[5.28s] hey everybody I'm Emily Sweeney from the
+[7.52s] Boston Globe and I want to thank you for
+[9.48s] joining us for this latest round of
+[11.20s] lessons brought to you by the New
+[12.52s] England First Amendment Coalition during
+[15.20s] this class you're going to learn about
+[16.60s] remote public access to government
+[18.52s] meetings in Maine be sure to check out
+[21.40s] our previous classes on our YouTube
+[23.16s] channel and on our website nea.org and
+[26.64s] before we start I want to recognize the
+[28.48s] estate of Gloria negri from supporting
+[30.68s] these classes Gloria was a trailblazing
+[33.24s] journalist at the Boston Globe for more
+[35.00s] than 50 years and this program is part
+[37.60s] of her Legacy of Newsroom education and
+[39.76s] our lifelong commitment to local
+[41.68s] journalism I also want to thank the
+[43.88s] Rhode Island foundation and the New
+[45.60s] England society of news editors for
+[47.52s] their continued support and a big thanks
+[49.92s] to you for taking the time today to
+[51.80s] learn how to keep government open and
+[53.76s] accountable in your state and with us
+[56.48s] today is Brenda kilty the first and
+[59.48s] current Public Access Ombudsman for
+[61.88s] Maine a position she began in 2012 and
+[65.56s] she's going to walk us through remote
+[67.24s] access to government meetings in Maine
+[69.40s] uh Brenda thanks so much for being here
+[71.36s] I'm going to be speaking about just one
+[74.04s] element of the freedom of access act
+[76.68s] which is our access to public records
+[78.80s] and meetings law in the state of Maine
+[81.40s] so I'm not able in this short period of
+[84.08s] time to sort of give a big background of
+[87.08s] the statute we're diving right into
+[89.40s] remote participation so if you have
+[92.28s] questions relating to larger questions
+[94.60s] about the statute or how this fits in
+[96.68s] feel free to bring those at the end of
+[98.28s] the session and any other questions that
+[100.76s] come up along the way um I did leave my
+[104.20s] uh contact information and also the
+[106.32s] state of main has a website related to
+[108.28s] FAA if if you want to follow up on that
+[110.64s] as well so today we're talking about
+[113.64s] remote participation and I did want to
+[116.48s] make the connection for everyone with
+[118.44s] the underlying purpose of foa because
+[121.56s] anytime that we're looking at either the
+[124.00s] law itself or the implementation of the
+[126.56s] law we always want to come back to why
+[129.36s] why do we even have this statute what is
+[131.56s] what is the point of this and so foa
+[134.88s] itself embodies the principle that
+[137.08s] public proceedings exist to Aid in the
+[139.76s] conduct of the people's business and it
+[143.36s] expressly covers both actions must be
+[147.32s] taken openly and also that liberations
+[150.80s] must be conducted openly so we're not
+[153.28s] only talking about the votes taken by a
+[156.96s] public body in a public proceeding we're
+[159.44s] also talking about all the discussions
+[162.04s] and the dialogue the deliberations that
+[164.28s] lead up to that
+[165.92s] vote and then I think another really
+[168.96s] important aspect of the purpose of foa
+[171.84s] uh has been articulated by the main
+[173.96s] Supreme Judicial Court and this is in
+[176.72s] reference to Foya and here we talk about
+[180.28s] an informed citizenry vital to the
+[183.52s] functioning of a Democratic Society
+[185.92s] needed to check against corruption and
+[188.84s] to hold the governors accountable to the
+[191.48s] Govern so these two big themes of
+[195.04s] openness and accountability underly the
+[198.64s] statute and so as we go through the
+[201.76s] provisions related to remote
+[203.24s] participation it's just good to keep in
+[205.76s] mind do these Provisions facilitate
+[209.92s] those purposes and any changes that
+[212.92s] could possibly be suggested facilitate
+[215.68s] those purposes so let's Dive Right
+[219.12s] In remote participation is relatively
+[221.88s] new in Main and so I'm going to give you
+[225.40s] a a little bit of the evolution and then
+[227.64s] talk about where we are right now and I
+[230.24s] think this is important to at least see
+[232.40s] are there Trends or you know has this
+[235.28s] arked in certain directions could what
+[237.32s] do we expect the future to bring for
+[239.40s] remote participation but prior to the
+[242.16s] pandemic there was no provision in the
+[244.64s] state of Maine for remote meetings in
+[246.88s] the statute and the AG's office had put
+[250.08s] out a letter in back in 1979 related to
+[254.48s] a public body voting by phone and those
+[258.68s] were the days right and the AGS took the
+[262.60s] position that that that couldn't happen
+[265.32s] that in order to vote for votes to be
+[267.52s] taken action to be taken by a public
+[269.40s] body
+[270.36s] the members had to be physically present
+[273.32s] and unless unless specifically
+[276.32s] authorized by Statute to do
+[279.00s] otherwise there are a very small number
+[282.32s] of state level agencies or Statewide
+[286.32s] boards that have written into their own
+[288.88s] statutes authorizing legislation for
+[291.32s] remote
+[292.44s] participation separate and outside of
+[295.60s] what FAA has to offer we also have a
+[299.28s] very active group called the right to no
+[301.56s] advisory committee that worked for a
+[303.96s] long time for years on legislation to
+[306.68s] address issues uh raised by remote
+[309.08s] meetings and to try to ensure while they
+[312.16s] were looking at those issues this
+[314.00s] transparency and openness and access to
+[317.36s] the deliberations and actions and to
+[319.64s] ensure that that remained
+[321.64s] intact um and all the although the
+[324.20s] legislature in Maine passed um those
+[328.04s] Provisions for spefic specific agencies
+[330.88s] a very small number of them attempts to
+[334.00s] move an amendment to FAA itself were
+[338.36s] unsuccessful and there are many reasons
+[341.28s] I think for that but when I look at it
+[343.32s] and one thing that I perceived in those
+[345.24s] discussions was a very strong sentiment
+[347.96s] in the state of Maine supporting
+[350.32s] in-person
+[352.16s] representation in other words people
+[354.28s] were concerned about not being face-
+[356.40s] Toof face particularly with their
+[358.28s] elected officials and there was a
+[360.36s] concern somehow they that you know the
+[363.44s] officials of the would somehow avoid
+[367.64s] accountability by not being facing you
+[369.84s] know not facing um their public uh the
+[372.84s] other questions were of course the IT
+[375.60s] issues the lack of broadband and then
+[378.52s] there just was not a clear consensus on
+[381.16s] what the elements of such legislation
+[383.44s] should
+[384.76s] be um but then there was covid
+[390.68s] and emergency legislation was enacted on
+[393.96s] March 18
+[395.32s] 2020 and this added a new section to foa
+[400.52s] uh to temporarily allow certain public
+[403.16s] bodies to conduct meetings through
+[404.96s] electronic means and there were four
+[407.44s] conditions in that legislation there had
+[410.28s] to be adequate notice um including the
+[412.88s] means by which the public could attend
+[415.56s] remotely so that had to be included in
+[417.52s] the notice itself the board members had
+[420.68s] to be able to hear and speak to other
+[423.64s] members and the public had to be able to
+[426.48s] hear all of those
+[428.60s] conversations um the board had to
+[430.84s] determine that public attendance would
+[432.40s] be by remote means and all votes had to
+[435.16s] be by roll
+[436.96s] call so if FAA had not I mean if if Co
+[441.88s] had not
+[443.48s] happened the probably the institution of
+[447.28s] remote participation would have taken a
+[449.32s] long lot longer to get put in place but
+[452.52s] by necessity in order for business
+[454.96s] government business to proceed um this
+[458.00s] was just had to happen and there were a
+[460.60s] lot of bumps in the road along the way
+[463.76s] um but it worked well enough so that on
+[468.32s] July 30th
+[470.32s] 2021 the emergency law that was
+[472.84s] permitting these public proceedings the
+[474.80s] remote public proceedings
+[476.64s] expired and the legislature enacted a
+[479.80s] new provision which is now section
+[483.40s] 403b in Title One Making participation
+[487.04s] in public meetings permanent uh under
+[489.84s] limited under certain
+[491.44s] circumstances so even though during
+[494.48s] covid um there was a real learning curve
+[497.36s] in Maine with trying to figure out how
+[499.56s] to make this technology work you know
+[501.40s] how do we do this um lots of bumps in
+[504.56s] the road but I think there was also a
+[507.16s] realization that there were a lot of
+[509.96s] positives to be to having remote access
+[513.84s] including a higher level of
+[515.84s] participation by the public in public
+[518.32s] meetings so Zoom was here to stay at
+[521.88s] that point and then this section
+[527.44s] 403b Title One um I want to talk just a
+[531.16s] little bit about some of the basic
+[533.32s] elements of it and then later we'll look
+[535.84s] at how it's been amended um but it added
+[539.48s] did a step that in order to
+[543.16s] convene in order to have remote
+[545.60s] participation the body would have to
+[547.72s] convene in person and adopt a written
+[550.88s] policy after notice and hearing so this
+[555.32s] involved a step that was a hearing a
+[558.52s] public hearing and I think the reason
+[560.76s] for that was a recognition that there
+[563.76s] could be communities that had a lot to
+[567.24s] say about whether they wanted their
+[568.76s] local board and committees or their
+[570.56s] select board or their school board to be
+[573.12s] meeting remotely and this and they
+[575.16s] needed to have an opportunity to air
+[577.40s] what they had to say so no remote
+[580.20s] participation without a policy and the
+[582.72s] policy is local this this means your
+[586.36s] local select board your you know your
+[588.56s] local school board or whatever state
+[591.84s] level boards um or commissions want to
+[594.76s] meet whatever public body on any level
+[597.32s] of government but it is not an across
+[600.40s] the board Statewide mandate so each
+[604.84s] local entity could decide for itself how
+[608.24s] they wanted to deal with this and
+[609.60s] whether or not they wanted a policy that
+[611.24s] was going to allow remote
+[613.04s] participation um there are me the
+[615.88s] members could participate remotely only
+[620.56s] if inperson participation was not
+[624.64s] practicable so not practicable is
+[629.52s] uh not defined exactly but there were
+[631.84s] some examples given in the statute um
+[635.92s] that would be examples for instance of
+[637.88s] something that would not be practicable
+[639.60s] but this is not an exclusive list um
+[642.64s] emergency or urgent issue that requires
+[645.40s] the entire body to be remote illness or
+[648.16s] physical condition um absence with sign
+[651.40s] significant travel difficulties
+[653.76s] significant distance from the meeting
+[655.56s] site for a Statewide body and then for
+[658.40s] many of our um public and members who
+[662.16s] are live in Island communities in Maine
+[665.12s] uh traveling the difficulty of traveling
+[667.68s] between or from the islands so so this
+[671.16s] is a list of things that could create a
+[674.76s] situation where it would be not
+[676.88s] practicable to be in person and
+[679.72s] therefore would allow a member to
+[682.88s] participate remotely and if any member
+[686.60s] participated remotely then the public
+[688.92s] must be allowed to also participate
+[692.40s] remotely um and there had to be an
+[694.60s] effective means of communication between
+[696.72s] members and the public if the body
+[699.76s] allows public input during the
+[701.72s] proceeding which is not always the case
+[704.76s] so you can see now we've we're creating
+[707.48s] a scheme that has two real hurdles the
+[711.28s] first one is the policy you you know
+[714.00s] your your community has to decide that
+[716.20s] it does actually want this to happen and
+[718.60s] then the second hurdle is that this
+[721.24s] in-person
+[722.40s] um presence is really an
+[725.40s] expectation unless it's not practicable
+[730.28s] right um the notice had to contain
+[732.84s] certain information including the means
+[734.88s] by which the public May access there the
+[738.00s] location for in-person attendance by the
+[740.44s] public had to be provided unless it was
+[743.20s] an emergency or urgent issue and there
+[745.00s] was going to be a fully remote meeting
+[747.24s] all votes by roll call the documents
+[749.92s] meeting materials have to be available
+[751.72s] to the members of the public
+[753.32s] participating remotely that to the same
+[755.32s] extent customarily available so that
+[758.00s] they wouldn't be at a disadvantage
+[760.12s] because it was a remote meeting they'd
+[761.64s] still be able to get the packet um and
+[765.48s] then of course the telephonic or video
+[768.04s] technology um or other means to
+[770.16s] reasonably accommodate a disability so
+[772.92s] these are all requirements um and any
+[776.44s] community that would decide to adopt a
+[779.88s] policy would include these elements in
+[782.64s] their policy and talk about how they
+[784.28s] were going to take care of
+[787.44s] that
+[789.20s] but there was another problem
+[792.80s] um there were barriers to in-person
+[796.12s] meetings still because we still in
+[799.24s] certain situations had um you know High
+[803.28s] rates of covid in small communities or
+[806.24s] there were other reasons people were
+[807.76s] really un uncertain certain about
+[810.12s] meeting together in groups and you know
+[813.44s] so actually it made passing a policy to
+[817.20s] allow remote meetings difficult because
+[819.60s] you had to do it in person for those
+[822.32s] bodies who had not enacted a policy
+[825.08s] prior to July 30 2021 or weren't even
+[829.92s] convened at that time so for instance we
+[832.32s] had new boards that were being created
+[835.12s] after this law had passed and the law
+[837.96s] only allowed them the possibility of
+[839.64s] meeting in person to create a policy to
+[842.20s] meet remotely but there were reasons why
+[844.92s] they might not even want to meet in
+[846.44s] person to create that policy so in
+[850.20s] August 8th
+[852.08s] 2022 um the statute was amended to allow
+[856.48s] bodies without a policy to meet remotely
+[860.56s] and conduct a hearing and vote on a
+[862.96s] policy to meet remotely if the chair
+[866.00s] determined there was an emergency or
+[867.64s] urgent issue notice is given and the
+[870.92s] policy was made um available in advance
+[874.20s] and the members ascented by 2third
+[876.12s] majority to this
+[878.08s] determination so so this is again just
+[881.00s] trying to make sure that if a community
+[883.20s] wanted to Institute remote participation
+[886.24s] or a board um that having to come in
+[890.04s] person to actually pass that policy
+[892.12s] would not be the problem that they could
+[894.04s] do it remotely if the conditions allowed
+[897.68s] it um and then there there are further
+[902.20s] amendments to the statute as time goes
+[904.40s] by and people are becoming in
+[907.36s] main more accustomed to the remote
+[912.28s] platforms um we're getting better at how
+[914.76s] to handle zoom and the other platforms
+[917.72s] it's just becoming more the ordinary
+[920.00s] course of business whereas earlier it
+[922.24s] seemed it was an enormous change so now
+[926.12s] in
+[927.64s] 2022 this section and remember section
+[930.48s] 403b has only been in existence for a
+[933.56s] year and already a year later um an
+[939.56s] amendment is enacted that the remote
+[942.16s] meeting policy that had to previously
+[945.96s] include the expectation that members
+[947.96s] would be physically present unless not
+[950.44s] practicable is completely
+[952.84s] removed so there's no language currently
+[955.80s] in the Statue related to this earlier
+[958.48s] pretty large chunk of the statute that
+[961.08s] created this hurdle where we're really
+[964.20s] going to expect you to be in person
+[966.16s] unless it's not practicable and you have
+[968.28s] to have reasons for that that's now gone
+[972.20s] so there is
+[973.64s] no um preference necessarily in the
+[977.12s] statute for remote versus inperson the
+[981.40s] only thing is you have to decide by
+[983.16s] policy but there's no you know not
+[986.88s] practicable language anymore
+[990.00s] um and this new provision in 403b allows
+[994.04s] the body to limit public attendance only
+[996.88s] to remote means if there's an emergency
+[999.24s] or urgent
+[1001.08s] situation um that requires the body to
+[1004.00s] meet remotely so this is a little bit of
+[1006.24s] different language urgent situation
+[1008.44s] versus urgent issue that we had earlier
+[1012.12s] um but clearly it's allowing still the
+[1016.16s] body to not have a hybrid meeting but to
+[1018.68s] have a fully remote meeting under
+[1020.48s] certain circumstances and then the
+[1022.08s] public would have to be fully
+[1023.80s] remote and there's also a provision here
+[1027.16s] related to the policies adopted by a
+[1031.08s] body and that the policy applies to all
+[1034.04s] the boards and commissions or committees
+[1036.88s] within the jurisdiction of that body
+[1039.56s] unless those other boards or committees
+[1041.84s] adopt their own policy because we had
+[1043.96s] seen some inconsistency even within a
+[1047.00s] town the slap board might have one
+[1050.12s] policy and the planning board might have
+[1052.20s] another and they might not be the same
+[1054.20s] or one might want a policy for remote
+[1056.04s] and the other might say no we only want
+[1057.56s] to meet in person so I think this was an
+[1060.16s] attempt to try to um create consistency
+[1063.80s] within a particular
+[1066.36s] jurisdiction um and then in 2023 the
+[1070.36s] changes continue um in 2023 the phrase
+[1074.88s] and the public is added to section four
+[1078.92s] 3 B2 which widened the scope of the act
+[1082.64s] of the application of the remote policy
+[1084.80s] this term
+[1086.28s] participation so the the language is a
+[1088.96s] public body subject to this sub chapter
+[1091.80s] may allow members of the body and the
+[1095.08s] public to participate in a public
+[1097.92s] proceeding using remote methods and I'll
+[1101.40s] talk about that for just a minute
+[1102.80s] because my my perception of what that
+[1107.00s] does to the statute is
+[1109.32s] elevates the role of the public so that
+[1113.12s] it's not just Public Access or it's not
+[1116.04s] just members of a body May participate
+[1119.20s] remotely but it's the members of the
+[1120.84s] body and the public May
+[1124.52s] participate I'm not sure that it
+[1126.92s] practically changes anything but I think
+[1129.60s] in terms of putting the language in
+[1131.24s] there and focusing on that is an attempt
+[1133.60s] to bring the needs of the public a
+[1135.80s] little bit further more to the Forefront
+[1138.08s] of this the statute in this language
+[1141.32s] there's a new provision now for blanket
+[1143.88s] remote policies so here we're
+[1146.88s] revisiting the original attempt to
+[1149.44s] create consistency within a
+[1152.40s] jurisdiction and this changes it up
+[1156.36s] um here it says a policy applies to a
+[1161.00s] border committee within the jurisdiction
+[1163.20s] of the body unless the Border committee
+[1166.84s] opts out by adop in its
+[1170.24s] own that's fine I think that's not that
+[1173.64s] different but what's really different is
+[1175.92s] County Municipal and Regional body
+[1178.36s] policies apply within the jurisdiction
+[1181.84s] and the boards and committees that are
+[1183.76s] subordinate can only opt out if they're
+[1186.92s] specifically authorized so here
+[1189.96s] especially with the County Municipal
+[1191.52s] Regional bodies you're seeing if the
+[1193.96s] select board um creates a a policy that
+[1198.88s] they're expecting that all the
+[1200.44s] subordinate boards and committees would
+[1202.72s] all have the same policy related to
+[1205.20s] remote participation unless they're
+[1207.88s] authorized by the select board to opt
+[1210.52s] out so that's just one example of how
+[1213.12s] that could come
+[1220.96s] up this is an interesting Amendment from
+[1224.68s] 2023 related to the right of the public
+[1227.44s] to make a record recing of the meeting
+[1231.32s] the remote meeting so FAA already
+[1234.28s] allowed the public to make written taped
+[1236.84s] or filmed records of public meetings and
+[1239.24s] that there's a longstanding practice for
+[1241.44s] that and to live
+[1243.68s] broadcast um so that's not a question at
+[1248.20s] all if you have an in-person meeting you
+[1250.52s] can go in and take out your phone and
+[1252.72s] film it and or you know do whatever you
+[1255.04s] need to do as long as it doesn't disrupt
+[1257.32s] the uh proceed ings um and there you
+[1260.16s] know reasonable limitations can be put
+[1262.40s] on that activity but another 2023
+[1265.68s] amendment of section 403b gave members
+[1268.44s] of the public a right to record the
+[1272.20s] remote proceedings using the same
+[1274.40s] electronic platform that's used to
+[1276.60s] conduct the
+[1278.68s] meeting provided that there's no
+[1281.24s] additional
+[1282.28s] cost the platform allows participants
+[1285.84s] other than the host to enable the record
+[1288.16s] function
+[1289.60s] and of course it doesn't interfere with
+[1291.16s] the orderly conduct of the
+[1293.32s] proceeding so this one I have this is
+[1297.00s] fairly new I have not seen any
+[1300.56s] complaints about how this is working in
+[1303.60s] or how it's operating I'm curious to
+[1305.72s] hear from people how this works because
+[1308.16s] certainly it makes a very convenient
+[1311.24s] mechanism for the public to Simply
+[1313.08s] record the meeting that's going on and
+[1315.24s] there you know there's lots of need for
+[1317.20s] that or interest in that
+[1321.32s] so I know I'm going so quickly through
+[1323.76s] this but I just want to do a little
+[1325.72s] recap of where we stand today um with
+[1329.80s] section 4 3B with uh the original what
+[1333.32s] we started with with those changes and
+[1335.76s] then here we are today and I just picked
+[1338.40s] out I'm not trying to give you the
+[1340.56s] entire statutory provision just the the
+[1343.52s] points that I think are most interesting
+[1345.32s] for us um we remote methods in other
+[1350.16s] words how you conduct the meeting what
+[1352.20s] kind of platform you do it on it's
+[1354.76s] limited so remote methods means
+[1357.48s] telephonic or video technology but not
+[1361.00s] email text or chat and the chat function
+[1364.80s] can be problematic um and not only for
+[1368.04s] the proceeding but for record retention
+[1370.44s] as well but the statute is specific no
+[1373.20s] email text or chat and um so I'm curious
+[1377.16s] it's one of those areas where I think
+[1378.92s] there is an arc that is inevitable
+[1381.64s] because technology is changing changes
+[1384.20s] constantly it seems to be changing at an
+[1386.60s] accelerated pace and so I think at some
+[1390.40s] point I'm not sure that this will
+[1393.36s] Encompass all the options out there um
+[1396.52s] and it may need another change in the
+[1399.08s] future um no there's no Statewide
+[1401.72s] mandate so section 403 B2 the body May
+[1406.56s] adopt a policy after notice and hearing
+[1409.00s] so there's there's nothing in this
+[1410.84s] statute that says every public body must
+[1415.12s] have a policy or must enable remote
+[1418.04s] proceedings that's it's not that way in
+[1420.16s] mean and again I I have a question about
+[1422.88s] that looking into the future because if
+[1426.72s] we go back to the purposes of foa and
+[1429.16s] openness and
+[1430.40s] accountability I think it's hard to
+[1433.76s] say that that remote remote meetings
+[1437.96s] have not
+[1439.16s] worked toward those goals I mean I know
+[1442.84s] in my own work I am constantly watching
+[1446.08s] um public meetings and and seeing it and
+[1449.28s] it not only did they conduct it remotely
+[1451.76s] but you know their broadcast or their
+[1454.16s] put up online and I can watch it and it
+[1457.60s] is a window to what's going on that you
+[1460.72s] may not have if things are only
+[1462.56s] happening in person so um so I have a
+[1465.84s] question about whether or not there'll
+[1467.12s] be some sort of Statewide push uh and of
+[1470.68s] course there'll be cost infrastructure
+[1473.84s] you know all of that um standing in the
+[1476.80s] way and and still sentiment there are
+[1479.80s] places in main where they just don't
+[1481.28s] want this they want to be in person
+[1483.00s] that's that's the way they are so um and
+[1486.16s] then no requirement to offer a hybrid
+[1488.44s] meeting with no remote participation by
+[1491.20s] members of the body so what that means
+[1494.96s] is um when members of the body
+[1498.44s] participate remotely the statute
+[1501.00s] requires that the public be allowed to
+[1504.08s] participate remotely but what if it's an
+[1507.04s] in-person meeting and no member is
+[1509.92s] meeting remotely should the public still
+[1513.52s] have access to that meeting remotely
+[1517.24s] particularly if there's going to be
+[1518.60s] public comment um or should in our
+[1521.48s] statute right now says that you don't
+[1523.20s] have to do that you could and it does
+[1525.44s] happen it happens a lot I think um but
+[1528.80s] there's no
+[1530.04s] requirement if the body's not meeting
+[1532.60s] remotely if they are not required to
+[1535.00s] create a PL a online platform or remote
+[1538.40s] participation for members of the public
+[1541.20s] this is another one I have questions
+[1542.88s] about looking into the
+[1544.64s] future um our statute also does not
+[1548.04s] create a right to public comment so if
+[1552.68s] the body allows public comment or is
+[1556.08s] otherwise required to provide an
+[1557.80s] opportunity for public input because
+[1559.60s] there are certain situations where that
+[1561.40s] is required FAA does not create an
+[1564.88s] overriding um right to public comment um
+[1568.44s] but if it is part of what's going to go
+[1570.76s] on in the meeting then there have to be
+[1572.40s] an effective means of communication
+[1574.12s] between the body and the
+[1576.24s] public and then the notice must include
+[1578.84s] how to join remotely again this is just
+[1582.36s] practical um but you know if the if
+[1586.32s] there's going to be a hybrid meeting
+[1587.80s] with person and remote then the notice
+[1590.48s] has to identify the location for the
+[1592.88s] inperson and how to um join up
+[1597.56s] remotely uh you know our statute says
+[1600.32s] certain bodies may not meet remotely
+[1603.60s] they're they're not allowed not
+[1605.28s] permitted those would be Town meetings
+[1607.40s] and Regional School unit budget meetings
+[1609.52s] so those have to be done in person and
+[1612.28s] then certain bodies are exempt so the
+[1615.40s] legislature is exempt from this law and
+[1618.56s] the other few public bodies with
+[1621.00s] specific statutory
+[1623.04s] Provisions they now the legislature this
+[1625.92s] means the legislature has the option of
+[1628.16s] creating remote but they are this does
+[1631.24s] not apply to them um and so that is the
+[1635.20s] end of my slides and I I'm open to any
+[1639.00s] questions that come up and I'm you know
+[1640.76s] I'm sorry this is a really quick Deep
+[1643.76s] dive into remote participation in Maine
+[1646.36s] but um I hope it made sense to people um
+[1650.68s] well we're getting lots of kudos to you
+[1652.32s] Brenda in the chat um for putting on a
+[1655.32s] great session um and I and I want to
+[1658.36s] thank everybody for joining us in our
+[1660.32s] live audience we we had quite a few
+[1662.08s] people here today so I appreciate
+[1664.48s] everybody taking the time so um yeah so
+[1668.60s] I I think we're all set Brenda thank you
+[1670.92s] so much for for this
+[1673.56s] session okay thank you good bye all
+[1676.32s] right thanks everybody

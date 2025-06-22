@@ -1,0 +1,571 @@
+[4.96s] i'm justin silverman of the new england
+[6.64s] first amendment coalition
+[8.56s] thank you for joining us for this
+[10.16s] introduction to open meeting law our
+[12.80s] latest round of video tutorials and
+[14.88s] other lessons on freedom of information
+[16.72s] laws in new england
+[18.40s] if you haven't already please check out
+[20.32s] our previous lessons on public record
+[22.48s] laws in the federal freedom of
+[23.76s] information act
+[25.20s] all lessons are available to you at
+[27.04s] nefac.org f-o-i guide
+[30.56s] in addition to more video tutorials
+[32.48s] you'll also find there are other helpful
+[34.32s] resources such as common q a's notable
+[37.44s] case law and an foi legislation tracker
+[41.44s] this round of lessons is brought to you
+[43.28s] by nefac with help from the society
+[45.12s] professional journalists foundation the
+[47.20s] rhode island foundation
+[49.04s] muckrock sbj new england and the new
+[52.08s] england society of news editors we're
+[54.72s] grateful for everyone's support
+[57.36s] thank you
+[58.96s] now here's nefax emily sweeney to
+[61.92s] introduce you to your instructor hey
+[64.08s] everybody i'm emily sweeney from the
+[65.76s] boston globe and i want to thank you all
+[68.24s] for joining us for this webinar which is
+[70.32s] part of our ongoing series on freedom of
+[72.96s] information laws
+[74.64s] this session we're going to focus on the
+[76.56s] open meeting law in vermont and with us
+[79.20s] is leah ernst
+[80.72s] she is the legal director at the aclu of
+[84.08s] vermont where she litigates civil
+[85.68s] liberties
+[86.72s] civil rights and open government cases
+[89.68s] leah thank you so much for uh joining us
+[91.76s] today and leading us
+[93.44s] walking us through this the open meeting
+[95.12s] law in vermont yeah thanks emily i'm i'm
+[97.68s] happy to be here as always um
+[100.40s] so to
+[102.16s] to sort of situate the conversation what
+[103.92s] we're going to try to answer today is
+[107.04s] is it a meeting
+[108.64s] if so can you attend it
+[110.64s] if there's an open meeting law violation
+[112.40s] what can be done and then we'll spend a
+[114.00s] little time at the end if we have time
+[115.52s] on some of the changes brought about by
+[117.20s] the covert 19 pandemic
+[119.44s] um
+[120.96s] as an initial matter it's an important
+[122.96s] to note that the open meeting law is not
+[125.76s] a matter of public bodies extension of
+[128.00s] grace or permission to the people it's a
+[130.64s] constitutional mandate so our
+[132.24s] constitution provides that
+[134.40s] all power being originally inherent in
+[137.04s] and consequently derived from the people
+[139.76s] therefore all officers of government
+[142.00s] whether legislative or executive we'll
+[144.16s] get back to that that part in just a
+[146.32s] second
+[147.28s] uh
+[148.16s] are there trustees and servants and at
+[150.32s] all times in a legal way accountable to
+[153.12s] them so the open meeting law is simply
+[155.36s] the statutory implementation of that
+[157.68s] constitutional command
+[159.60s] and the default therefore is that all
+[161.92s] meetings of a public body are open to
+[163.76s] the public
+[165.04s] unless an exception applies
+[167.68s] so we'll dig in quickly to some of the
+[169.12s] nitty-gritty here when you're when
+[170.64s] you're asking yourself can i go to that
+[173.36s] that gathering that meeting that um
+[176.72s] uh
+[177.52s] discussion the first question you want
+[179.36s] to ask yourself is
+[181.44s] is the entity holding that gathering a
+[183.68s] public body within the meaning of the
+[186.72s] open meeting law
+[188.32s] and the the oml as i'll call it from
+[190.80s] here on out uh
+[192.48s] defines a public body
+[194.72s] as any board council or commission of
+[197.76s] the state
+[199.04s] or of one or more of its political
+[200.88s] subdivisions by which it means a
+[202.24s] municipality a county etc
+[204.80s] or any board council or commission of
+[207.12s] any agency authority or instrumentality
+[209.92s] again of the state or one of its
+[211.44s] political subdivisions um or a committee
+[214.88s] of any of those things uh that draws out
+[218.16s] an exception for the governor's advisory
+[220.72s] commission which we saw during covet
+[224.08s] governor scott had adopted appointed a
+[228.00s] covet advisory commission that was not
+[230.16s] by definition a public body under the
+[232.64s] meaning
+[233.60s] of the open meeting law
+[235.92s] and now the the legislature uh has
+[238.48s] decide has said that
+[240.64s] under the language of the statute it or
+[242.64s] its committees or subcommittees are not
+[244.96s] subject to the open meeting law
+[246.88s] and it is true that the public records
+[249.68s] act defines public agency differently
+[252.16s] and more broadly than the open meeting
+[254.00s] law defines public body but there are at
+[256.48s] least plausible arguments on both sides
+[258.40s] and the supreme court hasn't answered
+[259.84s] that question
+[261.20s] so we'll just look at a few examples a
+[263.92s] municipal select board is very clearly a
+[266.40s] public body within the meeting of the
+[268.00s] open meeting law whereas the governor's
+[270.56s] snowmobile advisory commission which yes
+[272.88s] does exist um is not it is just like
+[275.92s] that coven 19 advisory commission a
+[278.00s] gubernatorial commission that
+[281.12s] provides unfiltered uh advice to the
+[283.76s] governor um
+[285.92s] okay so we've got now let's say we've
+[287.92s] determined it's a public body our next
+[290.40s] question to ask is
+[292.48s] is the gathering a meeting and a meeting
+[294.96s] is also defined fairly broadly it is
+[297.28s] anytime there is a forum of the public
+[299.28s] body
+[300.24s] and the meeting is doing one of two
+[301.68s] things one
+[302.96s] it's it's discussing the business of the
+[305.12s] public body which is defined as its
+[307.12s] governmental functions including any
+[309.84s] matter over which that body has
+[311.36s] supervision control jurisdiction or
+[313.36s] advisory power so if you have a quorum
+[315.44s] and it's discussing
+[316.80s] uh the business of the public body or
+[319.60s] you have a quorum and the public body is
+[321.68s] wanting to take action then you've got
+[323.36s] yourself a meeting
+[324.88s] um
+[326.16s] other gatherings such as email
+[327.76s] discussions around setting setting an
+[329.36s] agenda are not but those records are
+[331.76s] subject of course to the public records
+[333.36s] act so you still have access to those
+[334.96s] records it's just
+[336.40s] not a meeting within the the definition
+[338.48s] of the omo
+[340.48s] so a few examples here i think we'll
+[343.20s] illustrate the point if two members of a
+[346.40s] seven person city council happen to run
+[348.24s] each other run into each other at the
+[349.76s] gas station
+[350.96s] and they're at their um
+[353.28s] at that point they decide to agree how
+[355.12s] they're going to vote on an upcoming
+[356.64s] zoning ordinance that is not a meeting
+[358.72s] we don't have a forum even though it's
+[361.20s] you know business of the legislative or
+[362.96s] the public body we don't have a forum
+[366.08s] uh if the vermont board of cheese meets
+[368.32s] in a dairy barn to debate a rule on
+[370.16s] pasteurization sure you've got it
+[372.56s] doesn't matter where it's happening it's
+[374.32s] just you've got the the public body and
+[376.24s] they're discussing the business of that
+[378.24s] public body uh if the school the entire
+[381.20s] school board gathers to have cake
+[382.80s] celebrating uh the birth of the
+[384.80s] superintendent's first child nope that's
+[386.96s] not the the public business that's not
+[388.72s] the governmental business
+[390.64s] um
+[392.40s] but let's say we have most of the solid
+[394.32s] waste districts commissioners trading
+[396.32s] emails about whether to raise taxes in
+[398.32s] the upcoming year sure a meeting can
+[400.40s] happen over email so long as you have a
+[403.52s] forum and it's either taking action or
+[405.76s] doing the public's business
+[408.08s] the last example i will give is
+[410.80s] let's say a state administrative body
+[412.64s] holds a meeting to discuss american
+[414.88s] foreign policy even if every single
+[417.12s] person on that body is there they have
+[419.28s] no jurisdiction over a more american
+[421.36s] foreign policy so that is not a meeting
+[423.84s] meeting within the m
+[425.76s] omo
+[428.00s] all right so we've got a public body and
+[429.44s] there's going to be a meeting what are
+[430.56s] they what do they have to do to advance
+[432.80s] to announce that meeting ahead of time
+[435.12s] we have a few different types of
+[436.96s] meetings we've got regularly occurring
+[438.72s] meetings which by statute
+[442.40s] must be their time and place must be
+[444.96s] established by statute regulation
+[446.72s] ordinance or order of the public body
+[448.72s] it's available to anyone upon request so
+[450.64s] those are regularly occurring you know
+[452.88s] once a month or whatever the case may be
+[454.64s] meetings
+[455.92s] but the body can also hold special
+[457.52s] meetings in which case they need to
+[459.04s] announce that 24 hours in advance
+[461.76s] and
+[462.56s] municipalities must post announcements
+[465.12s] in the clerk's office and at least two
+[466.88s] other predetermined locations in the
+[468.56s] municipality
+[470.08s] and then the last type of meeting the
+[471.52s] emergency meeting doesn't need any sort
+[474.00s] of advance notice although it's always
+[475.52s] good practice to provide as much notice
+[477.44s] as you can
+[479.04s] but these meetings can only take in very
+[480.96s] very limited circumstances where an
+[483.20s] unforeseen occurrence requires immediate
+[486.24s] attention by the public body
+[488.24s] so if the legislature passes a statute
+[490.16s] saying the public service board makes
+[491.52s] the first tuesday of each month in
+[493.84s] you know office 412 at this address
+[496.88s] perfectly perfectly legitimate
+[499.60s] if a select board however
+[501.92s] wants to have its regularly scheduled
+[503.84s] monday meeting on saturday instead as an
+[506.40s] emergency meeting because the red sox
+[508.56s] could clinch the world series on monday
+[510.08s] night no dice that is not
+[512.56s] an emergency requiring the immediate
+[514.64s] attention of the public body
+[516.88s] nor is it an emergency
+[518.64s] to call a a meeting because town meeting
+[521.52s] day is coming up fast that we haven't
+[523.44s] yet proposed a budget
+[525.12s] town meeting day is not an unforeseen
+[527.12s] occurrence
+[528.24s] um
+[530.24s] so you know that i think spells out sort
+[532.24s] of the contours of what they have to
+[534.32s] tell you in advance
+[536.32s] i think the most complicated and the
+[538.32s] most controversial part of the open
+[541.12s] meeting law is whether and when the body
+[544.32s] can go into what's called executive
+[545.92s] session meaning they close out the
+[547.44s] public
+[548.48s] um
+[549.68s] to go into executive session
+[551.84s] a municipal body must have a majority
+[553.92s] vote a state body must have a two-thirds
+[556.48s] vote
+[557.36s] and the vote must specify the subject of
+[560.00s] the executive session and the subject
+[562.72s] matter of executive session is limited
+[564.80s] it's only permissible to discuss certain
+[567.20s] topics and in certain circumstances
+[569.60s] the most common
+[571.12s] uh justifiable reason for executive
+[573.44s] session
+[574.40s] is to discuss specified topics about
+[576.80s] which quote public discussion would
+[579.28s] clearly place the public body or a
+[581.52s] person involved at a substantial
+[583.44s] disadvantage
+[584.96s] and the bot and the body must make a
+[586.56s] specific factual finding the discussion
+[588.64s] of this thing in open session would
+[591.52s] involve that that substantial
+[593.04s] disadvantage and so the topics
+[595.60s] appropriate for that sort of executive
+[597.36s] session include uh discussion of certain
+[599.68s] contracts labor relations
+[602.24s] litigation to which the the public body
+[604.48s] is a party and confidential attorney
+[606.96s] client communications
+[609.68s] there are a few
+[610.80s] other permitted topics for executive
+[612.72s] session that don't require this
+[614.24s] threshold finding of substantial
+[616.08s] disadvantage this includes hiring
+[618.88s] decisions disciplinary decisions or
+[621.52s] evaluations of public employees
+[624.40s] negotiating real estate transactions
+[627.20s] protected discussing protected records
+[629.28s] of students
+[630.80s] imminent threats to public safety so
+[632.48s] those are the the most common reasons to
+[634.40s] go into executive session
+[636.40s] but even if you are properly in
+[638.16s] executive session the body cannot take
+[640.80s] any binding action within that that
+[643.60s] executive session they have to come out
+[645.12s] of executive session and then take the
+[646.96s] vote publicly the one
+[649.44s] exception to this is conducting real
+[651.44s] estate transactions
+[654.00s] so again a few a few examples i think
+[657.28s] will illustrate the point
+[659.36s] if a select board goes into executive
+[661.36s] session simply because it has executive
+[663.60s] session as a standing part of its agenda
+[666.08s] that is definitely not appropriate you
+[667.92s] need to find a specific reason and state
+[670.56s] on the record while you're going into
+[672.00s] executive session each and every time
+[674.16s] and then take the proper vote
+[676.16s] um
+[677.20s] if the school board enters into a real
+[678.96s] estate lease in executive session yes
+[681.04s] that's the one as i mentioned
+[682.48s] specifically delimited example where a
+[684.72s] public body can take action in executive
+[687.92s] session
+[689.84s] let's say a city council goes into
+[691.36s] executive session and whenever anyone
+[693.20s] mentions the word lawyer thinking oh
+[694.96s] that lawyer client privilege we can go
+[696.56s] into executive session that's that's
+[698.00s] just not true the scope of
+[700.40s] attorney-client privilege is
+[701.60s] significantly narrower than simply
+[704.56s] anytime i want to talk
+[706.24s] about or to a lawyer
+[708.56s] um
+[710.24s] and then the last example would be a
+[711.92s] student who's appealing um having been
+[714.16s] expelled from from their high school and
+[716.64s] they discussed that in executive session
+[719.04s] leave executive session and then take a
+[720.96s] public vote reversing the expulsion yes
+[723.36s] that is the proper way to handle handle
+[726.00s] that scenario you don't take the vote
+[727.84s] while still in executive session
+[732.24s] another way the open meeting law
+[733.60s] protects our rights to hold our
+[736.00s] public bodies accountable is by
+[737.60s] requiring that minutes be made available
+[740.56s] after the fact in fact within five days
+[742.96s] from the date of the meeting
+[745.12s] if the public body has a website the
+[746.80s] minutes must be posted to that website
+[749.20s] and they must include the following
+[750.48s] information the the names of the public
+[752.56s] bodies
+[753.52s] members who attended the meeting
+[755.60s] all motions or proposals considered and
+[757.92s] the results of those motions or
+[759.28s] proposals
+[760.40s] and the names of all other active
+[762.32s] participants in the meeting
+[764.96s] so does this satisfy the the minutes
+[767.20s] requirement
+[768.48s] a town takes down its entire website
+[771.04s] rather than learn how to post them
+[772.40s] online
+[773.52s] unfortunately yes that's okay and we
+[775.84s] have seen that happen uh sadly although
+[778.48s] you know less so i think is is pretty
+[782.24s] pretty much expected that a
+[784.48s] public body will have a publicly
+[786.88s] accessible website as it becomes you
+[789.28s] know inexcusable to not know how to
+[791.92s] handle posting minutes in that way but
+[794.32s] permitted under the law
+[796.72s] uh if a school claims that they will
+[798.24s] make their minutes available to you in
+[799.92s] five business days instead of five
+[801.60s] calendar days that is not what the oml
+[803.84s] requires although there's substantial
+[806.48s] uh misunderstanding of that act it is in
+[809.20s] fact calendar days
+[811.60s] and then let's just say a city sewer
+[813.60s] subcommittee says that only voters
+[815.44s] within that that sewer district may
+[817.68s] inspect the minutes that is definitely
+[819.52s] not permissible any person
+[822.00s] vermonter not vermonter member of that
+[824.08s] district or otherwise has a right to
+[826.56s] the minutes of any kind of meeting
+[830.08s] so those are the contours of what's
+[832.00s] required of a public body
+[834.16s] um
+[835.76s] to satisfy its obligations under the
+[837.52s] open meeting law but what happens if you
+[840.24s] think there was a violation and and you
+[842.64s] want to see some sort of redress so the
+[845.12s] the oml sets out
+[847.12s] a couple of different paths first of all
+[850.00s] a public body or member thereof
+[852.40s] that engages in a knowing and
+[854.32s] intentional violation
+[856.40s] of the open meeting law has actually
+[858.00s] committed a misdemeanor uh with that can
+[861.36s] have a 500
+[862.80s] fine attached
+[864.32s] um
+[865.36s] before 2014 the attorney general or any
+[868.88s] person agreed by a violation of the open
+[871.28s] meeting law could bring a civil lawsuit
+[873.84s] but the legislature in 2014
+[876.00s] significantly amended the open meeting
+[877.92s] laws making it much less likely that
+[880.24s] court actions will be brought to enforce
+[882.00s] it they did this first by
+[884.96s] putting into place certain
+[886.60s] pre-litigation requirements that the
+[889.20s] person must satisfy before they can go
+[891.28s] to court
+[892.24s] um
+[893.20s] so if i thought that there was an open
+[895.60s] meeting violation the first thing i have
+[897.36s] to do is provide that public body
+[899.60s] written notice of the problem
+[901.60s] and specify what i want that body to do
+[904.88s] to cure that problem
+[907.44s] the public body then has 10 days to
+[909.60s] respond with whether
+[911.52s] it says yup you were right that was a
+[913.04s] violation and here is how we're going to
+[915.12s] fix it or i disagree there was no
+[917.76s] violation
+[919.12s] and then you have to give them two weeks
+[920.80s] to do the actual fix
+[922.64s] um
+[923.52s] and so the fixes can take a couple of
+[925.28s] forms but
+[927.76s] if they had taken some sort of action
+[930.00s] they voted on something an executive
+[931.52s] session that wasn't a real estate
+[932.88s] transaction for example
+[935.84s] or they
+[937.36s] wrongfully excluded someone from the
+[939.76s] meeting or had failed to give proper
+[941.76s] notice of the meeting
+[943.44s] any actions or votes taken
+[946.32s] under those circumstances they would
+[947.92s] either have to subsequently ratify in an
+[950.88s] open meeting um that that complies with
+[954.56s] all the rules or avoid those actions all
+[957.04s] together and started at a clean slate so
+[959.76s] they have to do that but then they also
+[961.68s] have to adopt measures to prevent future
+[964.64s] violations and they have to
+[966.48s] those measures have to have the actual
+[968.40s] effect of preventing future violations
+[970.40s] so that often looks like
+[972.16s] remedial training for the public body on
+[974.24s] what the oml requires
+[977.76s] so if after you've provided this notice
+[980.40s] they responded within 10 days
+[982.80s] and either said i disagree there was a
+[984.40s] violation or
+[986.08s] you're dissatisfied with the cure that
+[988.16s] they have adopted
+[989.76s] then and only then can you file suit in
+[992.56s] court seeking a court ruling that they
+[995.36s] that the oml had been violated
+[998.32s] but unfortunately the way that the open
+[1000.48s] meeting law is set up it's very very
+[1002.40s] difficult
+[1003.68s] for even a successful plaintiff to
+[1006.96s] recover court costs and attorneys fees
+[1009.68s] um which makes it less likely that the
+[1012.40s] private bar is is going to be willing to
+[1014.40s] bring these enforcement actions
+[1016.72s] um
+[1017.52s] we see a very strong distinction between
+[1019.36s] the open meeting law and the public
+[1020.80s] records act the the public records act
+[1023.28s] says a prevailing plaintiff shall be
+[1026.24s] awarded their reasonable costs and
+[1028.40s] attorney fees so if if you know if a
+[1032.00s] public agency violates the public
+[1033.44s] records act there's an incentive for
+[1035.68s] private attorneys to help people
+[1037.84s] vindicate their rights under the public
+[1039.44s] records act because if their case has
+[1041.12s] merit and they win
+[1043.04s] the agency will have to pay their their
+[1045.28s] attorney fees and costs but
+[1046.56s] unfortunately
+[1048.16s] that is not true of the open meeting law
+[1050.40s] which is i think why you'll find
+[1052.40s] there's just a lot less case law on the
+[1054.80s] open meeting law than the public records
+[1056.88s] act out there so a lot of its contours
+[1059.20s] remain undefined
+[1062.24s] so that's that's the long and the short
+[1064.08s] of the open meeting law um i think i'll
+[1066.88s] just end quickly by describing some of
+[1068.88s] the changes that have been wrought uh by
+[1071.28s] kovid um
+[1074.16s] so as of
+[1076.40s] you know as a
+[1077.92s] early in the pandemic and then at least
+[1080.16s] as of now through january 15th of 2023
+[1084.00s] there are special rules that allow
+[1086.08s] agencies to do our public bodies to do
+[1088.16s] things a bit differently during poverty
+[1089.84s] and you know they
+[1092.00s] they make some sense right it's it's not
+[1094.08s] everyone is meeting in person for
+[1096.16s] example and so
+[1098.40s] um if the public body doesn't have to
+[1100.40s] meet in person which is true pre-covered
+[1102.96s] and now covered but they also do not
+[1104.96s] need to provide a physical location for
+[1107.12s] the public to attend where it used to be
+[1109.20s] the case even if a body was meeting
+[1111.28s] electronically they still had to say but
+[1113.12s] if you want to watch the stream you can
+[1115.04s] come to you know city hall or this place
+[1116.80s] or that place and participate they no
+[1118.64s] longer need to provide that
+[1120.72s] physical location for the public
+[1122.88s] but
+[1123.76s] they must use technology allowing the
+[1125.84s] public to attend electronically or also
+[1128.08s] to just call in by telephone
+[1130.16s] so they can't just move to an electronic
+[1132.08s] meeting as a means of making public
+[1134.24s] access more difficult
+[1137.44s] they're also required to record any such
+[1139.92s] meeting
+[1140.88s] barring unusual circumstances that make
+[1143.20s] it impossible to do so which i'm not
+[1144.72s] sure what those would would ever be
+[1147.76s] they can take a little more time to make
+[1149.76s] their minutes available they can go up
+[1151.28s] to 10 days if and only if there's a
+[1154.16s] cover 19 related staffing shortage
+[1157.12s] um and then finally i mentioned at the
+[1159.60s] beginning they have to post notice at
+[1161.68s] the clerk's office and two
+[1163.28s] pre-designated locations they can
+[1165.76s] replace those pre-designated locations
+[1168.96s] uh one or both of them
+[1171.04s] with uh electronic postings but they
+[1173.76s] still must physically post the the
+[1175.60s] notice of the meeting um at the clerk's
+[1178.40s] office and then also provide a copy of
+[1180.96s] that notice to the town's newspapers of
+[1182.96s] cour of general circulation so these are
+[1184.88s] all i think fairly uh common sense
+[1187.28s] approaches to making sure
+[1189.04s] you know in a time where people are not
+[1190.72s] gathering in large groups as much or you
+[1193.68s] know for some folks it might be simply
+[1196.00s] uh
+[1196.88s] too risky to to gather in person they
+[1199.28s] are still able to take part in
+[1202.08s] the um
+[1203.52s] oversight process of our government
+[1207.28s] i think i think that's what i have for
+[1208.96s] you all leah thank you so much for
+[1211.04s] taking the time to lead us through this
+[1213.68s] thanks emily as always for hosting these
+[1215.44s] i appreciate it

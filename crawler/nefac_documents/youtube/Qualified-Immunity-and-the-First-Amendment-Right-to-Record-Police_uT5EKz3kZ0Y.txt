@@ -1,0 +1,379 @@
+[0.08s] it's very important for the state of the
+[1.92s] law around this question this specific
+[4.24s] question that the right to record is
+[6.08s] clearly established and anybody should
+[8.24s] know that it is a right protected by the
+[10.16s] first amendment it's really important
+[11.44s] that that become you know clear across
+[13.20s] the country in law
+[15.37s] [Music]
+[20.64s] i'm justin silverman of the new england
+[22.40s] first amendment coalition
+[24.48s] a quick announcement for all journalists
+[26.48s] working in the region
+[28.08s] applications for our 11th annual new
+[30.64s] england first amendment institute are
+[32.48s] now available at nefac.org
+[35.68s] this exclusive multi-day investigative
+[38.00s] journalism program is open to 25 local
+[40.88s] reporters editors and producers
+[43.36s] all provided by nefac at no cost to
+[46.24s] those who attend
+[47.76s] it'll be held online this year from
+[49.36s] october 31st to november 6th we'll
+[52.08s] feature some of the biggest names in
+[53.60s] journalism and media law
+[55.44s] and it will include classes on public
+[57.44s] record laws effective sourcing web
+[59.84s] scraping and database analysis among
+[61.92s] many other topics the deadline to apply
+[64.88s] is september 18th so visit nefac.org
+[68.08s] right now and learn more
+[70.24s] i'm here today with gabe rotman the
+[72.16s] technology and press freedom project
+[73.84s] director at the reporters committee for
+[75.44s] freedom of the press
+[76.88s] gabe thanks for joining us
+[78.96s] thanks for having me
+[81.20s] gabe you and your colleagues recently
+[82.96s] filed an amicus brief on behalf of nefak
+[85.04s] and other media groups asking the u.s
+[87.28s] supreme court to strengthen our right to
+[90.16s] record police and document their
+[92.08s] activity
+[93.28s] before we get to the brief that was
+[95.12s] filed can you first give us a history
+[97.76s] lesson on our right to record
+[99.68s] how and when did courts begin to
+[101.52s] recognize this very important first
+[103.92s] amendment right
+[105.84s] sure uh so
+[107.92s] you know it's a little it it's a little
+[110.00s] interesting and there's probably
+[111.20s] different interpretations in terms of
+[113.04s] how far back you would want to go
+[115.20s] um but you know courts uh
+[118.08s] courts have been recognizing
+[120.16s] uh you know sort of news gathering as a
+[122.96s] first amendment right um you know going
+[125.84s] back several decades now uh you know in
+[128.88s] the brief that we filed we cite a case
+[130.72s] from um
+[131.76s] from from minnesota in the district
+[133.60s] court which you know had facts and i
+[136.08s] think the case was from uh the early
+[138.08s] 1970s you know in that case had similar
+[140.72s] facts the cases that you see now where a
+[142.80s] news crew was filming across the street
+[144.88s] and you know was um you had an
+[147.20s] interaction with um you know with law
+[149.20s] enforcement and the court recognized
+[151.04s] that the act of filming uh government
+[154.08s] activity you know in public uh what was
+[157.36s] protected by by the first amendment
+[159.68s] right that the
+[160.80s] the the act of gathering speech or
+[163.12s] creating speech was was protected by the
+[165.60s] first amendment um you know just like
+[168.56s] the act of speaking um
+[171.12s] you know and then in probably the 1990s
+[173.44s] and certainly in the in the auths uh the
+[176.96s] this specific issue
+[178.96s] uh
+[180.00s] started to be grappled with in
+[183.12s] uh federal appeals courts um and you had
+[186.56s] a number of appeals courts uh in you
+[189.36s] know like in the the first circuit so um
+[192.00s] you know you're you're next to the woods
+[194.00s] uh you know recognizing that the the
+[197.04s] right to record police activity in
+[199.04s] public by by anyone public or press uh
+[202.24s] was uh that was a distinct first
+[204.88s] amendment right um you had the seventh
+[207.20s] uh
+[208.00s] the seventh circuit finding the same the
+[210.00s] same thing um and uh
+[213.28s] and
+[214.24s] over the course of you know let's say
+[216.40s] those two decades um you ended up with a
+[219.52s] state of affairs where the odd-numbered
+[222.24s] circuits have recognized that uh the
+[225.60s] right to record police you know in the
+[228.32s] right to record police or government
+[229.84s] activity in public
+[231.76s] was um you know was both a right and it
+[235.12s] was what
+[236.48s] lawyers call clearly established meaning
+[238.56s] that you know any reasonable government
+[240.56s] official would know that uh you have a
+[243.20s] that you know if you're not doing
+[244.48s] anything else if you're not doing
+[245.84s] anything else you have a first amendment
+[248.08s] right to record government activity in
+[249.92s] public and um and you can't be
+[252.88s] uh the the government can't retaliate
+[255.76s] against you for exercising that right
+[258.24s] yeah so so maybe if you could explain a
+[260.24s] little bit more about that clearly
+[262.24s] established standard because this goes
+[265.44s] to the idea of uh
+[267.52s] the principle of qualified immunity
+[269.28s] which is a very important part of the
+[270.88s] case fraser v evans which we filed the
+[273.36s] the brief in so can you explain for
+[275.28s] those that don't have a legal background
+[277.28s] what is qualified immunity and why is it
+[279.76s] so important in these types of cases
+[282.32s] absolutely so
+[284.08s] there is a federal statute that uh that
+[287.28s] effectively says that you know if uh
+[289.68s] state or local authorities violate your
+[292.40s] you know constitutional rights uh you
+[294.88s] can sue those officials
+[297.28s] um and and get into their own wall right
+[300.08s] so they could be personally responsible
+[302.00s] for damages against you for violating
+[304.24s] that right it's uh it's called 1984
+[307.76s] usc 1983. uh and
+[310.88s] the
+[311.84s] in in those cases
+[314.00s] you know there is a a court created uh
+[318.48s] concept called qualified immunity and
+[321.04s] the basic idea is that uh if were it
+[324.72s] would be
+[325.60s] it would it would be impermissively or
+[328.32s] or unacceptably disruptive to
+[331.68s] uh government
+[333.20s] to the well-functioning of government if
+[336.56s] um
+[337.52s] officials were constantly subject to
+[340.40s] these types of lawsuits um you know for
+[344.16s] every little thing um
+[346.00s] and you know and certainly for for
+[348.80s] mistakes that are made um you know in in
+[351.44s] good faith and and this becomes
+[353.20s] particularly salient when it comes to
+[355.12s] law enforcement where you know courts
+[357.52s] have created this doctrine of qualified
+[358.88s] immunity and the basic idea is that
+[361.68s] unless the right that you violate either
+[365.44s] you do it knowingly or
+[367.28s] uh or or it's just so clear that any
+[370.64s] reasonable uh law enforcement officer
+[373.28s] would know that you can't do that
+[375.60s] um
+[376.48s] that that you're immune from um from
+[379.36s] from liability that you're immune from
+[381.20s] supercourt and it provides a mechanism
+[384.08s] by which um
+[386.16s] you know these types by which civil
+[388.00s] rights lawsuits uh for
+[390.96s] uh for violations of rights that are not
+[392.96s] clearly established
+[394.40s] can be kicked early um
+[397.12s] so it's pretty important in terms of
+[399.68s] actually getting to litigate uh a case
+[402.40s] for
+[403.36s] a civil rights violation or for a
+[405.20s] constitutional violation um that uh you
+[409.12s] know that that the
+[410.72s] the actual right at issue being quote
+[412.64s] unquote clearly established in order to
+[414.48s] defeat
+[415.52s] qualified immunity um to actually get
+[418.00s] you in front of a jury uh to have them
+[420.56s] hear your acclaim um so it in
+[424.96s] to you know to go back so
+[427.04s] one of the things that can happen
+[429.20s] and and this has kind of happened in
+[430.80s] some of the cases is
+[432.96s] you can have a right that the court says
+[435.44s] yeah that's all right you have a first
+[437.12s] amendment right that we recognize to
+[438.96s] record police activity in public uh but
+[442.08s] it's not clear that every reasonable
+[444.00s] officer would know that that's a right
+[445.60s] recognized under the first amendment and
+[447.60s] therefore will still apply qualified
+[449.28s] immunity um
+[451.28s] and um and that's the you know that's
+[454.08s] one of the reasons why it's very
+[456.08s] important for the state of the law
+[457.76s] around this question the specific
+[459.84s] question that the right to record is
+[461.60s] clearly established and anybody should
+[463.76s] know that it it is a right protected by
+[465.60s] the first amendment it's really
+[466.72s] important that that become you know
+[468.16s] clear across the country in law
+[470.32s] got it and that is the the basis of the
+[472.48s] amicus brief that was filed so tell us a
+[474.96s] bit more about
+[476.56s] fraser v evans uh what are the facts in
+[479.20s] the case how did this case come about
+[480.96s] and what are some of the arguments that
+[482.64s] the reporters committee made on behalf
+[484.40s] of nefak and other media groups so it's
+[487.20s] a it's an interesting case because
+[488.56s] there's a few things going on here um
+[491.12s] the basic facts are uh you know are some
+[494.32s] that we've seen pretty often you know
+[496.24s] you had an individual not a member of
+[497.76s] the press but you know
+[499.68s] a private citizen
+[501.12s] uh who was recording an arrest
+[504.00s] uh by the law enforcement um and uh and
+[508.24s] he and there was an incident with with
+[510.08s] those officers and that individual um
+[512.88s] and then that person sued uh for
+[515.92s] that person suit
+[517.28s] under the theory that i just you know
+[518.88s] articulated um
+[521.04s] and in this case there so as i say
+[523.68s] there's a couple of things going on one
+[525.12s] interesting wrinkle is that uh the
+[528.00s] the police department at issue actually
+[529.76s] had training um in place that uh
+[534.56s] that said that the right to record is
+[536.48s] clearly established that you can't uh
+[538.72s] arrest or
+[540.16s] or you know subject to the use of force
+[542.16s] or you know otherwise um you know
+[545.12s] otherwise interact with um you know
+[547.60s] unduly
+[548.80s] individuals were reporting you in public
+[550.96s] uh and the 10th circuit in the case
+[554.24s] found and if you'll recall i mentioned
+[556.32s] you know so there's you know first
+[558.08s] second and third uh you know circuit
+[560.48s] court of appeals um
+[562.88s] the odd-numbered circuits have have
+[565.36s] recognized that the right to record is
+[568.08s] is clearly established the even-numbered
+[570.32s] circuits no court has said that the
+[572.32s] right doesn't exist uh but even numbered
+[575.04s] circuits have yet to
+[576.88s] uh uh hold that the the right is clearly
+[580.24s] established right so this is the 10th
+[581.92s] circuit so they haven't helped the right
+[583.44s] is clearly established
+[584.88s] um although as we point out in our
+[586.48s] advocacy there's actually a case um you
+[588.96s] know talking about uh there's a case
+[591.20s] that's sort of that's sort of on point
+[593.92s] that uh probably should have decided the
+[595.76s] question here but anyways the um
+[599.76s] uh the the 10th circuit found that
+[603.04s] one the existence of training material
+[605.44s] wasn't
+[606.48s] wasn't relevant for
+[608.40s] uh whether the right was clearly
+[610.08s] established as to the police officers in
+[612.56s] question
+[613.60s] um and then it also
+[615.36s] uh it did
+[617.28s] decline to address whether the right is
+[619.44s] clearly established generally um you
+[621.28s] know it said it was bound by you know by
+[623.36s] certain precedent um and the
+[626.48s] the brief that we filed and so
+[629.28s] the uh the plaintiffs in that case are
+[632.00s] now petitioning for a writ of cersiori
+[634.64s] with the supreme court basically asked
+[636.00s] the supreme court to hear the case uh
+[638.32s] and we filed an amicus brief a friend of
+[640.88s] the corporate brief in support of that
+[644.00s] that petition
+[645.28s] uh in you know the argument that we make
+[647.68s] the main argument that we make and there
+[649.76s] are a few is that uh
+[652.00s] the
+[653.04s] the the fine-grained distinctions that
+[655.92s] courts have been making around rights
+[658.40s] and whether they're clearly established
+[660.16s] you know if you know that if there is a
+[662.64s] small
+[663.68s] change in the circumstance if there's a
+[666.48s] small change in the fact pattern you
+[668.40s] know that you've got one case that
+[670.16s] involves a cat you've got one case that
+[672.08s] involves you know a dog but really
+[674.24s] what's relevant is that they're both
+[675.68s] pets you know but the courts are coming
+[677.36s] in on different sides of that that
+[679.12s] question
+[680.08s] and in
+[681.60s] in in our brief we said look that's
+[683.36s] that's kind of an unacceptable state of
+[684.96s] affairs you know particularly when
+[686.72s] you're talking about a right that is so
+[688.56s] important you know as a matter of you
+[691.52s] know public policy as a matter of
+[693.36s] government transparency as a matter of
+[696.00s] government accountability
+[697.68s] uh as a better public safety
+[699.84s] you know that uh that that the
+[703.28s] the muddle that we're in um when it
+[705.76s] comes to the law around this important
+[707.36s] right is
+[708.32s] you know needs to be cleared up and the
+[710.24s] supreme court needs to take it up in
+[711.68s] order to clear it up
+[713.20s] right so best case scenario the supreme
+[715.04s] court does clear this up and says very
+[718.08s] you know explicitly the right to record
+[721.04s] is a clearly established first amendment
+[723.44s] right
+[724.48s] what are the implications of that to
+[726.64s] citizens and journalists that are out on
+[729.20s] the street with their cameras up
+[730.96s] documenting police activity
+[733.04s] so i you know i think increasingly
+[735.52s] uh you know we've seen that uh
+[739.04s] that people are cognizant of of that uh
+[742.16s] you know of the existence of some kind
+[744.24s] of protection for this activity i think
+[746.32s] if the supreme court did it and made
+[748.24s] express that
+[749.52s] the right is clearly established that
+[751.12s] it's not sufficient to defeat qualified
+[752.80s] immunity
+[754.32s] um that or that that you
+[757.36s] sorry that it is that that if you if you
+[760.08s] properly pleaded you defeat qualified
+[761.68s] immunity um it would be a big deal um it
+[764.56s] would be you know recognizing
+[766.96s] uh
+[767.76s] you know it would it would be it would
+[769.44s] it would it would be a sizable change in
+[771.76s] the law because it would avoid the kind
+[773.52s] of
+[774.40s] you know differences like fine-grained
+[776.96s] and unnecessary differences based on
+[778.72s] geography which is what we have now um
+[781.68s] and you wouldn't clarify that you know
+[783.68s] you would clarify that for courts across
+[785.60s] the country so you know in in those you
+[788.32s] know sizable jurisdictions that that
+[790.48s] have not found that the right is clearly
+[792.56s] established
+[793.68s] that protection would exist and you
+[795.20s] would see
+[796.48s] you know and and as a practical matter
+[798.72s] hopefully you would see fewer instances
+[800.80s] of individuals being arrested
+[803.04s] um or subjected to the use of force for
+[805.28s] exercising the right to record and of
+[807.52s] course that would be a you know
+[808.88s] significant protection for the press
+[810.88s] uh particularly given
+[812.96s] the uh you know the the significant rise
+[816.24s] in cases involving the use of force or
+[818.80s] arrests of journalists covering protests
+[820.56s] over the last year and a half
+[822.56s] all right well let's hope that's the
+[823.92s] outcome gabe thanks for all your work on
+[826.08s] this brief and walking us through these
+[828.08s] issues very helpful appreciate it
+[829.92s] absolutely thanks so much
+[832.35s] [Music]

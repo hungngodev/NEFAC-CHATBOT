@@ -1,0 +1,593 @@
+[5.04s] I'm Justin Silverman of the New England
+[6.64s] First Amendment Coalition thank you for
+[8.96s] joining us for this lesson on New
+[10.44s] England state courts this lesson is the
+[13.44s] third in our series of classes
+[15.12s] discussing how the courts work and what
+[17.20s] types of access you're entitled to under
+[19.48s] the First Amendment state law and
+[21.44s] various court rules each lesson is
+[24.44s] cumulative so if you haven't already
+[26.16s] please view the previous two lessons you
+[28.60s] can find them on our YouTube channel 5
+[30.40s] freedoms or in our foi guide at nea.org
+[33.68s] you'll also find there lessons on state
+[36.28s] public record and open meeting laws as
+[38.32s] well as tutorials on how to use the
+[40.20s] federal Freedom of Information Act
+[42.68s] collectively these lessons provide a
+[44.76s] curriculum you won't find anywhere else
+[47.88s] a special thanks to those who are
+[49.56s] supporting these classes and keeping
+[51.40s] them free and open to the public the
+[53.56s] road Island Foundation SBJ New England
+[57.20s] and the New England society of news
+[59.44s] editors
+[61.48s] now to introduce you to today's
+[63.28s] instructor neac executive committee
+[65.36s] member and Boston Globe reporter Emily
+[68.40s] Sweeney hey everybody I'm Emily Sweeney
+[71.00s] from the Boston Globe and I want to
+[72.92s] thank you for joining us for this
+[74.56s] webinar which is brought to you by the
+[76.04s] New England First Amendment Coalition
+[78.64s] and now this session is going to focus
+[80.24s] on online access to state court
+[82.48s] documents in Massachusetts and with us
+[85.16s] today is Todd wallik from WBUR Todd
+[88.44s] thank you so much for being here
+[90.92s] um yeah I'm happy to do it I know that
+[93.56s] I've had so many conversations with
+[95.84s] journalists who have tried and run into
+[99.52s] problems trying to figure out how to use
+[102.08s] the state court system so I'm hoping to
+[104.96s] make it a little bit easier to
+[106.80s] understand this is my contact
+[109.44s] information
+[110.96s] uh
+[112.52s] the we'll make sure that the slides are
+[115.68s] available and of course this
+[117.24s] presentation is is recorded so you'll be
+[120.72s] able to watch it later if you've missed
+[122.56s] anything and again toss questions in the
+[125.08s] chat uh if anything I say doesn't make
+[127.84s] sense or you want more
+[129.72s] details
+[131.32s] um but
+[134.28s] most electronic State Court doc most
+[138.00s] state court documents and cases can be
+[141.36s] accessed using a website called Mass
+[143.80s] courts.org
+[146.12s] um and some things to note it is not
+[150.44s] always available right now there's a
+[152.48s] warning
+[153.88s] about some features of land Court not
+[156.56s] being available I have found sometimes
+[158.88s] the site goes down from maintenance on
+[160.92s] weekends and nights uh sometimes it can
+[164.08s] be slow so that's something to keep in
+[166.16s] mind and there's a warning sign not to
+[170.00s] use uh write a program that tries to
+[174.04s] download all the data automatically from
+[176.72s] the site called scraping and there's a
+[180.00s] capture uh that you need to click I'm
+[182.32s] not a robot in order to access a site um
+[186.12s] and click here to search public records
+[188.48s] there's also a login feature that is for
+[191.60s] attorneys and people who work with
+[193.84s] attorneys uh attorneys with bar cards in
+[197.20s] Massachusetts have a login that gives
+[199.84s] them extra access to the site and I'll
+[202.84s] mention that as we go
+[205.40s] along uh one thing is that one of the
+[209.32s] first after you say okay uh is that it
+[213.16s] will prompt you to select which court uh
+[216.00s] there are a lot of they more than a 100
+[219.16s] cour houses in
+[220.56s] Massachusetts uh The BMC is the local
+[223.80s] courts in Boston called Boston Municipal
+[226.08s] Court the district courts are those
+[228.28s] local courts outside of Boston uh
+[231.16s] Housing Court land Court probe uh and
+[235.24s] Superior Court the bigger cases are
+[238.40s] handled by uh Superior Court so um major
+[243.52s] felonies and civil cases involving large
+[246.72s] amounts of
+[248.56s] money uh one thing is that you can only
+[251.52s] look at one courthouse at a time uh at
+[255.96s] least if you are a mortal person like me
+[258.08s] and Emily the court clerks have extra
+[262.24s] superpower access where they are able to
+[264.60s] search the entire court system but uh
+[268.48s] regular people even lawyers can only
+[270.60s] search one court at a time that means if
+[273.16s] you are trying to research a person and
+[275.48s] want to know hey does that person have a
+[277.88s] criminal record uh you that might mean
+[281.72s] searching dozens and dozens and dozens
+[284.84s] of Courts to be sure uh often we'll
+[289.68s] search the most likely um courts
+[293.68s] available where they live uh where they
+[296.04s] work uh just because it can be really
+[298.52s] timec consuming and slow slow to search
+[300.40s] every single uh district and Superior
+[303.52s] Court across the
+[305.76s] state um there's three ways to main ways
+[310.44s] to find cases uh one way is by searching
+[315.52s] the name uh like
+[317.92s] moraly uh
+[320.44s] and uh it doesn't support the system
+[323.88s] doesn't support wild cards you can fill
+[327.08s] out the first part of the name but you
+[328.80s] need to type a couple letters at least
+[330.84s] of the first and last name uh so it's
+[333.60s] not as powerful a search as some people
+[336.44s] are used to with Google and Nexus and
+[339.36s] and some other private tools um and
+[342.64s] names are are sometimes spelled
+[345.24s] differently so you might have to or
+[347.52s] spelled wrong so you might have to try a
+[349.64s] couple different
+[350.84s] ways uh and when you type in a name like
+[354.92s] Aaron
+[355.96s] Hernandez uh you should
+[358.28s] see um
+[360.52s] for civil cases you should see names pop
+[363.72s] up but however if you
+[367.04s] are um if you are a regular person uh
+[370.88s] and this is the search that an attorney
+[373.12s] would uh show searching Aaron hernandz
+[375.72s] and Bristol Court and Superior Court but
+[379.08s] there
+[380.16s] are um but there are limitations
+[382.28s] searching by name so you can only search
+[385.84s] by name in criminal cases if you have an
+[388.68s] attorney log again so you may need to
+[391.04s] find a friend who is an attorney to help
+[393.32s] you do that search uh unless you're
+[395.84s] physically at the courthouse where
+[398.12s] anybody can do it but online it is
+[400.92s] limited to attorneys uh you can also
+[404.12s] only search one courthouse at a time
+[406.00s] again and you can only see the first 100
+[408.88s] results which can be hard if you search
+[412.40s] with a name without an attorney login
+[415.04s] you'll get really misleading results
+[417.40s] when you type in a name so when I typed
+[420.56s] typed in Aaron Hernandez in suffk County
+[423.56s] where he was prosecuted for murder uh it
+[426.96s] shows no records found there were
+[429.72s] records as we just saw in that last
+[432.52s] slide they
+[435.08s] exist but if you are a regular person
+[437.84s] without an attorney login you won't see
+[440.24s] any records
+[442.28s] so uh that is very important because
+[445.04s] I've had so many people say gosh I
+[447.92s] searched the court and I didn't see any
+[450.64s] cases at all but they were searching
+[453.00s] criminal cases by name and that's why
+[455.88s] nothing showed up it would be great if
+[458.04s] the court said sorry you can't do this
+[460.84s] search because you don't have an
+[462.56s] attorney login but instead it say gives
+[465.00s] you misleading misleading response that
+[467.80s] no records are
+[469.48s] found another way you can search is by
+[472.72s] date and this is really useful if you
+[476.52s] know the approximate date when a case
+[478.96s] was filed um or you want to search
+[482.32s] recent
+[483.64s] cases uh this will show all those case
+[488.16s] it will show most cases in that date
+[490.44s] range regardless of whether you have an
+[493.04s] attorney login or not so it's really
+[495.56s] helpful uh particularly if you can't SE
+[498.40s] search by name for criminal cases um
+[502.56s] there are limits you have to pick what
+[505.84s] types of cases and you can only search
+[508.28s] five types of cases at a time uh and
+[511.72s] there might be something like 13 types
+[514.00s] of cases in superior court so you might
+[516.72s] have to do a couple different searches
+[519.84s] uh you can only search a date range with
+[522.92s] 30 days or fewer I've often mistakenly
+[526.52s] typed in larger date ranges and getting
+[529.88s] an error message again you have to
+[532.60s] search one court at a
+[534.96s] time and you can only see the first
+[537.60s] hundred results I just
+[539.72s] did a date range search here that got
+[543.92s] 406 records but I can only see the first
+[547.16s] 100 so that means I need to go back and
+[550.44s] narrow my search so that I can actually
+[553.24s] see all the records and it can be really
+[555.48s] hard um for busy Court like Boston
+[559.76s] Municipal Central um which handles a lot
+[564.72s] probably more um criminal cases than any
+[568.32s] other court in the
+[570.16s] State uh when documents are available
+[573.48s] you should see a little icon that marks
+[577.00s] image uh sometimes it's crossed out and
+[581.48s] that means you might only be able to
+[584.52s] access it if you're an attorney or
+[586.48s] sometimes nobody can access it and often
+[589.64s] you won't see an image at all there some
+[592.72s] so sometimes they documents available
+[595.52s] and sometimes there aren't one thing
+[598.20s] that is really
+[599.68s] important to note is um some types of
+[604.60s] cases only let attorneys see see the
+[608.80s] documents that's true for criminal cases
+[612.36s] on mass courts if you don't have an
+[615.44s] attorney login you have to go to the
+[617.16s] courthouse to actually download those to
+[619.44s] actually see those documents uh also
+[622.40s] housing court and Probate Court where
+[625.24s] divorces are usually handled um at least
+[628.76s] from many types of probate cases the
+[632.56s] documents are only available with an
+[634.68s] attorney
+[636.24s] login um there are limits also to
+[639.16s] searching by date um I think I mentioned
+[642.20s] all these again you can only search one
+[644.52s] court at a
+[646.00s] time uh a third way to search is by
+[649.32s] docket number so if you happen to know
+[651.48s] the case number uh this is really
+[654.80s] helpful uh there are some for instance
+[659.20s] this is an example of one case filed in
+[663.12s] suffix uh County Civil Court what I
+[667.28s] would recommend doing is if there's ever
+[669.68s] a case you are interested in following
+[672.52s] write down the ca the docket number and
+[675.72s] save it whether it's on a Google doc or
+[677.76s] Word documents uh some other place if
+[681.44s] you want to share it with colleagues you
+[684.04s] can have a shared document where you all
+[686.76s] fill in the key cases and the case
+[689.08s] number because it is a pain to search
+[691.68s] and find cases particularly criminal
+[694.16s] cases and limits by searching name so
+[697.20s] keep track and also keep track of the
+[699.40s] Court where it's filed because in
+[702.28s] addition to typing in the docket number
+[704.52s] it also requires you to type in the uh
+[708.40s] the court name and Beware with suffk
+[711.40s] because suffk unlike other Superior
+[713.48s] Courts has both a civil case Division
+[716.52s] and a criminal case Division and you
+[718.36s] have to select select the right
+[720.44s] one uh I'm going to explain the docket
+[723.24s] number uh a little more so it has a
+[727.72s] formula uh the first two digits of a of
+[731.76s] a docket number are the year that it was
+[734.16s] filed so this case was filed in
+[738.24s] 2021 the next two digits are the number
+[742.00s] of the court and all the courts are
+[744.76s] numbered with a code and the code for I
+[748.64s] think this is suffix Superior is
+[751.12s] 84 um but every court has its own code
+[754.84s] the next two digits are the type of C
+[757.64s] court case the most common are CV for
+[761.72s] civil and CR for criminal and the last
+[765.52s] five digits are the case number which is
+[768.72s] always a five-digit
+[771.52s] number uh and the list of Court ID
+[775.28s] numbers those codes is actually listed
+[778.64s] on online
+[780.60s] so number one is BMC Central number two
+[784.12s] is Roxbury uh and the courts have put
+[787.04s] that online which can be helpful
+[790.48s] sometimes there are tricks to using the
+[794.08s] docket number so often I've typed in the
+[796.52s] docket number and it hasn't found the
+[798.64s] case for a bunch of reasons one is I
+[801.36s] have to remember to enter the right core
+[803.96s] so I can't search put in a docket number
+[806.48s] for suffix civil if it is
+[809.40s] uh and type and if I've selected suff
+[814.12s] criminal or norfol Superior something
+[817.16s] else the letters like C and CV must be
+[821.20s] uppercase otherwise it won't work it has
+[824.36s] to end in five digits not three or four
+[828.16s] even if it's listed on the court
+[830.00s] documents that way and I often see
+[832.16s] docket numbers ending in three digits
+[834.92s] like one two three or four digits Mass
+[838.20s] courts the court system the online
+[840.36s] system thinks that a docket number has
+[842.84s] to end in five digits so you need to
+[845.12s] start with what are called leading zeros
+[847.80s] zeros before the case number and cases
+[851.36s] by the way go in consecutive order so
+[853.40s] the first case would be
+[855.32s] 00001 filed each year in January and
+[859.24s] then 00002 and so on in some cases won't
+[863.40s] show up at all if they're sealed um
+[867.24s] sometimes there's also a delay in
+[869.28s] entering it into the computer system
+[871.36s] that might take hours or a day so those
+[874.12s] are some limits with using the docket
+[876.12s] number
+[877.16s] search uh there are other limits to M
+[880.08s] courts uh one is for criminal
+[883.32s] cases regular people can't see the
+[886.64s] docket which is the list of every entry
+[889.60s] in a court case or the calendar
+[892.08s] information which shows when the next
+[894.72s] hearing is being scheduled without an
+[897.68s] attorney login
+[900.20s] by the way this violates the Court's own
+[902.44s] rules the SJC rule um approved Court
+[906.64s] rule called trial court rule 14 that
+[909.64s] says with few exceptions everyone is
+[912.76s] supposed to be able to access docket and
+[915.32s] calendar information for these cases and
+[919.28s] I alerted the court system a couple
+[921.20s] weeks ago about this and Jennifer
+[923.56s] Donahue the Pio for the courts
+[926.76s] essentially said they're working on a
+[929.56s] recommendation for how to address this
+[932.64s] um it was a very vague answer but uh I
+[936.44s] just want to point out for the neac
+[938.44s] audience they're supposed to be making
+[940.44s] this available they're not so if you're
+[942.68s] looking up information on criminal cases
+[945.08s] in the meantime you're probably going to
+[947.24s] have to find a friend who is an attorney
+[949.72s] or has an attorney login or go to the
+[952.44s] courthouse itself or call the clerks and
+[955.44s] the clerks are sometimes annoyed by
+[957.12s] getting all these questions but if you
+[958.64s] you want to know when the next court
+[960.76s] hearing is scheduled in a criminal case
+[963.24s] you can't look it up without an attorney
+[965.64s] login
+[967.76s] online um by contrast if you have an
+[971.00s] attorney login uh this is the type of
+[974.08s] thing that you will see for a criminal
+[976.64s] case you will see when the hearings have
+[979.96s] been held when the next hearing is and
+[982.64s] you should see an entry for every case
+[986.08s] sometimes the documents are available
+[988.20s] some times they're not as in this case
+[991.12s] uh there's no image available for some
+[993.00s] of these cases so even attorneys would
+[995.60s] still have to uh go to the courthouse in
+[998.96s] person to access these
+[1003.16s] documents uh without an attorney login
+[1006.04s] this is an example of what a regular
+[1008.12s] person would see when they click on a
+[1010.56s] Case um they would see the name of the
+[1016.00s] attorney um on on a prior screen you
+[1019.56s] would have seen the
+[1020.80s] charge um this is the case by the way
+[1024.24s] against uh City councelor Kendra lauro
+[1027.56s] so very high-profile case that lots of
+[1030.72s] uh journalists are interested in and
+[1033.60s] despite that the court system shows
+[1035.88s] almost no information about the case not
+[1038.60s] even when the hearing is scheduled next
+[1041.72s] hearing is scheduled in violation of the
+[1043.60s] Court's own
+[1044.76s] rules their additional limits so
+[1048.64s] unfortunately court documents themselves
+[1051.84s] are generally only available for cases
+[1054.16s] in more recent years at some point
+[1056.72s] several years ago the court started
+[1058.60s] scanning documents and posting them
+[1060.84s] online but prior to that they didn't so
+[1064.12s] again we would have to go to the
+[1065.76s] courthouse in person to get them and
+[1068.80s] even for more recent years some
+[1070.96s] documents aren't online I've noticed
+[1073.36s] that in many criminal cases the initial
+[1076.84s] complaint with the police report is
+[1079.20s] often not scanned and posted online for
+[1082.08s] reasons I don't understand uh as I
+[1085.12s] mentioned you need an attorney login to
+[1087.52s] access most documents in criminal
+[1089.96s] housing and probate course cases and
+[1093.40s] mass courts as I said is sometimes slow
+[1096.04s] or completely unavailable at the times
+[1098.20s] you need it most um there's some other
+[1102.48s] notes I want to point out about Mass
+[1104.92s] courts um again court clerks concern
+[1108.40s] search the computer system in ways the
+[1110.56s] public cannot such as courtwinchester
+[1138.32s] typ of cases by Courthouse that can be
+[1141.92s] really useful for some cases uh you can
+[1145.28s] also file a request for specialized
+[1148.44s] stats statistics as a request for
+[1152.08s] compiled data and you can send it to
+[1154.56s] Jennifer Donahue uh the public
+[1157.24s] information person for the courthouse at
+[1159.84s] the administrative office of the trial
+[1161.52s] court uh just look for them a press
+[1163.88s] release and you'll see contact
+[1166.40s] information um the courts are actually
+[1169.52s] exempt from the public records law where
+[1172.92s] as you've undoubtedly heard the only
+[1175.00s] state where the Judiciary the
+[1178.12s] legislature and governor's office are
+[1180.24s] entirely exempt from the public records
+[1182.16s] law so we can't force them to provide
+[1184.96s] records but their own court rules say
+[1187.08s] they'll consider requests for statistics
+[1189.68s] which they call compiled data on a
+[1191.64s] case-by Case basis unfortunately those
+[1195.36s] same rules say they will never produce
+[1198.60s] the raw data so the if you want the full
+[1201.68s] list of all the cases filed in a single
+[1205.36s] Courthouse or Statewide they will say no
+[1208.80s] uh they will say they don't provide what
+[1211.04s] they call Bulk data um which limits our
+[1216.96s] access uh if you are interested in an
+[1220.00s] appeals court case there's a separate
+[1223.64s] website uh
+[1225.40s] ma-a courts.org the good news is this is
+[1229.36s] much easier to use you can search by
+[1232.16s] last name first name you can search by
+[1234.24s] docket number you can search the
+[1235.68s] calendar and you don't need an attorney
+[1238.44s] login uh regardless of whether it's a
+[1240.92s] criminal case so it's a weird thing
+[1243.24s] where if a criminal case is in Superior
+[1246.20s] Court or District Court you can only see
+[1248.76s] the full information if you're an
+[1250.80s] attorney if it's a pelet core anybody
+[1253.40s] can see
+[1254.60s] it um so the uh I should add the filings
+[1261.20s] themselves are not always posted
+[1263.76s] online uh so you may still have to go to
+[1268.36s] the appell at Courthouse to see the
+[1271.64s] filings um or you can also ask one of
+[1275.12s] the attorneys involved if they would
+[1277.32s] send it to you um some of the filings
+[1279.96s] and many
+[1280.88s] attorneys uh are very helpful to
+[1283.28s] journalists and will share
+[1285.68s] those so those that is a some of the
+[1288.88s] basics I think there's at least one
+[1291.12s] question yeah yeah one question came in
+[1294.84s] um uh while you were talking Todd uh one
+[1298.96s] of our live audience members is
+[1300.72s] wondering can you describe the types of
+[1303.16s] documents that are generated in criminal
+[1305.48s] cases that clerks typically provide if
+[1310.80s] asked I yes so I
+[1316.36s] will I can actually
+[1319.24s] um try loading up a typical
+[1324.24s] case
+[1326.20s] um while we're
+[1328.28s] here all right so this is an example of
+[1331.16s] a case of a public records case filed by
+[1335.00s] the Boston Globe against the city of
+[1337.72s] Boston and off to the right you'll see a
+[1340.72s] bunch of images so when I click on
+[1346.96s] them
+[1349.52s] I
+[1351.28s] will see an example of the complaint so
+[1355.56s] one of the most basic things that you'll
+[1358.00s] you'll see in court cases and they are
+[1360.84s] often available online but not always
+[1364.00s] and clerk should give it to you in
+[1365.92s] person is the if it's civil
+[1369.40s] case um or criminal case the initial
+[1372.52s] complaint uh what is somebody accused of
+[1375.64s] you should also be able to see uh um
+[1379.72s] motions uh that people have filed in a
+[1384.44s] case um so uh attorney
+[1390.08s] appearances um you know back and forth
+[1393.40s] in in court cases there different
+[1395.56s] motions where people are asking a judge
+[1397.64s] to do different things uh one thing that
+[1400.48s] is also usually available online and you
+[1403.28s] can also get in person is the Court's
+[1406.00s] order and they usually type them up uh
+[1409.12s] in this case uh the globe partially won
+[1413.32s] um this court case where it's alleged
+[1416.24s] Boston wasn't providing documents uh the
+[1419.16s] judge disagreed with some of the
+[1420.84s] remedies the the globe suggested to
+[1423.40s] address it but agreed the city failed
+[1425.76s] the law and was wrongfully ignoring
+[1428.36s] requests from the globe um there
+[1432.20s] are what is available can vary based on
+[1436.08s] the type of case for in instance if it
+[1439.08s] is a case involving juvenile court it's
+[1441.64s] usually closed to the public in divorce
+[1445.52s] cases most records are available but
+[1448.24s] there are few records that are
+[1450.00s] confidential like the f um there's one
+[1453.52s] document I forget what it's called that
+[1455.32s] listed that lists the finances of the
+[1457.92s] parties that is typically closed to the
+[1460.72s] public
+[1463.00s] um there
+[1465.00s] are uh but most documents are Pres
+[1467.84s] resumed to be public uh there also cases
+[1470.56s] where judges can seal particular
+[1474.68s] documents that is supposed to happen
+[1477.08s] only in rare cases and with uh and
+[1481.56s] journalists have often been successful
+[1483.52s] in challenging it
+[1486.00s] um again the bulk of documents that you
+[1489.48s] see on a docket should be publicly
+[1492.68s] available it is the exception when they
+[1495.08s] are not uh there are also docu docment I
+[1498.64s] should note that you won't find in Mass
+[1501.44s] courts but are available only in a court
+[1504.60s] house one example is uh search warrants
+[1508.56s] so in criminal cases police generally
+[1511.52s] need a judge's um or Clerk's approval in
+[1515.44s] order to uh search somebody's house or
+[1518.96s] search somebody's phone and those uh
+[1521.72s] search warrants are not on mass courts
+[1524.40s] you would have to go in person to
+[1526.68s] request another example Is Res
+[1530.84s] applications and copies of restraining
+[1533.16s] orders those are also something
+[1535.56s] generally available only in public I'm
+[1539.12s] sorry only in the
+[1540.88s] courthouse and um another type of case
+[1544.88s] that unfortunately is only available in
+[1547.48s] certain circumstances is documents for
+[1550.40s] what are called CL CLK magistrate
+[1552.64s] hearings or show cause hearings that's
+[1555.00s] the beginning of most criminal cases
+[1557.68s] where police present a case to a clerk
+[1561.04s] and say we want to issue criminal
+[1564.24s] charges and for misdemeanors and some
+[1567.48s] other
+[1568.36s] cases uh where there hasn't been an
+[1570.88s] arrest a defendant is entitled to a
+[1573.96s] hearing those hearings are closed and
+[1576.44s] all the court documents are secret
+[1579.04s] unless the clerk decides to issue
+[1581.76s] criminal charges and once that happens
+[1585.12s] the records become publicly available
+[1587.84s] that you won't find them again on mass
+[1590.08s] courts uh but they are publicly
+[1592.44s] available if you go to the courthouse
+[1594.60s] except some documents May subsequently
+[1597.40s] be filed in the criminal case that comes
+[1600.28s] after the clerk magistrate
+[1603.40s] hearing and um and Todd we also have we
+[1606.64s] have one more question sure another
+[1608.72s] audience member who asks uh if there are
+[1611.68s] records that should be public but
+[1613.88s] they're not and a clerk has to print it
+[1616.16s] out for you is it legitimate to have to
+[1619.16s] pay for those
+[1621.76s] copies
+[1624.36s] so uh so if so one thing is under the
+[1629.88s] court rules you are generally entitled
+[1634.04s] to bring your phone into a clerk's
+[1636.88s] office and take pictures of the
+[1639.72s] documents uh there are some clerks who
+[1643.36s] will give you a hard time about it the
+[1645.88s] other good news is
+[1648.64s] the court rules say that they can only
+[1650.68s] charge five cents a page many years ago
+[1654.20s] it used to be a dollar a page and so it
+[1657.32s] was really expensive if you wanted to
+[1660.28s] copy a lot of documents now it's far
+[1663.04s] cheaper you can get 20 20 Pages for a
+[1666.12s] dollar so I generally don't object um to
+[1671.12s] paying if I have to but you do have the
+[1674.16s] right under the court rules to take a
+[1676.72s] phone in scan them and scan them uh they
+[1679.84s] can limit access to a scanner depending
+[1682.36s] on how large it is um but most phones
+[1685.96s] have apps that you can download that are
+[1689.00s] sort of like digital scanners that will
+[1691.28s] take PDFs which are even faster and more
+[1694.28s] readable than pictures um but either way
+[1698.08s] that is an option available Todd thank
+[1700.48s] you so much for taking the time to walk
+[1702.64s] us through this yeah ABS absolutely
+[1704.72s] happy to do it Emily so all right well
+[1707.16s] thanks everybody for tuning in and uh
+[1709.84s] until next time

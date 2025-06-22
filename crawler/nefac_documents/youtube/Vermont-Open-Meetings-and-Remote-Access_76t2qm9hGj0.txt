@@ -1,0 +1,551 @@
+[5.04s] hey everybody I'm Emily Sweeney from the
+[6.92s] Boston Globe and I want to thank you for
+[8.84s] joining us for this latest round of
+[11.16s] lessons brought to you by the New
+[12.72s] England First Amendment Coalition during
+[15.56s] this class you're going to learn about
+[16.80s] remote public access to government
+[18.60s] meetings in Vermont be sure to check out
+[21.24s] our previous classes on our YouTube
+[22.92s] channel and on our website nea.org and
+[26.76s] before we start I want to recognize the
+[28.88s] estate of Gloria for supporting these
+[31.12s] classes Gloria was a trailblazing
+[33.32s] journalist at the Boston Globe for more
+[35.08s] than 50 years and this program is part
+[37.80s] of her Legacy of Newsroom education and
+[40.00s] her lifelong commitment to local
+[42.00s] journalism we also want to thank the
+[44.04s] Rhode Island foundation and the New
+[45.60s] England society of news editors for
+[47.28s] their continued support and a big thanks
+[49.60s] to you for taking the time today to
+[51.20s] learn how to keep government open and
+[53.04s] accountable in your state with us today
+[55.76s] is Harrison stock uh Harry's a neac
+[59.20s] board member a staff attorney at the
+[61.16s] Vermont ACLU affiliate where he
+[63.72s] litigates a range of civil rights and
+[65.72s] civil liberties matters in the in state
+[68.08s] and federal court including cases
+[70.08s] addressing Free Speech
+[71.64s] anti-discrimination border surveillance
+[74.08s] and government transparency and he's
+[76.48s] going to walk us through remote access
+[78.24s] to government meetings in Vermont Harry
+[81.00s] thank you so much for being here thanks
+[83.64s] so much it's great to be here uh and
+[85.76s] thank you all for tuning in so without
+[87.84s] further Ado let's talk talk about hybrid
+[90.60s] and remote public meetings here in
+[92.00s] Vermont great and so the first thing to
+[94.60s] know about hybrid and public meetings in
+[96.44s] Vermont is whatever else it
+[99.40s] is it's brand new in that Vermont was
+[103.84s] operating under a series of time limited
+[106.44s] Provisions enacted during covid-19 that
+[109.88s] have sunset on July 1st
+[112.72s] 2024 the legislature recently passed act
+[115.40s] 133 also known as s55 which has
+[118.76s] permanently changed the landscape going
+[120.68s] forward about what conditions remote
+[123.60s] meetings are permissible for and who may
+[127.24s] invoke remote meetings or hybrid
+[129.80s] meetings and this this new landscape has
+[133.20s] just gone into effect other Provisions
+[135.20s] are going to go into effect of January
+[137.68s] 1st 2025 and the legislature has created
+[141.68s] a somewhat
+[144.04s] intricate framework where the types of
+[148.20s] requirements for remote access differ
+[150.76s] based on what type of body it is based
+[153.00s] on what type of power it exercises and
+[157.32s] the the part's the body's relative
+[159.48s] resources and so if you're going to go
+[161.44s] through the statute it looks quite
+[163.20s] complex hopefully by the end of the day
+[165.64s] we'll have it broken down for you so you
+[167.12s] can know kind of rule of thumb what
+[169.52s] types of requirements we're dealing with
+[171.20s] and what your opportunities are for
+[172.56s] remote access for any particular type of
+[174.36s] meeting so right up front I just want to
+[176.84s] leave with the the bottom line here feel
+[179.20s] free to pause the the video take a look
+[181.00s] at this slide if it's helpful the
+[182.88s] overall simplified summary if you just
+[184.96s] want a rule of thumb is that the default
+[186.84s] rules for meetings going forward are
+[189.68s] State non-advisory bodies this is
+[192.28s] Statewide bodies that exercise public
+[194.64s] power must hold hybrid regular and
+[197.48s] special
+[198.52s] meetings local local decision-making
+[201.56s] bodies this is local bodies that
+[203.88s] exercise public power must hold at least
+[206.76s] iners regular and special meetings and
+[209.00s] may choose to meet in a hybrid fashion
+[212.32s] for state and local advisory bonds these
+[215.48s] are institutions that do not have final
+[218.72s] decision making but instead make
+[220.04s] suggestions to another government body
+[222.00s] that does they essentially are afforded
+[224.20s] full flexibility so they may continue to
+[226.68s] meet remote only or they may choose to
+[228.88s] meet in person only or they may choose
+[231.84s] hybrid meetings which are obviously the
+[233.60s] best option in terms of access so I want
+[236.48s] to go through these one by
+[237.84s] one the first thing to know about the
+[240.08s] statute is that it draws a sharp
+[242.00s] distinction between advisory bodies and
+[244.76s] other public bodies now what is an
+[247.44s] advisory
+[248.80s] body this is a new distinction drawn in
+[251.76s] Vermont's open meeting the statute
+[253.96s] defines an advisory body as a public
+[255.48s] body that does not not as key here have
+[259.20s] supervision control or jurisdiction over
+[261.28s] legislative qu judicial tax or budgetary
+[264.76s] matters and so the first question you
+[266.92s] want to ask when confronting a
+[268.44s] government body that's meeting here
+[269.80s] Vermont is essentially does the body
+[273.32s] exercise genuine Public Power and final
+[276.28s] Authority by itself that is does it have
+[279.08s] final statutory decision making
+[280.48s] authority over anything legislative
+[282.88s] quasi judicial tax or budgetary if it
+[286.40s] does it's a
+[287.84s] non-advisory and decision-making body
+[289.96s] which means it's subject to very
+[291.24s] particular requirements about access and
+[293.92s] if we think about it this framework
+[296.20s] makes some sense the idea is that bodies
+[299.20s] that are
+[301.68s] really exercising true decision-making
+[304.48s] Authority and are reaching decisions
+[306.88s] that have real material effects on ver
+[309.76s] moor's lives we want these types of
+[312.08s] bodies to be the most accessible as a as
+[315.04s] a default Rule and as you sort of go
+[318.00s] down the scale of how much power a body
+[322.56s] has and whether it's state or
+[324.36s] local the requirements lose a little bit
+[327.76s] and so
+[330.96s] let's start with the the most stranger
+[333.64s] requirements this is for state
+[335.60s] non-advisory or state decision making
+[338.24s] bodies the default rule is starting this
+[340.72s] January any Statewide non-advisory body
+[343.76s] this is a state body that exercises any
+[345.56s] sort of final Authority by itself they
+[348.16s] must hold all regular and special
+[349.84s] meetings as hybrid meetings which means
+[352.00s] they have to designate a physical
+[353.28s] location and they have to have
+[356.00s] electronic access by default so again
+[358.44s] these are all just rules of thumb for
+[360.12s] the starting pres
+[361.80s] option when we're talking about local
+[364.08s] decision-making bodies again these are
+[366.08s] local bodies which exercise final
+[367.92s] authority over local Affairs the default
+[370.64s] rule is they have to at the very least
+[373.52s] hold regular and special meetings at a
+[376.00s] physical meeting location of course
+[378.64s] nothing prevents anybody from having a
+[381.88s] hybrid meeting or offering remote access
+[383.80s] on top of that but the default rule
+[385.76s] under the statute now is for any local
+[387.44s] decision-making body that's not advisory
+[389.96s] they must hold a physical meeting and
+[392.24s] may offer a
+[395.00s] hybrid for decision- making bodies of
+[397.08s] the state and local level again this is
+[398.60s] non-advisory bodies there are also new
+[400.88s] rules about recording the meeting the
+[403.52s] default rule for both is that state and
+[406.16s] local bodies must electronically record
+[408.40s] their meetings means that the recording
+[410.64s] has to be posted at a designated
+[411.92s] electronic location has to be retained
+[414.12s] for 30
+[415.28s] days now there's a little bit of a
+[417.32s] difference in terms of the body in terms
+[418.64s] of what that requ in looks like for any
+[421.28s] state decision-making body they're
+[422.96s] required by the new statute to post
+[425.20s] audio and video for State
+[427.84s] decision-making body they can choose
+[430.92s] whether or not to offer audio or video
+[433.36s] so it is permissible for a local
+[434.72s] decision-making body to post just an
+[437.36s] audio recording of the and again I want
+[440.40s] to be clear what we're talking about
+[442.16s] these uh these new requirements these
+[444.56s] are in addition to any of the standard
+[446.88s] open meeting law requirements that we'
+[448.32s] talked about during other training so
+[450.32s] for example decision- making bodies
+[452.88s] still have to post public minutes
+[454.84s] everything like that what we're talking
+[457.12s] about today are any new requirements
+[459.12s] under the new regime that have to do
+[460.64s] specifically with electronic remote
+[463.32s] access local decision-making bodies also
+[465.80s] have a little bit of a safety B that's
+[467.40s] not available for the the state decision
+[468.92s] Mak bodies there's an exception written
+[470.68s] in the statute that the municipality can
+[472.44s] demonstrate that recording the meeting
+[473.80s] would constitute an undue hardship it
+[476.56s] doesn't necessarily need to record that
+[478.16s] meeting and the statute sets forth a
+[480.64s] multiactor test basically for the
+[483.68s] municipality to consider which says you
+[486.24s] have to look at factors including the
+[487.84s] size of the entity whether it has
+[489.60s] sufficient personnel and Staffing the
+[491.36s] budget and the costs associated with
+[493.28s] compliance again this is new and we
+[495.36s] don't know exactly how this is going to
+[496.72s] play out but the default is that all
+[499.04s] municipalities really should as a matter
+[501.20s] of course be recording and posting those
+[504.40s] meetings now I want to talk about
+[506.08s] advisory thoughts again this is a new
+[507.80s] category in the statute these are bodies
+[510.12s] that again do not exercise final
+[512.24s] Authority but exist in an advisory
+[514.48s] capacity and for these bodies which are
+[516.92s] really just formulating decisions that
+[519.20s] are recommendations and and not actual
+[521.72s] final binding not finally binding in any
+[526.04s] sense the idea is that these bodies get
+[528.72s] maximum flexibility under the statute
+[531.28s] and so state and local advisory bodies
+[532.72s] can essentially pick with they they can
+[534.68s] choose to meet Rel only they could
+[536.64s] choose to hold inperson meetings in a
+[538.84s] physical location
+[540.08s] or they a hting again prevents body
+[545.24s] fromer a hybrid meeting and personally
+[548.32s] that's what I would encourage because it
+[549.48s] maximizes
+[551.12s] access now there are a couple of
+[554.04s] exceptions here these are again default
+[556.20s] rules for both state and local
+[558.20s] decision-making bodies they are still
+[560.40s] allowed to meet fully remotely when
+[562.28s] there is one a designated Statewide
+[564.52s] emergency or two when there's a local
+[566.72s] incident and essentially these are to
+[568.64s] create
+[570.32s] predesignated conditions under
+[573.36s] which decision-making bodies know that
+[575.84s] they go into a remote session and one of
+[577.72s] the reasons for this is because the old
+[579.48s] open meeting law essentially didn't
+[581.68s] contemplate what would happen in a
+[582.92s] situation like Co and so to prevent the
+[585.88s] legislature having to to convene again
+[588.08s] in a state of emergency and create new
+[590.08s] open meeting law specific rules this
+[592.36s] essentially tethers a set of conditions
+[594.16s] under the statute to a Statewide
+[595.96s] emergency which is otherwise declared or
+[598.20s] if there's a local incident
+[599.96s] and a local incident is defined much in
+[602.48s] the way you might expect it's a local
+[604.08s] weather event a loss of power or a local
+[606.24s] emergency in some way that would prevent
+[608.28s] the body from meeting and again the
+[610.84s] statute contains essentially guard rails
+[613.36s] for this to make sure that this can't be
+[614.76s] abused so it says before declaring a
+[617.32s] local incident there needs to be a
+[618.68s] formal finding by someone with formal
+[622.32s] decision-mak authority onal of the body
+[624.44s] and there needs to be a written
+[627.44s] announcement all right and this next
+[630.24s] part is particularly keyy everything I
+[632.84s] just talked about are again default
+[636.32s] rules they're essentially starting
+[637.72s] presumptions for any particular type of
+[639.40s] meeting but what's critical under the
+[641.32s] new statutory machine is that for any
+[643.48s] type of meeting regardless of what its
+[645.48s] default is if you want different access
+[649.20s] that is if it's a remote meeting and you
+[650.52s] want to go in person or if it's an
+[652.12s] inperson meeting and you want remote
+[653.44s] access you have the opportunity to
+[655.16s] request them so any Resident of a
+[657.36s] jurisdiction served by a public B any
+[659.60s] member of the body itself or any member
+[661.92s] of the press can request that anybody
+[665.24s] regardless of its default rules can
+[667.64s] provide additional access to a regular
+[670.08s] meeting that is by designated a physical
+[672.00s] location or a remote only meeting
+[674.88s] location requests do need to be in
+[677.04s] writing they need to be sent two
+[678.88s] business days prior but importantly you
+[680.64s] don't need to give a reason so you don't
+[682.08s] need to justify your inability to show
+[684.24s] up or your reason to want to be there in
+[686.36s] person all you need to do is say yes I'm
+[689.84s] in one of these three categories
+[692.52s] of members of the public and I would
+[695.76s] like additional access and the body has
+[699.32s] to Grant the requests unless there are a
+[702.16s] set of again predefined conditions one
+[705.56s] is an all Hazard event or declared State
+[707.08s] of Emergency the other one is the local
+[709.04s] incident and the third is if compliance
+[711.92s] would impose an undue hardship
+[714.44s] again back couple slides the undue
+[716.96s] hardship is a multiactor test
+[720.04s] this is new so we don't know going into
+[722.76s] it exactly how a dispute about a undue
+[725.80s] hardship would be negotiated so for
+[727.76s] example if if I wanted to go in person
+[730.20s] to a remote meeting and municip Val said
+[733.08s] sorry we've determined that this would
+[735.16s] be an undue
+[736.52s] hardship this will likely have to be
+[738.40s] worked out in the courts I think in some
+[740.84s] ways or in particular
+[743.36s] disputes because again it's a multiactor
+[746.04s] test we don't know exactly which
+[747.96s] considerations will come to the four
+[749.84s] but it's very much the spirit of the new
+[752.12s] legislation
+[753.68s] that public bodies should be granting
+[756.40s] access where requested wherever possible
+[758.72s] or
+[760.20s] feasable finally I want to talk on a
+[762.32s] couple of additional Provisions that the
+[763.92s] the the new statute introduces that were
+[767.12s] are new to the open meting law
+[769.00s] regime first is that there are specific
+[771.76s] requirements for electronic access so
+[773.36s] it's not enough to just post a link on
+[775.40s] some website there has to be direct
+[777.64s] access it has to allow for part public
+[780.00s] participation and has to have a
+[781.96s] component for free telephonic attendance
+[784.96s] there's also a new regime for training
+[787.44s] so State chairs of decision-making
+[788.92s] bodies local legislative body chairs
+[791.28s] Municipal managers and Mayors now have
+[793.32s] to participate in annual professional
+[795.24s] open meeting law
+[797.00s] training there are
+[799.08s] also new Provisions to make sure that
+[802.40s] everyone in the public knows what
+[803.96s] happens if a municipality or a body is
+[807.16s] not following the open meeting law
+[808.80s] correctly so now every municipality has
+[810.72s] to post on its website the provisions of
+[813.12s] the om's enforcement Provisions which
+[815.36s] again are
+[816.28s] unchanged as well as any procedures for
+[818.76s] submitting notice of an O of an open
+[820.68s] meeting law violation to the attorney
+[822.60s] general so again we've talked a little
+[824.12s] bit about open meeting laws before any
+[827.04s] person who's agreed by an open meeting
+[828.60s] law violation has to write a notice to
+[831.44s] the public body and then can either go
+[833.32s] to court or they can refer it to the
+[835.00s] attorney general but it's there's a
+[836.80s] citizen enforcement regime that's
+[838.48s] critically important to preserving the
+[840.08s] open meeting laws requirements and now
+[843.44s] every municipality has to post this on
+[845.64s] their website if they maintain one so
+[846.92s] everybody knows how to take advantage of
+[849.00s] it finally the statute established
+[852.88s] working gr which takes together a bunch
+[855.20s] of stakeholders who are tasked with
+[856.56s] recommending best practices for running
+[858.84s] effective and inclusive hybrid meetings
+[860.28s] that maximize participation going
+[861.72s] forward and this working group is going
+[864.32s] to be meeting a number of times
+[865.36s] throughout the next year and is required
+[867.56s] to consult with particular stakeholders
+[869.36s] like the robocrat association and so as
+[871.96s] the statute goes into effect if there if
+[874.96s] folks are participating in public
+[877.44s] meetings and are seeing that there are
+[880.40s] particular wrinkles with how the law is
+[883.20s] being implemented or
+[884.92s] particular scenarios the law has failed
+[887.64s] to contemplate this working group is
+[889.84s] hopefully going to be a really good
+[890.88s] opportunity to recommend further
+[893.12s] revisions any changes or a set of best
+[896.20s] practices that will hopefully be iron
+[898.48s] out anyway as this law is implemented
+[900.44s] over the next
+[903.48s] year and I think that's really it for me
+[906.60s] again the the full statute is
+[909.64s] uh act 133 s55 it's codified at a number
+[913.92s] of existing Provisions that uh have
+[917.68s] codified the existing open meeting law
+[920.76s] and as folks make their way through this
+[923.24s] legislation once you understand this
+[926.48s] division between non-advisory bodies and
+[929.64s] advisory bodies the statutory framework
+[931.80s] becomes a little bit more clear but the
+[934.40s] bottom line is that this slide right
+[936.60s] here which I have open is the set of
+[939.04s] default conditions and for any situation
+[941.52s] in which an individual wants to
+[942.92s] participate in a way that is not
+[944.88s] contemplated by these default rules for
+[946.60s] a regular
+[948.20s] meeting they can request it and this is
+[951.20s] how welcome any questions if anyone in
+[953.36s] the crowd has
+[954.76s] any looks like we do have one question
+[958.28s] um some asked uh does the new statutory
+[962.08s] framework include requirements for live
+[964.08s] meeting transcription for those joining
+[966.68s] virtually very good
+[969.36s] question I am looking here in the
+[973.40s] statute and I don't believe it does uh
+[976.88s] in terms of real time
+[979.52s] transcription as I mentioned earlier
+[981.52s] there are existing Provisions under the
+[984.28s] open meeting law that for for any
+[985.64s] meeting remote or otherwise there need
+[987.56s] to be accurate minutes taken that
+[990.04s] reflect the actual business of the body
+[992.32s] and that are posted very quickly
+[993.68s] afterward and so I think the idea is
+[996.40s] that if there isn't a transcription
+[999.48s] component public the the
+[1002.32s] minutes that exist for existing public
+[1005.12s] meetings will essentially be carried
+[1006.80s] over into this new context but
+[1010.00s] obviously live transcription would be a
+[1013.16s] significant Improvement um not just for
+[1015.60s] accessibility reasons and I'm hoping
+[1018.64s] that's something that the working group
+[1019.68s] will take
+[1020.80s] up I also want to say that for
+[1024.36s] um of any additional questions that
+[1026.40s] folks may have either now or later the
+[1029.08s] secretary of state has put out uh a
+[1031.44s] particularly helpful Q&A and guidance on
+[1034.24s] the new statute some of these materials
+[1036.12s] are adapted from that um and so if there
+[1039.92s] are particular Deep dive questions that
+[1041.68s] we haven't gotten the chance to cover
+[1042.88s] here that come up later I would
+[1044.24s] encourage folks to check out the
+[1046.68s] Secretary of State's guidance on the new
+[1048.48s] the new statute um there's a a helpful
+[1050.80s] PowerPoint presentation as well as a Q&A
+[1054.36s] excellent um and and we have another
+[1056.60s] question uh Stephanie asks can I attend
+[1060.36s] slash ask for access to a local school
+[1063.36s] board meeting in uh Su where I do not
+[1067.52s] live what about access to public input
+[1073.96s] time that's a very good question if you
+[1077.48s] are not a member of a press of the
+[1080.92s] press I believe you do have to be a
+[1082.92s] resident of the jurisdiction served by
+[1084.56s] the local body in order to make a
+[1085.92s] request for remote
+[1088.68s] access that they that they have to Grant
+[1092.00s] again any individual any member of the
+[1094.56s] public can certainly request additional
+[1097.32s] access and I would I would
+[1100.32s] encourage any local body that is
+[1103.04s] implementing this to try to maximize
+[1105.60s] Public Access in every event possible
+[1109.48s] and so it would be my hope that for
+[1111.00s] something as consequential as a school
+[1112.16s] board meeting if anyone requested remote
+[1114.68s] access the school board would Grant it
+[1117.56s] that said under the statute for a
+[1119.92s] request that the the body essentially is
+[1122.04s] forced to
+[1125.44s] accommodate you would need to be a
+[1127.36s] resident of the jurisdiction served by
+[1128.68s] the public body a member of the public
+[1130.88s] body or a member of the
+[1135.48s] press interesting and I I wonder I mean
+[1139.00s] not to get in the weeds here but um if
+[1141.40s] you want a member of the press like what
+[1143.04s] if you started a blog like that day um
+[1146.52s] or you know relayed information on
+[1149.64s] social media um maybe I'm opening up
+[1153.32s] other questions
+[1155.44s] but no not not at all I think that's
+[1158.20s] that that's a great question and I think
+[1161.92s] um again we don't know exactly how this
+[1164.80s] will be
+[1166.12s] implemented I
+[1170.96s] I think that by far the best reading
+[1173.88s] which would maximize Public Access is
+[1176.16s] that you do not necessarily be an
+[1178.40s] accredited journalist in order to be a
+[1179.96s] member of the press for purposes the
+[1181.56s] statute and that citizen journalism
+[1183.32s] would be encompassed I also say with
+[1185.48s] school board meetings the way the law is
+[1187.28s] written is a resident of the
+[1188.64s] jurisdiction served by the public body
+[1191.60s] in Vermont obviously we have tuition
+[1194.24s] programs and we have a number of
+[1196.48s] elements of the education
+[1198.96s] ecosystem where students can attend
+[1201.84s] schools in which they're not a resident
+[1203.56s] and so
+[1206.08s] um it does not seem to me to be the case
+[1209.12s] that a school board meeting necessarily
+[1212.76s] to to qualify as a resident served by
+[1215.32s] the public body for purposes of the
+[1216.80s] statute you don't necessarily need to be
+[1218.40s] a resident of the school district so
+[1220.48s] long as you're a resident of somewhere
+[1221.84s] that that school district could service
+[1223.72s] and with Vermont's tuition program uh I
+[1227.28s] imagine that would actually be quite
+[1228.28s] expansive in a lot of cases again if the
+[1230.36s] the particular district is not a tuition
+[1232.68s] school and is not open to other
+[1236.32s] jurisdictions it's a little bit
+[1237.92s] different but um for many I imagine that
+[1240.80s] that that folks who do not reside
+[1243.16s] actually where the school board is
+[1244.20s] located May nevertheless qualify as a
+[1246.56s] resident of the jurisdiction served by
+[1248.64s] the public body for purposes of the
+[1250.92s] statute gotcha and it's also interesting
+[1253.88s] too to think like you know if any school
+[1255.80s] district uh gets you know state money in
+[1259.20s] any way I guess any state resident kind
+[1262.32s] of has an interest in it you know or
+[1264.32s] could potentially um let's see so
+[1268.20s] Stephanie just followed up and said that
+[1269.84s] is exactly what I meant up here in
+[1273.20s] neek uh Choice District thanks um again
+[1277.32s] I want to thank everybody for tuning in
+[1279.44s] live encourage you to check out nea's
+[1282.36s] other classes we have a lot of them uh
+[1285.04s] you can find them on our website nea.org
+[1288.00s] and our YouTube channel um and Harry
+[1291.44s] thank you so much for a great
+[1292.88s] presentation and for answering these
+[1294.36s] questions we really appreciate it yeah
+[1296.88s] thanks so much for having me appreciate
+[1298.36s] everyone taking the time on Friday
+[1299.36s] afternoon all right all right until next
+[1302.04s] time everybody

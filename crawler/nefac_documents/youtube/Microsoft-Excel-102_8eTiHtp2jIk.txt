@@ -1,0 +1,658 @@
+[5.04s] welcome everyone to another 30 minute
+[7.04s] skills lesson
+[8.32s] microsoft excel 102. today we'll be
+[12.16s] revisiting excel for our second of two
+[14.96s] introductory lessons on spreadsheets how
+[17.44s] they can be used to understand data and
+[19.76s] how you all can begin using them as a
+[21.92s] tool when you're reporting as a reminder
+[24.24s] links to all of our 30-minute skills
+[25.92s] lessons including the first of this
+[27.84s] two-parter on excel can be found at
+[30.00s] nefac.org
+[31.52s] 30-minute skills we have a lot to cover
+[34.24s] not a lot of time so returning today
+[36.00s] with us is instructor jennifer mckim
+[38.88s] she's deputy investigative editor with
+[41.04s] the gbh news center for investigative
+[43.20s] reporting jennifer all yours
+[46.16s] great thanks so much for having me i
+[47.92s] really appreciate it um and thanks to
+[50.08s] the new england first amendment
+[51.36s] coalition um
+[53.28s] last month we looked into just a basic
+[56.00s] excel training so i just wanted to go
+[57.60s] over a little bit of what we did last
+[59.20s] time and we'll be sort of using some of
+[61.52s] those skills as we move on to pivot
+[63.60s] tables so in our last class we learned
+[66.72s] how to add up rows and columns of data
+[69.52s] doing basic math summing
+[71.76s] finding medians
+[74.00s] averages from a set of numbers very
+[76.40s] easily excel is a great excel and google
+[79.36s] sheets are both great ways to be able to
+[81.92s] do
+[82.72s] really quick data
+[85.12s] math for people who don't have to be
+[87.60s] math experts i am an english major and
+[90.72s] um have been able to do this type of
+[92.80s] work you can really impress your editors
+[95.68s] and do quick work with data sets that
+[98.32s] you get on daily reporting this doesn't
+[100.80s] have to be something
+[102.32s] to use as an investigative reporter but
+[104.64s] it but it helps all different types of
+[106.56s] reporters do smart work
+[109.36s] we also learned how to calculate percent
+[111.20s] change and percent of whole and we did
+[113.28s] some sorting and filtering
+[115.76s] so that was the beginning of what we did
+[117.52s] now we're going to head to pivot tables
+[119.76s] which sort of is the next um
+[122.56s] the next step for those who like to use
+[125.28s] spreadsheets
+[126.88s] it sounds a little scary it sometimes
+[129.20s] scares
+[130.48s] beginning reporters but it's actually
+[132.80s] very
+[133.76s] easy once you learn how to use the tools
+[135.92s] and what i really advise everybody to do
+[138.08s] is when you're doing this is to just
+[139.68s] practice it mostly that is the most
+[141.60s] important thing is you can
+[144.32s] learn a skill and then practice it go to
+[146.96s] youtube there's so many different places
+[149.20s] to
+[150.16s] improve your skills but it really i use
+[152.40s] pivot tables all the time to cover
+[155.52s] stories with the work i do including
+[158.00s] housing data
+[159.68s] trafficking whatever it is
+[161.92s] basically what do they do they help you
+[164.16s] calculate summarize and analyze data
+[166.88s] that
+[167.60s] lets you see comparisons patterns and
+[170.00s] trends you can quickly take a large data
+[172.80s] set and build summary tables from it and
+[175.20s] basically um helps you tell stories it
+[178.80s] definitely makes you smarter you can
+[180.48s] impress the people in your offices in
+[182.32s] your newsrooms that this is that that
+[184.56s] you can take this a big massive amount
+[187.44s] of numbers and quickly tell stories that
+[190.24s] way
+[191.28s] um there are so this is uh the beginning
+[194.24s] for those of you who came today but
+[196.08s] there are many resources to help you
+[199.12s] do more if you want to become a data
+[201.44s] journalist
+[202.96s] some of the work that uh the data set
+[205.20s] that i'm using today and some of the
+[207.20s] work that we did last time came directly
+[209.52s] from a
+[210.72s] amazing data journalist mary jo webster
+[213.12s] at the star tribune she has some
+[215.92s] publicly available trainings online i
+[218.96s] included the google site right here if
+[221.04s] you're interested in this there's lots
+[223.04s] of more practices that you can do that
+[225.20s] she has provided
+[226.88s] for
+[227.60s] reporters and editors journalists
+[229.52s] interested in doing this work there's
+[231.68s] also the investigative reporters and
+[233.60s] editors
+[235.44s] organization they have a lot of boot
+[237.44s] camps there's resources online you can
+[240.56s] go to their conferences and there's all
+[242.80s] different types of data training you can
+[244.72s] do with them and of course there's the
+[246.40s] new england first amendment coalition
+[249.36s] and their institute where there's also
+[251.68s] data
+[252.88s] training as well as the types of things
+[254.72s] we're doing in these 30-minute training
+[256.48s] so lots of places for you to go
+[259.36s] um basically i am always feeling like i
+[261.84s] need to refresh and learn so learn if
+[264.24s] you're here for the first time don't at
+[266.24s] all be intimidated think of this as
+[268.64s] something
+[269.76s] as a way to start to understand
+[272.08s] what you can do with some simple tools
+[274.64s] online
+[276.16s] um you can use pivot tables for excel or
+[279.44s] google sheets and other
+[281.68s] types of data services but these are two
+[283.76s] of the most basic ones there's a few
+[285.76s] differences with the way they work but
+[288.00s] they're basically similar
+[290.56s] some of the things you want to think
+[291.68s] about when you're doing this type of
+[293.76s] work is you need what they like to call
+[295.60s] tidy data which means
+[297.52s] you can't have gaps within your
+[299.92s] spreadsheets you want to have all the
+[302.32s] labels at the top
+[304.32s] um
+[305.92s] filled in because if you don't have a
+[307.44s] label filled in it won't be able to sum
+[309.68s] or count anything you want to take out
+[311.68s] any gaps that there might be in the data
+[314.48s] you have
+[315.92s] so cleaning data and examining is one of
+[318.40s] one of the important things to do as a
+[321.20s] data journalist
+[323.04s] and then lastly it's just curiosity and
+[325.52s] practice as i said before asking
+[327.60s] questions
+[328.88s] um
+[329.84s] considering your data is a source like
+[332.48s] anyone else so that you are asking it
+[334.80s] questions and having it answer things
+[336.88s] you can ask in many different ways you
+[338.80s] can look at it and be curious
+[341.52s] and think that way so that's what you
+[343.52s] want to
+[344.72s] do as you're looking at this data
+[347.44s] so
+[348.24s] uh
+[349.20s] i want to show you a few screenshots of
+[351.52s] what pivot tables look like and then we
+[354.16s] will go dig into some data ourselves so
+[357.60s] this is generally here we have a
+[361.92s] a spreadsheet
+[364.16s] of some data and then basically when you
+[366.96s] decide that you want to create a pivot
+[368.88s] table you click into your spreadsheet
+[371.92s] and for excel you click on insert and
+[374.56s] then pivot tables will pop up and you
+[377.28s] will find um
+[379.68s] this little table that will say create a
+[381.84s] pivot table generally it will be able to
+[384.80s] tell you what range
+[386.80s] that you want it in and it will also ask
+[389.68s] you whether you want a new worksheet or
+[392.00s] existing worksheet it usually starts at
+[394.16s] new worksheet pick that so basically if
+[397.12s] you look down at the bottom there's
+[398.80s] different sheets here you'll get a new
+[400.56s] sheet for your worksheet you would click
+[403.28s] ok and move on and we'll do this in real
+[405.36s] time in a second but i just want to show
+[407.04s] you the picture and this is what you
+[409.04s] would get when you create a new
+[410.48s] worksheet you would have here on the
+[412.96s] left where your pivot table would be
+[415.04s] created and you would have the pivot
+[417.52s] table table fields
+[419.92s] columns filters rows and values and that
+[423.36s] way you can start basically trying to
+[425.84s] pull together summing columns in your
+[429.28s] spreadsheet
+[431.04s] to tell stories to understand what
+[433.20s] trends and interesting information there
+[435.44s] is so that's that's the basics of pivot
+[438.96s] tables and um i am going to
+[442.08s] now
+[443.20s] draw bring something up again
+[445.44s] thanks to
+[446.72s] my uh
+[448.24s] colleague in arms mary jo webster who
+[450.96s] does a lot of the data analysis this is
+[453.04s] a data training that she um
+[457.20s] i am going to
+[458.88s] make it a little bigger so hopefully you
+[460.88s] can see it that she provided but i think
+[463.60s] it's a great way to sort of show how to
+[465.84s] do some basic
+[467.44s] pivot tables so what is this this is an
+[470.24s] analysis that somebody did gave to her
+[473.36s] of
+[474.24s] cartoons in the new yorker in 2014 and
+[478.00s] basically again as you know spreadsheets
+[481.04s] have columns and rows basically you can
+[484.16s] see here that each of them has a label
+[486.32s] up at the top
+[487.52s] they're looking at what issue of the new
+[490.40s] yorker the date of it
+[492.56s] um the page the ethnicity of the cartoon
+[496.16s] character and the gender
+[498.48s] um and as well as the occupation
+[501.76s] and the cartoonist
+[504.24s] and whether they talk or not so those
+[505.76s] are some of the questions they asked it
+[507.68s] and um
+[510.56s] basically so you have all this data and
+[512.96s] then you're looking at it and you're
+[514.00s] thinking i wonder what is a journalist
+[516.00s] might be interesting to me and as you
+[517.84s] know journalists often
+[520.08s] were interested in
+[522.24s] racial disparity gender disparity and
+[525.20s] this is some interesting data that you
+[526.64s] could ask questions as a source and say
+[528.96s] i wonder what we can talk about
+[531.04s] so
+[531.84s] pivot tables would be a great way to
+[533.60s] just dig in so
+[535.36s] to start with a pivot table you want to
+[537.04s] make sure that your
+[539.44s] cursor is in the data
+[541.76s] and then
+[542.88s] where it is right here you can see
+[544.80s] that my cursor is in the data because um
+[547.92s] it's it's highlighted here then click on
+[550.80s] insert
+[552.16s] up at the top here so
+[553.92s] um with google sheets i i believe in
+[555.84s] most cases it would be under data
+[558.16s] which is another thing but in excel it's
+[560.08s] under insert there's different places to
+[561.92s] find where a pivot table is but there
+[564.32s] will be a place and you can see here to
+[566.88s] the top left corner it says pivot table
+[569.20s] so i'm going to click on that
+[571.28s] and get that uh
+[572.88s] little
+[573.76s] uh picture that we uh
+[576.16s] that i showed you before so basically
+[578.16s] it's saying okay select a table or range
+[580.88s] it knows that this is the range that i
+[583.36s] want to look at i want a new worksheet
+[586.16s] so i'm going to click ok
+[588.64s] and um up pops uh
+[592.00s] what is here to the left where we're
+[594.00s] gonna start creating
+[595.76s] a pivot table and here are the fields um
+[599.20s] over to the right
+[601.04s] and also one of the things that's really
+[603.44s] good to do
+[604.56s] with
+[605.36s] these types of things is sheep um you
+[607.76s] want to name your sheets we have a
+[609.28s] workbook here and a workbook and down
+[611.36s] below you can see you have different
+[612.72s] sheets so the first sheet
+[615.28s] is
+[616.08s] our main sheet so i'm going to just
+[617.84s] label that click double down here and
+[620.24s] i'm going to label it main sheet
+[623.04s] and then
+[624.48s] go back to sheet 2 which is my first
+[627.52s] sheet of a pivot table the first
+[630.08s] question i'd like to ask this data
+[632.80s] is in terms of
+[635.60s] cartoons what gender are they so if you
+[638.64s] look at these fields there's different
+[640.24s] fields here there's rows
+[642.72s] values where you're summing or counting
+[645.36s] or and columns so i'm going to look at
+[647.68s] gender and i'm going to click on this
+[649.52s] here
+[650.40s] and i'm going to drag it down to rows
+[652.72s] and you'll see here suddenly it says
+[654.80s] female and male
+[656.56s] and then i'm going to put the same thing
+[658.72s] into values
+[660.40s] and you'll see um
+[662.48s] that there are um even
+[665.36s] in cartoon characters in the new yorker
+[668.16s] uh there's more men than than women
+[670.80s] um
+[671.68s] so that's sort of an interesting piece
+[673.44s] of data and we also um
+[676.88s] let's see i'm trying to okay we also
+[679.84s] learned in our last class about how we
+[682.40s] could sort things from top to bottom
+[684.88s] it's not a lot of numbers but i'm going
+[686.48s] to just click here go to data
+[690.16s] and sort it top to bottom if there are a
+[692.32s] lot of them you can see more but that's
+[694.24s] still just interesting
+[696.72s] i also want to point to
+[699.44s] if you click here on values if you look
+[702.16s] at count of gender there's a little
+[703.68s] information thing i'm going to click on
+[705.52s] that
+[706.40s] and you'll see that there's different
+[707.76s] ways to show the numbers it says show
+[711.04s] data as
+[712.56s] i'm going to click on that and
+[715.28s] it'll show different ways so
+[717.84s] this shows us a number but perhaps you
+[719.76s] want a percentage so i'm going to click
+[721.76s] here and i'm going to see percent
+[724.48s] of uh if i want to compare it so percent
+[727.36s] of grand total i'm going to click on
+[729.44s] that
+[730.40s] click ok
+[731.92s] and you'll see that you'll be able to
+[733.60s] say really quickly that 70 more than 70
+[737.20s] of the cartoon characters in the new
+[738.80s] yorker during this period were men
+[741.28s] um so there you go um and down on sheets
+[744.48s] i want to name this because again i want
+[746.32s] to help the future me understand what
+[748.96s] i'm doing so here i'm going to put
+[750.80s] gender
+[751.92s] down below and on there i've had my
+[753.84s] first sheet so i've had my first sort of
+[756.24s] question here i'm going to go back to
+[758.40s] main sheets and think of something else
+[760.16s] i'd like to do
+[761.84s] and um try again for another type of
+[766.08s] pivot table so again this is my source
+[768.16s] i'm going to ask questions like i would
+[770.00s] ask anyone i interviewed i'm going to
+[772.24s] click insert i'm going to do pivot table
+[774.88s] again i'm going to create another pivot
+[776.96s] table
+[778.00s] you'll notice down there sheet 3 it pops
+[780.56s] up and now i'm curious about ethnicity
+[782.80s] so i'm going to do a similar thing i'm
+[784.40s] going to click on ethnicity to the right
+[787.12s] bring it down to rows
+[789.52s] bring another one there
+[791.60s] see which time we have here
+[794.88s] um and
+[797.20s] see that you have basically white
+[800.80s] um
+[801.84s] there are
+[803.20s] over 1700 white characters and 96
+[808.00s] non-white characters
+[809.76s] so
+[810.80s] that is another sort of interesting
+[812.72s] statistic i also maybe will want to do
+[814.96s] the same thing i did last time in terms
+[817.36s] of sorting so i'm going to click data
+[820.80s] click in the folder and
+[823.20s] click into in the cell and i'm going to
+[825.68s] go z to a so i'll see that
+[828.88s] and and we might want to do the same
+[830.80s] thing about percentages the numbers look
+[832.80s] big but what percentage is that another
+[834.88s] way you could do it instead of just
+[836.80s] changing that is create a another one
+[839.44s] right next to it so you could so i
+[841.84s] dragged down
+[843.36s] from ethnicity
+[845.52s] another one so here is this so now it
+[848.40s] looks just the same but now i want to do
+[850.16s] the same percentage so i'm going to
+[852.48s] click back over to count of ethnicity
+[855.28s] i'm going to click on the information
+[857.20s] thing
+[858.40s] show data ads and this time i'm going to
+[861.84s] want to look at again
+[864.48s] grand total so show data as
+[867.52s] i'll put it in here percent of grand
+[870.00s] total
+[871.60s] click on that
+[873.12s] and we'll see that
+[874.56s] almost 95 percent of the cartoon
+[878.48s] characters in the new yorker that period
+[880.80s] were
+[883.04s] white and only five percent non-white so
+[885.84s] just a really interesting sort of story
+[888.16s] if you're looking into something another
+[890.16s] question
+[891.44s] so there and then i'm gonna go back down
+[893.76s] down to the bottom to my worksheet and
+[896.08s] uh name this so the future me knows what
+[898.72s] i'm doing and i'm gonna put name it
+[900.80s] ethnicity
+[902.40s] so there we go we have another one i i
+[905.52s] really like to advise when when you have
+[907.76s] this type of data it's just fun to ask
+[909.84s] your data questions and answer and then
+[912.56s] see what it tells you and then you can
+[914.32s] decide if you have a kind of story so
+[917.04s] i'm going back to main sheets clicking
+[919.04s] down the main sheets i'm going to ask it
+[920.88s] another question
+[922.56s] um
+[923.92s] so here i am i'm in my i'm in the
+[926.32s] numbers i'm going to click to insert
+[929.28s] i'm going to click pivot table again
+[932.24s] do the same thing over again and we'll
+[934.24s] get another worksheet now you can see we
+[936.40s] have sheet 4 we have down below gender
+[938.80s] ethnicity um you can ask all different
+[941.68s] questions when you're looking at your
+[943.12s] data what do you think so this one maybe
+[945.76s] we'll try to do um columns and rows so
+[949.12s] i'm gonna i'm just curious about
+[952.08s] asking myself which cartoon cartoonist
+[956.32s] uh does more men or women etc so let's
+[960.72s] try that i'm going to click down
+[962.64s] cartoonist and you see you have this
+[964.80s] long list down here
+[968.72s] when you're doing spreadsheets
+[971.12s] and pivot tables it's really good to
+[972.64s] have the longest list
+[974.48s] down
+[975.36s] down this way
+[976.88s] along
+[978.40s] along the columns and the rows to be
+[980.56s] shorter so i'm gonna
+[982.88s] now decide check to see which ethnicity
+[986.72s] each or maybe i'll start with gender i'm
+[989.04s] gonna put gender in columns
+[991.92s] so you'll see up here there's a female
+[994.08s] and a male in columns now there's two
+[996.00s] columns
+[997.20s] and then i'm going to put it also in
+[999.52s] values
+[1001.04s] and see um
+[1003.84s] see
+[1004.80s] what
+[1006.88s] differences between cartoonists who
+[1009.44s] likes females or males more
+[1012.08s] and again these numbers now now it
+[1014.32s] really helps to be able to sort our data
+[1017.28s] so i'm going to click in the grand total
+[1021.28s] click to data
+[1022.96s] i'm going to go z to a
+[1024.88s] and i'll say oh geez so
+[1027.28s] this this is sort of the guy who does
+[1029.04s] the most cartoon characters
+[1031.60s] um and then
+[1033.36s] what percentage have uh more female or a
+[1037.28s] male it might be helpful for us again to
+[1040.72s] go to values and do percentages
+[1043.28s] just because the numbers kind of kind of
+[1045.36s] can eyeball it but it's sort of
+[1046.96s] interesting and this time i'm going to
+[1049.44s] want to do percent
+[1051.44s] they're different you can see here
+[1052.72s] different ways so percent of row total
+[1056.32s] so let's do that and click
+[1059.68s] and you'll see sonoff did 77
+[1064.08s] and so you can um start asking yourself
+[1066.56s] the questions here also about like i
+[1068.96s] wonder which cartoonist
+[1071.60s] does the most um female so i'm going to
+[1074.88s] click into female and i'm going to do a
+[1077.12s] sort
+[1078.72s] and i'll see oh wait is that right
+[1082.32s] it should have
+[1083.60s] should sort here
+[1087.04s] um
+[1087.51s] [Music]
+[1090.80s] that's interesting
+[1092.72s] let's try this way
+[1095.44s] never mind
+[1096.64s] well anyway you should you should click
+[1098.80s] here and sort and see from top to bottom
+[1100.72s] it didn't do exactly what i wanted to
+[1102.72s] but um
+[1104.32s] basically you could find ways of who has
+[1106.80s] the most
+[1109.52s] there
+[1111.04s] there's who has the least you can see
+[1113.44s] here that some of them have no females
+[1115.84s] at all heaven hafiz only does male
+[1118.56s] cartoonists so these are some
+[1120.48s] interesting ways to to tell stories
+[1123.52s] and we'll do one last one so this one
+[1125.76s] was cartoonists i'm going to put the
+[1127.84s] name down here and the sheets
+[1130.96s] um you know and
+[1132.96s] the other thing again for people who are
+[1135.28s] just beginning data
+[1137.04s] analysis is not to get caught up in when
+[1139.76s] the things don't exactly work it is
+[1142.16s] something to kind of you know
+[1145.76s] not get frustrated with
+[1147.92s] play with a lot talk to friends and
+[1150.32s] experts who can help you in your
+[1151.68s] newsrooms do this type of work so we
+[1154.64s] just did male female let's try ethnicity
+[1157.36s] as a last one and then i'll i'll call it
+[1159.60s] a day so
+[1161.12s] okay so we have gender ethnicity
+[1163.04s] cartoonist actually and i should be
+[1164.80s] cartoonist
+[1166.16s] by i guess i would call this cartoonist
+[1168.72s] by gender
+[1171.68s] and now we're going to do
+[1173.60s] um
+[1174.80s] click in the middle i'm going to click
+[1176.56s] insert go up to pivot tables
+[1179.76s] one more time
+[1182.32s] and i'm going to put again i'm going to
+[1183.92s] see this i'm going to try now to decide
+[1185.84s] who which cartoonist does the most
+[1188.16s] non-white
+[1190.08s] cartoons so characters so i'm going to
+[1193.44s] put the cartoonists
+[1195.44s] and then i'm going to put ethnicity here
+[1198.16s] in columns
+[1200.08s] so you can see there they're up in
+[1201.76s] columns and i'm also going to count them
+[1205.20s] and i'll see um
+[1208.56s] and maybe so and now we'll see
+[1211.76s] let's see
+[1213.12s] by
+[1213.92s] non-white
+[1216.32s] and i'm wondering if because they're not
+[1218.40s] always filled and that might be an issue
+[1220.24s] with sorting
+[1221.84s] it's probably the problem okay we'll see
+[1224.40s] here
+[1225.52s] that oh this one same person who had the
+[1227.68s] most females
+[1229.44s] had a lot of non-white
+[1232.32s] cartoon characters so you can see here
+[1235.20s] um so i want to write a story about
+[1236.88s] which cartoonist
+[1238.64s] is the most like thinking about
+[1240.72s] diversity and you could answer it by
+[1243.20s] looking at this column
+[1245.52s] it also go back down to sheets and name
+[1247.68s] it cartoonist
+[1250.96s] by ethnicity
+[1253.44s] that's interesting i i think these are
+[1255.60s] all sort of interesting stories that you
+[1257.84s] can tell
+[1258.88s] through pivot tables
+[1261.12s] we have one question uh annie's
+[1263.60s] asking she's new to pivot tables uh just
+[1265.84s] got a huge data set that she's working
+[1267.76s] with
+[1268.64s] and she wants to
+[1270.48s] rename a list of that data to make it
+[1272.96s] more tidy to make it easier to work with
+[1275.92s] so she says as an example she has a list
+[1278.24s] of names that are coming in in all caps
+[1282.32s] last name comma first name middle name
+[1285.20s] but she just wants it to say
+[1287.04s] first name last name she wants to change
+[1289.28s] you know how it looks does she need to
+[1291.60s] use uh is there a way to do that or does
+[1294.24s] she need to use the proper and concat
+[1296.00s] commands first to create the columns
+[1298.32s] she's looking to create yeah there's
+[1300.08s] definitely a way to pull out the first
+[1302.88s] and the last name um through excel
+[1306.08s] there's there's some actually there's
+[1307.76s] some great toolkits and that first thing
+[1309.60s] that i um sent you through mary jo
+[1311.68s] webster to show how you can
+[1313.92s] you can separate by um basically yeah
+[1317.20s] exactly as you said separate by comma
+[1319.36s] the first and the last names
+[1321.60s] um if you look if if she annie if you're
+[1324.64s] interested there's something called
+[1325.68s] excel basics in that um list of
+[1328.48s] trainings that would give you a lot of
+[1330.16s] great tips on how to do things like that
+[1332.72s] also pulling year from month to day i
+[1335.36s] could actually do another training um if
+[1338.24s] you were interested on on some of those
+[1340.64s] basic ways to sort of tidy your data and
+[1342.96s] make it easier to do pivot tables later
+[1345.36s] because it is true the best um way to
+[1349.52s] analyze data is to make sure that
+[1350.96s] there's only one thing in each column
+[1353.92s] yeah and i should note as well uh andy
+[1356.00s] if you haven't already check out the 30
+[1357.92s] minute skills lesson on data cleaning
+[1360.24s] and it goes over just ways to take large
+[1362.40s] data sets with uh all different you know
+[1365.12s] formatting and style issues and to clean
+[1368.08s] it up and to use your word tidy it up to
+[1371.12s] make it more manageable and to
+[1373.44s] make cleaner data sets with so i would
+[1375.36s] encourage you to check out that resource
+[1376.80s] as well there's also something called
+[1378.72s] open refine which is a way to help
+[1381.12s] journalists and other people clean up
+[1382.96s] their data so they can use it for
+[1384.88s] analysis
+[1386.48s] yep that's right in fact uh the lesson
+[1388.32s] that i just mentioned is a lesson using
+[1390.56s] open refines oh great perfect so great
+[1393.44s] resource well uh
+[1395.28s] jennifer thank you this was uh really
+[1396.80s] helpful appreciate it uh anyone who's uh
+[1399.68s] watching right now please if you haven't
+[1401.20s] already check out uh jennifer's
+[1403.28s] microsoft excel 101 lesson uh as well as
+[1407.60s] all of the database analysis classes
+[1410.56s] that we have on our 30-minute skills
+[1412.64s] program
+[1414.08s] jennifer i know you put in the chat but
+[1416.00s] for those uh you know watching after the
+[1417.76s] fact what's the best way to get in touch
+[1419.20s] with you if anyone has any follow-up
+[1421.20s] questions
+[1422.16s] absolutely so um i'm best reached at my
+[1425.12s] work email at jennifer with 1n and 1f
+[1428.32s] underscore mckim at wgbh.org
+[1431.68s] i'm also available on twitter at jb
+[1434.32s] mckim and i'm open
+[1436.48s] we at gbh are an educational foundation
+[1438.96s] and we're always open i'm i love to talk
+[1441.12s] to journalists about the work they're
+[1443.20s] doing whether it's data analysis or just
+[1445.68s] digging in or any types of things and
+[1448.00s] i'm looking forward justin to be
+[1450.56s] involved with your institute this fall
+[1452.96s] great no we're happy to have you and uh
+[1454.64s] thank you again for providing this
+[1456.00s] lesson and thank you to all of you who
+[1458.72s] joined us for this 30 minute skills um
+[1461.36s] again if you haven't already check out
+[1463.04s] all of our previous lessons links to all
+[1465.12s] or at nefac.org
+[1466.96s] 30 minute skills and if you find any of
+[1469.28s] these lessons valuable in any way please
+[1471.76s] consider making a donation at nefac.org
+[1474.56s] help us keep these lessons free and open
+[1476.80s] to all
+[1477.84s] thank you all again and we'll see you
+[1479.68s] next month for our next 30 minute skills
+[1483.36s] bye everybody

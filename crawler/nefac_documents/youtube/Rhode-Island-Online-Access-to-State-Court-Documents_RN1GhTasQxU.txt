@@ -1,0 +1,721 @@
+[5.12s] I'm Justin Silverman of the New England
+[6.68s] First Amendment Coalition thank you for
+[9.00s] joining us for this lesson on New
+[10.48s] England state courts this lesson is the
+[13.52s] third in our series of classes
+[15.16s] discussing how the courts work and what
+[17.24s] types of access you're entitled to under
+[19.56s] the First Amendment state law and
+[21.52s] various court rules each lesson is
+[24.52s] cumulative so if you haven't already
+[26.24s] please view the previous two lessons you
+[28.68s] can find them on our YouTube Chan 5
+[30.44s] freedoms are in our foi guide at nea.org
+[33.76s] you'll also find there lessons on state
+[36.32s] public record and open meeting laws as
+[38.40s] well as tutorials on how to use the
+[40.28s] federal Freedom of Information Act
+[42.72s] collectively these lessons provide a
+[44.84s] curriculum you won't find anywhere else
+[47.92s] a special thanks to those who are
+[49.60s] supporting these classes and keeping
+[51.48s] them free and open to the public the
+[53.60s] road Island Foundation SBJ New England
+[57.28s] and the New England society of news
+[59.48s] editors
+[61.56s] now to introduce you to today's
+[63.32s] instructor neac executive committee
+[65.44s] member and Boston Globe reporter Emily
+[68.28s] Sweeney hey everybody I'm Emily Sweeney
+[70.60s] from the Boston Globe and I want to
+[72.36s] thank you all for joining us for this
+[74.28s] webinar which is brought to you by the
+[76.12s] New England First Amendment Coalition
+[78.72s] this session is going to focus on online
+[80.76s] access to state court records in Rhode
+[83.00s] Island and with us is Tim White he's an
+[85.44s] investigative reporter and managing
+[87.04s] editor at wpr in Providence and the
+[90.12s] recipient of six New England Emmy Awards
+[93.12s] and uh yeah Tim thank you so much for
+[95.80s] being here Emily it's really good to be
+[98.16s] here with you again and I'm excited to
+[99.88s] talk about this I love covering the
+[101.40s] courts and uh online Court Access is a
+[104.64s] key tool in doing that so first um this
+[108.28s] might sound a little bit old school but
+[110.28s] it's hard to overstate how important it
+[112.56s] is to make sure that you are still
+[114.48s] getting to actual cour houses to talk to
+[117.28s] actual people talking to clerks uh
+[119.84s] lawyers building relationships um it'll
+[122.44s] broaden your understanding of the
+[123.80s] judicial system and give you a leg up on
+[126.56s] your competition if you're a reporter
+[128.12s] watching this but understanding how to
+[129.96s] access court records online is an
+[133.96s] invaluable uh tool not only when you're
+[136.40s] on deadline but also makes you more
+[139.00s] prepared when you do walk through the
+[140.76s] threshold of that courthouse so to begin
+[143.88s] just a very brief primer on the
+[146.76s] structure of Rhode Island courts like
+[148.92s] every state the Supreme Court is the top
+[151.04s] Court in Rhode Island and it's a top
+[153.76s] appet Court obviously uh that is
+[156.04s] followed by the Superior Court which
+[158.64s] acts as an intermediary appet Court
+[160.92s] Rhode Island doesn't have its own appet
+[162.80s] system the Superior Court in large part
+[164.80s] acts as that before The Supreme Court
+[167.00s] but of course Superior Court handles all
+[169.76s] felony criminal cases misdemeanors are
+[172.32s] handled at district court and they have
+[174.44s] a a full case load of of civil cases as
+[177.32s] well uh as I said there's District Court
+[179.76s] they have a um a diversity of cases
+[183.36s] there it is the first stop for almost
+[185.56s] all criminal cases so you spend a lot of
+[187.72s] time in the district court records area
+[190.56s] which we're going to talk about um and
+[193.12s] it handles all misdemeanor cases from
+[195.12s] beginning to end felony cases go to
+[197.20s] Superior Court there's family court in
+[199.40s] Rhode Island as well as a workers
+[201.48s] compensation Court um and then a totally
+[204.24s] separate Rhode Island Traffic Tribunal
+[206.52s] which handles as it sounds um you know
+[210.44s] uh traffic citations and and whatnot
+[212.88s] that happens on the highways and byways
+[214.36s] of Rhode Island now each town as in Most
+[217.08s] states also have their own court systems
+[219.72s] uh probate courts think wills and
+[221.80s] Estates and some have housing courts
+[224.96s] which uh handle often evictions and
+[227.80s] tenant landlord disputes here is the
+[230.08s] good
+[231.20s] news um all state courts are relatively
+[234.96s] searchable through the single Judiciary
+[237.92s] portal portal in Rhode Island
+[240.56s] it's hit or miss and that's why I
+[242.32s] crossed it out at the bottom of this
+[243.64s] slide it's hit or miss with municipal
+[245.44s] courts um I know you can read probate
+[248.04s] decisions out of Providence uh through
+[250.68s] the city of Providence website I don't
+[253.04s] do a lot of probate reporting to be
+[255.64s] honest with you so I'm not too
+[256.92s] experienced with that but each
+[258.64s] individual Town some of them offer
+[260.32s] online records some of them don't I'm
+[262.32s] not spending any time on that in this
+[264.60s] presentation because we have a lot to
+[266.04s] talk about uh with all the other um the
+[269.20s] state courts in in Rhode Island so if
+[271.96s] you go to the Rhode Island Judiciary web
+[274.40s] page it it's really busy there's a lot
+[277.96s] going on here uh where you want to focus
+[280.92s] your attention is down here at the Rhode
+[283.92s] Island Judiciary P public portal and
+[287.00s] when you uh click on that it brings you
+[290.00s] to this and I have the website at the
+[292.76s] top of the page this is the one that I
+[295.00s] bookmark and is at the top of my
+[297.40s] bookmarks bar uh we we want to focus on
+[302.16s] the smart search search for court
+[304.92s] records option um we'll briefly talk
+[308.04s] about search hearings but very briefly
+[310.36s] because 90% of what you're going to do
+[313.00s] is under the smart search option okay um
+[317.88s] and this will take you here to start
+[321.92s] searching court records and unlike in I
+[324.44s] I do also this Market covers
+[326.72s] Massachusetts and Connecticut uh unlike
+[329.24s] Mass Massachusetts one search looks at
+[332.92s] almost the entire state court system at
+[335.24s] once so if you plug in one name if you
+[337.24s] plug in one business uh an entity if you
+[340.92s] you can search by lawyers too it'll
+[342.76s] search Family Court Rhode Island Traffic
+[344.68s] Tribunal District Court Superior Court
+[346.76s] Supreme Court it'll do all of it which
+[349.04s] is really really um convenient um as you
+[353.04s] can see at the top you can enter a
+[355.12s] record number a record number is a case
+[357.48s] number usually we don't have that right
+[359.76s] and that's why we're going to this
+[361.04s] portal is to find that case number or to
+[363.44s] find an individual so we usually want to
+[365.32s] put in an individual's name and it's a
+[368.12s] little misleading here you can put in a
+[370.00s] person's name but you can also put in a
+[371.80s] business entity as well because often
+[374.44s] you know a business is a plaintiff or
+[376.08s] defendant in a civil case or even a
+[378.04s] criminal case potentially so it's not
+[380.12s] just an individual's name there and
+[382.36s] unlike Massachusetts you can use wild
+[384.56s] cards uh in in the search here and a
+[387.00s] wild card if you don't know is if you is
+[389.88s] like an asterisk so if you know say the
+[393.16s] first four letters of the person's last
+[394.84s] name but it's a really complicated last
+[396.40s] name you're not sure how to spell it you
+[398.08s] can do you know t
+[401.56s] l star and it'll fill out the rest you
+[404.88s] have to have at least three characters
+[407.64s] in order to use the wild card but it's
+[409.92s] really convenient if you're dealing with
+[411.52s] a defendant say in a criminal case with
+[414.48s] a a complicated last name and I am going
+[417.24s] to focus just for the purposes of this
+[419.04s] example
+[420.32s] I am going to focus on criminal cases
+[423.00s] here but what we're going to talk about
+[425.20s] applies to Family Court civil search um
+[429.32s] cases Superior Court all of it uh but I
+[432.00s] I think it's just easier to more
+[433.88s] tangible to focus on individuals and in
+[436.88s] this case a criminal case and we're
+[438.32s] gonna look up a defendant by the name of
+[440.92s] Gary uh Grom quitz believe I'm
+[443.92s] pronouncing that right uh but that's a
+[445.48s] high-profile case here in Rhode Island
+[447.08s] he is accused of taking part in the
+[448.96s] murder a pregnant woman whose body was
+[452.20s] uh dumped in an icy Pond and he has an
+[454.72s] ongoing case so when you search his name
+[459.48s] um you come to a page like this and as
+[462.00s] you can see this screenshot only holds
+[464.32s] one page if you look at the bottom it
+[466.24s] goes onto a second page I can click too
+[468.80s] but you have it looks like um Gary Grom
+[474.32s] quitz has quite the criminal record at
+[476.64s] first glance before I get into that um
+[480.32s] let's just dissect what we're looking at
+[482.04s] on the page on the left hand side here
+[483.88s] those are case numbers okay and the case
+[486.28s] numbers can tell you a lot um you see K1
+[489.84s] km 32 the K's tell you where the case is
+[494.04s] located in that case it's it's Kent
+[496.24s] County Superior Court the three is third
+[498.96s] division District Court that's in also
+[501.20s] in Kent County the P would be Providence
+[503.68s] Superior six is six District that's in
+[506.08s] Providence you'll get to know these
+[507.64s] things the second number indicates what
+[509.84s] kind of a case you're dealing with here
+[511.96s] uh the one will tell you uh that in a
+[516.40s] superior court case it's a capital
+[518.32s] offense so we know Gary Grom quitz is
+[520.88s] facing a capital offense which is murder
+[523.32s] first-degree murder um uh rape is a
+[526.24s] capital offense so we know it's very
+[528.12s] serious if you go to District Court you
+[530.60s] see the three two there the two
+[532.84s] indicates that that is um a felony case
+[535.96s] so we know that's eventually going to
+[537.68s] get to Superior Court so so as you get
+[539.60s] to know this the case numbers you get to
+[542.44s] learn a lot about you know even the the
+[545.08s] beginning of a case number can tell you
+[546.80s] a little bit about the case anyway and
+[548.84s] there are other numbers um that I won't
+[551.28s] get into but it can tell you the type of
+[554.12s] uh some are indicated by Family cases
+[556.00s] they'll get a four uh juvenile family
+[558.56s] court cases which you can't necessarily
+[560.68s] open but you might be able to see it
+[562.72s] exists and that's why you can't open it
+[565.08s] it'll have a it'll have a five after it
+[568.12s] so on and so forth okay so here we want
+[570.72s] to look and see all right Gary uh Grom
+[574.04s] quitz got arrested we want to see if he
+[576.12s] has a criminal record so this is a good
+[578.44s] place uh to start of course uh I should
+[581.92s] note you're not going to see
+[583.16s] expungements Rhode Island has a very
+[585.00s] liberal expungement law here and that
+[587.52s] means uh you know a defendant convicted
+[590.08s] in a case in certain cases not all can
+[592.60s] get those convictions removed from the
+[594.60s] official record that includes cour
+[596.32s] houses and uh police stations so you're
+[599.20s] not necessarily seeing everything that
+[601.60s] you want to see here so the number one
+[605.16s] rule of Journalism is you know check it
+[608.12s] out um of course you want to confirm
+[610.52s] what you find here with police
+[611.84s] departments with the Attorney General's
+[613.56s] office uh whatever but there there are
+[616.32s] ways to zero in uh on this information
+[619.04s] and at first glance you see this and you
+[621.12s] see okay he's got at least two pages of
+[623.56s] a potential as we say wrap sheet how do
+[626.12s] we know he's got a unique name but often
+[628.44s] we're searching for a John Smith or
+[630.20s] someone who has a a more common name
+[633.60s] well you got the date of birth on the
+[635.16s] right hand side of the defendant in this
+[637.40s] case um most civil cases I should note
+[640.36s] don't always put the date of birth up
+[641.76s] there this is usually criminal cases um
+[644.60s] so this is a good indication already
+[647.12s] that we have the same person that we're
+[650.00s] looking for but you you know you you do
+[653.16s] have to take and we're going to do that
+[654.84s] right now you have to go a few uh layers
+[657.72s] deeper than that
+[659.72s] um when you click on a case number so
+[662.56s] I'm just going to go back on the left
+[664.08s] hand side the case number you can see
+[665.68s] it's blue and underline when you click
+[668.36s] on that this is part of what you will
+[671.64s] see and it's got valuable information in
+[673.72s] there it tells you the arresting agency
+[675.52s] at the top it says jurisdiction North
+[677.12s] Providence police gives you the count
+[679.28s] that they're charged with
+[680.96s] the the date of the offense which is
+[683.56s] very helpful if you're writing a story
+[685.04s] you know uh when this went down you can
+[687.76s] learn who the defendant's attorney is so
+[690.60s] you can give them uh a call that's down
+[693.00s] there unlike Pacer unfortunately it
+[694.76s] doesn't include the email or phone
+[696.36s] number but that's okay that's a place uh
+[699.12s] for you to for you to start now when
+[701.88s] you're looking let's say we want to find
+[704.60s] out how many you know uh charges this
+[707.84s] defendant has been charged with before
+[710.68s] there's an SID number at the very bottom
+[713.84s] of uh this page and that stands for a
+[716.88s] state identification number and every
+[719.80s] defendant across multiple cases is
+[723.08s] assigned an SID so you can and we're
+[726.96s] going to do an advanced search section
+[728.60s] in a moment you can filter the
+[731.84s] defendant's name and plug in the SID
+[735.08s] number if you get it from one of the
+[736.24s] cases and that's going to show you just
+[738.32s] that person and then you know if you
+[740.88s] have a John Smith with that SID number
+[744.04s] that is the same John Smith now humans
+[747.20s] make mistakes and clerks might forget to
+[750.24s] enter in an SID number so you might be
+[752.76s] missing a couple of cases in there but
+[755.24s] it will give you at least a footprint
+[758.28s] that you can work with and you can start
+[760.08s] pulling threads uh again if you're a
+[762.28s] reporter and want to see if you're
+[763.92s] dealing with the same person the SID
+[765.80s] number is an individualized number for
+[768.48s] the defendant that uh crosses multiple
+[771.32s] platforms um my warning to you when
+[775.52s] you're looking at that long list of
+[778.36s] cases if you're dealing with someone
+[779.84s] with a long list is be careful in Rhode
+[782.08s] Island not to double up and and here's
+[785.08s] what I mean so we see in this year Gary
+[788.68s] Grom ktz was charged with breaking and
+[792.08s] entering into a dwelling a felony and it
+[796.00s] it looks like it happened twice um that
+[799.92s] same year but look carefully at the top
+[803.72s] we talked about this earlier we have a
+[805.52s] 62 case and a P2 case and remember what
+[808.48s] I said earlier that most criminal cases
+[811.08s] start in District Court and then they
+[813.00s] move to Superior Court if they are a
+[815.28s] felony so how do they move to Superior
+[818.20s] Court Grand Jury indictment or an
+[820.88s] information from the Attorney General's
+[822.64s] office right so you would be reporting
+[826.00s] inaccurately if you said that twice in
+[829.72s] 2003 see we see the offense date he was
+[832.68s] charged with b& and that's a good
+[834.40s] indication we have the same offense date
+[836.96s] for these two different cases so you do
+[840.00s] not want to double up and say he was
+[841.76s] charged twice that year because he
+[843.20s] wasn't he was charged once that year uh
+[846.04s] with that with that crime and you can
+[847.72s] find out the disposition the outcome of
+[849.64s] the case lower uh on the on the page um
+[855.24s] okay so here's another case that we're
+[859.52s] looking at this is a different uh
+[861.48s] defendant here and this is the top half
+[863.44s] of the page we can see the the charges
+[866.12s] that they're facing the prosecutor again
+[868.52s] we have the SID number the defense
+[870.40s] attorney down there when you scroll up
+[873.52s] um you are going to see the events and
+[876.88s] Orders of the court and this is helpful
+[879.88s] be because if you're tracking an active
+[881.88s] case you can see uh when it is scheduled
+[884.88s] to go back into court and here down here
+[887.76s] at the bottom we can see on November
+[889.32s] 29th there's a hearing on a motion to
+[891.24s] dismiss that's probably an important uh
+[893.84s] hearing that we might want to cover
+[895.64s] motions to dismiss can often take like
+[898.24s] min trials and might be interesting and
+[900.36s] we know which courtroom to go to we want
+[902.00s] to find out where a judge this judge is
+[905.52s] seated uh at that time so we know where
+[908.52s] we want to go all right what we really
+[910.68s] want though is we really want court
+[912.80s] documents the bad news is um you cannot
+[916.56s] get those remotely unless you're a
+[919.04s] licensed attorney so you can ask a
+[921.84s] lawyer uh to grab a document for you and
+[925.04s] email it to you if you can't get down to
+[927.40s] court um but the good news is if you go
+[932.16s] to any courthouse in the state so let's
+[934.44s] say a case is at way down at Washington
+[936.76s] County Superior Court in Wakefield Rhode
+[938.44s] Island which you know in Rhode Island
+[940.32s] you need a passport to get to um it but
+[943.80s] you're a reporter in Providence you can
+[945.88s] go to Providence Superior Court and get
+[947.88s] those records that are down in
+[949.96s] Washington County and when you turn on
+[952.40s] the terminal in the courtroom it's going
+[953.88s] to look really familiar to you it is the
+[956.20s] same platform that you have bookmarked
+[958.84s] on your computer it looks just like this
+[960.72s] you're going to go into the smart Search
+[962.20s] tool but the difference is when you go
+[964.04s] in there and you go into events and
+[966.20s] Orders of the Court this is the same
+[967.72s] page we're looking at before notice the
+[970.08s] little PDF symbols with every docket
+[973.76s] entry uh starting with the information
+[976.28s] which is the complaint from the AG's
+[978.04s] office the arraignment all the way down
+[980.24s] you click on those and you can open up
+[984.60s] the PDF now look you can ask the clerk
+[987.76s] to print it I think it's 25 cents a page
+[990.12s] way too expensive in my opinion um but
+[993.72s] what I always do and you're allowed to
+[995.72s] do is take a picture of the PDF on the
+[998.24s] screen um that's usually the easiest
+[1000.16s] thing to do and then you can work with
+[1002.76s] it that way but if you do need the
+[1003.96s] printed copy um the you can ask the
+[1006.96s] clerks uh to print it for you all right
+[1010.48s] digital records um just a couple of
+[1012.36s] notes on this real quick they vary by
+[1014.96s] court so in terms of how far back they
+[1017.88s] go workers comp Court believe it or not
+[1019.68s] and I think it was because there's just
+[1021.08s] a lower number of cases WR the state
+[1023.48s] started with those so those go back to
+[1025.72s] 2014 and they started building the
+[1027.96s] database I think Superior Court came
+[1029.72s] online in
+[1031.40s] 2016 um the only downfall is district
+[1034.68s] court records are not digitized yet the
+[1037.20s] short answer is to why is because uh
+[1040.24s] local police departments we don't have
+[1041.80s] district attorneys in Rhode Island they
+[1043.68s] handle the prosecutions of misdemeanors
+[1045.88s] so they have different they have a a
+[1047.96s] patchwork
+[1049.44s] of computer systems that don't
+[1051.44s] necessarily talk to the court so those
+[1053.36s] are still analog those are still hard
+[1055.88s] copy uh district court so you actually
+[1057.64s] have to go interact with a court clerk
+[1060.28s] they're all very helpful um so older
+[1064.56s] records if you see if you're look for a
+[1067.12s] 2010 case or a 2000 criminal case you'll
+[1071.16s] want to go to uh the judicial record
+[1074.00s] Center which is on Hill Street Pucket
+[1075.84s] they have their own website um
+[1078.44s] absolutely call them first they will
+[1080.44s] pull it for you because that place is
+[1082.36s] loaded with tens of millions of pieces
+[1084.44s] of paper and they are unbelievably
+[1087.40s] helpful there so make sure you call
+[1089.24s] first um before you before you head down
+[1092.76s] a brief note I talked to the court
+[1094.44s] spokesperson ahead of this presentation
+[1096.28s] she tells me document access for the
+[1098.12s] general public may be on in the future
+[1100.96s] but not sure how distant that is she did
+[1103.56s] say they are launching an improved
+[1105.00s] platform in the coming months so some of
+[1107.08s] this interface may change 2024 but the
+[1109.36s] fundamentals are going to be the same um
+[1113.00s] I said I would touch on this very
+[1114.92s] briefly search you can search just
+[1118.20s] hearings um this is mainly useful if
+[1121.08s] there are multiple cases with the same
+[1122.92s] parties again we'll bring up the example
+[1124.96s] of I put in here as you can see when you
+[1127.16s] click on that this is a form you fill
+[1128.96s] out I put in that defendant Gary Grom
+[1131.52s] quitz because I know he has multiple
+[1133.68s] Active cases I narrowed the search um
+[1136.88s] dates which you can do but you don't
+[1138.60s] have to um and what came up was okay
+[1142.40s] he's got three Active cases against him
+[1144.72s] right now we know when the next date
+[1147.32s] they're all on Halloween how about that
+[1149.60s] and we know what judge they're in front
+[1151.24s] of it even tells you what courtroom very
+[1153.08s] convenient Kent County Courthouse in uh
+[1155.76s] courtroom 4E so if if you're tracking an
+[1158.44s] active case this is a nice quick way to
+[1160.52s] do it the other way you can do it is at
+[1162.28s] smart search and just go into the uh
+[1164.76s] individual
+[1166.32s] dockets the advanced Court search on
+[1169.40s] that main page when you uh first log in
+[1173.36s] is very very helpful you can filter by a
+[1176.80s] person's datee of birth we talked about
+[1178.84s] the state identification number you can
+[1181.56s] also filter by case its status uh is it
+[1185.48s] open um is it closed has it been
+[1188.96s] unassigned so no judge yet that's that's
+[1190.92s] a weird one to search for but if you
+[1192.64s] knew it wasn't a signed that might help
+[1194.80s] um you can search by Court District
+[1197.24s] Superior workers comp Family Court Etc
+[1200.64s] um or you can you can even search an an
+[1203.40s] attorney's name and if I have two
+[1206.88s] minutes I'm and I do I'll I'll just show
+[1209.36s] you real quick what that looks like I'm
+[1211.48s] going to share another screen
+[1213.96s] here okay so we go into smart search we
+[1218.28s] go to Advanced filtering options
+[1222.28s] here and we can scroll down and these
+[1226.04s] are all the different things you can
+[1228.72s] search under so if you know let's say
+[1231.72s] you remember you're like oh I know uh
+[1234.92s] Bill Dimitri who's a a well-known
+[1238.12s] defense attorney here in Rhode Island he
+[1239.80s] represented that client but oh I can't
+[1241.72s] remember what that client's name is
+[1243.84s] let's search William
+[1246.56s] Dimitri oh good it didn't make me do the
+[1249.00s] capture that's always a win and we do
+[1252.32s] the search here now the problem is Bill
+[1254.28s] Dimitri has quite the case load and has
+[1258.24s] represented a lot of defendants so this
+[1260.24s] is taking a second and what I would do
+[1263.12s] is then okay you know it's an active
+[1265.04s] case I would sort by status of the case
+[1270.56s] um these are closed cases hit it again
+[1273.84s] unassign just means a judge hasn't been
+[1275.60s] assigned to it yet here are all the open
+[1277.32s] cases that bill Demitri is handling and
+[1279.08s] oh right it was George Bower that's who
+[1281.32s] I was looking for and and then you can
+[1283.84s] narrow in on on uh you know maybe who
+[1287.40s] you were looking for in that case okay
+[1289.76s] I'll stop sharing this and wrap up real
+[1292.16s] quick with the end of my slide
+[1297.64s] deck um couple of other quick useful um
+[1303.00s] websites the Supreme Court posts all
+[1305.88s] their opinions in orders orders are
+[1308.44s] often like if a lawyer gets disciplined
+[1310.88s] they'll put in an order if they if
+[1312.48s] someone should have their law license
+[1314.88s] suspended that's often a story but of
+[1316.92s] course there orders if you you want to
+[1319.80s] search a topic or an order or click on
+[1323.08s] the year you can read them they look
+[1325.52s] like this they they this is where you
+[1327.32s] can get actual filings is the Supreme
+[1330.04s] Court free of charge um and it's fun
+[1333.44s] it's good to check in on those when you
+[1334.88s] know the Court's been active um to see
+[1337.20s] if they've filed any big decisions
+[1339.64s] another one I want to talk about very
+[1341.32s] very briefly is the Rhode Island
+[1343.52s] attorney general's office keeps a
+[1345.68s] database of open meeting meetings act
+[1348.44s] decisions and public records decisions
+[1350.96s] these are administrative decisions that
+[1353.44s] the AG's office which handles disputes
+[1356.48s] in this area um handles and and how they
+[1360.04s] are valuable and I will just briefly go
+[1362.32s] back to Chrome is if you are let's say
+[1366.96s] you were denied an arrest report right
+[1368.84s] you were denied arrest report by
+[1372.12s] um by some police department and you
+[1375.36s] want to make an argument to the police
+[1377.36s] department or if you're appealing to the
+[1378.84s] AG about arrest report
+[1382.36s] narratives and you want to see how
+[1384.20s] they've decided on that before and you
+[1385.92s] know it's a public records act you
+[1388.24s] search and it's going to give you a
+[1390.36s] bunch of cases where they've decided on
+[1393.56s] arrest reports in the past so you can
+[1395.64s] find out where they've fallen and I can
+[1398.48s] tell you having argued this before um
+[1401.60s] you know you should be able to get that
+[1403.04s] arrest report um but this will help you
+[1405.60s] do legal research if you're trying to
+[1408.40s] um appeal an adverse public records
+[1411.32s] decision so I put this in the
+[1412.76s] presentation because while it's not
+[1414.04s] necessarily courts it is precedent in
+[1417.64s] many ways and valuable to you when
+[1420.32s] you're in a a public records fight or if
+[1423.20s] you're in a um an open meetings fight if
+[1425.92s] you're making that argument as well and
+[1427.92s] then um finally this is a state court um
+[1431.60s] presentation I understand that we are
+[1433.96s] not talking about Pacer that's a whole
+[1435.92s] other presentation and it's a feed get
+[1438.04s] into federal court what I will tell you
+[1440.44s] is US District Court in Rhode Island
+[1442.56s] every day around 4:00 posts their
+[1445.60s] opinions and orders um and so it's a
+[1448.44s] good place to look and and this is free
+[1451.72s] and you can click on document number
+[1453.56s] four Magistrate Judge Sullivan um issued
+[1456.68s] a decision in that case um and often you
+[1459.52s] can find great nuggets in here like I
+[1461.76s] said free of charge um to uh you know
+[1465.40s] every day it's I kind of it's something
+[1467.24s] I like to do around 4:00 in the
+[1469.00s] afternoon because uh I'm dorky like that
+[1472.04s] but uh it's it's another way to access
+[1474.72s] court court records even though on the
+[1476.56s] federal level um and that's what I
+[1480.20s] got that's great Tim no that was super
+[1483.44s] helpful and um and thanks for showing
+[1486.04s] those uh that that last website and the
+[1489.28s] AGS that's really interesting um and I'm
+[1493.88s] not sure I didn't see any questions pop
+[1495.44s] up in the chat but um if anybody has any
+[1498.08s] questions from our live audience feel
+[1499.96s] free to you know and and Emily one note
+[1502.56s] if I could on that attorney general's
+[1504.76s] website
+[1506.40s] um which I I use a lot and I and I find
+[1509.80s] reporters are using it more and more as
+[1511.68s] we're as we're getting blocked from
+[1513.72s] public records more and more that is the
+[1515.88s] trend we are having to Advocate on
+[1518.40s] behalf of ourselves and the argument
+[1521.72s] well I want that public record because I
+[1523.64s] want it isn't good it's always good to
+[1526.40s] point to decisions they've made now
+[1528.96s] you'll you may have noticed that it went
+[1531.12s] back to
+[1532.24s] 2017 um I talked to someone at the
+[1534.20s] Attorney General's office ahead of this
+[1535.80s] presentation who told me that they are
+[1538.84s] slowly adding more and more years on so
+[1541.88s] that database is going to become more
+[1543.36s] robust but what I will say is even a
+[1545.72s] decision you made in 22 or
+[1548.52s] 23 um usually cites an earlier decision
+[1552.40s] right in that so it it it is a window
+[1555.44s] into maybe a case in 2010 that the 's
+[1558.16s] office decided because they're citing
+[1560.52s] it okay that's good to know and and also
+[1564.24s] we have a do we do have a question from
+[1565.88s] one of our live audience members um
+[1568.16s] asking is there any way to find recently
+[1570.20s] filed cases by location for example
+[1572.68s] would I be able to find cases recently
+[1574.48s] filed in Newport or Newport
+[1577.84s] County yeah there are Court calendars on
+[1581.12s] that main um Judiciary website I I think
+[1584.52s] is probably the best Avenue to go what
+[1587.12s] you can't do and maybe this is what you
+[1589.08s] asking you can't just plug put in
+[1591.84s] Newport um Superior Court or whatever
+[1595.32s] and then hit
+[1596.92s] search you need to enter in more Fields
+[1600.04s] you have to enter in a party name which
+[1602.88s] again can be an individual or entity um
+[1605.64s] but each
+[1607.44s] Court um has a calendar that is posted
+[1610.52s] online and I know our Newsroom checks
+[1613.56s] that every single day to see uh what
+[1616.80s] what has been f so you can do that by
+[1618.64s] the way you can do that with federal
+[1620.16s] court too you just have to do it by
+[1622.00s] judge um and there's there's only three
+[1625.04s] US District Judge judges here and I
+[1626.96s] think three magistrate judges I hope I
+[1628.80s] got that right I'm sure I'm gonna hear
+[1630.48s] about it but anyway so there's not a lot
+[1632.44s] of jurists so you can search individual
+[1635.76s] uh judges and find out what's on their
+[1637.56s] on their calendar for that
+[1640.76s] day and uh we also have another question
+[1643.48s] too it's slightly off topic but um very
+[1646.96s] interesting question question n
+[1648.20s] nonetheless do you know what exactly
+[1649.92s] happens when a public records request
+[1651.88s] for emails is filed like what is the
+[1654.92s] chain of custody of the information I
+[1657.00s] know a public information officer and a
+[1658.56s] lawyer for the respective department is
+[1660.76s] involved but basically do the subjects
+[1662.96s] of the request know what emails are
+[1664.80s] being requested and do they have a
+[1667.72s] say that's a great question so first of
+[1670.72s] all Rhode Island law allows the
+[1673.44s] exemption of
+[1674.88s] emails uh if they are two or from an
+[1678.16s] elected official and this is something
+[1679.52s] neac has been trying to get changed uh
+[1683.28s] because we think work being done on
+[1685.84s] behalf of the people belongs to the
+[1687.24s] people uh but if you are looking for an
+[1689.40s] elected officials email they can they
+[1691.92s] don't have to there's a supreme court
+[1693.60s] precedent on this but they can withhold
+[1695.72s] it spoiler alert they always do now that
+[1699.24s] said um when you put in a request to it
+[1703.28s] depends on the agency if I put in a
+[1705.28s] request for emails to Providence they
+[1707.24s] have portal the lawyers decide whether
+[1709.80s] it falls under any exemptions in APPA
+[1712.88s] generally I get the emails I'm looking
+[1714.76s] for it might have the uh information
+[1717.40s] redacted whether or not that city
+[1719.56s] solicitor has told the person that
+[1722.20s] you're looking for them um you know look
+[1725.84s] let's be real it happens but what you
+[1727.72s] should know is after a certain amount of
+[1730.16s] time your record request becomes public
+[1733.16s] on their portal so you you you don't
+[1736.00s] know who asked for it but but you can
+[1737.80s] see someone ask for all the emails of
+[1740.40s] City employee John Smith or something to
+[1743.28s] that effect should the to second part of
+[1745.92s] your question should that person who is
+[1748.12s] the subject of the emails have a say the
+[1750.48s] answer is no they should not have a say
+[1753.64s] in that in an Ideal World you have a
+[1756.12s] neutral Arbiter you have the lawyer
+[1758.04s] deciding well wait does it fall in or
+[1760.56s] out of the public records law and that's
+[1762.84s] it but never take anything at face value
+[1766.80s] um you should always I always um enter
+[1769.68s] these things with a level of Suspicion
+[1772.16s] and um you sort of should just always
+[1774.20s] operate that they have been folded in to
+[1776.72s] that uh to that request and at the very
+[1779.04s] least they're going to find
+[1781.56s] out oh it's a great answer and to two
+[1784.88s] very good questions um yeah and I I you
+[1788.92s] know I want to thank you Tim so much and
+[1791.08s] all our live audience members for tuning
+[1792.92s] in uh this was really really helpful I
+[1795.72s] learned a lot um so so thank you Tim Noy
+[1800.12s] you're welcome and coming from you that
+[1801.44s] means a lot
+[1803.16s] because well keep up the great work and
+[1806.12s] uh and thank you everybody for tuning in
+[1808.92s] thank you

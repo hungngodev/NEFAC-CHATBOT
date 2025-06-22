@@ -1,0 +1,540 @@
+[5.04s] i'm justin silverman of the new england
+[6.96s] first amendment coalition
+[8.88s] this is our 30-minute skills class on
+[12.40s] web scraping 101 i appreciate you all
+[14.64s] being here
+[15.76s] this is the first of two web scraping
+[18.08s] classes we'll be offering
+[19.36s] the next one is on august 20th so please
+[22.64s] make note of that date
+[24.24s] as a reminder a list of all upcoming
+[26.88s] classes as well as links to all previous
+[29.28s] ones
+[30.08s] are available at nefac.org 30 minute
+[33.36s] skills we have a lot to cover not a lot
+[36.48s] of time so let's get started
+[38.16s] your instructor today is maggie
+[39.92s] mulvahill she's an investigative
+[41.36s] journalist and a professor at boston
+[43.52s] university
+[44.88s] maggie all yours so hi
+[48.24s] uh welcome uh we're gonna go ahead and
+[50.72s] in 30 minutes
+[51.92s] learn how to scrape some data from the
+[54.00s] web in google sheets
+[56.16s] if you don't have a google sheets
+[58.00s] account um which probably most of you do
+[60.64s] please go ahead and um make sure to open
+[64.08s] up google sheets
+[66.08s] what we're going to do is extract some
+[67.92s] data from web pages
+[70.16s] and put them into a structured data
+[72.40s] format so that you can analyze them or
+[74.80s] visualize them
+[76.72s] okay so our lesson today is um
+[81.04s] just making sure you have google sheets
+[82.96s] a little bit about me
+[84.56s] some stories i've done with my students
+[87.28s] scraping data from the web
+[89.44s] what web scraping is and some basics
+[92.16s] about web pages
+[94.00s] and then we'll get right into the
+[96.48s] hands-on portion
+[98.00s] and then i have an exercise for you at
+[99.92s] the end some practice
+[102.24s] and some resources for you if you want
+[104.32s] to go ahead and scrape data
+[107.28s] afterwards and then just a little bit of
+[110.00s] information about
+[111.04s] why you should learn how to scrape
+[113.68s] especially if you're a journalist
+[115.76s] but really it's useful for people in
+[117.76s] other fields as well
+[121.28s] okay so please make sure that you have
+[123.92s] google sheets
+[124.96s] ready to go
+[129.84s] and if you have any questions just put
+[131.36s] them in the chat
+[134.72s] just a little bit about me um i teach
+[137.52s] data journalism
+[139.12s] and media law at boston university i was
+[141.92s] a libel lawyer in another life
+[144.96s] and i'm on the board of the new england
+[146.32s] first amendment coalition and the
+[147.92s] reporters committee for freedom of the
+[149.68s] press
+[150.88s] i also write for a number of news
+[153.12s] organizations
+[154.16s] including doing stories with my students
+[156.80s] for the globe and some other
+[158.72s] news outlets and i'm really passionate
+[162.08s] about open government freedom of
+[164.08s] information which is why
+[165.92s] it's important for me to do these
+[168.84s] trainings
+[172.32s] so my students and i have used web
+[174.88s] scraping in lots of different ways but
+[177.12s] this was a story that i'm particularly
+[179.20s] proud of we worked at the howard center
+[180.96s] for investigative
+[182.08s] journalism the university of maryland
+[184.56s] and this was a story we did on evictions
+[186.88s] and homelessness
+[188.56s] called know where to go it was about
+[194.24s] the eviction moratoriums across the
+[196.64s] country
+[197.60s] forcing people into homelessness or the
+[201.04s] and and also the criminalization of
+[203.20s] homelessness in this country so this was
+[205.28s] a story that we did
+[206.88s] for the globe and
+[210.40s] we scraped eviction data from court
+[212.96s] websites
+[213.84s] all across the country it was a
+[215.36s] collaboration of journalism schools
+[218.24s] um you know people couldn't pay their
+[221.12s] rent so they were being forced into
+[223.36s] homelessness we looked at homelessness
+[225.36s] from a lot of different angles
+[228.08s] and i was just proud of this one because
+[230.72s] the scraping
+[231.76s] of the data enabled ultimately our
+[235.04s] students to get lots and lots of clips
+[237.20s] including
+[237.92s] in the washington post the ap
+[241.84s] this was a story that we did in the ap
+[246.24s] and they won a bunch of awards um as
+[249.36s] part of the collaboration
+[251.52s] and again that was data that was scraped
+[254.00s] from court websites of eviction cases
+[257.52s] all across the country
+[262.32s] so that's just one example there's lots
+[264.80s] and lots of examples of
+[267.36s] journalists who've used scrape data to
+[270.16s] do stories on propublica's website
+[273.36s] the ap investigative reporters and
+[276.16s] editors is another good resource
+[279.28s] so what is web scraping it's really
+[281.68s] extracting data
+[283.28s] from websites and putting them in
+[285.68s] putting the data into a structured
+[287.60s] format that you can work with obviously
+[289.60s] you can't
+[290.56s] work with this underlying code
+[294.40s] so you can just think of it as data
+[296.96s] extraction
+[298.40s] to put into a usable format it's legal
+[302.16s] you know there are some limitations um
+[306.32s] uh certainly the type of data that
+[309.68s] journalists use which is publicly
+[312.40s] available data
+[315.12s] is right now considered legal
+[319.12s] there was a 9th circuit court of appeals
+[321.12s] decision in 2019
+[323.60s] but there are some limitations so you
+[325.84s] should always check the um
+[328.16s] the terms of service and if you're
+[332.16s] if you're scraping publicly available
+[334.16s] websites
+[336.00s] it's generally considered legal which is
+[338.24s] most of what
+[339.76s] we're doing as reporters
+[343.28s] but that's always a question that comes
+[345.28s] up and the tech companies really do
+[347.76s] well lots of companies really do want to
+[349.52s] limit scraping
+[354.96s] just some basics about web pages maybe
+[358.08s] you're familiar with html
+[359.92s] code computer page i mean web pages are
+[362.96s] written
+[363.92s] in html and then the pages are rendered
+[367.12s] so that they look nice
+[369.60s] this is a wikipedia page for counties in
+[373.44s] vermont you can see the underlying code
+[375.44s] there on the right
+[376.80s] which is then rendered into that nice
+[378.88s] looking visual
+[383.92s] and this is a table that you'd see in a
+[386.56s] web browser
+[388.40s] when you look at the page but underneath
+[392.08s] that
+[392.48s] is the code and if you right click
+[396.32s] on the code especially when you're
+[398.00s] scraping because you want to know what
+[400.00s] it is that you're scraping what type of
+[402.48s] data you're scraping
+[404.32s] there's a lot of information to note so
+[407.12s] we're going to be
+[408.00s] looking at are we scraping a table are
+[410.48s] we scraping a list
+[413.68s] and so to look at the underlying code
+[415.28s] you can just right click on the web page
+[417.44s] click inspect and
+[420.48s] look around for what it is that you are
+[422.96s] going to be scraping
+[424.80s] and you might want to keep an html
+[427.36s] dictionary
+[428.32s] close by in case you need some
+[430.00s] definitions
+[431.36s] the first thing we're going to scrape is
+[433.12s] a table
+[434.88s] and you can see it right there in the
+[436.56s] code
+[437.92s] between the tags and we're also
+[441.76s] going to scrape a list
+[445.76s] so let's get started we're going to
+[449.04s] scrape with google
+[450.00s] sheets
+[454.40s] you know and i often get asked by my
+[456.64s] students why scrape why not just
+[458.80s] download you see the big download button
+[461.12s] on especially a government agency's
+[463.44s] website
+[464.64s] and the advantage really is uh in that
+[468.40s] when the web page is updated you're
+[471.60s] especially in google sheets your data
+[474.48s] will be updated
+[476.00s] so you'll see with um with what we're
+[479.44s] going to scrape today when
+[480.80s] this data is updated your data will be
+[483.28s] updated so rather than having to go back
+[485.36s] in and
+[485.84s] re-download something the next day or
+[488.16s] the next week or the next month
+[490.32s] you just can go back and check your
+[492.00s] spreadsheet and see how it's been added
+[494.32s] to
+[501.20s] so you always have updated data
+[508.80s] okay so we're going to write a script in
+[511.36s] google sheets
+[512.96s] to scrape data into a spreadsheet
+[516.48s] which then you can do anything with
+[518.64s] export it
+[519.68s] do visualizations do analysis
+[523.68s] so if you have google sheets open
+[526.72s] i then want you to search the web for
+[528.80s] the official us
+[530.16s] olympics website
+[540.40s] step three i want you to click on tokyo
+[546.84s] 2020.
+[552.32s] step four i want you to go to medals
+[564.64s] and just note that the structure of the
+[566.48s] data this is tabular data
+[568.64s] columns and rows it's a table
+[577.68s] right click on the url and copy it
+[588.72s] go back to your google sheet and give it
+[591.44s] a name
+[596.48s] just write up in the top whatever you
+[599.20s] want to call it
+[610.08s] and now we're going to start to write
+[611.68s] our formula
+[613.92s] so in the in cell a1
+[617.44s] we're going to scrape an html we're
+[619.60s] scraping html
+[620.88s] code from a web page so
+[623.92s] with this formula you always start with
+[626.24s] the equal sign
+[627.44s] so you're going to type equals import
+[632.08s] and once you start typing html
+[636.32s] google sheets is going to recognize
+[638.48s] that's what you want to get
+[650.24s] it's it's already recognizing that you
+[652.32s] want to get either a table
+[653.92s] or a list in an html page
+[658.16s] so equals import html
+[661.60s] in cell a1
+[666.48s] and there's some handy information on
+[668.80s] google's
+[670.40s] on google google's website about all the
+[673.12s] different
+[673.76s] things you can scrape in the different
+[675.36s] formulas if you want to take a look at
+[677.04s] it
+[680.16s] so after you have that set up
+[685.60s] you're going to go ahead and i have a
+[687.28s] little demo here you're gonna
+[689.04s] go ahead and open the parentheses
+[693.04s] put double quote marks
+[696.40s] right click and paste in your url that
+[699.36s] you copied
+[702.72s] double quote marks again and a comma
+[707.92s] so equals import html open parentheses
+[712.00s] quote marks copy in your url
+[715.92s] more quote marks and a comma
+[723.84s] after that first comma
+[727.20s] you're going to put another set of quote
+[729.52s] marks
+[730.48s] and the word table another set of quote
+[733.92s] marks
+[734.80s] and another comma so you're building
+[738.24s] your scraping formula
+[740.80s] you've told google sheets i want you to
+[744.16s] import this html
+[747.68s] from this web address i want you to get
+[751.20s] this table and now you have to tell it
+[758.16s] what position
+[761.76s] on the web page your table is where it
+[765.12s] is
+[766.40s] so computers start counting from zero
+[770.32s] um and so it's the first table on our
+[773.68s] web page
+[776.00s] so we're going to just put a zero no
+[778.00s] quote marks
+[779.76s] and close the parentheses so what you're
+[782.64s] doing here and these are called
+[784.32s] elements of the formula you're just
+[786.64s] telling it what the position is of the
+[788.80s] table on the website on the web page
+[791.28s] you know it could be the 14th table
+[794.64s] that you want to scrape as long as
+[796.40s] you're you're you know putting the
+[798.00s] accurate number where it is
+[800.64s] you should get the right scrape and then
+[803.68s] close it out with parentheses
+[807.68s] and your data should load
+[818.00s] and mine might look a little bit
+[819.52s] different because i scraped this
+[821.12s] yesterday and i think the metal count
+[823.04s] has changed
+[825.44s] but this is what your scrape should look
+[827.36s] like
+[829.28s] and now obviously that's much easier to
+[832.72s] work with
+[833.36s] and and will get updated
+[836.40s] as the metal count changes all right
+[839.28s] let's try it again
+[840.56s] we're going to do some more olympics
+[842.24s] data
+[844.00s] but we're going to do something a little
+[846.08s] bit different
+[851.60s] in that our data that we're going to
+[853.28s] scrape doesn't really line up right so
+[855.20s] we have to disconnect it
+[856.96s] from the web the website that we're
+[859.12s] using after we scrape
+[861.44s] so let's see if you guys can remember
+[863.68s] the formula
+[864.72s] and do it yourselves i mean i'll walk
+[867.44s] you through but let's try it again
+[870.00s] we're just gonna get host cities
+[874.72s] so open a new sheet
+[880.56s] and now let's you can name it olympic
+[883.84s] host cities
+[885.92s] you can get a new sheet by just clicking
+[887.92s] the plus button
+[889.20s] at the bottom of your google sheets and
+[892.16s] now let's search the web
+[893.92s] um for the official wikipedia page
+[897.12s] with the whole list of olympic toast
+[899.76s] cities all the way
+[900.72s] you know all the way going back to 1896.
+[905.28s] and look for the table that you want to
+[907.12s] scrape again it's going to be the first
+[909.12s] table
+[909.68s] to keep things simple but remember you
+[912.56s] know if it's the sixth table
+[914.08s] whatever number it is on the page that's
+[916.56s] that's the number that you're going to
+[917.92s] use
+[923.60s] so let's see if you can write the
+[924.96s] scraping formula yourself
+[927.52s] and i'll do it up here as well
+[932.88s] okay in cell a1 we're going to put
+[935.28s] import
+[936.00s] html open parentheses
+[940.00s] quotes paste in our url
+[945.28s] close quotes comma
+[949.28s] open quotes table close quotes comma
+[954.48s] and then 0 because it is the first
+[958.08s] table and then close our quotes and
+[961.68s] and hit enter and it should load
+[966.40s] so hopefully everybody did it
+[972.32s] okay you can see the data didn't line up
+[976.64s] correctly
+[978.96s] um and so we want to fix that
+[995.44s] so if you can see if you right click on
+[998.40s] column
+[998.96s] a you can see that the wikipedia page
+[1002.72s] address
+[1003.68s] comes up in your address bar so that
+[1007.04s] is still linked to the wikipedia page
+[1010.00s] address and we want to get rid of that
+[1014.96s] if you wanted to delete it it's not
+[1018.24s] going to work it's going to delete
+[1019.60s] everything
+[1022.16s] so we have to disconnect from the
+[1023.92s] website
+[1029.84s] if you clicked on country for example
+[1032.00s] the wikipedia page is not going to come
+[1034.32s] up
+[1035.60s] it's not connected so all that i want
+[1038.08s] you to do
+[1038.64s] is just highlight your data
+[1043.76s] and open a new sheet
+[1048.48s] and we're going to copy and paste this
+[1051.36s] dot
+[1051.76s] into a new sheet just leave the old
+[1054.24s] sheet where it is
+[1056.72s] highlight your data right click copy
+[1064.56s] and you just add a new sheet by pressing
+[1066.56s] this plus button
+[1068.24s] give it a name
+[1073.68s] and when you go to paste your data
+[1076.96s] your copy data into cell a1
+[1080.48s] you're going to choose paste special
+[1085.20s] when you go to right click and paste
+[1087.20s] you're going to do paste special
+[1089.04s] because you're only going to paste the
+[1090.48s] values you're not going to paste
+[1092.16s] any of the underland underlying
+[1094.08s] formatting
+[1096.16s] or the code
+[1100.56s] so click on that you'll get the same
+[1106.84s] thing
+[1109.52s] but now if you go and delete column a
+[1113.52s] it will just delete it won't delete
+[1116.32s] everything
+[1116.95s] [Music]
+[1118.32s] and then you can type a city
+[1123.52s] over the list of cities and everything
+[1125.76s] should shift over to the left
+[1131.60s] and that's called disconnecting
+[1134.88s] from the web page
+[1139.12s] you know you'll keep your original sheet
+[1141.28s] so your data will be updated
+[1144.96s] but you've just fixed the formatting
+[1151.28s] so this was this will be how it looks
+[1154.16s] let's see if we can at least
+[1155.44s] get in scraping a list which is really
+[1157.92s] easy to do
+[1158.96s] and just a tiny little tweak
+[1162.00s] so we're going to scrape some craigslist
+[1164.16s] data
+[1166.08s] so i'll show you what i mean we scrape
+[1169.76s] tables and columns and rows you can also
+[1172.72s] scrape
+[1174.00s] data that's in a list with google sheets
+[1175.84s] you can scrape a lot of different
+[1177.68s] types of data photos text
+[1181.04s] lots of different stuff so let's try to
+[1183.36s] scrape a list
+[1187.36s] we're going to scrape available property
+[1189.52s] for rent in providence rhode island and
+[1191.60s] we're just
+[1192.00s] going to tweak our formula and just
+[1194.16s] replace the word
+[1195.20s] table with the list so let's make sure
+[1198.16s] that we get
+[1199.04s] the right web page so that you guys can
+[1202.48s] do it
+[1203.28s] open up a new google sheets
+[1206.32s] fresh google sheets
+[1210.72s] and then just search the web for
+[1213.68s] craigslist
+[1214.96s] providence for rent
+[1218.80s] so that you get the right web page just
+[1221.84s] make sure that the view that you're
+[1223.76s] looking at
+[1224.72s] is the thumb view um
+[1227.92s] because there's other views and i can't
+[1230.72s] remember what they are
+[1231.84s] that you could have here but you want to
+[1234.08s] be in the thumb view
+[1235.44s] this thumbnail view
+[1242.80s] and this is what it should look like and
+[1245.68s] if you right click
+[1247.52s] um on that web page you'll see
+[1251.76s] the word li or the letters
+[1254.80s] li if you right-click in it and inspect
+[1258.32s] you'll see
+[1258.88s] li between these two tags if you
+[1261.60s] remember
+[1262.00s] we saw a table between the two tags the
+[1264.96s] two carats before
+[1266.88s] so li is telling us that this is a list
+[1271.52s] and you could just do you know ctrl f or
+[1273.92s] command f
+[1275.20s] li to find that so we know that we have
+[1278.24s] a list
+[1282.32s] all right so if you have that web page
+[1284.48s] up go ahead
+[1286.24s] and right click and copy the url
+[1292.56s] and try to write the formula the exact
+[1295.20s] same formula
+[1296.80s] we're just replacing table with a list
+[1301.92s] the word list and again this is
+[1305.28s] it's the only list on our web page
+[1309.68s] so we can still use xero
+[1313.52s] so i'll just give you a couple of
+[1314.96s] minutes to
+[1316.64s] to do that
+[1352.08s] this is what it should look like
+[1356.40s] just quickly you know especially for the
+[1358.40s] journalists here why should you learn to
+[1360.56s] scrape
+[1361.20s] you can do better stories you can save a
+[1364.72s] lot of time
+[1366.00s] you know rather than sending public
+[1367.52s] records requests which in massachusetts
+[1369.76s] never get addressed quickly
+[1372.88s] you can stay updated on your beat this
+[1375.12s] is the
+[1376.00s] judicial conduct committee decisions in
+[1377.92s] new hampshire that i scraped
+[1381.52s] you could beat the competition another
+[1384.48s] new england site that i scraped
+[1387.60s] you can advance your career there's a
+[1389.76s] huge huge market for
+[1391.68s] data journalists with scraping skills
+[1395.12s] lots and lots of jobs
+[1400.40s] and then i do have some slides here um
+[1403.36s] that have
+[1403.92s] links to uh new england states
+[1407.68s] sites that have information you can
+[1410.56s] practice scraping
+[1412.72s] um so go ahead and give it a try i can't
+[1417.12s] remember if these are lists or tables
+[1419.92s] and then join us in august um we're
+[1423.04s] going to do
+[1423.52s] some more advanced scraping if you
+[1426.64s] really really want to learn to scrape um
+[1430.64s] you know in a big way you should learn
+[1432.40s] to code
+[1433.76s] but you can scrape quite a bit of data
+[1436.32s] without any coding skills
+[1438.96s] okay um and i'm happy to help any of you
+[1442.48s] guys
+[1442.96s] especially the journalists so here's my
+[1446.24s] email
+[1447.68s] and you're going to get these slides
+[1449.84s] which have the little demos in them
+[1452.00s] after this so feel free to email me
+[1456.88s] and i'll address any of your questions
+[1459.12s] okay and thank you so much for joining
+[1461.36s] us
+[1463.52s] thank you very much maggie and again for
+[1465.68s] those that did have questions that we
+[1467.20s] weren't able to get to
+[1468.80s] please take maggie up on her offer email
+[1471.04s] her directly she'll be healthy happy to
+[1473.04s] help
+[1474.00s] i would like you to all to remember as
+[1475.68s] well that we at nephack are providing
+[1477.20s] these classes at no cost to you
+[1479.28s] so if you find them valuable at all if
+[1481.92s] you find them helpful in your work
+[1483.68s] please support this program make a
+[1485.44s] donation today at nefac.org or better
+[1488.08s] yet become a sustaining member
+[1489.92s] at nefac.org join
+[1493.04s] also as we continue to move forward with
+[1495.68s] this program if you have any suggestions
+[1497.76s] for future classes or like to provide
+[1500.16s] any kind of feedback at all
+[1502.00s] you're welcome to do so email me at
+[1504.56s] justin
+[1506.44s] nefak.org i want to thank you
+[1508.80s] all again for attending web scraping 101
+[1511.92s] we'll see you next month at our next 30
+[1514.40s] minutes skills class
+[1515.84s] take care everyone

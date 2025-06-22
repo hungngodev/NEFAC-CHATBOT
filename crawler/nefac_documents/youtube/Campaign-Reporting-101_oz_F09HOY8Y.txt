@@ -1,0 +1,675 @@
+[3.52s] I'm Justin Silverman of the New England
+[4.92s] First Amendment Coalition thank you for
+[7.28s] joining us for another 30 minute skills
+[9.68s] today's presentation is supported in
+[12.28s] part by the state of Gloria negri Gloria
+[15.76s] was a trailblazing journalist at the
+[17.56s] Boston Globe for more than 50 years and
+[19.84s] this program is part of her Legacy of
+[21.56s] Newsroom education and her lifelong
+[24.04s] commitment to local journalism you can
+[26.16s] learn more about Gloria and other neac
+[28.00s] supporters at nea.org
+[30.56s] supporters also a reminder links to all
+[33.28s] our 30 minute skills are available at
+[34.92s] nea.org and on our YouTube channel five
+[37.84s] freedoms lessons include data cleaning
+[40.32s] Privacy Law Microsoft Excel Basics how
+[43.20s] to diversify your sources and how to
+[45.04s] protect yourself as a journalist among
+[46.64s] many other topics I also encourage
+[49.20s] everyone to visit nea.org and view our
+[51.28s] growing list of upcoming presentations
+[53.40s] and events focused on the first
+[55.04s] amendment in journalism nearly all of
+[57.64s] them are free and open to the public so
+[59.52s] please check them out and consider
+[61.52s] joining us we have a lot to cover and
+[63.32s] not a lot of time so let's get started
+[65.52s] Ted all yours all right Justin thank you
+[68.72s] so much so let's kick this off uh my
+[71.60s] name is Ted nii as Justin said I'm the
+[74.20s] political editor at wpr Channel 12 in
+[77.36s] Providence Rhode Island I cover
+[78.80s] elections in Rhode Island as well as
+[81.04s] Southeastern Massachusetts sometimes
+[83.24s] touching on Statewide issues depending
+[84.96s] on the year depending how big the
+[86.72s] election is down here um I've been
+[88.96s] covering elections for Prett long time
+[90.52s] now not as long as some some folks but
+[92.60s] uh I've been doing this I've been a
+[93.88s] reporter professional reporter 15 years
+[96.32s] and um covered elections on and off
+[98.04s] through all of it my first election was
+[99.36s] the Norton Board of Selectmen race back
+[102.24s] in 20 uh in 2007 and that was that was
+[105.88s] barn burner I tell you um but uh but
+[108.28s] elections matter at every level um and
+[111.32s] you know I've tried to set this up
+[113.88s] pitched for things that frankly work for
+[115.64s] everyone whether you're covering a race
+[116.96s] for dog catcher or a race for United
+[119.04s] States Senate um there's some stuff that
+[120.96s] you want to do at every level of the
+[122.52s] campaign to keep up so that's what we're
+[123.96s] going to try to go through
+[126.40s] today so uh let's start with the basics
+[130.00s] which is get organized right um and
+[133.44s] that's a theme here and this is a lesson
+[135.28s] I'll be honest I have learned the hard
+[136.84s] way um because it's easy to think well I
+[140.36s] know when the election is and I kind of
+[141.56s] know who's running so I'll just sort of
+[143.20s] wing it uh overall and just cover things
+[145.20s] as they happen I don't recommend that
+[147.80s] even though I started out trying to do
+[149.40s] it that way it's much better to start
+[152.44s] frankly at the very beginning of the
+[154.12s] election year if not the year before um
+[157.16s] so now is a perfect time we're here in
+[158.80s] February for elections coming up uh
+[160.64s] throughout the rest of the year
+[161.60s] depending on the calendar in your state
+[164.36s] um you don't want to overlook the basics
+[166.64s] so the very first thing you need are the
+[168.52s] key dates this again might sound so
+[170.92s] basic but it it can be easy to overlook
+[173.80s] when is the election and remember might
+[175.80s] not just be one election so when's the
+[177.92s] preliminary election um these things New
+[180.68s] England has so many funny uh you know
+[184.00s] historic aspects to how we do our
+[186.24s] elections in every city and town there's
+[187.96s] a lot of local democracy so you're going
+[190.28s] to want to know because different levels
+[191.64s] but we have uh an odd numbered years uh
+[195.32s] around here uh we can have a preliminary
+[197.80s] every week all through September because
+[200.16s] Fall River will do it one week they'll
+[201.92s] do the mayor in New Bedford a different
+[203.52s] week they'll do taunt in a different
+[204.96s] week so the stuff can get very messy
+[207.64s] especially if it h what's happening
+[209.40s] before for the big usually November
+[211.36s] election day um and of course if you're
+[213.68s] covering a municipality they might have
+[215.00s] an election at a different time of year
+[216.96s] uh from the regular November state and
+[218.88s] federal general election so you want to
+[220.60s] get those key dates nailed down early um
+[223.68s] and the key person to know are the
+[225.16s] election clerks um again every
+[227.72s] jurisdiction is a little different so
+[229.04s] you'll have to do your homework but
+[230.72s] there are State officials uh there's the
+[233.00s] Secretary of States's office in Rhode
+[234.80s] Island there's the secretary of the
+[236.00s] Commonwealth's office in Massachusetts
+[238.16s] they track a lot of uh the the races
+[240.20s] that are on the main ballot but then
+[242.40s] you'll also want to know the local
+[244.44s] municipal or County clerks um who are
+[247.28s] going to be sort of getting the keeping
+[250.16s] track of the local election calendar and
+[251.88s] the local candidates you want to find
+[253.28s] out who those people are you want to be
+[255.00s] nice to them that you want to uh develop
+[257.64s] a good professional relationship with
+[259.80s] them to ask quick questions and things
+[261.52s] like that and they usually have a
+[263.44s] Calenders they might tell you if you're
+[265.48s] asking really early well actually we
+[266.72s] haven't finished the calendar yet but
+[268.12s] that's okay you get the ball rolling ask
+[269.64s] when to ask again um and they'll have a
+[271.68s] calendar with all the key dates you need
+[273.44s] so along with obviously the days of the
+[275.40s] election you want all the filing
+[277.28s] deadlines you know when can candidates
+[279.24s] start to pull their nomination papers
+[281.52s] and then there's always a whole set of
+[283.12s] other deadlines after that when do they
+[285.00s] return the nomination papers what's the
+[286.60s] deadline for that when do they uh is the
+[289.12s] last day for their signatures to get
+[290.44s] challenged when's the last day for
+[291.84s] someone who gave back their papers to
+[293.60s] drop off anyway if they decide not to
+[295.52s] run these are all things that some of
+[298.36s] them might sound hypothetical or obscure
+[300.40s] but the problem is the day will come
+[301.80s] where you're covering a race and big
+[303.96s] candidate number two abruptly pulls out
+[306.72s] of the election because I don't know
+[308.64s] they struck a deal with the other
+[309.64s] candidate so you want to know right away
+[311.40s] for your story uh can can they change
+[314.00s] the ballot or is it too late uh is is
+[316.32s] anyone else going to do this how much
+[317.72s] longer is there um for this to happen so
+[319.88s] that's why these dates are so important
+[321.20s] a lot of stories can come out of them
+[322.80s] and you want them to be easy reference
+[325.32s] points for you that you can just grab um
+[328.32s] other deadlines to keep keep an eye on
+[330.04s] and we're going to talk more about this
+[331.12s] the next session campaign Finance
+[332.60s] deadlines are good ones um you want to
+[335.40s] also ask which offices are on the ballot
+[337.96s] again super basic but the these you
+[341.00s] might find there's some obscure office
+[342.64s] you weren't aware of and you don't have
+[343.80s] it on your list at first and you're not
+[345.08s] keeping track of it so get that
+[347.00s] information nailed down from the clerks
+[348.84s] it's super important um and set calendar
+[351.08s] reminders whatever your preferred way is
+[352.88s] to keep track of this kind of thing uh I
+[355.56s] have calendar minders all through the
+[357.24s] year today is the deadline in Taunton
+[358.88s] today uh I need to check who filed for
+[361.28s] the ballot in in Massachusetts for these
+[363.76s] offices Etc being organized will will be
+[367.04s] will pay off for you I promise um okay
+[370.60s] so now now you know now you need to
+[373.32s] figure out who is running for the
+[374.92s] offices as I mentioned um the best case
+[377.72s] scenario is that they're going to email
+[380.52s] you right and say hey I'm running for
+[382.08s] office here's my announcement here's my
+[384.20s] head shot and everything some candidates
+[386.48s] especially organized ones will do that
+[388.12s] but not all of them and you know an
+[391.28s] example for me would be that uh
+[393.68s] congressional candidates in
+[395.08s] Massachusetts sometimes don't think to
+[398.00s] uh email my Newsroom their announcement
+[400.28s] press releases because in their heads
+[402.00s] are like well their addresses in
+[403.20s] Providence but onethird of the TV Market
+[405.52s] we cover is Southeastern Massachusetts
+[407.60s] so I often have to go hunting for those
+[409.40s] people and get on the distribution lists
+[411.16s] and ask them for that um because we
+[413.52s] might not be there the or I am always
+[415.20s] impressed with the organized ones who
+[416.40s] know get all the Providence stations on
+[418.20s] your list too because there's three TV
+[419.72s] markets in Massachusetts you got to
+[421.04s] worry about but not everyone does that
+[423.28s] um you might also have people when
+[424.68s] you're they running for lower offices
+[426.00s] who aren't even kind of thinking in
+[428.00s] terms of a press strategy and are just
+[430.28s] maybe they post on Facebook I'm running
+[431.84s] for mayor I'm running for the select
+[433.24s] board I'm running for moderator of the
+[434.96s] Town um so whatever way you find out um
+[439.52s] you want to get in touch with those
+[441.08s] people um connect with the clerk again
+[443.92s] to make sure you have their official
+[445.52s] list because it might be someone pulls
+[446.92s] papers and announces they're running by
+[449.44s] signing up there but never tells you
+[451.32s] anything um and then you want to nail
+[453.56s] down the basics with the candidate so
+[455.72s] once you have a name reach out ask the
+[458.48s] basics introduce yourself explain that
+[460.40s] you're covering the race so that they
+[461.68s] know that um ask them what the best way
+[464.44s] will be to contact them or their
+[466.04s] campaign going forward usually you want
+[468.00s] to have both a phone number and an email
+[469.80s] depending on what you're going to be
+[470.76s] doing um also that's a good time to ask
+[473.16s] for a head shot um right you want to
+[475.40s] have a picture of them you can run on
+[477.20s] the web you can run in the paper if you
+[478.96s] have a paper you can run on TV if you're
+[480.52s] on TV um if you're in the radio whatever
+[483.08s] you're doing you're going to want to
+[483.96s] have their picture handy and better to
+[486.28s] ask early because again especially for
+[487.92s] candidates who are running for smaller
+[490.68s] offices they they might not even think
+[492.96s] about having a head shot at first until
+[494.52s] you ask so that gets the ball rolling
+[496.36s] for them so ask that of the
+[498.80s] candidates um next slide okay so let's
+[502.60s] talk about stories to do uh right away
+[506.96s] always do a so and so is running story
+[509.52s] right you know when you find out
+[511.00s] somebody is going to be on the ballot
+[514.08s] you know write them up what's their
+[515.68s] biography uh where are they running what
+[517.68s] do they say their priorities are have
+[518.92s] they run before two reasons to do that
+[521.24s] in my mind first it's just worthwhile
+[523.48s] news somebody's running for office
+[525.16s] that's a news story generally second it
+[527.56s] makes you get smart about the person
+[529.56s] right um a good example for me would be
+[532.40s] the Congressional race in 2019 and 20 to
+[535.24s] replace uh former Congressman Joe
+[537.12s] Kennedy had a bunch of candidates
+[538.88s] running who were all from far away from
+[540.72s] the area I covered they were all from
+[541.96s] Newton and Brookline so I wasn't very
+[543.76s] familiar with any of these people but
+[545.04s] one of them was going to be the new
+[546.52s] Congressman or congresswoman for the
+[548.28s] region I cover in Southeastern MK
+[550.20s] because of the way the district is drawn
+[551.92s] so each time one of those people
+[553.52s] announced they were running I would file
+[555.28s] a short web story at least for uh
+[557.88s] channel 12's website with you know uh
+[560.64s] Newton what was he at the Time selectman
+[562.84s] Jake aen Claus is you know running for
+[564.88s] congress he's been there since he went
+[566.32s] to Harvard just the basics gets the
+[568.72s] story there is there shows the campaign
+[570.84s] that you're paying attention and also
+[572.48s] gets you smart about the candidate a
+[573.88s] little bit gets the basics um ready for
+[576.24s] you which again will pay dividends over
+[578.56s] time um another story you want to do
+[580.92s] filing deadline tracker stories so when
+[583.56s] the filing deadline comes file a story
+[585.72s] on who ran and who didn't um those can
+[588.08s] be as simple depending on how much time
+[589.52s] you have as just lists of the candidates
+[591.96s] uh if you have time if you know more
+[593.84s] they can be bigger maybe someone you
+[595.32s] expected to run didn't that's the story
+[597.28s] angle maybe a surprise candidate jump
+[599.56s] back in but you know when the filing
+[601.52s] deadline comes you're going to want to
+[602.76s] do a story on that and plan to have some
+[604.40s] time in your day for it that's why
+[606.08s] having all those calendar reminders we
+[607.64s] talked about earlier is key because you
+[609.32s] can see ahead and that's a nice thing
+[611.24s] about elections just to pause myself for
+[612.84s] one sec
+[614.76s] you most of it is happening on a
+[617.72s] predictable schedule yeah the individual
+[619.68s] fights in the campaign you don't know
+[620.96s] what day someone will attack somebody
+[622.24s] else or announce a proposal but you know
+[624.48s] when the filing deadlines are you know
+[625.80s] when the election is you know when
+[627.20s] things are going to be happening there's
+[628.16s] a lot of moments in the campaign you can
+[630.20s] plan for and be ready for rather than
+[632.40s] get surprised um the other one is not
+[635.52s] about the candidates but for the voters
+[637.56s] how do you vote um when is the deadline
+[640.12s] to register to vote are there you know
+[641.80s] we've had so many legal changes to the
+[643.56s] way you vote in recent years how do you
+[646.28s] you know can you get a mail ballot
+[647.40s] online where do you go to do that again
+[649.56s] a basic story but a useful story and yet
+[652.40s] again a story that will pay dividends
+[654.28s] for you because you'll now have made
+[656.36s] yourself smart about that stuff when it
+[658.52s] inevitably pops up again later on in the
+[661.96s] uh year and I should say I see from my
+[664.08s] view of the zoom I see the number of
+[666.24s] chat comments going up and we're going
+[667.56s] to get to if there's questions in there
+[669.12s] in a little bit Justin's going to handle
+[670.52s] that once I uh tick through these slides
+[672.88s] for you so I call this your shortcuts to
+[676.76s] substance right so everything I've
+[678.56s] mentioned so far is kind of you know
+[681.92s] Tick Tock who's running who's not we
+[684.32s] haven't really talked a lot about
+[685.52s] policies other than hopefully when
+[687.76s] people announce for office they mention
+[689.36s] why they want to run what their
+[690.56s] priorities are Etc so one of your main
+[693.20s] jobs if you're a reporter covering the
+[694.76s] race is get the policies debates going
+[698.16s] you know you sometimes will be the spark
+[699.60s] that starts a debate about a policy by
+[701.40s] asking or by bringing out someone's
+[703.48s] opinion on something that might not have
+[704.80s] happened otherwise um the number one way
+[707.96s] I would say that that happens is forums
+[710.04s] and debates um at almost every level of
+[713.44s] government someone is planning a forum
+[715.76s] or debate for candidates it could be as
+[718.24s] fancy
+[719.52s] as a TV station doing a big live prime
+[722.36s] time TV debate if it's a big race for
+[724.20s] Congress or senate or Governor or
+[725.56s] whatnot or it could be as small as and
+[728.92s] this is no offense they do wonderful
+[730.40s] work but the League of Women Voters
+[731.80s] might have you know almost a coffee
+[733.72s] clatch kind of gathering where every the
+[735.92s] candidates just all talk and it's maybe
+[737.56s] not super adversarial but they all say
+[739.48s] their their points um you want to know
+[742.48s] about all of those um you want to keep
+[744.56s] track of them uh how many are there
+[746.72s] going to be when are they those what the
+[749.56s] fact that they're happening is yet
+[750.96s] another story um are there going to be a
+[752.76s] lot of forums not a lot has one been
+[754.56s] announced is everyone participating um
+[757.16s] there's a couple ways to keep track of
+[758.52s] those hopefully some people proactively
+[760.36s] tell you um you probably know on your
+[763.12s] beat which kind of Facebook groups and
+[765.88s] Twitter accounts Etc are places you want
+[768.00s] to be paying attention to where that
+[769.32s] will Bubble Up um you also want to ask
+[771.72s] the campaigns right nobody's going to
+[774.28s] know where they have to show up more
+[775.72s] than the candidates who have to go to
+[776.96s] things so ask them what forums are you
+[779.12s] doing what have been scheduled which on
+[780.84s] should I be keeping track of they'll
+[782.68s] usually tell you especially the put
+[784.16s] together campaigns um so along with the
+[787.24s] scheduling of the forums that can become
+[788.92s] a whole Topic in itself of course the
+[790.48s] actual forums can be a story should
+[793.32s] probably always be a story unless you
+[794.96s] have a good reason not to what was said
+[797.16s] you want to come up with a good lead you
+[798.56s] want to hit the big debates obviously
+[800.68s] but then also look for follow-ups you
+[802.84s] can do out of the Forum and debates
+[804.84s] maybe there was one issue that really
+[806.76s] saw the candidates go hammering tongs uh
+[809.88s] a bit okay you might have put that in
+[812.16s] your debate recap or Forum recap story
+[814.84s] but can you do another round can you do
+[816.96s] a follow-up story to that do you get
+[818.32s] some experts to weigh in uh do you go to
+[821.20s] the people sponsoring the bill they're
+[822.68s] fighting over and say well what do you
+[823.96s] think of their positions Etc um there's
+[826.40s] always lots of ways to do follow-ups
+[828.44s] once you've had the back and forth in a
+[830.08s] forum or debate um the other thing I
+[832.84s] like to do and I've gotten into the
+[834.60s] habit of doing is policy surveys via
+[837.32s] email and that sounds a little fancy it
+[840.48s] that can be as simple as you know last
+[842.88s] spring when there was the big fight in
+[844.44s] Congress over extending the debt limit
+[846.80s] we had a special election going on in R
+[848.68s] Island to fill the seat of former
+[850.48s] Congressman celini I just blasted out
+[853.56s] like maybe three question survey to all
+[856.52s] the campaigns said you know how would
+[858.76s] you vote if you were in Congress on the
+[860.24s] bill to extend it uh you know why and
+[863.28s] maybe I had a third question gave them a
+[865.40s] deadline you always want to be
+[866.80s] reasonable unless there's a super
+[869.16s] important deadline reason to say you
+[870.48s] only have two hours in that case I try
+[872.32s] to give them you know 24 hours if I have
+[874.68s] a bunch of questions maybe a couple of
+[876.32s] days um and then you know people
+[879.64s] especially in campaigns where everyone's
+[881.52s] it's competitive they're usually pretty
+[883.00s] good about responding to that boom you
+[884.84s] get your answers back you have a story
+[886.56s] right in that case it was that all but
+[888.52s] one of the candidates in that
+[890.40s] Congressional special election said they
+[891.92s] would vote for the Deb limit Bill and it
+[893.60s] became a big um argument between the
+[896.04s] different candidates over that candidate
+[897.60s] who did not um partly spurred by and it
+[900.04s] wasn't just me a couple of us reporters
+[901.76s] in Rhode Island had surveyed them all
+[903.92s] about their positions on the bill um so
+[906.16s] look for ways to do that can you can you
+[908.52s] localize a national issue um is there
+[911.00s] something where they should all be
+[911.88s] weighing in on is there a state level
+[913.80s] issue that municipalities have to weigh
+[915.76s] in about or is being debated and you
+[917.40s] should get all the mayor candidates
+[918.68s] about it uh is something going on in the
+[920.32s] next town over that might bleed into
+[922.32s] your community next year that their
+[924.32s] select boards talking about well what do
+[925.68s] your select board or school committee
+[927.20s] candidates think about it um easy ways
+[929.80s] to get some substance out of the
+[931.16s] candidates and get a story together that
+[932.84s] maybe helps to add to the public
+[935.00s] conversation uh one last slide then
+[937.00s] we'll get to questions um I just had a
+[939.84s] few more ideas to you know jumpstart you
+[942.64s] on uh getting ahead in the elections
+[945.24s] you're covering and to write stories um
+[947.96s] doing your homework is important
+[949.88s] obviously in some ways I think it can be
+[951.64s] undervalued in this business how much
+[953.96s] just reading Clips uh looking at old
+[956.56s] news coverage uh watching old interviews
+[959.88s] uh how valuable that can be um you know
+[962.84s] look at the coverage in your own
+[964.16s] publication whatever sort it is of the
+[965.92s] last election what was up for debate I
+[968.28s] sometimes am surprised when I look at my
+[969.48s] own stories from a previous election I
+[971.08s] covered I'm like oh yeah that issue did
+[973.04s] that ever get resolved and boom I have a
+[974.68s] story because I look into it and find
+[975.96s] out no it wasn't or I bring it back up
+[978.40s] um in a policy survey via email to folks
+[980.64s] and stuff so um talk to your editors or
+[983.28s] colleagues um talk to other reporters in
+[985.36s] the market or maybe you have a friend
+[986.84s] who used to be in the market is out who
+[988.60s] remember something use your network see
+[991.00s] what people think oh you got to ask
+[992.40s] about this or you know what was a big
+[993.80s] issue there XYZ um always be doing that
+[997.44s] I also like to think even at a town
+[999.48s] level who could be a pundit right who
+[1002.04s] could be the kind of your version of the
+[1004.16s] CNN Talking Heads who pop up after a
+[1006.12s] debate and say what's going on is there
+[1007.96s] a former mayor who is neutral in a race
+[1010.12s] and might comment on how the different
+[1011.64s] strategies are uh former former party
+[1014.24s] chairs um in town people who've been
+[1016.52s] involved for a long time um a former
+[1019.08s] newspaper editor or columnist or
+[1021.04s] anything like that um former head of the
+[1023.20s] League of Women Voters a professor you
+[1025.92s] know who are the people who could be
+[1027.56s] kind of neutral commentators for you
+[1030.16s] about the race if you wanted some
+[1032.12s] non-candidate voices in your stories to
+[1034.36s] add color um think early about who those
+[1037.16s] people might be just remember uh if
+[1039.24s] they're not neutral you're going to get
+[1041.24s] crap from candidates for quoting people
+[1043.20s] who aren't who might have an agenda so
+[1044.52s] you also want to be smart about who
+[1045.84s] those people are make sure you fully
+[1047.04s] vetted where they stand
+[1049.28s] um and my last one is uh this is a trick
+[1051.72s] I actually learned when I was a cup
+[1052.68s] reporter at the Sun Chronicle because uh
+[1054.48s] Jim H taught me this George rhods always
+[1056.60s] does it the day before the election the
+[1059.52s] natural story to do is voter
+[1061.84s] registration numbers and turnout right
+[1064.04s] almost certainly it's too late to do
+[1065.72s] another big deep dive on the candidates
+[1067.68s] maybe you'll do some where they stand
+[1069.52s] kind of thing depending on what your
+[1071.00s] media Outlet is looking for but a great
+[1073.24s] story for that day is you know what do
+[1075.88s] the clerks think turnout will be this
+[1077.40s] year what has it been in recent years is
+[1079.16s] there a trend there you know uh what's
+[1081.60s] voter registration is it picking up is
+[1083.40s] it going down are Democrats outnumbering
+[1085.68s] Republicans or vice versa has there been
+[1087.60s] no change um that kind of data can
+[1090.56s] always make for it could be a quick
+[1092.64s] story The Day Before You could also do a
+[1094.48s] bigger one um you know is there a
+[1096.16s] long-term Trend with turnout turnout has
+[1097.92s] crashed terribly in this region in the
+[1099.84s] offe elections for mayor I got a whole
+[1101.92s] big TV story out of that last year about
+[1103.72s] debates over whether to change it um and
+[1106.32s] once more to go full circle to what we
+[1108.04s] started with here organized organized
+[1110.72s] organized right that makes the
+[1112.28s] difference so turnout data registration
+[1114.92s] data this is stuff you can gather early
+[1117.28s] you could we could get off this zoom and
+[1119.04s] you could go talk to the clerk and get
+[1121.08s] the um turnout data for the next
+[1122.96s] election in your jurisdiction from the
+[1124.76s] last X number of years or maybe you look
+[1126.36s] it up and it's online um you as much as
+[1129.60s] possible don't wait we're all reporters
+[1132.00s] we love deadlines we're always last
+[1133.68s] minute I'm the same way I get it but
+[1136.36s] when you have a day that's a little
+[1137.72s] quieter now not that many of us do too
+[1139.52s] often if you can gather some of this
+[1141.28s] stuff early that's not going to change
+[1143.04s] it'll really pay dividends for you later
+[1145.56s] on um so that was those were my thoughts
+[1148.40s] for campaign reporting 101 um if there's
+[1150.76s] questions out there I'd love to try to
+[1152.20s] answer them we do actually have a couple
+[1154.36s] questions um the first is regarding
+[1156.92s] campaign financing and I know uh you're
+[1158.72s] going to tackle some issues regarding
+[1160.28s] financing in your second campaign
+[1162.88s] reporting class uh next month which I
+[1165.12s] hope everybody registers for um but this
+[1167.40s] is kind of an interesting in question
+[1168.84s] because uh this reporter uh in
+[1170.76s] Connecticut mentions that the state uh
+[1173.48s] Connecticut has this law that allows
+[1175.28s] candidates and local legis uh uh allows
+[1178.84s] candidates to receive public financing
+[1180.48s] from the state if they promise to only
+[1182.92s] fund raise from small donors and he's
+[1185.48s] wondering is do you know of a similar
+[1187.48s] law in Massachusetts or Rhode Island
+[1189.72s] that I think tries to tackle this issue
+[1192.20s] of big money and politics in this yeah I
+[1194.28s] mean uh not that exact setup but there
+[1197.12s] are public I know there's a public
+[1199.20s] financing match in Rhode Island I'm not
+[1200.84s] sure off the top of my head if
+[1202.40s] Massachusetts does it would not surprise
+[1204.04s] me knowing how Massachusetts is
+[1205.64s] politically but yeah in Rhode Island uh
+[1207.68s] you have to make certain promises about
+[1209.52s] how much you'll spend in an exchange
+[1211.52s] they'll give you public matching funds
+[1213.04s] but I don't think you can get it on the
+[1215.24s] local level I think it's General
+[1216.88s] officers only so this goes to frankly my
+[1220.16s] get organized Point all this stuff can
+[1222.36s] get so complex it's so different from
+[1224.56s] place to place you want to try to do
+[1226.52s] your homework early on these is issues
+[1228.68s] because uh even if you if you switch
+[1230.88s] jobs the all the rules you learned in
+[1233.08s] your last job if you've moved state
+[1234.40s] lines or even switched towns there might
+[1236.00s] be a different setup the way they do
+[1237.44s] things in New Bedford versus attelboro
+[1239.00s] on some of the election stuff is a
+[1241.20s] different office is handling it so
+[1243.40s] that's why you don't want to wait till
+[1244.44s] the last minute because this stuff just
+[1245.72s] gets awfully
+[1247.84s] convoluted and uh second question more
+[1250.08s] generally just about uh covering the
+[1252.32s] candidates themselves um question here
+[1254.92s] about how we could best prepare for
+[1258.24s] another George Santos how do we um cover
+[1261.68s] these candidates in a way that will
+[1263.64s] uncover all this fraudulent activity and
+[1266.28s] misrepresentations before they're
+[1268.96s] elected well I I remain shocked about
+[1271.64s] what happened with George Santos just
+[1273.12s] because the New York media Market is not
+[1275.08s] a place I think of as a News desert
+[1277.12s] there's a lot of reporters there uh the
+[1279.48s] healthiest news organ newspaper by far
+[1281.64s] in the country the New York Times is New
+[1283.24s] York uh so uh among many other great
+[1285.92s] Outlets so I am perplexed
+[1288.92s] uh that that much fraudulence and and
+[1291.76s] weirdness around Santos's biography even
+[1294.04s] acknowledging you know hindsight is
+[1295.84s] 20120 um you know some of it is again
+[1300.12s] making sure you're doing the basics
+[1301.96s] right and and at all levels so who are
+[1303.92s] these candidates have I you know I hate
+[1305.80s] to say it but sometimes I've had
+[1307.40s] occasionally a rando candidate uh pretty
+[1309.96s] far down the ballot who I hadn't even
+[1311.72s] Googled yet cuz I just hadn't had a
+[1313.28s] reason to and like the first three hits
+[1315.28s] were that they'd been arrested in
+[1316.32s] another state um you know
+[1318.64s] the absolute Basics sometimes and then
+[1321.24s] you say to yourself like oh my God I
+[1322.72s] might have missed that if I hadn't done
+[1323.92s] the basics here so I think part of why I
+[1327.08s] said like when someone jumps into a race
+[1328.88s] doing the basic biographical
+[1331.48s] information yes it's newsworthy on its
+[1333.80s] own it's for the readers the viewers but
+[1335.88s] it's also for you it's so you start to
+[1337.84s] say you know you might start to like try
+[1339.32s] to put together the basics on George
+[1340.60s] Santos and say wait what this guy says
+[1343.28s] he did what I don't see any evidence of
+[1344.92s] that you know small example when people
+[1347.48s] say they went to a college uh in their
+[1349.96s] biography email the college every you
+[1352.60s] almost every College I think will tell
+[1354.08s] you do we have a record or not of this
+[1355.72s] person graduating there we've seen
+[1357.76s] people that comes back they're like this
+[1359.28s] person was never matriculated here um
+[1361.40s] and then boom you have a what's going on
+[1363.44s] here did you pad your resume kind of
+[1365.00s] story so the basics keep doing the
+[1367.52s] basics and it will Blossom often I think
+[1371.04s] great thank you great advice and uh
+[1373.08s] great lesson Ted appreciate it thank you
+[1375.16s] very much and uh to everyone who joined
+[1377.08s] us today thank you you again for being
+[1379.60s] here um do want you to remember that
+[1382.28s] this is the first of two lessons on
+[1384.56s] campaign reporting the second will be on
+[1386.56s] March 12th you can register for that one
+[1388.36s] at nea.org also if you found today's
+[1391.84s] class helpful in any way please consider
+[1394.52s] becoming a sustaining member of neac at
+[1396.60s] nea.org
+[1398.16s] jooin your annual support is what helps
+[1400.84s] provide classes like this one so Ted all
+[1404.12s] of you thank you very much again and
+[1406.72s] we'll see you next month for our next 30
+[1409.04s] minute skills take care

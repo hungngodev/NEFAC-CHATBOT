@@ -1,0 +1,518 @@
+[5.04s] i'm justin silverman of the new england
+[6.72s] first amendment coalition thank you for
+[9.28s] joining us for this introduction to open
+[11.44s] meeting law our latest round of video
+[14.08s] tutorials and other lessons on freedom
+[16.08s] of information laws in new england
+[18.48s] if you haven't already please check out
+[20.40s] our previous lessons on public record
+[22.48s] laws in the federal freedom of
+[23.84s] information act
+[25.28s] all lessons are available to you at
+[27.04s] nefac.org
+[29.60s] guide in addition to more video
+[31.92s] tutorials you'll also find there are
+[33.76s] other helpful resources such as common q
+[36.24s] a's notable case law and an foi
+[39.36s] legislation tracker
+[41.52s] this round of lessons is brought to you
+[43.36s] by nefac with help from the society
+[45.20s] professional journalists foundation the
+[47.28s] rhode island foundation
+[49.12s] muckrock sbj new england and the new
+[52.16s] england society of news editors we're
+[54.72s] grateful for everyone's support
+[57.44s] thank you
+[58.96s] now here's nefax emily sweeney to
+[62.00s] introduce you to your instructor
+[64.24s] hey everybody i'm emily sweeney from the
+[66.08s] boston globe and i want to thank you all
+[68.64s] for joining us for this webinar this
+[71.20s] session is going to focus on the open
+[73.68s] meeting law in new hampshire and with us
+[76.80s] is gregory sullivan
+[78.88s] he serves on the nefac board and he's
+[81.68s] also general counsel for the union
+[83.60s] leader corporation
+[85.44s] he also teaches first amendment media
+[87.44s] law at suffolk university law school and
+[90.32s] at the nackie loeb school in manchester
+[93.36s] uh greg thank you so much for for
+[95.36s] joining us and walking us through the
+[97.04s] open meeting law
+[99.20s] my pleasure emily i hope you can all
+[101.44s] read
+[102.40s] everything on that slide no wait a
+[104.40s] minute
+[105.20s] that's the constitution of the united
+[106.96s] states of america and to me there are
+[109.12s] only four words that uh are important
+[112.00s] for this presentation and they are the
+[114.08s] four words that the
+[116.16s] framers uh drafted for us in large
+[119.52s] letters so we'd be hip to what it's all
+[121.84s] about
+[122.96s] and those four
+[124.32s] words are we the people
+[126.72s] up the top and then near the bottom done
+[130.08s] and that's what
+[131.68s] the constitution means to me
+[134.00s] we the people
+[135.52s] own the white house own the state house
+[138.32s] own city hall
+[140.48s] and
+[141.52s] by the way if you've seen me give this
+[143.28s] presentation uh before i apologize for
+[146.40s] the redundancy but we start with this
+[149.68s] slide because we are the government
+[154.72s] in new hampshire we have a very strong
+[157.84s] constitution for free speech free press
+[160.72s] and
+[161.76s] the right of the public to know what the
+[163.84s] government is up to
+[165.92s] all power residing in the magistrates
+[168.96s] and offices
+[170.48s] they are our substitutes and agents and
+[172.88s] they are accountable to us
+[175.20s] governments should be open accessible
+[177.04s] accountable and responsive the public's
+[179.76s] right of access to governmental
+[181.92s] proceedings which is what we're talking
+[183.68s] about this evening and records
+[186.08s] shall not be restricted
+[188.72s] all right it doesn't say that it says
+[190.32s] shall not be unreasonably restricted
+[193.28s] if there is one word that underlies all
+[196.40s] law in the united states it is
+[198.96s] reasonableness
+[201.92s] this is from uh
+[205.28s] irs new hampshire rsa 91a the right to
+[208.72s] know law
+[209.84s] this is the preamble the purpose is to
+[212.08s] ensure both the greatest possible public
+[214.72s] access to the actions discussions and
+[217.84s] records of all public bodies and their
+[220.80s] accountability to the people
+[226.40s] this again is from the preamble
+[229.44s] uh and by the way this
+[232.00s] body of law open meetings in new
+[234.64s] hampshire
+[235.68s] is really what i would call
+[238.24s] uh statutory very little case law
+[242.32s] in new hampshire on public meetings
+[245.12s] unlike public records where
+[247.60s] the fights are ongoing
+[250.32s] every day in court and out of court in
+[253.20s] fact i don't know if the governor signed
+[256.16s] the new bill providing for an ombudsman
+[259.84s] in new hampshire to
+[261.92s] mediate and decide disputes
+[264.48s] between citizens and the government over
+[267.04s] public records
+[269.44s] that's a topic for another day because i
+[271.44s] have some issues with that statute as it
+[273.84s] was passed
+[275.76s] openness and the conduct of public
+[277.84s] business is essential to a democratic
+[280.64s] society
+[282.56s] 91a
+[284.56s] has a purpose of ensuring the greatest
+[286.88s] possible public access as we said a
+[289.44s] moment ago the actions discussions and
+[291.68s] records of all public bodies and their
+[293.60s] accountability to the people so i can't
+[296.24s] stress enough the purpose
+[298.80s] of the right to know law
+[301.20s] so as i said this area of the law is
+[304.00s] very
+[305.92s] dependent on the statute 91a
+[309.52s] were i an attorney
+[312.08s] showing up to argue for access that i
+[315.36s] believe has been denied by a
+[317.20s] governmental body
+[318.80s] were i a journalist a reporter
+[322.16s] or a citizen seeking to hold
+[326.16s] my public servants accountable and open
+[329.92s] i would have a copy of 91a with me which
+[334.40s] i do it's very lengthy these slides will
+[337.68s] give you only what i determined to be
+[340.40s] kind of the highlights
+[342.00s] of the chapter but it number one it's
+[344.56s] worth reading
+[346.08s] and number two certainly worth
+[347.60s] understanding
+[349.20s] should you be having difficulty with
+[351.60s] your
+[352.40s] public body whatever body that might be
+[356.72s] state
+[357.60s] local
+[358.56s] township etc
+[360.64s] um
+[361.76s] so a meeting means the convening of a
+[364.40s] quorum
+[366.08s] of the membership of the public body
+[368.96s] or a majority
+[371.68s] if
+[372.56s] quorum requires more than a majority so
+[374.96s] it's at least a majority when a majority
+[377.28s] of a board
+[379.52s] gets together
+[381.04s] whether it's the legislature whether
+[382.80s] it's the school board
+[385.84s] if they
+[387.12s] have a majority they're having a meeting
+[389.76s] if they're discussing
+[391.60s] or acting upon
+[393.28s] matters over which they have supervision
+[396.80s] control
+[397.92s] jurisdiction or even advisory power
+[402.88s] now
+[404.24s] if they happen to bump into each other
+[406.80s] if there are five selectmen in the town
+[409.68s] and three of them happen to be eating at
+[411.76s] the same diner on saturday morning and
+[413.92s] they get together and
+[415.68s] talk about the boston bruins
+[418.08s] um
+[419.28s] or even
+[420.72s] matters before them
+[422.48s] as long as no decisions are made
+[425.04s] they can have that discussion
+[427.20s] not a meeting not a definitional meeting
+[431.92s] not including
+[433.56s] negotiations or strategy discussing
+[436.08s] collective bargaining
+[437.92s] and an important one
+[439.68s] not consultation with legal counsel
+[441.84s] we're going to talk a little bit more
+[443.28s] about that later because
+[445.60s] as i said there are very few cases but
+[448.48s] one of the
+[449.52s] if not the main case in this area
+[452.64s] talks about what consultation with legal
+[455.20s] counsel means under the statute
+[462.24s] now if we're talking about elected
+[464.80s] members from the same party who were
+[467.04s] elected on a partisan basis
+[469.68s] um
+[470.72s] they can have a meeting
+[472.88s] and it's not governed by the right to
+[475.12s] know law we the public don't have a
+[477.20s] right to be in
+[478.40s] on that meeting
+[481.76s] they can circulate draft documents
+[486.80s] but
+[488.80s] it doesn't mean
+[490.48s] that if they're having a meeting and
+[492.16s] discussion discussing these things we
+[495.04s] the people don't have a right to be
+[497.04s] there because we do
+[500.56s] all meetings whether in person
+[502.72s] telephonic electronic
+[505.04s] shall be open to the public that's what
+[507.76s] the statute says shall be opened to the
+[510.72s] public
+[514.48s] no voting
+[517.28s] while an open session
+[519.20s] except for town meetings and school
+[521.92s] district meetings and elections no
+[524.16s] voting
+[525.44s] while a body is in open session may be
+[528.08s] taken by secret ballot we have the right
+[530.64s] to know who's voting
+[532.96s] for which side of the issue
+[537.84s] at all times
+[540.88s] very important these days
+[544.24s] i hope someone else gets that phone
+[545.92s] sorry about that
+[547.36s] um
+[549.28s] we can record
+[551.04s] with tape recorders cameras videotape at
+[554.08s] public meetings
+[555.92s] it's it's
+[557.12s] hasn't always been that way but that is
+[559.12s] the law today
+[561.52s] minutes
+[562.56s] are huge
+[564.24s] particularly when we're talking about
+[565.92s] non-public sessions we're going to talk
+[568.08s] about when
+[569.44s] bodies can go into non-public sessions
+[571.92s] and when they cannot
+[573.92s] non-public sessions the minutes must
+[576.72s] include the names of the members the
+[578.80s] persons appearing before the body and a
+[581.44s] description of what was discussed and
+[584.08s] any final decisions
+[586.72s] who made the motion
+[588.40s] who seconded shall be in the minutes
+[593.36s] and
+[594.64s] minutes shall be
+[596.24s] opened to the public not more than five
+[598.48s] business days after the meeting
+[601.36s] and shall be treated as permanent
+[603.04s] records of any public body or any
+[605.20s] subordinate body and we'll look at 9186
+[608.48s] shortly
+[609.92s] which is an exemption from that general
+[612.00s] rule that we get the minutes five days
+[614.24s] after the meeting
+[618.40s] outside of meetings
+[621.92s] public bodies shall deliberate on
+[623.92s] matters over which they have again
+[625.76s] supervision control jurisdiction or
+[628.16s] advisory power
+[629.76s] only in meetings held pursuant to the
+[633.20s] provisions of this statute 91a
+[637.28s] no secret deliberations
+[640.96s] communications outside a meeting
+[642.88s] including but not limited to sequential
+[645.76s] communications and that would be like a
+[647.92s] chain email i'll send it to selectman a
+[651.44s] hey you send it over to b b can send it
+[653.92s] to c
+[654.96s] you can't do that if you're trying to
+[657.04s] circumvent the spirit and purpose of
+[660.00s] chapter 91a
+[661.76s] which again is to provide our citizenry
+[665.60s] with the greatest possible access
+[669.04s] that access cannot be unreasonably
+[671.76s] restricted
+[674.08s] they can go into a non-public session
+[677.76s] but
+[679.12s] it
+[680.16s] only is with respect to i believe it's
+[683.36s] 11 exemptions that allow them to go into
+[687.20s] non-public session
+[689.52s] no session at which evidence information
+[691.92s] or testimony is received shall be closed
+[695.20s] except as provided in paragraph two
+[698.88s] and if they want to go in
+[700.72s] non-public session they've gotta make a
+[703.28s] motion and have it seconded and approved
+[708.08s] and
+[708.96s] that motion
+[710.40s] must state on its face the exemption
+[712.72s] under paragraph two which we'll get to
+[715.92s] which is relied upon as the foundation
+[718.48s] for that non-public session
+[720.80s] the vote shall be by roll call
+[723.28s] and again it's a majority of the members
+[727.36s] and any discussion in that non-public
+[730.24s] session must be limited to the matters
+[733.04s] set out in that motion
+[736.32s] so we're going to get to paragraph two
+[738.32s] as i said but this is sort of a
+[740.88s] listing
+[742.08s] of the reasons uh they can go into a
+[745.60s] non-public session
+[747.28s] the dismissal and we'll see these the
+[749.36s] dismissal promotion a compensation of a
+[751.92s] public employee the hiring of a public
+[754.40s] employee
+[756.08s] reputation in certain instances which
+[758.88s] we'll get into
+[760.96s] some of these are very much common sense
+[763.12s] the discussion of buying or selling real
+[765.60s] property because if you do that in
+[767.28s] public you're giving other bidders
+[769.76s] the opportunity to take advantage of
+[771.76s] your information
+[773.52s] pending litigation or claims that they
+[776.08s] believe are leading to litigation
+[779.28s] man is relating to the security of of
+[782.16s] the body or of the state
+[784.88s] um
+[786.80s] business finance applications because
+[789.28s] obviously if they're public other
+[791.68s] bidders are going to do a better job
+[793.84s] than the initial applicant
+[796.40s] emergency functions and this was passed
+[798.88s] after 9 11
+[801.12s] confidential commercial and financial
+[803.20s] information
+[804.96s] that's a tricky one because as we've
+[807.20s] seen in the field of public records
+[809.84s] that
+[810.88s] is not allowed to
+[813.04s] consume and take over the rule of public
+[816.72s] disclosure itself so the courts
+[819.68s] require the bodies to engage in what's
+[822.08s] called a balancing test
+[824.40s] is there a need to keep this information
+[827.20s] confidential or secret
+[830.24s] that outweighs the public's right to
+[832.40s] know
+[833.52s] legitimately
+[834.96s] what the government is up to
+[837.68s] school board tuition contracts that's
+[840.00s] that's a tricky one
+[841.52s] consideration of legal advice
+[843.92s] that one i believe was
+[846.00s] knocked out
+[847.36s] uh by the supreme court in 2011 the case
+[851.60s] of ettinger versus the town of madison
+[854.88s] planning board in that case the
+[857.92s] planning board
+[860.00s] just prior to a public hearing went into
+[862.32s] a non-public session
+[864.32s] to discuss a memorandum that their
+[866.72s] administrative assistant had drafted
+[869.44s] at the instruction of town council
+[874.00s] and
+[875.44s] the court rules
+[877.12s] ruled that it must be consultation with
+[880.24s] legal counsel meaning either on the
+[882.48s] telephone or in person
+[884.56s] but where there can be a spontaneous
+[887.36s] exchange of
+[889.36s] ideas
+[890.64s] other than that they can't go in and
+[893.20s] discuss
+[894.32s] what the lawyer said
+[896.80s] in a letter or a memo
+[899.04s] and then whether to disclose the minutes
+[901.36s] of a non-public session they can do that
+[903.52s] in non-public session
+[906.64s] so this backing up
+[908.80s] uh again a is dismissal promotion or
+[911.28s] compensation of any public employee or
+[913.60s] the disciplining of such employee
+[916.80s] or the investigation of any charges
+[918.88s] against him or her
+[920.64s] unless the employee has a right to a
+[923.12s] meeting
+[924.08s] public meeting and request that the
+[925.76s] meeting be open
+[927.12s] in which case the request shall be
+[928.80s] granted
+[930.00s] well
+[930.80s] there is a case pending
+[933.04s] currently before the superior court
+[935.60s] union leader corporation versus the new
+[937.68s] hampshire police standards and training
+[939.60s] council
+[940.80s] every police officer in new hampshire
+[943.44s] has to be certified by the council once
+[946.80s] a year
+[947.84s] and they also have decertification
+[950.48s] hearings if a police chief or a police
+[953.52s] commission
+[954.96s] request that the
+[957.68s] police standards and training council
+[959.44s] conduct a hearing
+[961.84s] as to whether or not this officer is
+[964.96s] appropriate to be certified for future
+[967.44s] duty
+[968.48s] those meetings were always held
+[971.04s] secretly
+[973.60s] union leader corporation
+[975.84s] said that was violative of the open
+[978.16s] meeting law
+[979.52s] and the superior court judge
+[982.08s] has agreed
+[983.76s] and
+[984.64s] that case no doubt will be headed to the
+[987.36s] supreme court shortly
+[990.16s] um
+[992.16s] hiring of any person
+[994.08s] that makes sense uh and this is the
+[997.36s] tricky one that came into play
+[999.84s] in that police standards and training
+[1001.60s] council he said well if we discuss these
+[1003.68s] matters in public it might have an
+[1005.60s] adverse
+[1006.64s] effect on the reputation of the police
+[1009.44s] officer
+[1010.80s] and
+[1012.08s] my client's attitude and position in
+[1014.88s] court has been
+[1016.32s] you know what
+[1017.52s] if this hearing
+[1019.52s] adversely affects the reputation
+[1022.08s] of the officer involved or any
+[1023.92s] government employee
+[1026.32s] so be it the public has a right to know
+[1029.12s] whether that reputation should be
+[1031.76s] adversely affected or not and on the
+[1034.88s] other hand
+[1036.00s] um i always argue that
+[1038.64s] the officer or the employee
+[1041.04s] should be happy if um it's determined
+[1044.40s] that they were not guilty of any of the
+[1046.08s] misconduct which someone had claimed
+[1048.56s] they committed but either way
+[1051.04s] good job or bad job
+[1053.12s] we the public have a right to know
+[1057.76s] pending claims on litigation that only
+[1060.80s] makes sense
+[1064.08s] so uh and by the way
+[1066.96s] it's a very lengthy
+[1068.96s] statute we're limited by time here
+[1072.16s] tonight
+[1073.20s] um so again i'm only hitting what i
+[1075.68s] believe are the highlights of the
+[1077.36s] statute you should all look at it carry
+[1080.48s] it with you as i say
+[1082.24s] uh if you're in the field of reporting
+[1084.80s] on what the government is up to
+[1087.52s] so uh we all
+[1089.76s] have the right to see
+[1092.24s] these minutes um
+[1095.36s] including
+[1096.48s] minutes of meetings of the public bodies
+[1098.48s] and to copy and
+[1100.16s] uh
+[1101.84s] take pictures
+[1103.12s] of those minutes they used to some
+[1105.20s] governmental agencies will say yeah
+[1106.96s] we'll give you uh everything you're
+[1109.04s] asking for at 50 cents a page which can
+[1111.68s] get expensive and then
+[1113.68s] we have these new devices called
+[1115.60s] smartphones where we can go and take
+[1118.48s] pictures of the records and and have
+[1120.64s] them download them print them etc
+[1126.16s] again
+[1127.12s] at the completion of the meeting they
+[1128.72s] have five days
+[1130.64s] uh to create these minutes and then have
+[1133.20s] to make them available to us
+[1140.24s] have to make it accessible
+[1147.52s] again within five days after a meeting
+[1152.40s] it can only charge the actual cost
+[1155.12s] and a lot more slides i don't think we
+[1156.96s] need them i'd love to field any
+[1158.56s] questions that
+[1160.00s] any of the viewers
+[1161.68s] would have on our right to
+[1166.00s] attend and make sure
+[1168.48s] that public parties and agencies are
+[1170.80s] complying with the right to know law
+[1173.36s] with respect to open meetings
+[1176.32s] the
+[1177.36s] the exemptions are are 11 of them
+[1180.40s] and if you know them
+[1182.40s] and
+[1183.28s] a board member makes a motion to go into
+[1185.68s] a non-public session and you believe
+[1188.40s] that that is violative of the law you
+[1190.48s] certainly have the right to stand up
+[1192.88s] raise an objection
+[1194.48s] and have your 91a with you citing
+[1197.76s] the law itself that certainly is my
+[1200.16s] recommendation because it's
+[1202.00s] it's a lengthy law
+[1203.84s] um
+[1204.84s] but pretty straightforward
+[1207.36s] at the same time i want to thank you so
+[1209.84s] much for you know taking the time out of
+[1211.92s] your busy day and thank everybody who
+[1214.88s] tuned in
+[1216.00s] um to this live webinar which is going
+[1218.48s] to be uh also posted on me facts youtube
+[1222.32s] channel and the website so
+[1225.28s] thanks everybody for tuning in greg
+[1227.60s] thank you so much
+[1230.56s] my pleasure emily all right take care
+[1233.20s] have a good night

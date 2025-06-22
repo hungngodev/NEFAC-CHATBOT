@@ -1,0 +1,628 @@
+[5.00s] I'm Justin Silverman of the New England
+[6.52s] First Amendment Coalition thank you for
+[8.76s] joining us for another round of open
+[10.88s] government lessons during this class
+[13.16s] you'll learn about police misconduct
+[14.84s] records and how you can access them
+[17.56s] under your State's public records law
+[20.04s] during this round of classes we'll be
+[21.52s] joined by an attorney to explain how the
+[23.36s] law works as well as a local journalist
+[25.60s] who will share their experience
+[27.12s] requesting these police records if if
+[30.04s] you haven't already please view our
+[31.76s] previous classes on public records open
+[34.36s] meetings and state court systems the
+[37.20s] lessons they provide are all cumulative
+[38.96s] starting you off with the basics and
+[40.44s] then gradually addressing more nuanced
+[42.40s] areas of law and journalism practice the
+[45.44s] classes are State specific and provide
+[47.80s] practical step-by-step lessons you won't
+[50.48s] find anywhere else you can find them all
+[52.92s] in our foi guide at nea.org and on our
+[55.68s] YouTube channel five
+[57.40s] freedoms before we begin I want to
+[59.56s] recognize Iz the estate of Gloria negri
+[61.48s] for its support of these classes Gloria
+[64.24s] was a trailblazing journalist at the
+[65.92s] Boston Globe for more than 50 years this
+[69.16s] program is part of her Legacy of
+[70.96s] Newsroom education and her lifelong
+[73.28s] commitment to local
+[76.00s] journalism thank you also to the Rhode
+[78.20s] Island foundation and the New England
+[79.92s] society of news editors for their
+[81.60s] continued support and a big thanks to
+[84.12s] you for taking the time today to learn
+[86.00s] more about how to keep government open
+[88.44s] and accountable in your state now here's
+[92.48s] neax Emily Sweeney to introduce you to
+[95.04s] today's instructors hey everybody I'm
+[97.24s] Emily Sweeney from the Boston Globe and
+[99.12s] I want to thank you for joining us for
+[101.20s] this latest round of open government
+[104.04s] lessons brought to you by the New
+[105.32s] England First Amendment
+[107.08s] Coalition with us today is Jill bisat
+[110.36s] he's the legal director at the ACLU of
+[112.60s] New Hampshire he's litigated cases on
+[114.96s] police and government accountability
+[116.76s] public records and the First Amendment
+[118.72s] and he's testified before for the New
+[120.44s] Hampshire legislature on more than 100
+[122.68s] bills impacting civil liberties we also
+[125.68s] have Paul Kuno Booth who reports on
+[128.00s] health and equity for New Hampshire
+[129.48s] Public Radio Paul previously worked at
+[131.92s] the Keen Sentinel where he covered law
+[133.76s] enforcement and the courts he's also
+[135.96s] written about policing and police
+[137.56s] misconduct for the granite state news
+[140.40s] collaborative Paul and Jill thank you so
+[142.80s] much for being here I really appreciate
+[144.36s] it thank you my pleasure all right Jill
+[148.16s] do you want do you want to kick it off
+[149.52s] sure
+[150.52s] uh thank you all so much for the
+[152.52s] opportunity to to chat about police
+[154.84s] records um and just where we are in New
+[157.36s] Hampshire what tend to be the rules of
+[159.64s] the road what are the standards um and
+[162.40s] just how to um advocate for yourself
+[166.12s] when you make these requests because in
+[167.88s] many of the those instances where you're
+[169.60s] seeking police misconduct records I
+[172.00s] would argue that you're actually
+[173.16s] entitled to those those documents so
+[175.36s] knowing the law here knowing your rights
+[177.32s] here I think becomes so critical ESP
+[179.72s] especially when we're dealing with
+[180.64s] public officials like the the police you
+[183.12s] know that have the ability to detain use
+[184.92s] lethal Force so you know when they when
+[187.24s] there's serious misconduct you know we
+[189.56s] think the public has a right to to know
+[191.64s] that information so I want to tell you a
+[193.60s] little bit about not just where we are
+[196.08s] now but where we were so we are actually
+[198.28s] in a much better place than we were for
+[201.32s] decades with respect to police
+[202.92s] misconduct records between 1993 and
+[207.00s] 2020 you could not get missc records of
+[210.56s] government officials in the state of New
+[212.20s] Hampshire and that is doesn't just
+[214.32s] include police it's for all public
+[217.04s] officials for the most part in the state
+[219.72s] of New Hampshire um and it was really a
+[222.24s] problem in the state you just
+[223.88s] journalists couldn't do their work
+[225.84s] Advocates like me you know couldn't do
+[227.68s] their work whether it's you know trying
+[229.64s] to learn more about what police
+[230.88s] departments are doing or trying to build
+[233.36s] uh uh build a potential piece of
+[235.20s] litigation so it really had a dampening
+[237.56s] effect on transparency and
+[238.80s] accountability in the State of New
+[241.00s] Hampshire we and a couple other
+[243.32s] Advocates including media Outlets by the
+[245.32s] way including the union leader C Co news
+[248.80s] uh decided that we need to try to undo
+[250.80s] that in a series of targeted lawsuits
+[253.52s] back in uh the late 201 which I guess
+[257.56s] it's a weird thing to say to some exent
+[258.96s] around 2016 20 2017 um in part because
+[263.28s] the state supreme court had suggested
+[266.36s] that they may have made a mistake in in
+[268.20s] a 1993 decision
+[270.32s] that deemed all categor all police
+[273.04s] misconduct records and government
+[274.48s] misconduct records categorically secret
+[277.00s] so the court in the court in a 2016 case
+[279.96s] said we might have made a mistake there
+[282.04s] that might not have been the right
+[283.40s] decision but it hasn't been litigated
+[286.36s] before us so you know we're we're going
+[289.00s] to set that aside but uh you know crafty
+[291.80s] litigators like you know like us and
+[294.00s] like litigators for the media Outlet saw
+[296.72s] that in in the Supreme Court decision
+[298.36s] and thought whoa Maybe There's an
+[300.20s] opportunity here to try to take down
+[302.92s] this 1993 regime that was really having
+[305.28s] a terrible impact on transparency in the
+[308.36s] state so originally basically what the
+[312.00s] law was all police misconduct records or
+[315.00s] government misconduct records were
+[317.12s] viewed essentially as internal Personnel
+[319.72s] practices and were viewed as
+[321.04s] categorically secret and after we
+[323.28s] brought these series of of cases um in
+[325.92s] 2020 the Supreme Court fortunately
+[328.56s] reversed uh and overruled its prior
+[331.16s] decision and created a new standard
+[334.60s] where police like individual misconduct
+[337.44s] records are actually internal Personnel
+[339.88s] practices individual misconduct um uh uh
+[344.80s] Records instead are evaluated under an
+[348.08s] invasion of privacy test where there is
+[350.08s] a public interest analysis that is to
+[352.80s] say when you make a request for police
+[355.36s] disciplinary information you may not get
+[357.08s] it in all cases by the way it doesn't
+[358.76s] mean it's category ially open it just
+[360.80s] means there's a case-by case approach
+[363.00s] where you assess in the individual case
+[365.00s] the public interest um in in disclosure
+[368.68s] whether there are privacy interests in
+[371.32s] non-disclosure and whether there
+[372.88s] actually might be some separate
+[374.12s] governmental interests in non-disclosure
+[376.52s] as well um and so that was really a
+[379.16s] Monumental decision where now we have a
+[382.20s] balancing test and we can use that
+[383.76s] balancing test to try to advocate in
+[386.40s] favor of the release of of documents and
+[389.92s] so once that decision uh came
+[393.16s] down uh then it then the question
+[395.60s] ultimately became like how do you apply
+[397.20s] this balancing test so uh the ACLU media
+[400.72s] Outlets other advocacy groups started
+[403.64s] engaging in a a targeted kind of
+[405.72s] litigation campaign to try to find
+[408.44s] really strong cases where intuitively it
+[411.28s] would seem like the balancing test favor
+[413.04s] disclosure getting courts to agree with
+[415.40s] that analysis and then creating
+[416.88s] favorable precedent that we could use
+[419.04s] that Outlets could use trying to get
+[421.32s] information uh in their particular cases
+[424.16s] and I think that additional campaign has
+[426.44s] been reasonably successful as well I
+[429.32s] think the courts generally have landed
+[432.60s] where if you're dealing with you know
+[434.24s] like particularly on duty misconduct
+[437.28s] from from the police and when the
+[439.48s] behavior that you're seeking isn't kind
+[441.48s] of it like you know personal like like
+[444.72s] the medical records of an officer that
+[446.72s] type of thing courts generally I'm not
+[448.76s] going to say necessarily in every case
+[450.40s] but generally seem to be receptive to
+[453.04s] the notion that that information um
+[455.72s] should be uh should be released um and
+[459.08s] it's not just you know the public needs
+[461.12s] to know for the sake of the public needs
+[462.84s] needs to know one of the things the
+[464.40s] court has recognized that it's important
+[466.32s] for the public to be able to vet the
+[467.92s] Integrity of these investigations right
+[470.00s] these internal investigations that's how
+[471.68s] you create trust and confidence in law
+[473.68s] enforcement this is good for the police
+[476.68s] at the end of the day because then the
+[478.16s] public has the ability to know that you
+[480.88s] know gosh that Police Department did a
+[482.80s] pretty good job in those investigations
+[484.32s] and I can just tell you as someone that
+[486.32s] that gets these documents the police
+[487.64s] department often does like a pretty good
+[489.92s] job in these investigations so I don't I
+[492.60s] don't want to paint a completely
+[493.84s] negative picture here because it's it's
+[495.68s] not true but it's important for the
+[497.20s] public to know that so the public could
+[499.72s] feel confident in their in their uh in
+[503.08s] their Police Department one particular
+[505.36s] case that I think just everyone should
+[506.88s] know about is the provenza decision
+[509.48s] which is the first New Hampshire Supreme
+[511.28s] Court case using that balancing test and
+[514.04s] what that case was about um was a a
+[517.52s] conflict between a uh police officer um
+[521.88s] and a woman that that police officer uh
+[525.16s] uh pulled over and there was a conflict
+[529.20s] this occurred in November of 2017 um
+[532.12s] officer Samuel prenza was alleged by a
+[534.32s] woman to have engaged in excessive force
+[536.28s] following a motor vehicle stop uh but
+[538.64s] there was aort report done on this
+[540.56s] particular incident um and the report
+[543.44s] actually examined whether the incident
+[545.32s] was excessive uh uh or not so just some
+[549.44s] of the facts of the case as alleged by
+[551.20s] the woman Penza pulled the woman who was
+[553.52s] 5 foot2 inches weigh5 pounds out of her
+[556.44s] car according to the woman Penza pulled
+[560.32s] her her out of the car by her hair which
+[562.28s] was an ponytail eater in the left leg
+[564.68s] and then tossed her uh tossed her on the
+[566.68s] ground or around the woman suffered a
+[568.72s] serious leg injury because of the
+[570.20s] encounter which required uh surgery and
+[573.08s] so when this report was issued we just
+[575.80s] thought the public had a right to to
+[577.84s] access it and the Supreme Court agreed
+[580.16s] in evaluating this balancing test saying
+[583.08s] quote that the public has a substantial
+[584.76s] interest in information about what its
+[586.76s] government is up to as well as a knowing
+[588.72s] whether a government investigation is
+[590.68s] comprehensive and accurate uh and I want
+[593.44s] to be clear that the court made this
+[594.92s] finding even where the report was not uh
+[597.84s] uh was not sustained with respect to the
+[600.20s] allegations of misconduct and to me that
+[602.24s] is incredibly critical as well I think
+[604.48s] you will often hear some say well if
+[606.28s] it's not sustained the public has a
+[608.40s] diminished right of access to it I do
+[610.48s] not agree at all with that premise uh
+[613.56s] even if it's not sustained it might
+[614.96s] actually be more important right for the
+[616.68s] public to be able to evaluate the
+[618.64s] investigation to assess whether or not
+[620.40s] it was done with uh with Integrity um
+[624.24s] and so I think that's a very powerful
+[625.84s] decision it's a decision that you should
+[627.44s] all use if you ever get push back with
+[630.12s] respect to uh police misconduct records
+[632.84s] I mean I could tell you that U we
+[636.44s] generally have significant success
+[638.76s] getting these documents now uh and so uh
+[643.28s] if there is push back it is something
+[644.88s] that I would like to know about to be
+[646.60s] honest because I'm happy to provide kind
+[648.96s] of off- the reccord thoughts about how
+[650.56s] to approach those situations I have very
+[653.08s] strong views about the need to release
+[655.68s] this information so with that I'll I'll
+[657.36s] close my remarks and just want to thank
+[659.68s] you know the first Amic Coalition Emily
+[662.52s] and Paul for the ability to speak about
+[664.40s] these
+[665.92s] issues awesome hey thanks so much Jill
+[668.92s] that that's that was really great um
+[671.64s] Paul do you want to line up your uh your
+[674.56s] presentation um so yeah I'm Paul Kuno
+[677.40s] Booth I'm a reporter for New Hampshire
+[679.00s] Public Radio um as Emily mentioned my
+[681.32s] current meat mostly focuses on health
+[683.48s] but I've done a fair bit of reporting on
+[685.28s] police misconduct um in previous roles
+[688.04s] and so I thought I'd just of talk about
+[689.84s] some specific types of records that I've
+[692.00s] been able to um use during that work
+[694.16s] that that I've found helpful um and I'm
+[696.68s] going to Breeze through some of these
+[698.16s] but um if anyone has questions on
+[700.08s] specific ones happy to to talk more
+[702.04s] later um so the first is the exculpatory
+[704.84s] evidence schedule it's also known as the
+[706.80s] Lori list um I think this is pretty well
+[709.12s] known but it's essentially a list of
+[712.04s] police officers who have something
+[714.28s] problematic on their record that could
+[716.00s] be you know lying under oath it could be
+[718.40s] excessive force it could be various
+[719.84s] different things um and you know it it
+[722.76s] doesn't contain a lot of details but
+[724.84s] it's a great jumping off point for
+[726.92s] further reporting right if if you see an
+[729.48s] officer uh from your local police
+[731.48s] department on there might be worth
+[733.52s] looking into that person further um this
+[736.24s] is uh available online at a State
+[739.04s] website it's updated every quarter so
+[740.88s] definitely worth um keeping an eye on um
+[744.08s] okay so let's say you know you have an
+[745.88s] officer you're interested in finding out
+[747.84s] more about maybe their name popped up on
+[749.88s] the Lor list maybe you you got a tip
+[752.00s] that um they engaged in some kind of
+[753.96s] misconduct one of the first things I'm
+[755.84s] going to try and get in that situation
+[757.92s] are internal disciplinary records this
+[760.44s] is um a lot of what Gil was just talking
+[762.32s] about that um was basically secret for
+[765.76s] decades and and now we have some access
+[767.72s] to you know these are records
+[769.52s] documenting um allegations of misconduct
+[772.00s] against officers as well as the way the
+[775.04s] uh department handles them and
+[776.68s] investigates them um these can be really
+[779.92s] useful because they uh of course you
+[782.56s] know contain the details of um the
+[784.92s] alleged misconduct this is an example
+[787.64s] from a story I did last year with the
+[789.60s] Keen Sentinel um and we had found out
+[793.08s] that um a a officer who had worked as a
+[796.16s] police chief in a couple local towns his
+[798.64s] name appeared on that that list I just
+[800.40s] discussed um for excessive force so we
+[803.20s] obviously said we we need to find out
+[804.76s] what this guy did to to get on the list
+[807.20s] we filed a records request with uh the
+[809.44s] town of Winchester and um got these
+[812.20s] records back this is this is one of them
+[814.12s] it's a notice of suspension from Duty
+[816.72s] and it explains that um this officer
+[820.00s] slapped a person in the face while the
+[822.12s] person was in handcuffed so a um clearly
+[825.16s] unjustified assault on a person in his
+[827.40s] custody he was suspended for it um so so
+[830.92s] this is a great example of the
+[832.28s] importance of these records um the other
+[835.44s] thing I want to sort of touch on with
+[837.16s] with this type of Records is is
+[838.52s] something mentioned just you know it it
+[841.44s] tells you something about the officer's
+[842.92s] conduct but it's also about sort of the
+[845.48s] system around the officer so how
+[847.44s] thorough thoroughly did the the
+[849.80s] department investigate um did they
+[852.16s] really hold the officer accountable or
+[854.40s] sort of give them a pass did you know
+[857.08s] the same officer have previous
+[858.60s] complaints um alleging similar
+[860.52s] misconduct and and how were those
+[862.36s] handled um and you know in this case for
+[865.12s] example um we actually were able to find
+[867.88s] documents showing that the town select
+[869.88s] board uh voted to reduce this
+[872.04s] individual's suspension from from 10
+[874.12s] days to 4 days um 3 years later some of
+[877.68s] those same town officials promoted him
+[879.24s] to police chief so um in this story we
+[882.12s] were able to say that you know some of
+[884.24s] these people who clearly knew that he
+[886.40s] had been disciplined for excessive force
+[888.92s] um decided to promote him to Chief and I
+[890.60s] think that's an important accountability
+[892.44s] story um that that goes beyond just like
+[894.76s] what one officer did um so those
+[898.20s] disciplinary records really useful if
+[900.60s] you can get them I have still run into
+[903.48s] resistance from some departments um and
+[906.16s] even when I don't it can take months so
+[908.84s] what do you do in the meantime there are
+[911.00s] some other places you can go to try and
+[913.00s] learn um some of that information uh so
+[916.16s] one is the police standards and training
+[917.84s] Council this is the body that um
+[920.28s] oversees and certifies every police
+[922.44s] officer in the state they also have the
+[924.60s] power to decertify officers who engage
+[927.32s] in misconduct um those proceedings are
+[930.24s] often you know in public meeting minutes
+[932.52s] that are posted on the council's website
+[934.80s] so if you're looking into an officer and
+[936.64s] they've been decertified for misconduct
+[939.04s] there's a good chance you can find out
+[940.56s] some details that way just by going to
+[942.32s] the council's website and and looking up
+[943.96s] them M um the minutes another really
+[946.64s] useful record uh from this agency uh has
+[949.72s] a super boring name but um it's been
+[951.96s] really helpful for reporting um it's
+[954.24s] called the employee status notification
+[956.48s] Form B this is just a document doent um
+[959.36s] that's filled out anytime a police
+[961.32s] officer has a change in employment
+[963.00s] status so that could be retiring it
+[965.28s] could be moving to another department
+[966.84s] for a different job um but it'll also
+[969.24s] show if uh that officer has been fired
+[971.84s] or demoted or resigned during an
+[974.52s] internal investigation um so that this
+[977.56s] is an example of what that looks like
+[979.44s] and and that can just be a really good U
+[981.96s] piece of information to have you know
+[983.60s] why did this officer leave a a
+[985.52s] department was there something sort of
+[987.72s] sketchy about it or not um another um
+[992.32s] agency to know about is the Personnel
+[994.60s] appeals board this is um specifically
+[997.56s] for state employees so uh state troopers
+[1000.48s] or Department of Corrections Officers um
+[1003.20s] if they're fired and they want to appeal
+[1005.04s] that termination they go to this board
+[1008.20s] um and the great thing about that is you
+[1010.72s] can request everything that's been filed
+[1013.20s] um as part of that proceeding and those
+[1015.64s] documents will have um a lot of details
+[1018.20s] about the officer's conduct um this is a
+[1021.36s] great example that J knows pretty well
+[1024.56s] um a couple years ago State Police fired
+[1027.36s] a trooper named Hayden Wilbur uh the
+[1030.04s] ACLU asked State Police to provide uh
+[1033.12s] documentation from their internal
+[1035.08s] investigation State Police refused it
+[1037.64s] went to court but in the meantime um
+[1040.28s] this Trooper also filed a appeal of his
+[1042.96s] termination with this agency and the
+[1045.44s] ACLU was able to get those records from
+[1048.16s] the Personnel appeals board um which
+[1050.52s] contained a lot of the same information
+[1052.24s] from the um the the internal
+[1054.72s] investigation um and so we were able to
+[1056.84s] write a story kind of cataloging all the
+[1059.60s] misdeeds that got this Trooper fired
+[1062.16s] including um illegally searching a
+[1064.64s] civilian phone without a warrant um and
+[1068.08s] those are records that you know um you
+[1071.04s] know again wer weren't immediately
+[1072.48s] available from the agency itself but um
+[1074.88s] by going to this this other um state
+[1078.08s] agency we were able to get some
+[1080.16s] information um another thing that's
+[1082.32s] really helpful to know settlement
+[1084.12s] agreements with public entities in New
+[1086.56s] Hampshire um have to be kept for at
+[1089.08s] least 10 years and have to be made
+[1091.64s] available for public inspection on
+[1094.08s] request so um again if if you're
+[1096.72s] covering certain police departments in
+[1098.80s] New Hampshire um it's a good idea to go
+[1101.12s] to those towns and just say hey give me
+[1102.92s] any settlement agreements involving the
+[1105.68s] police department for the last 10 years
+[1107.92s] that'll show you if you know they've um
+[1110.20s] settled any claims alleging excessive
+[1112.32s] force uh illegal searches uh racial
+[1115.96s] profiling anything like that um could be
+[1118.96s] reflected in these settlements and and
+[1120.44s] some of these lawsuits don't actually
+[1121.76s] get any media attention um until people
+[1125.12s] like my colleague here Todd Bookman um
+[1127.88s] actually go looking for them and and
+[1129.76s] find out some some pretty interesting uh
+[1131.84s] information about
+[1133.48s] misconduct um one final type of record
+[1136.20s] that I'll just mention here um motions
+[1138.64s] to suppress filed in criminal cases
+[1141.72s] these are when a defense attorney is
+[1144.56s] arguing that the police acted illegally
+[1147.20s] in some way um and therefore the
+[1149.36s] evidence has to be thrown out that can
+[1151.92s] be an illegal search um it can be a
+[1154.32s] failure to administer a Miranda warning
+[1156.60s] before someone confesses um the thing I
+[1159.28s] like about these first of all they're
+[1161.08s] they're filed publicly in court so
+[1162.88s] they're pretty accessible and if you
+[1165.40s] start to see the same officer or depart
+[1169.36s] with multiple cases um being tossed out
+[1172.32s] of court due to similar um issues that
+[1175.32s] could be a sign that there's you know a
+[1176.56s] pattern of behavior there that's worth
+[1178.92s] um exploring further um this is
+[1181.36s] something I used uh quite a bit when I
+[1183.32s] was investigating a state police unit
+[1186.12s] that sort of had a history of um
+[1188.08s] questionable vehicle stops uh many of
+[1191.08s] which really uh looked a whole lot like
+[1192.96s] racial profiling um I was able to sort
+[1195.48s] of systematically go through their court
+[1197.32s] cases and find quite a few that had been
+[1199.76s] thrown out due to Illegal
+[1201.96s] searches um the final thing I'll say
+[1204.48s] about that is you know some of those
+[1206.24s] cases were actually dropped by
+[1208.28s] prosecutors so uh this you know defense
+[1210.60s] attorney would raise a an issue and
+[1212.96s] prosecutors would just drop it without
+[1215.36s] explanation um so I filed a request with
+[1219.04s] the uh county attorney's office and was
+[1221.96s] really uh happy to learn that anytime um
+[1225.96s] their line prosecutors drop a criminal
+[1228.76s] case um they write an a memo to their
+[1231.72s] boss explaining the reasons why so um
+[1234.96s] through that request I was able to get a
+[1236.56s] bunch of memos where prosecutors were
+[1239.36s] explaining that you know this officer in
+[1241.56s] this case um conducted an illegal
+[1244.16s] traffic stop and therefore we can't move
+[1245.96s] forward with it um so I was able to
+[1248.04s] quote from those in the story and and
+[1249.84s] kind of really add to it um so that's
+[1252.20s] just another example of when you know
+[1254.04s] something's not reflected in the public
+[1256.16s] court file the prosecutor's office you
+[1258.40s] know worth doing a right to no request
+[1260.32s] there um that's sort of all I had um you
+[1264.08s] know I know that was kind of a lot of uh
+[1265.96s] just information so if there's any
+[1268.72s] specific records that anyone has
+[1270.48s] questions about or or particular stories
+[1272.44s] you want to um want me to talk more
+[1274.36s] about um happy to do that and and happy
+[1276.56s] to sort of answer questions um offline
+[1278.68s] as well can I piggy back off of excuse
+[1282.32s] me one of the things Paul said um I
+[1284.92s] think I think form bees from from the
+[1288.24s] police standards and training Council
+[1289.68s] are in an invaluable resource um so as
+[1293.16s] as Paul said those are documents that
+[1295.52s] PST that local police departments are
+[1297.28s] required to send to pstc when there's a
+[1299.00s] change of status listen most times it's
+[1301.00s] like a good thing right like someone's
+[1302.84s] retiring because they're just moving on
+[1304.48s] you know or um you know they've been
+[1307.00s] promoted uh but but sometimes it is can
+[1309.52s] be very serious you know resign during
+[1311.80s] an investigation terminated Etc I I use
+[1315.76s] the form B's as a starting point point
+[1318.28s] to evaluate whether there are certain
+[1319.96s] police departments or police officers
+[1321.64s] that I should then be going to the
+[1323.40s] police departments seeking information
+[1325.36s] for because the Form B is very limited
+[1326.84s] information you don't you don't know the
+[1328.68s] details of really what's going on with
+[1331.04s] respect to why the officer resigned or
+[1333.60s] was terminated but it it is a good
+[1335.88s] starting point then to then go ask the
+[1338.76s] police department for information
+[1341.40s] concerning what happened and remember
+[1343.60s] there's there's a public interest
+[1344.68s] balancing test involved and now you have
+[1346.52s] a tool to say there is a public public
+[1348.24s] interest in disclosure because you have
+[1349.64s] a document that you could rely on to say
+[1352.08s] this officer was terminated or resigned
+[1354.00s] during an
+[1355.08s] investigation because we all need to be
+[1356.96s] mindful when we're making these requests
+[1358.60s] that we may be asked and I think we need
+[1360.12s] to provide an answer to why is there a
+[1362.60s] public um a public interest another
+[1365.40s] series of documents that I I would also
+[1367.60s] encourage people to to uh look for um
+[1371.48s] well not look for is ask uh police
+[1373.68s] departments are for settlement demands
+[1376.24s] so you might see a settlement agreement
+[1378.16s] you know that that's true that
+[1379.64s] municipalities have to keep on file for
+[1381.44s] 10 years often it will not necessarily
+[1384.08s] contain a lot of the details or
+[1385.60s] allegations actually of what transpired
+[1388.04s] necessarily so getting those underlying
+[1390.52s] allegations could sometimes be hard to
+[1392.24s] find where a lawsuit may not have been
+[1394.08s] filed actually so then going to the
+[1396.76s] police department and trying to get the
+[1399.44s] the if there was a settlement demand
+[1400.84s] letter um is a step that I've sometimes
+[1403.52s] taken because often times lawyers will
+[1405.56s] be more detailed in their settlement and
+[1408.32s] about um U about the allegations that
+[1411.68s] that are being asserted that were
+[1413.08s] ultimately resolved in a monetary
+[1414.88s] settlement I want to thank both of you
+[1417.08s] for taking the time to you know uh give
+[1420.44s] uh great presentations that are going to
+[1422.52s] be really helpful to a lot of people so
+[1425.96s] thank you Paul's presentation was
+[1427.96s] amazing by the way I I I haven't really
+[1429.92s] kind of seen in one place like all of
+[1432.52s] the stuff that's available uh and it was
+[1434.68s] just I think that's for journalists in
+[1436.72s] New Hampshire a tremendous re source so
+[1438.96s] thank you for putting that together yeah
+[1441.52s] and and as jel was getting at you know a
+[1443.28s] lot of times these are um it's about
+[1445.48s] using all of these different tools to
+[1447.36s] kind of piece something together a Form
+[1449.72s] B leads to hey I should request the um
+[1452.40s] internal Personnel files or a settlement
+[1455.08s] agreement doesn't contain a ton but
+[1456.52s] leads you to further record so just you
+[1458.52s] know having all of these tools at your
+[1460.36s] disposal can can really um get you
+[1462.72s] somewhere I would just say people can
+[1464.88s] contact me anytime you can get my
+[1466.64s] contact information through obviously so
+[1469.00s] thank you all very much

@@ -1,0 +1,593 @@
+[3.30s] welcome everyone I'm Justin Silverman of
+[6.00s] the New England First Amendment
+[7.26s] Coalition thank you for joining us for
+[9.72s] another 30-minute skills as a reminder
+[12.18s] all of our 30-minute skills are
+[14.04s] available at kneefact.org 30 minute
+[16.68s] skills they include data cleaning data
+[19.62s] visualization Privacy Law Microsoft
+[22.32s] Excel Basics how to diversify your
+[24.42s] sources and how to protect yourself as a
+[26.82s] journalist among many other topics
+[29.04s] you also found at mefact.org a growing
+[31.56s] list of upcoming presentations and
+[33.84s] events focused on the first amendment in
+[36.48s] journalism nearly all of them are free
+[38.22s] and open to the public so please check
+[40.14s] them out and consider joining us
+[42.60s] today we'll be discussing the fair
+[44.58s] report privilege what it means and how
+[47.28s] it may apply to your work
+[49.14s] we have a lot to cover and not a lot of
+[51.24s] time so let's get started joining us
+[53.16s] today is attorney Matthew burn Dr Ravel
+[55.50s] and Shea in Burlington Vermont Matt all
+[57.90s] yours
+[59.28s] thank you and uh welcome to everybody uh
+[61.98s] today I want to talk about the fair
+[63.24s] report privilege and to give you some
+[65.94s] tips about how to write articles about
+[68.70s] official government proceedings so that
+[70.62s] you would fall within in the privilege
+[73.02s] but before we begin I wanted to talk a
+[75.96s] little bit about disclaimers that
+[77.58s] attorneys have to do when they give
+[78.84s] these sorts of presentations uh the
+[81.36s] presentation itself does not create an
+[83.22s] attorney-client privilege if you need
+[85.56s] help contact your lawyer and I am not
+[88.44s] your lawyer uh today we're going to be
+[90.90s] talking about generalities that differ
+[92.76s] there's they differ from state to state
+[95.10s] so that's one of the reasons why you
+[96.54s] need to talk to your lawyer or your
+[98.16s] jurisdiction
+[99.36s] and the other thing that will be
+[101.52s] important is that the facts of any
+[103.02s] specific situation will matter when
+[105.78s] determining whether the fair report
+[107.52s] privilege applies so talk to your lawyer
+[111.24s] um so what is the fair report privilege
+[113.22s] well the the general statement of the
+[115.44s] privilege comes from something called
+[117.30s] the restatement and it's a it's a
+[119.70s] publication that deals with the law in
+[121.92s] general uh and many states use it as a
+[124.50s] resource in determining you know what
+[126.30s] their law should be so stated literally
+[130.14s] it says the publication of a defamatory
+[132.24s] matter concerning another in a report of
+[134.64s] an official action or proceeding or of a
+[137.22s] meeting open to the public that deals
+[139.08s] with a matter of public concern
+[141.00s] and you get the privilege if the report
+[143.64s] is accurate and complete or a fair
+[146.16s] abridgement of the occurrence reported
+[148.20s] so what what does this all mean well
+[150.12s] it's it's uh it's an interesting
+[152.16s] situation where a reporter can actually
+[154.32s] uh
+[156.66s] report something that's defamatory and
+[159.36s] not face liability for it uh there's
+[162.06s] certain conditions under which this this
+[164.16s] uh this occurs um so it would be an
+[167.16s] official action or proceeding so like
+[170.28s] for example in a criminal trial uh you
+[172.50s] know some of the allegations that go
+[174.00s] against people could be defamatory if
+[175.74s] the person's found to be not guilty so
+[177.90s] if somebody were accused of robbing a
+[180.30s] store and it wasn't in fact them and it
+[182.16s] was false uh then that then that
+[184.44s] potentially could lead to liability for
+[186.06s] defamation but if you're reporting on it
+[187.92s] in an official action or proceeding and
+[190.44s] you fall within the fair report
+[191.70s] privilege then you won't in fact be held
+[194.76s] liable it has to be about a matter of
+[196.56s] public concern it also has to be
+[198.96s] accurate and it also has to be either a
+[201.36s] fair abridgement or a complete
+[203.16s] reproduction of the proceeding
+[205.32s] so what are some of these things things
+[207.36s] mean well legally deformation is a false
+[211.02s] statement of material facts you have to
+[213.36s] do it with a certain state of mind uh in
+[216.24s] general that means that you were
+[217.98s] careless in putting the report together
+[219.84s] or if uh the the person is a public
+[224.64s] official there's an even a higher
+[226.20s] standard guaranteed by the United States
+[227.70s] Constitution
+[229.32s] so the other thing that usually occurs
+[231.18s] in defamation is that there's a damage
+[232.80s] to the reputation so generally that's
+[235.14s] what a defamation is
+[237.18s] uh so what does it mean to be accurate
+[239.82s] under the fair report privilege well the
+[242.46s] comment to the statement tells us
+[244.50s] something about it in general what it
+[246.48s] means is you don't have to be exact in
+[248.34s] every material detail uh in every small
+[251.70s] detail or you have to be completely
+[253.62s] precise in in the terms of a technical
+[256.02s] or a scientific reporting it's enough
+[258.30s] that you get the essence of what it is
+[260.04s] substantially correct when you're
+[261.72s] talking about proceeding so and the key
+[265.44s] in reporting on whether it's accurate is
+[267.78s] not the factual accuracy of whether
+[269.76s] somebody for example the person that we
+[271.68s] had who was charged with a crime whether
+[273.24s] it's in fact accurate that they did
+[275.16s] steal thing but whether it's true
+[277.26s] reflection of what occurred at the
+[278.94s] proceeding what happened at the trial or
+[281.28s] what the decision of the government
+[283.08s] agency was and in determining whether
+[285.90s] it's true or false the the state of mind
+[288.54s] again comes into play and what you're
+[291.24s] focusing on in the state of mind is not
+[293.04s] whether you have any personal feelings
+[294.90s] about the defendant or the government
+[296.58s] investment the subject of government
+[298.68s] investigation it's whether you have
+[301.44s] reported whether your knowledge of the
+[303.60s] truth or falsity of it is reflected in
+[306.00s] your reporting have you done a careful
+[307.44s] job investigating the facts and
+[309.12s] Reporting on those facts
+[312.42s] so how do we talk about the level of
+[314.94s] care and Reporting and you know this is
+[317.22s] a topic that reoccurs and it's not just
+[319.14s] relevant to the fair report privilege it
+[321.36s] comes into play in a bunch of other
+[323.28s] first amendment and common law doctrines
+[325.86s] so there's some generic questions you
+[328.20s] should unders you should ask yourself
+[329.76s] when you're reporting do you actually
+[331.80s] understand what's going on here uh there
+[334.50s] are a number of proceedings
+[336.24s] um that are very technical legally or
+[338.88s] could be a scientific proceeding or
+[340.80s] there's a very complex scientific issue
+[342.78s] so have you done have you taken the
+[345.42s] steps to try to understand exactly
+[347.04s] what's going on and so that you can
+[349.26s] write with context and with some
+[351.42s] Authority on the subject and oftentimes
+[354.18s] I've I've had reporters call me on
+[356.10s] unrelated cases and they they take the
+[358.74s] time to figure out whether their
+[360.12s] understanding of the legal proceeding is
+[361.86s] correct uh and you know talking to other
+[364.38s] people outside of the you know the main
+[366.30s] subjects of the proceeding is helpful in
+[368.10s] in laying a record that you've been
+[369.78s] careful in in deter in the reporting
+[371.88s] that you've done
+[372.84s] the other thing that courts often look
+[374.88s] at is did you try to get both sides of
+[376.80s] the story again this is relevant not
+[378.60s] just for the fair reporting but it's uh
+[380.70s] but it's also relevant to things like
+[382.80s] the the special privilege for New York
+[384.54s] Times versus Sullivan uh so and in legal
+[387.72s] proceeding uh did you talk did you
+[390.12s] listen to what the defendant had to say
+[391.92s] at trial uh or did you actually talk to
+[394.86s] the defendant to see what they had to
+[396.36s] say about it
+[397.92s] um did you try to get a comment from the
+[399.60s] defendant so all of these are evidence
+[401.88s] that you took care in reporting the the
+[404.34s] information that was going on at the
+[406.62s] official government proceeding and it
+[408.78s] becomes relevant in determining whether
+[410.46s] the the story is accurate and it meets
+[412.92s] the fair report privilege
+[414.90s] well what else do what else should you
+[416.94s] keep in mind as a practical matter well
+[419.16s] the issue of record keeping is it can be
+[421.80s] uh somewhat fraught
+[423.90s] um but you know in the context of the
+[426.66s] fair reporting uh privilege itself uh
+[429.72s] you know did you keep a system of notes
+[431.40s] for your reporting it's it's it's a
+[434.04s] topic that you probably should discuss
+[435.48s] with your editor and your lawyer it also
+[437.76s] becomes a very sensitive subject when
+[439.56s] you're talking about confidential
+[440.76s] sources and there's some countervailing
+[443.16s] considerations uh when you're dealing
+[444.96s] with those con those confidential
+[446.58s] sources there's also things like the
+[448.92s] reporter's Shield law that comes into
+[450.54s] play but in in establishing the level of
+[453.72s] care that you took in reporting keeping
+[455.52s] your notes and also keeping copies of
+[458.04s] the government documents that are the
+[460.20s] basis of your reporting is often very
+[462.06s] helpful in establish in establishing the
+[464.76s] fair report privilege because if you can
+[466.68s] cite to those official government
+[467.88s] proceedings with you know with
+[469.68s] specificity and show that you're
+[471.54s] actually just taking stuff from the
+[473.28s] decision or the report from the
+[475.44s] government that's very helpful in
+[476.70s] invoking the uh the fair reporting
+[479.46s] privilege another area that that's been
+[481.68s] developing quite a bit is is something
+[483.96s] called an anti-slap law
+[486.60s] it shifts the burden very early in the
+[488.94s] case to determining whether this
+[490.50s] complaint that somebody's brought
+[491.76s] against you has any any sort of factual
+[493.98s] basis or arguable basis in the law and
+[497.70s] it works in a similar way to the fair
+[500.10s] reporting privilege but the advantage of
+[502.32s] the anti-slap laws is if you're
+[504.24s] successful you you can recover all of
+[506.40s] your attorney's fees whereas on a motion
+[508.62s] to dismiss for a fair reporting
+[510.36s] privilege you might not be as successful
+[514.04s] so then the question becomes what's an
+[516.78s] official action or proceeding well the
+[518.52s] classic example that we've uh already
+[520.74s] talked about are judicial judicial
+[522.84s] trials there's also criminal pre-trial
+[525.06s] proceedings like a motion for
+[526.56s] suppression uh you know the arraignment
+[529.26s] where the the criminal defendant comes
+[531.54s] in and pleads not guilty and in those
+[533.70s] circumstances you know as we've
+[535.38s] discussed you would try to report
+[536.70s] arguments made by the defendant uh The
+[539.82s] Plea that the defendant made so that you
+[541.92s] can show that both sides of the of the
+[544.08s] proceeding were represented and it was
+[545.70s] an active report of what happened if you
+[547.80s] only report what the prosecutor says or
+[549.60s] you only report what the judge says you
+[551.64s] may not capture uh everything that
+[554.10s] occurs at the proceeding and you may it
+[556.32s] may not be considered a fair virtue in
+[558.06s] the proceedings it's important to to let
+[560.34s] the reader know that there are other
+[561.90s] there's more than one side to the
+[563.34s] proceeding and that they can if they
+[565.02s] want to look more carefully into the
+[566.82s] proceedings uh another classic example
+[569.88s] would be the floor debates in Congress
+[571.50s] or in the state legislature those are
+[573.72s] examples of official government
+[576.24s] proceedings that are widely accepted as
+[579.48s] as coming within the privilege so there
+[581.70s] are some other categories uh that you
+[584.22s] might think about that may come within
+[586.92s] the fair report proceeding what about an
+[589.26s] internal investigation of drug use in
+[591.24s] the police force uh the you know there
+[594.06s] was a case in the in the D.C Superior
+[596.58s] Court that dealt with that particular
+[598.02s] issue and the court found that in fact
+[600.84s] it was covered in a fair reporting
+[602.78s] privilege but there are other courts
+[605.10s] that are going to go the other way with
+[606.30s] that so uh keep that keep that in mind
+[609.90s] determining you know how you're going to
+[611.70s] be reporting on this uh and what about
+[613.92s] an investigation into whether the U.S is
+[615.90s] winning the Vietnam War there's a very
+[618.84s] famous case called The Pentagon Papers
+[620.64s] uh that decided that journalists had the
+[623.10s] right to report that but nobody in those
+[625.98s] proceedings got sued for defamation so
+[628.86s] whether the official government
+[630.60s] proceeding is is public or not it's
+[633.18s] going to play a role in whether the
+[634.56s] court determines whether the fair report
+[636.54s] privilege applies or not
+[641.52s] uh what's a fair abridgement uh so this
+[645.30s] is you know again we go back to Common F
+[647.78s] uh which says that you don't have to
+[649.92s] report on everything that occurred uh or
+[653.16s] every immaterial detail it's as it's
+[655.98s] good as long as you get uh it's
+[658.14s] substantially correct now obviously
+[660.24s] there's there's some judgment calls to
+[661.98s] be applied by the court like what is an
+[664.26s] immaterial detail what does it mean to
+[667.02s] be precision and Technical or scientific
+[669.36s] reporting does that really apply when
+[671.46s] you're actually talking about a
+[672.78s] scientific proceeding or expert
+[674.70s] testimony that delves deeply into uh
+[677.82s] scientific topics and what does it mean
+[681.06s] to be substantially correct account of
+[683.16s] proceedings now this is you know judges
+[685.38s] often read in uh things into into this
+[688.80s] type of language substantially correct
+[690.54s] is not exactly a scientific formulation
+[692.58s] so a lot of times the Court's going to
+[695.40s] be reading in its own values and
+[697.74s] determining whether the fair report
+[699.12s] privilege should apply so that's you
+[701.34s] know know a lot of things that that
+[702.78s] appeal to judges are fairness so what
+[705.00s] they like to hear is both sides of the
+[706.62s] proceeding and so when they're looking
+[708.96s] for something that's substantially
+[710.28s] correct they're going to look to see
+[711.54s] whether whether both sides have been
+[713.16s] represented in that in the reporting on
+[715.74s] the proceeding
+[718.38s] is it complete well this is another
+[720.54s] thing that um that actually technology
+[723.78s] helps you to deal with in the old print
+[726.24s] environment it was rare to publish the
+[728.94s] whole proceedings there were a few
+[730.26s] example historical examples of where
+[732.06s] newspapers spent pages and pages and
+[734.04s] Pages printing transcripts of of
+[735.84s] official government proceedings but that
+[738.06s] that was a rarity now in a digital
+[740.28s] environment you can in fact print the
+[742.08s] whole report uh you know there's I've
+[744.78s] seen a number of news articles out there
+[746.52s] that attach as a as an attachment the
+[750.54s] decision or they provide a link to where
+[753.06s] per people can read the decision and
+[756.00s] it's actually come up in cases that I've
+[757.74s] had I haven't had the Court rule on it
+[759.66s] yet but there are you know the fact that
+[762.00s] you can say look we reported on
+[763.80s] everything just see the link to the to
+[766.02s] the decision or here's the PDF that we
+[768.42s] attach to our to our article can be very
+[770.70s] helpful in persuading the court that you
+[772.38s] you come within the guidelines of the
+[775.74s] fair report privilege uh the same can be
+[778.38s] said for TV stations now a lot of TV
+[780.42s] stations have their own websites so the
+[782.88s] TV station can put it up on their
+[784.62s] website in connection with the the video
+[786.78s] uh that they did of the of the
+[788.76s] particular report
+[794.88s] uh so the other issue that comes up in a
+[798.54s] lot of these cases is whether it's an
+[800.22s] issue of whether it's a matter of public
+[801.96s] concern and so the quintessential
+[804.60s] example is litigation with the state
+[807.12s] over the constitutionality of a state
+[809.28s] statute that clearly would fall into the
+[813.18s] area of a matter of public concern but
+[816.12s] then you get into more borderline cases
+[818.04s] and again it becomes a judgment call by
+[819.90s] the judge and the judge will rely on
+[822.72s] this this well-developed case law that
+[824.64s] exists in the First Amendment area
+[825.96s] dealing with what is an issue of public
+[827.70s] concern but in borderline cases you
+[830.70s] might have a proceeding like a divorce
+[832.26s] case between two private individuals
+[834.00s] there the court might vary will find
+[835.98s] that it's just not a matter of of public
+[838.20s] concern uh as an attorney we would argue
+[841.32s] that any proceeding in a public court is
+[843.42s] a matter of public concern but judges
+[845.22s] have have reached opposite conclusions
+[847.34s] another sort of borderline case is a
+[849.96s] juvenile detention hearing there's
+[852.36s] strong sort of policy Arguments for
+[854.28s] rehabilitation as to why the you know
+[856.44s] the name of the juvenile should not be
+[858.00s] out in the in the proceeding and the
+[860.22s] stigma that's associated with you know a
+[862.20s] quasi-criminal proceeding uh should not
+[864.96s] follow the defendant around so those
+[866.94s] will be more borderline cases in
+[868.62s] determining whether it's a it's a matter
+[870.30s] of of public uh public concern and there
+[873.96s] may be uh you know the other thing to
+[876.24s] consider consider about the the fair
+[878.28s] report privilege if it's still
+[879.72s] newsworthy and not a matter of public
+[882.24s] concern you may have reasons to publish
+[884.34s] it anyway and that's something you
+[885.66s] should talk with your you know with your
+[887.16s] editor out it's just that you may not be
+[889.38s] able to rely on the fair report uh
+[891.56s] privilege to do it but you can rely on
+[894.06s] other privileges that exist in the law
+[896.34s] to protect the the action that you've
+[898.14s] taken
+[902.76s] so what are some of those uh some of
+[905.58s] those examples well another uh another
+[908.34s] report is called the neutral report
+[910.02s] privilege this is it's an interesting uh
+[912.90s] privilege that exists uh in the second
+[915.66s] circuit uh and the second circuit is New
+[918.66s] York is New York Vermont and Connecticut
+[920.70s] and it exists in some courts in in
+[923.76s] California and basically what it the the
+[926.00s] privilege uh boils down to is when a
+[929.64s] prominent organization makes an
+[931.80s] allegation it's okay for the reporter to
+[935.34s] report on that prominent allegation of
+[937.74s] misconduct when the reporter uh looks at
+[941.70s] both sides of the issue and reports on
+[945.30s] both sides of the issue another
+[947.76s] important privilege is the fair comment
+[950.58s] privilege and that has in some ways been
+[952.74s] superseded by constitutional law but the
+[954.84s] the essence of the Privileges are you
+[956.70s] commenting on an issue of public concern
+[958.62s] in the in the sphere of the public
+[961.26s] debate it doesn't necessarily have to
+[963.36s] have an official proceeding to be able
+[965.04s] to invoke that particular privilege
+[967.52s] the other privilege that comes up a lot
+[970.62s] is the New York Times versus Sullivan
+[972.60s] case where you the person who's claiming
+[976.44s] defamation if that person is a public
+[978.30s] figure the public figure has to uh show
+[982.20s] with show that there's actual malice in
+[984.24s] the reporting an actual analysis is a
+[987.06s] term of art what that means in the
+[989.82s] context of reporting is that the the
+[992.04s] reporting uh the reporter was Reckless
+[996.60s] or
+[998.10s] um knew that the reporting was false and
+[1000.86s] you see this is becoming a huge issue in
+[1003.32s] the Dominion cases against Fox News and
+[1006.20s] the proof that's necessary to show that
+[1008.12s] the reporting on on the 2020
+[1011.42s] presidential election was done with
+[1014.30s] knowledge of the falsity of the
+[1015.80s] statements that were being made on air
+[1017.24s] on on the network and so how that
+[1020.36s] actually falls out
+[1021.92s] um will be interesting to follow but it
+[1024.38s] is for most other types of reporting it
+[1026.42s] is a very powerful tool to show that
+[1029.06s] there's no liability from a
+[1031.22s] constitutional sense for publication of
+[1033.20s] defamation so if you can't come within
+[1036.14s] the fair reporting privilege there's a
+[1039.02s] number of other
+[1040.46s] um privileges that that potentially
+[1043.22s] could come up in trying to protect
+[1045.26s] yourself from claims and defamation to
+[1047.90s] to sum up on on some of the the tips and
+[1050.90s] the tools that you might use in in
+[1052.94s] dealing with a fair comic privilege uh
+[1055.40s] it's important to you know to prepare
+[1057.62s] ahead of time before or you report on an
+[1060.62s] official government proceeding what are
+[1062.54s] the type of sources that you're relying
+[1064.28s] on are you keeping track of what those
+[1066.86s] sources are do you keep a record of that
+[1068.78s] and are you reporting in a way that
+[1070.58s] reports both sides of the official
+[1072.62s] government proceeding are you you know
+[1074.48s] in in the case of like a Judicial
+[1076.22s] proceeding are you talking about what
+[1078.26s] the defendant said you know and a lot of
+[1080.18s] times the defendant may not have a lot
+[1081.80s] to say but it is important to note you
+[1083.66s] know whether they pled not guilty what
+[1086.24s] their defenses were what sort of
+[1087.74s] witnesses they may they might have
+[1089.12s] called so those are the things to keep
+[1090.86s] in mind as a reporter in in trying to
+[1093.08s] report on the fair uh the fair reporting
+[1095.30s] privilege Matt and thank you for all
+[1097.04s] this this is uh really helpful and uh
+[1099.98s] learning a lot here I think it might
+[1101.72s] also be helpful too if you could
+[1103.52s] just share with us some of the facts
+[1105.50s] involved in some of the fair report
+[1107.24s] cases that you've worked on to help you
+[1109.28s] know illustrate how this kind of plays
+[1111.50s] out you know from the point of uh news
+[1114.20s] Gathering you know through the the court
+[1115.82s] system can you maybe walk us through a
+[1117.98s] case or two that you've personally been
+[1119.42s] involved in Yeah we actually have one
+[1121.34s] that were that's coming up for argument
+[1123.02s] in the Vermont supreme court next week
+[1124.88s] and uh that issue here is uh somebody
+[1128.36s] was uh arrested for threatening uh the
+[1131.72s] speaker of the house uh for Vermont's uh
+[1134.72s] speaker of the house uh that person who
+[1137.42s] was arrested uh came out and said that
+[1139.88s] the the report was defamatory uh and the
+[1143.60s] issue in that case one of the issues in
+[1145.28s] that case is whether the reporting which
+[1147.86s] was based on affidavits filed in court
+[1150.20s] uh reporting about the you know the
+[1153.08s] pre-trial arraignment proceeding the
+[1155.00s] pre-trial hearings where competency was
+[1156.86s] addressed whether that reporting is
+[1158.90s] protected by the fair report privilege
+[1160.70s] and you know it's it's very helpful in
+[1163.34s] that case that the reporters that were
+[1164.90s] involved all had careful records about
+[1167.48s] what they you know what they did to
+[1169.28s] investigate the claims what the
+[1171.44s] documents were that they relied upon so
+[1173.60s] we can take all of those particular
+[1175.28s] pieces of evidence and put that before
+[1177.14s] the court uh and allow the court to make
+[1179.84s] a determination that yes in fact this is
+[1182.54s] protected by the fair report privilege
+[1184.82s] and in in this case there were a number
+[1186.74s] of other privileges that were at issue
+[1188.36s] that the court uh the court except
+[1190.58s] included the the neutral report
+[1192.20s] privilege and other Vermont
+[1195.92s] constitutional privileges that that
+[1197.90s] we're going to be arguing when it comes
+[1199.40s] up in front of the Vermont Supreme Court
+[1202.76s] thank you that's helpful and uh I think
+[1205.04s] lastly before we wrap up here uh maybe
+[1207.26s] you could just give us a better sense as
+[1208.88s] to just how many states have a fair
+[1211.22s] report privilege is it the majority of
+[1212.84s] states is it a smaller minority just how
+[1215.60s] common is this privilege uh within the
+[1218.66s] individual cities yeah it's well the
+[1221.24s] restatement is is adopted by nearly all
+[1224.00s] the states now what happens with the
+[1226.10s] restatement is a number of different
+[1227.48s] states make little tweaks to the
+[1230.30s] restatement and the courts have
+[1232.34s] different decisions so you could have
+[1234.02s] the statement apply in in one state and
+[1237.26s] the uh the court in that state decides
+[1240.62s] that uh you know a press release from
+[1242.24s] the police is an official government
+[1243.68s] report whereas you could have uh in
+[1246.86s] another state the uh the state
+[1249.44s] determines that the police report is not
+[1252.38s] an official government report so it does
+[1254.84s] vary from state to state but nearly
+[1256.64s] nearly all the states adopt some form of
+[1258.80s] the restatement in in addressing this uh
+[1261.74s] Fair report privilege so it is it's a
+[1263.66s] good one to have common you know to have
+[1265.58s] common knowledge of and to think about
+[1266.96s] when you're reporting on official
+[1268.22s] government proceedings but a lot of it
+[1270.62s] again comes down to the skills that
+[1272.30s] journalists have when you know when they
+[1274.10s] when they learn to become a journalist
+[1275.42s] whether in journalism school or on the
+[1277.10s] beat you know take careful notes make
+[1279.38s] sure you listen carefully make sure you
+[1281.72s] understand what's going on in the
+[1283.28s] proceeding before you before you start
+[1285.44s] recording on it get experience in it
+[1288.02s] lean on others to give you background
+[1290.00s] talk to attorneys on you know in
+[1292.16s] background so that you can understand
+[1293.36s] exactly what's going on and a lot of
+[1295.82s] those things and the steps and the care
+[1297.26s] that you take in reporting the story
+[1298.82s] will also be very helpful to you in
+[1300.98s] defending against any claim of
+[1302.48s] deformation when the fair report
+[1304.04s] privilege comes up
+[1305.54s] great well thank you again Matt
+[1307.94s] appreciate all this time and guidance
+[1310.10s] and many thanks to everyone who joined
+[1312.56s] us today if you found today's class
+[1314.66s] helpful in any way please consider
+[1317.48s] becoming a sustaining member of
+[1319.72s] defac.org join your annual support is
+[1323.48s] what helps us provide classes just like
+[1325.82s] this one so thank you all again and
+[1328.82s] we'll see you next month for our next 30
+[1330.92s] minute skills

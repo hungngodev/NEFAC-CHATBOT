@@ -1,0 +1,702 @@
+[3.64s] I'm Justin Silverman of the New England
+[5.20s] First Amendment
+[6.48s] Coalition thank you for joining us for
+[8.60s] another 30 minute skills today's
+[10.72s] presentation is supported in part by the
+[12.80s] estate of Gloria negri Gloria was a
+[15.60s] trailblazing journalist at the Boston
+[17.44s] Globe for more than 50 years this
+[20.12s] program is part of our Legacy of News
+[22.08s] Room education and our lifelong
+[23.92s] commitment to local journalism you can
+[26.48s] learn more about Gloria and other neac
+[28.56s] supporters at nea.org
+[31.80s] supporters also a reminder links to all
+[34.88s] our 30 minute skills are available at
+[36.44s] nea.org and on our YouTube channel by
+[39.52s] freedoms lessons include data cleaning
+[42.20s] Privacy Law Microsoft Excel Basics how
+[45.08s] to diversify sources and how to protect
+[46.84s] yourself as a journalist among many
+[48.60s] other topics I also encourage everyone
+[51.32s] to visit nea.org and view our growing
+[53.48s] list of upcoming presentations and
+[55.44s] events focused on the first amendment in
+[57.36s] journalism nearly all of them are free
+[59.68s] and open to the public so please check
+[61.72s] them out and consider joining us today's
+[64.68s] lesson is the second of two that will
+[66.68s] prepare you for covering political
+[68.40s] campaigns the first lesson can be found
+[70.52s] on our YouTube channel or at nea.org we
+[73.80s] have a lot to cover and not a lot of
+[75.28s] time so let's get started Ted all
+[78.32s] yours thank you Justin and uh thanks
+[81.16s] everybody who's joining us today um okay
+[84.32s] so again thanks everybody uh for joining
+[86.36s] me if you were here for the last one I'm
+[88.36s] glad to have you back this time
+[90.48s] and uh so to in the last one uh we I
+[94.00s] introduce myself again I'm Ted nii I am
+[96.64s] politics editor for wpr TV the CBS
+[99.40s] affiliate in Providence Rhode Island
+[101.56s] been covering elections for a long time
+[103.12s] about 15 years I do televised debates I
+[106.36s] co-host our Sunday political show I do
+[109.08s] lots and lots of political coverage so
+[110.88s] uh this is this is my wheelhouse um and
+[113.16s] I do the best I can though there of
+[114.68s] course there's always more to learn um
+[116.72s] last time we really talked about the
+[118.68s] very basics of uh this kind of reporting
+[122.72s] um for election time things like uh how
+[125.44s] to make sure you know which candidates
+[126.76s] are running nailing down all the most
+[128.72s] important dates Etc and some stories to
+[130.96s] kind of get you jump started so if you
+[132.80s] want to find those tips after this
+[134.80s] that's on the neac YouTube page and you
+[137.12s] can find that full session but today
+[139.16s] we're going to um talk about some of the
+[141.04s] other stuff you might encounter as you
+[143.20s] start to cover elections more closely
+[145.60s] and this will be especially true in
+[147.84s] bigger races um races for wide office or
+[150.96s] federal office but I'd also say some of
+[153.04s] the points here uh could go for a
+[155.16s] municipal office even a county office or
+[157.24s] something lower level because uh some of
+[159.60s] this stuff happens at all levels of
+[161.12s] politics it's just politics so let's
+[163.04s] dive in um so first of all um let's talk
+[168.60s] about campaign spending um this is uh
+[172.92s] something I'm going to spend a bunch of
+[174.00s] time about because it's important um and
+[176.44s] there are multiple reasons for that um
+[178.56s] first of all follow follow the money we
+[180.72s] all know that quote right it's the
+[182.12s] famous quote from uh investigative
+[184.36s] reporting lore and there's a reason for
+[186.40s] it um the flow of funds tells you a lot
+[189.16s] it tells you who's supporting who it
+[191.04s] tells you how they think they can win um
+[193.92s] it's something we should be keeping
+[195.04s] track of because money can also be a
+[196.72s] corrupting force in politics so we want
+[198.68s] to know uh where it's coming from and
+[200.72s] where it's going and who's got it um so
+[202.68s] that's important but there's another
+[204.36s] reason I wanted to highlight which is
+[206.16s] that money gives you hard numbers hard
+[209.52s] fact to report over the course of a
+[211.64s] campaign now press critics say uh oh you
+[215.00s] know reporters Focus too much on the
+[216.88s] horse race Etc and of course I am not
+[219.00s] saying cover campaign spending instead
+[221.00s] of policy by any means we talked about
+[222.80s] some policy reporting jump start ideas
+[225.32s] last time but I also think it's very
+[226.92s] important to know who's funding
+[228.64s] candidates where they're spending their
+[230.36s] money Etc I also think it's important
+[232.88s] because so much in a campaign is kind of
+[235.36s] a morphous you're kind of Shadow Boxing
+[237.48s] someone says they're up someone says
+[238.84s] they're down uh one supporter says they
+[241.12s] have it in the bag the other one says
+[242.72s] they're losing you have no way of
+[244.24s] knowing at least the campaign spending
+[247.12s] picture gives you a sense of something
+[250.24s] real tangible hard facts that can't be
+[253.48s] disputed interpretations can be disputed
+[255.68s] but they have to report the numbers
+[257.32s] somewhere and that gives you something
+[258.60s] to work off of that you can really nail
+[260.28s] to the wall so um the most important
+[264.60s] thing of course first is to know how to
+[266.84s] track down the data for campaign
+[269.28s] spending um and I want to be upfront
+[272.20s] about the fact that this can be a little
+[273.92s] complicated at first um if you feel a
+[275.96s] little overwhelmed or a little confused
+[277.76s] by the websites you're looking at the
+[279.32s] filings that's okay that's not a a you
+[282.92s] thing that's just because this this gets
+[284.96s] complicated and it's different across
+[287.84s] jurisdictions um which can be a pain in
+[290.48s] the neck frankly because uh you learn
+[292.96s] one jurisdiction and then you find the
+[294.60s] next one does it a whole different way
+[296.80s] but that's that's the name of the game
+[298.60s] and that's why you got to do your
+[299.36s] homework work and do it early so the
+[302.20s] first question is what kind of race are
+[303.64s] you covering because if you're covering
+[305.04s] a federal race you're going to go to
+[306.92s] fec.gov that is the Federal Election
+[310.16s] Commission website um you can look up in
+[313.52s] all sorts of different ways you can look
+[314.80s] up candidates you can look up by
+[316.24s] campaign committees um they have a lot
+[318.60s] of different ways to slice and dice the
+[320.20s] data I will caution you that something
+[322.92s] I've learned again the hard way over the
+[324.68s] years is that sometimes the data that is
+[328.08s] reported in kind of the clean way on
+[330.44s] their front-facing interface is not
+[332.44s] fully up to date because if there's like
+[334.92s] a filing deadline last night and all the
+[336.60s] candidates put their numbers in uh you
+[339.16s] know 11:30 there's some process the FC
+[342.00s] goes through to get that from the sort
+[343.84s] of raw data in the campaign Finance
+[346.08s] report into the pretty um summed up
+[348.52s] numbers that they show on the front end
+[350.00s] their website so just be careful you
+[351.84s] have to be really smart about which
+[353.00s] numbers you're looking at check what
+[354.44s] dates they're reporting next to the
+[356.00s] numbers Etc um but at least fec.gov is a
+[359.24s] pretty clean place for all our federal
+[361.60s] election data state and local every
+[364.28s] state is different so you're going to
+[365.92s] have to learn your own States uh system
+[369.60s] and and look that up I can tell you
+[371.16s] about the two states I cover in Rhode
+[373.04s] Island uh the State Board of Elections
+[375.32s] handles the campaign Finance uh data and
+[379.08s] tracking here you go to Ric campaign
+[381.64s] finance.com one long word smoosh
+[384.04s] together there's this Arcane ancient web
+[386.92s] interface that all the reporters have
+[388.52s] learned how to use even though it's like
+[390.20s] we're on Windows 998 um but it gets the
+[392.44s] job done so you want to learn that in
+[394.32s] Rhode Island in Massachusetts the
+[397.00s] ocpf uh is the place you go for campaign
+[399.52s] Finance data ocpf do us is the website
+[403.60s] um whole different system from Rhode
+[405.12s] Island uh and and I don't just mean
+[407.32s] system like computer system and software
+[409.48s] I'm talking about the way they report
+[411.24s] the numbers where you look for certain
+[413.20s] things how they have to report when they
+[415.20s] have to report it all is different so if
+[417.12s] you're in Connecticut if you're in Maine
+[418.80s] if you're in New Hampshire Vermont
+[420.64s] you're going to want to find out how
+[422.32s] they do it in your state so first nail
+[425.96s] down the basics as I said learn the
+[428.08s] interface on whatever website you're
+[429.64s] using I I think every state has a
+[431.44s] website for this stuff now God I hope so
+[433.88s] um so you know what how do you look up
+[436.36s] your candidates um how do you find their
+[438.24s] names is there a difference between
+[439.92s] looking up the candidate by name and
+[441.76s] looking up their Campaign Committee
+[443.60s] you'll find those are different at the
+[444.88s] federal level um they interact together
+[447.76s] but there's two different ways to sort
+[448.92s] of find what you're looking for there um
+[451.88s] can you sort by election uh race so
+[454.24s] could you look up I'm look I want all
+[455.68s] the Bristol County Sheriff's candidates
+[457.16s] can you look up that and then they're
+[458.36s] listed or do you have to know who's
+[459.80s] running and then look them up piece by
+[461.48s] piece um all those kind of questions are
+[463.92s] things you want to kind of work on and
+[465.72s] as we talked about in the last uh 30
+[467.88s] minute skill session work on it early
+[470.76s] right we're talking in early March the
+[472.96s] election is still many months away even
+[474.96s] the primaries so you have the time now
+[478.24s] to just and I know we're all super busy
+[480.92s] and stretched thin in our newsrooms
+[482.40s] these days but even if you can find a
+[484.28s] little time to go to these websites
+[486.64s] click around on them a little see if you
+[488.20s] can get the hang of it pick some
+[489.80s] prominent politician in your
+[491.12s] jurisdiction look them up find the data
+[493.16s] see if you understand it and if you
+[494.72s] don't that's okay that tells you you
+[496.36s] need to start learning um so some of the
+[500.00s] key numbers I would always look for are
+[503.00s] um I guess I'd called them three
+[504.12s] different numbers cash on hand so think
+[506.44s] about as like the politicians bank
+[508.16s] account for their campaign
+[509.96s] um you know you and I know if we opened
+[511.28s] our checking account today there'd be x
+[513.04s] amount of money in there not much
+[514.40s] because we're journalists right but
+[515.56s] there'd be some amount in there the
+[517.48s] campaign has some amount of cash as of
+[519.68s] the most recent date when all was said
+[521.36s] and done they got some money they spent
+[523.00s] some money they had that much cash then
+[525.88s] for each reporting period which is often
+[528.40s] quarterly though it can speed up uh
+[530.44s] leading up to an election and they have
+[531.76s] to report more frequently they'll tell
+[533.56s] you how much came in and how much went
+[534.88s] out so uh for the last quarter in Rhode
+[537.64s] Island and Massachusetts uh mass does
+[540.20s] monthly in some cases so I'll stick to
+[541.48s] Rhode Island for the last quarter in
+[542.76s] Rhode Island from October through
+[544.64s] December I can look up okay Governor Dan
+[547.20s] mck took in you know hundred something
+[549.48s] thousand do and he spent let's say
+[551.80s] $50,000 I'm making that up so I know 100
+[554.76s] something came in were donations and 50
+[557.48s] something went out to the various
+[558.64s] expenditures so those three numbers how
+[560.72s] much cash was left you kind of think of
+[562.08s] it in this order how much money came in
+[564.24s] how much money went out and how much was
+[566.60s] left in the bank account at the end
+[568.08s] because if you only raise 50,000 and
+[570.28s] spent 20,000 in a quarter but you're
+[572.16s] sitting on 2 million because you've
+[573.36s] raised it in the past that's just as
+[575.48s] important maybe more important to know
+[577.44s] than the new numbers just for that
+[578.84s] quarter the money in and out so it's
+[580.64s] it's just a bank account like any other
+[582.04s] bank account it just has a lot going on
+[583.68s] in it so think about that also don't
+[586.08s] forget outside groups right um
+[588.72s] especially nowadays with Citizens United
+[590.68s] and super Pacs um there's all different
+[593.64s] ways that independent groups can come in
+[595.56s] and influence the elections they all
+[597.08s] have to report in different ways
+[598.24s] depending on your jur ition so also
+[600.40s] learn where to look in rhod Island for
+[601.96s] example there's a whole different system
+[604.04s] for independent expenditures to get
+[605.92s] filed it's just like PDFs uh unlike the
+[609.32s] candidate accounts complicated this is
+[611.56s] why you do your homework early on this
+[612.92s] stuff and when I say do your homework
+[615.16s] don't be afraid to ask for help right um
+[618.36s] you know it's not just sitting there
+[620.08s] clicking around feeling overwhelmed and
+[621.72s] Confused that won't do you any good um
+[623.96s] ask colleagues if you have people in
+[625.44s] your Newsroom who've learn for Tim White
+[627.56s] taught me the r Island system when I got
+[629.08s] to wpr years ago um ask the staff of the
+[632.92s] elections offices whichever one you're
+[634.36s] talking to they're often very nice
+[635.88s] they're helpful they appreciate their
+[637.12s] reporter wants to get things right um
+[639.44s] also think about groups that are
+[640.72s] familiar with it um common cause in
+[643.08s] Rhode Island uh is keeps very close
+[646.28s] watch on the uh system John Maran who's
+[649.44s] their longtime Chief at common cause
+[651.00s] Rhode Island knows that system backwards
+[652.60s] and forwards it's always willing to help
+[653.80s] a young reporter learn and nav how to
+[655.52s] navigate it so ask for help don't don't
+[657.72s] be afraid to do that that's what we do
+[659.36s] when we writing our stories same thing
+[660.52s] when you're doing your research all
+[662.68s] right so thinking about basic stories on
+[666.32s] spending um once again as we talked
+[669.00s] about in the last sessions track the
+[670.68s] deadlines right there's some set
+[673.00s] deadlines yet again politics a lot of
+[675.16s] election coverage You can predict so
+[677.68s] find out where do they keep the master
+[679.52s] list of when everybody has to report
+[681.48s] once again it's all different your state
+[682.92s] deadlines are going to be different from
+[684.08s] your federal ones so put in your
+[685.56s] calendar wherever you keep track of
+[686.96s] stuff State reporting deadline federal
+[689.64s] reporting deadline boom you know you can
+[691.44s] go in that day or the day after and
+[693.76s] check how much money all the politicians
+[695.72s] you cover taking in or or paying out and
+[698.08s] how much cash they had um when you're
+[700.92s] looking um you know the details of these
+[703.56s] reports can give you whole stories so um
+[706.32s] obviously what are they spending the
+[708.08s] money on especially if you're out of
+[709.40s] cycle you know if you see a candidate um
+[711.84s] cutting a lot of checks to law firms H
+[714.32s] do they have a legal problem you don't
+[715.52s] know about I should ask I should see if
+[717.12s] I can find out um it are they you know
+[720.44s] cutting huge checks to some uh
+[723.08s] consultant you didn't know who's
+[724.32s] controversial maybe that's in there uh
+[726.44s] same thing with the donations who's
+[728.56s] giving them money who's giving the big
+[730.36s] checks right who's who's donating the
+[732.36s] maximum amount if anybody anyone you
+[734.28s] recognize anyone powerful any company
+[736.76s] where lots of employees gave money any
+[738.72s] day when a lot of money came in that
+[740.16s] might tell you when there was a
+[741.36s] fundraiser um all of that stuff is
+[744.60s] important also think about their burn
+[746.68s] rate especially when you're getting
+[748.16s] close to the election so what what do I
+[750.68s] mean by that this was taught to me by a
+[752.04s] political operative years and years ago
+[754.12s] so every quarter as I said it's it's
+[756.32s] like a small business they take in x
+[758.32s] amount of donations and they pay out x
+[760.04s] amount and expenses for the campaign
+[762.16s] well if you take the expend let's say
+[764.88s] they brought in $200,000 in donations
+[767.28s] and they spent
+[768.44s] $150,000 well on net they only added
+[772.28s] $50,000 um on net for that quarter
+[774.60s] because they spent so much money the
+[775.84s] politician whereas if somebody else took
+[777.80s] in $150,000
+[779.64s] less than our first candidate there but
+[781.72s] only spent 20,000 they cleared a lot
+[784.40s] more and they have more left over for
+[785.88s] later so that matters to that can tell
+[787.56s] you if a candidate's like burning a lot
+[788.92s] of money or not um same thing with the
+[791.72s] outside groups who's behind them what
+[793.76s] are they spending on if you can't find
+[796.00s] out that's a story too right a secretive
+[798.36s] group that I can't find an address for
+[800.68s] is spending money and I bet the campaign
+[802.84s] that's their target would at least say
+[804.36s] something um so you can try to find out
+[806.76s] who it is where they got their money and
+[808.16s] if you can't find that out you you can
+[809.24s] at least tell everyone we're trying and
+[810.92s] this is this is pretty secretive um yet
+[813.44s] again learn this stuff early it will pay
+[815.92s] dividends for you later when you're
+[817.20s] super busy during the election campaign
+[819.84s] so that's campaign spending and I should
+[821.80s] say uh if anybody has questions put them
+[823.52s] in the chat um we'll leave a few minutes
+[825.52s] for questions at the end you're
+[827.12s] journalist so I hope a couple of you
+[828.64s] will throw a question at me because
+[830.28s] that's our whole job right let's turn to
+[832.40s] polling now on the one hand uh polling
+[836.48s] is not something you're going to
+[837.88s] encounter in a lot of re right most
+[841.20s] small towns are not going to have polls
+[843.36s] for their Board of Select their select
+[845.00s] board or their mayor or whatever um but
+[847.92s] if you get to a Statewide race it's
+[849.52s] certainly possible you'll be dealing
+[850.84s] with polls and same with Federal races
+[853.80s] um some a lot of people are very down on
+[856.20s] the polls some people have this sort of
+[857.40s] knee-jerk oh you can't trust the polls I
+[860.20s] trust the polls not every poll um and
+[863.08s] not I trust the poll for what it is a
+[865.52s] snapshot in time with a margin of error
+[868.56s] that you need to be Savvy about
+[870.60s] interpreting so if a poll comes out and
+[872.88s] says such and such candidates Up by Five
+[875.00s] Points and there's a four point margin
+[876.80s] of
+[877.52s] error I care less about the exact
+[879.96s] they're up five points than the big
+[882.00s] picture it tells me this is a somewhat
+[884.20s] close race where one candidate might
+[886.24s] have a small Edge but if a poll comes
+[888.20s] out and shows somebody up 20 or 25
+[890.00s] points I say okay this thing ain't close
+[892.56s] because even if this poll's a bit off
+[894.76s] their respondents were hugely in One
+[896.60s] Direction so somebody's definitely a
+[898.12s] favorite here um I think polls are
+[900.84s] important partly because they actually
+[902.12s] counter conventional wisdom in
+[903.56s] journalism right sometimes we think
+[905.92s] everyone thinks X and then a poll comes
+[907.96s] out and we realize oh the reporters were
+[909.48s] interpreting the public mood wrong and
+[911.56s] that that's important that we have that
+[913.40s] so we can fight the conventional wisdom
+[915.76s] um of course there are many negatives to
+[917.44s] polling which is why they sometimes get
+[918.68s] a bad rap bad polls can pollute the
+[921.24s] discussion um many reporters are kind of
+[924.36s] innumerate and don't know how to
+[925.84s] interpret polls which means their
+[927.24s] stories don't get the thrust of it right
+[929.04s] they don't contextualize them um but
+[931.64s] that's not really the fault of the poll
+[933.52s] that's the fault of the reporter which
+[935.00s] is something means it's something we can
+[936.44s] fix um and the other thing is it's it's
+[939.96s] gotten so expensive to do a quality poll
+[941.84s] now which is why we're getting fewer and
+[943.20s] fewer polls and fewer and fewer good
+[944.88s] polls um which is a Pity but is what it
+[947.80s] is um so that's why it's important you
+[949.60s] get smart about all this that you
+[951.68s] understand what you're looking at and be
+[953.08s] a Savvy consumer of polling data so you
+[955.52s] can serve your readers or viewers better
+[957.68s] um when you're writing about polls
+[960.16s] so how do you vet a poll well first you
+[962.88s] start with the most basic thing right
+[964.32s] who sponsored the poll who paid for it
+[966.32s] was it an independent group was it a
+[967.88s] media Outlet was it a campaign was it a
+[970.60s] a a theoretically independent outside
+[973.04s] group that actually is trying to put its
+[974.40s] thumb on the scales even then to be
+[977.20s] clear I don't necessarily take an
+[978.60s] outside groups poll I mean and throw it
+[980.64s] away immediately I keep looking at it to
+[982.64s] see if I trust it or not um but I do
+[985.48s] want to know that and know where they
+[987.24s] start from then separate often the
+[989.72s] person who pays for the poll is not the
+[991.36s] person who was the pollster the actual
+[993.32s] conductor of the poll who made the calls
+[995.52s] who or sent the text or whatever so not
+[997.80s] just who sponsored it who actually
+[999.52s] conducted it what's their reputation you
+[1001.72s] know Google them is are there stories
+[1003.40s] about how this pollster is always wrong
+[1004.72s] out there you should know that um or
+[1007.08s] maybe you find they did well that's
+[1008.72s] that's good to know too um on the
+[1011.00s] numbers what's the margin of error thee
+[1014.32s] uh is this huge margin of error eight or
+[1016.00s] nine points that's a red flag but is it
+[1018.28s] a normal 3 four five point margin of
+[1020.80s] error that's kind of what you expect um
+[1023.08s] with a poll so that's okay what was the
+[1025.36s] methodology how old is the poll when was
+[1027.56s] it conducted was it done by telephone
+[1029.96s] landline used to be the gold standard
+[1032.12s] that's changed a bit because no one
+[1033.20s] picks up their landline um if it was
+[1035.80s] just landline that's a big red flag
+[1037.40s] right now because so many people don't
+[1038.48s] have a landline anymore was it landline
+[1040.28s] in cell phone was it landline in text
+[1041.84s] was it all online you want to know that
+[1044.08s] and you want to say that in your story
+[1046.68s] um I'd also just say don't forget the
+[1049.16s] test if a poll comes out showing Joe
+[1052.08s] Biden up 15 points over Donald Trump
+[1054.44s] nationally I'd be pretty skeptical um
+[1057.16s] that that's true just because there's
+[1058.28s] been no other evidence that that's
+[1059.52s] what's going on it's not how his
+[1060.60s] campaign is behaving it's not what the
+[1061.96s] other polls show so you don't want to
+[1063.44s] just wide-eyed pass that along as if
+[1065.28s] it's gospel truth um you want to say an
+[1067.40s] outlier poll came out today if you even
+[1069.56s] decide to cover it um don't sort of get
+[1073.60s] yet don't don't put away your own
+[1075.08s] judgment um when you see a poll and be
+[1077.56s] transparent in your writing about the
+[1079.24s] poll right um be careful as I said about
+[1081.76s] hyping an outlier poll um you know you
+[1084.68s] want to have a clear paragraph if you're
+[1086.24s] writing about a new poll that shows the
+[1088.00s] governor up 10 points over his or her
+[1090.12s] Challenger and every other poll is shown
+[1092.16s] him or her down or tied you want to say
+[1095.16s] it's the first poll on the poll is an
+[1096.96s] outlier or the poll is a market
+[1099.12s] difference from other recent polls which
+[1100.68s] had all shown a much tighter race tell
+[1102.92s] the viewer that you know tell the reader
+[1104.56s] that because so that they know that this
+[1105.92s] is unusual information and you're being
+[1107.48s] clear about it also L saves you if the
+[1109.64s] poll was
+[1111.04s] wrong um okay last thing and then we'll
+[1113.36s] go to questions because I want to keep
+[1114.96s] an eye on everybody's time um Oppo we
+[1118.44s] call it political reporters opposition
+[1120.68s] research um this is the negative
+[1122.72s] information about an opponent that can
+[1124.80s] be sometimes pedal by a different rival
+[1127.60s] campaign to reporters in an effort to
+[1129.32s] get news coverage of that
+[1131.00s] information um it's a fact of life you
+[1134.00s] know uh it's you know it's it's just
+[1136.96s] part of politics um it's natural that
+[1140.08s] one side wants to get bad information
+[1141.76s] out about the other side and would love
+[1144.20s] to not have their fingerprints on it if
+[1145.80s] they can um don't be too don't clutch
+[1149.12s] your pearls about that fact of life just
+[1151.56s] again be sophisticated and smart and
+[1153.80s] adult about it in how you handle that
+[1156.08s] information um you know there's
+[1158.04s] something to be said for getting new
+[1159.44s] information out if it's true which again
+[1161.48s] goes to our job as reporters once we
+[1163.44s] hear about this information to vet it to
+[1165.72s] see if it's true to see if it's
+[1167.48s] contextualized um other campaigns rival
+[1170.24s] campaigns can be your allies maybe
+[1172.00s] you're looking into something about a
+[1173.44s] candidate that is alarming or
+[1175.68s] questionable you know depending on your
+[1178.04s] level of trust in a rival campaign you
+[1180.12s] can certainly ask have you heard
+[1181.40s] anything about this anyone I should call
+[1184.00s] um that's just part of politics right
+[1186.56s] people know things you are always trying
+[1187.92s] to vet information from as many
+[1189.72s] different uh sides as you can now be
+[1192.00s] careful when you you don't want to be
+[1193.80s] the one who passes along bad information
+[1195.76s] about one candidate to another campaign
+[1197.32s] so again be really thoughtful about that
+[1199.44s] but just think about how you can use all
+[1202.56s] the resources you have including rival
+[1204.16s] campaigns to serve the people you're
+[1206.32s] meant to serve readers and viewers and
+[1208.28s] give them accurate information about
+[1209.64s] these candidates you're supposed to be
+[1211.08s] vetting um other campaigns of course
+[1214.16s] will have motivations for putting
+[1215.64s] information out but every Source has a
+[1217.76s] motivation right as we always talk about
+[1219.80s] there are very few clean as a whistle
+[1222.44s] totally pure-hearted people um giving
+[1225.32s] information to reporters um they often
+[1228.20s] have aore to settle they are upset about
+[1230.88s] something and they want to see it come
+[1232.20s] out that's just part of our job um and
+[1235.32s] so you can't don't be too uncomfortable
+[1237.92s] with that just be Eyes Wide Open about
+[1239.88s] it and remember that that only makes it
+[1241.72s] more incumbent on you to fully vet any
+[1243.52s] tips or other information you get from
+[1245.32s] someone who clearly has an agenda and an
+[1246.96s] acts to grind um the first question is
+[1249.36s] is it true um and then is it newsworthy
+[1251.68s] but is it true comes even before that um
+[1254.64s] so treat opposition research like any
+[1256.32s] other information you get um be careful
+[1259.16s] about it um apply your same tests of
+[1261.68s] newsworthiness right um if if you'd
+[1264.08s] heard this some other way would you have
+[1265.56s] reported it um are the facts true are
+[1268.00s] the facts important at that point the
+[1269.88s] source is a side issue if someone's
+[1271.56s] brought something to your attention
+[1272.80s] that's important about a rival candidate
+[1275.16s] the fact that it came from someone else
+[1276.84s] even the fact that you can't disclose
+[1278.24s] that if that's the terms of your um
+[1280.96s] Source on something you know that's
+[1283.76s] that's journalism that's how we do this
+[1285.84s] um you just don't want to ever be a pawn
+[1288.08s] don't be a sap don't get pressured into
+[1290.28s] running something you're not sure about
+[1291.80s] or anything like that you have to and be
+[1293.64s] upfront with the person trying to get
+[1295.20s] you to write about something say I don't
+[1296.72s] know about this you know I'm going to
+[1297.84s] have to vet this fully because I know
+[1299.64s] why you're telling me about it and I
+[1301.00s] certainly don't want to be unfair to the
+[1302.28s] other candidate either um but you know
+[1305.36s] be clear I'm interested in this so don't
+[1306.76s] keep shopping it around either if you're
+[1308.08s] trying to get um an exclusive on
+[1309.84s] something and by the way you can always
+[1311.12s] tell them if you're not sure about
+[1312.04s] running a story and something say Hey
+[1313.56s] you rival candidate you always have the
+[1315.40s] right to put it out yourself um you
+[1317.52s] could issue a news Le today um you know
+[1320.44s] so it's it's not all on you the reporter
+[1322.40s] and don't feel pressured um to put
+[1324.76s] something out if you're not sure about
+[1325.92s] doing it trust your gut talk to your
+[1327.48s] editors and managers um you know but
+[1330.32s] also don't just dismiss it out of hand
+[1331.88s] because it came from another another
+[1333.88s] campaign um I think that's it yeah so
+[1337.20s] those are my three thoughts for today on
+[1338.80s] campaign reporting 102 um I don't know
+[1341.64s] if there's anything in the chat I was
+[1343.12s] hoping we get a question or two but um
+[1345.52s] Justin I'll let you chime in and tell me
+[1346.96s] if we have anything uh what one of our
+[1348.84s] attendees says I think the hardest part
+[1350.72s] about this is how to relate it to the
+[1352.60s] reader there are so many examples as you
+[1354.96s] said of the story being number heavy but
+[1357.52s] no one cares so how can we relate it
+[1360.28s] better to our
+[1361.60s] audience it's hard right um it's hard I
+[1366.20s] think some of it is some of it is you
+[1370.08s] have to have some confidence and you
+[1372.04s] have to have I don't want to say take
+[1374.08s] risks because I don't want to say we're
+[1375.36s] doing something that we don't think is
+[1376.72s] true or anything like that but you know
+[1378.64s] you have to be willing to put yourself
+[1380.28s] out there and write boldly right um if
+[1384.52s] you're writing up campaign Finance
+[1386.20s] documents and you've gone through the
+[1388.44s] numbers you've done your homework and
+[1389.96s] you find that one candidate is spending
+[1392.08s] money at an inordinate rate compared to
+[1394.12s] the others that's your lead uh if you
+[1396.88s] soft pedal it and just say new campaign
+[1398.92s] Finance reports show the race for
+[1400.36s] governor is really heating up and then
+[1402.52s] six paragraphs down or you know a minute
+[1404.48s] into your story you quietly mention oh
+[1407.20s] such and such candidate spent a million
+[1409.48s] dollars last quarter um in an effort you
+[1412.52s] know to rightsize their campaign well
+[1414.12s] then you made it more boring than you
+[1415.36s] had to right so um you've got to find
+[1418.84s] the story in the data or the numbers and
+[1421.68s] then tell that don't get B you have to
+[1424.56s] learn the numbers and vet them yourself
+[1426.96s] and then come back out you know lift
+[1429.24s] your head out of the water of the
+[1430.40s] numbers and tell people a real story an
+[1432.96s] actual story with voices with good
+[1435.52s] quotes Etc um that that might sound like
+[1438.16s] a basic response but I think it's easy
+[1439.88s] to forget that when you're drowning in
+[1441.20s] poll numbers and campaign spending data
+[1443.24s] you're looking for you're always looking
+[1444.68s] for a story a real story with a hook
+[1447.28s] something people want to tell people
+[1448.60s] that never changes so that's that's my
+[1450.36s] thought on that but you're right that
+[1451.32s] it's a
+[1452.36s] challenge thank you Ted appreciate it
+[1454.60s] these are all excellent tips really
+[1456.72s] grateful for your time today and a big
+[1459.52s] thank you to everyone who joined us if
+[1461.68s] you found today's class helpful in any
+[1463.48s] way please consider becoming a
+[1466.00s] sustaining member of neac at knac.com
+[1468.44s] org
+[1469.28s] /join your annual support is what helps
+[1471.72s] us provide classes like this one so to
+[1474.48s] all of you Ted thank you again and we'll
+[1477.20s] see you next month for our next 30
+[1479.24s] minute skills take care thanks everybody

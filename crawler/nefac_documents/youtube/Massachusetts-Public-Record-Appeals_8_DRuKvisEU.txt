@@ -1,0 +1,920 @@
+[5.12s] i'm justin silverman of the new england
+[6.80s] first amendment coalition
+[8.64s] thank you for joining us for this series
+[10.64s] on state public record laws and the
+[12.24s] federal freedom of information act
+[14.64s] these lessons are brought to you by
+[16.24s] nefac with help from the society
+[18.08s] professional journalists foundation
+[20.16s] muckrock sbj new england and the new
+[22.80s] england society of news editors
+[25.28s] each lesson is a continuation of
+[27.28s] previous classes so if you haven't
+[29.04s] already please visit nefac.org
+[32.80s] foi guide
+[34.64s] you'll find their growing library of
+[36.48s] video tutorials and other freedom of
+[38.48s] information resources
+[40.40s] thank you again for joining us
+[42.32s] now here's nefax emily sweeney to
+[44.48s] introduce you to our instructor hi
+[46.64s] everybody i'm emily sweeney from the
+[48.32s] boston globe i want to thank you all for
+[50.48s] joining us for this webinar which is a
+[52.88s] part of nephac's ongoing series on
+[55.20s] public records laws
+[57.44s] this session will focus on the appeals
+[59.52s] process in massachusetts and what you
+[61.52s] can do to fight back when your records
+[64.00s] request is denied in the bay state and
+[66.16s] with us is john albano and john's a
+[69.28s] partner at morgan lewis and it whereas
+[71.28s] practice is focused on commercial media
+[73.44s] and appellate litigation as well as
+[75.44s] representing newspapers entertainment
+[77.44s] and news broadcast news broadcasters and
+[80.16s] publishers
+[81.36s] so john thank you so much for joining us
+[83.60s] today i'm glad to be here
+[86.40s] um
+[88.24s] the topic here was uh how to deal with
+[91.84s] problems basically with um
+[94.48s] public records requests
+[96.40s] and i i i kind of group the common
+[100.16s] problems into two categories they're
+[102.32s] probably more but the two i see the most
+[104.56s] are
+[105.36s] sometimes there's
+[106.96s] an agency or a municipality that just
+[110.08s] is overly aggressive on
+[112.72s] exemptions you know
+[114.72s] that oh this document
+[116.96s] doesn't fall within
+[118.72s] the public records law you know these
+[120.64s] people think everything's private
+[123.04s] everything's a personnel record or
+[125.76s] everything
+[127.28s] might prejudice and investigation
+[129.76s] those are kind of
+[131.28s] legal battles of you know that that end
+[134.08s] up as we'll talk about in front of the
+[136.08s] supervisor of records and sometimes in
+[139.04s] court
+[140.32s] um
+[141.20s] the second group of problems that i
+[143.68s] think
+[144.56s] maybe is even
+[146.88s] more um
+[149.04s] uh
+[150.00s] problematic
+[151.36s] are
+[152.32s] the
+[154.08s] custodians that say it's too much
+[158.00s] you ask for too much it's too hard
+[161.28s] um
+[162.64s] you're uh it'll cost a fortune because
+[165.52s] what you've asked for
+[167.60s] has both public records and things that
+[170.80s] are statutorily private so i gotta have
+[173.20s] a lawyer go through it and separate it
+[176.40s] and
+[177.44s] um
+[178.56s] and and so i want to talk about at least
+[180.88s] an
+[182.00s] approach
+[183.20s] to trying to deal
+[184.88s] with those kinds of
+[187.28s] problems with uh public records requests
+[190.80s] um
+[191.68s] if this really reminds me of you know
+[193.76s] part of being a
+[195.76s] on the litigation side of practicing law
+[198.64s] is um
+[200.96s] you need to
+[202.16s] draft discovery requests and litigation
+[204.88s] and
+[205.84s] so you know you do that from the time
+[207.92s] you first start practicing
+[210.08s] law if you're on the litigation side
+[213.52s] and
+[215.44s] the
+[216.56s] the kind of concerns i think are similar
+[219.36s] that lawyers have on discovery requests
+[222.00s] to what reporters have with public
+[224.64s] records requests because you don't want
+[226.72s] to draft it in a way that you miss
+[229.92s] the important document right it's like
+[232.64s] oh i better
+[234.00s] and and that's just what
+[235.92s] what we do when we're drafting discovery
+[238.56s] requests but the problem is you know
+[240.88s] there's a lot of motion practice and
+[243.12s] litigation over this
+[244.80s] is the uh receiving side says in
+[247.44s] litigation
+[248.64s] sounds a lot like what the agency says
+[251.28s] like whoa whoa whoa this is way too much
+[253.84s] i can't you're asking for too much this
+[255.92s] is this is
+[257.28s] uh not properly phrased or it'll take me
+[259.84s] years to do it um so i was gonna show
+[264.24s] one
+[265.92s] example
+[267.12s] there's you know this could be a
+[268.88s] document request or a public records
+[270.72s] request right
+[271.92s] all documents relating to the fiscal
+[274.96s] 2022 budget including without limitation
+[278.32s] all emails
+[280.08s] well what some what happens in these
+[283.04s] cases often is
+[285.36s] some
+[286.88s] wise guy says well what is relating to
+[289.92s] me
+[290.88s] yeah i mean that every check we write
+[293.12s] relates to the budget every invoice we
+[295.92s] receive
+[296.88s] and what about the 2021 budget that
+[299.04s] relates to the 2022 budget and you want
+[302.16s] all emails from everybody
+[304.40s] uh
+[305.36s] for from when from the beginning of time
+[308.24s] and and so i think just
+[310.40s] as with
+[312.00s] discovery requests public records
+[314.72s] requests it's sometimes worthwhile to
+[317.76s] just stop i think it's always worthwhile
+[320.32s] to stop and say
+[322.40s] can i without risking
+[324.64s] missing something
+[326.32s] can i can i get this another way you
+[329.60s] know it's it's really about saying well
+[332.56s] what can i can i say
+[336.24s] all documents that you relied on in
+[339.12s] preparing the budget
+[340.96s] does that
+[342.16s] am i going to miss anything key there
+[344.32s] um
+[345.20s] they're going to say oh all emails we
+[347.12s] have to search all custodians you know
+[349.60s] custodians every everybody that's got an
+[352.00s] email um so
+[355.28s] you know maybe we can identify
+[358.00s] who the likely candidates are that we're
+[360.56s] most interested in and and put a time
+[363.12s] frame
+[364.16s] so that we're able to to you know revise
+[366.96s] it to say
+[368.24s] all all documents relied upon and
+[371.20s] preparing that year's budget including
+[374.56s] all emails from x date to y date to and
+[378.48s] from these people
+[380.48s] at least you're you're kind of in the
+[381.92s] game then it gives them makes it harder
+[384.32s] for them to say oh my god what how how
+[387.28s] are we gonna
+[388.32s] um deal with this
+[390.48s] the other thing i'm a big proponent on i
+[392.64s] know it's hard to do and it's not always
+[394.64s] time to do it and they're not always
+[396.24s] receptive to it agencies and
+[398.48s] municipalities but
+[400.40s] yeah if you can get some kind of a
+[402.72s] dialogue going with the custodian
+[404.80s] sometimes it's impossible right they
+[406.64s] don't want anything to do with you
+[408.80s] but
+[410.00s] it
+[411.44s] as we'll talk about they have an
+[413.12s] obligation to try and cooperate
+[416.16s] to narrow requests to make it easier to
+[419.44s] comply
+[420.64s] and
+[421.68s] i think it's often wise for us to try
+[425.04s] and build that rapport
+[427.76s] um
+[428.72s] again i get it there's sometimes they
+[430.88s] just there's no way know how
+[433.20s] um and it's frustrating to deal with
+[435.76s] some of
+[437.28s] these people
+[438.64s] but even closing the request with please
+[441.44s] let me know if you have any questions
+[444.32s] and maybe a follow-up phone call
+[447.76s] and just trying to work with them a
+[449.60s] little bit i think it's just human
+[451.36s] nature it's harder
+[453.20s] to say no
+[454.88s] to people
+[456.24s] who are talking to you and kind of you
+[458.48s] know
+[460.16s] working you a little to be blunt about
+[462.88s] it um then
+[464.72s] it is to just say oh i got another email
+[467.68s] from this person i'm just going to
+[468.96s] repeat what i said to the last to the
+[471.04s] last requester and and get it out the
+[473.44s] door
+[474.24s] okay so you make the request maybe you
+[476.64s] do a little follow-up a little
+[477.84s] schmoozing
+[480.08s] what are you supposed to get by way of a
+[481.68s] response how do you know if you're
+[483.36s] getting
+[484.32s] um an inadequate response that gives you
+[487.20s] a right to get a little more aggressive
+[489.92s] about what you're entitled to
+[492.40s] um
+[493.44s] and
+[494.96s] you know everybody knows this right the
+[496.80s] public records law is better than it
+[498.24s] used to be but it's it's
+[500.64s] tough
+[501.52s] it's it's not perfect that's for sure um
+[504.32s] it sounds great right because the law
+[507.44s] says
+[508.48s] you're supposed to get
+[510.40s] within 10 business days of the request
+[514.24s] either a
+[515.68s] your documents
+[517.60s] if the custodian has them and
+[521.28s] and if the fees are paid
+[523.92s] um
+[524.80s] or within 10 days you're supposed to get
+[528.16s] a response that says no
+[530.32s] we're
+[531.36s] we're not going to give it to you
+[533.36s] so so
+[534.48s] let's assume they
+[536.72s] they say
+[538.40s] no
+[539.84s] um first of all
+[543.04s] you're entitled that response within 10
+[544.80s] business days so if there's no response
+[546.56s] you got to go back and say hey it's been
+[548.72s] 10 business days can i can i get a
+[551.28s] response and again
+[553.20s] i think
+[554.16s] um
+[554.49s] [Music]
+[555.84s] i mean i definitely know this doesn't
+[557.28s] work because i i all the time
+[559.68s] because i've been working a
+[562.32s] clerk schmoozing for about three weeks
+[565.68s] with no results whatsoever so i know it
+[568.16s] doesn't always work but sometimes it
+[570.72s] sometimes it does
+[572.32s] um
+[572.70s] [Music]
+[574.08s] but um
+[575.36s] what what what should they say what else
+[577.44s] should they say in that response what
+[579.44s] they should say is
+[580.80s] they should if they're withholding
+[582.32s] documents that response is supposed to
+[584.64s] tell you
+[586.24s] here's what we're withholding and why
+[589.12s] um and they're supposed to list the site
+[592.16s] the exemption that they're relying
+[594.64s] that's key you're entitled to know are
+[596.24s] they saying it's private are they saying
+[598.16s] there's some statutory prohibitions
+[600.56s] sometimes there is right there's some
+[602.40s] you all know that there's some
+[604.00s] educational records that can't be given
+[606.00s] out there's some
+[607.60s] medical records that have
+[609.84s] special statutory prohibitions
+[612.64s] um so they're supposed to tell you why
+[616.08s] if they're saying it's just too
+[618.08s] burdensome
+[619.60s] they're supposed to explain why
+[622.48s] and again that gives you a chance to get
+[624.48s] back with them and talk about well how
+[626.80s] about this how about that but they can't
+[628.64s] just say you've asked for too much
+[630.40s] they've got to explain to you we looked
+[633.04s] there's you know
+[634.64s] 10 000 documents that arguably fall into
+[637.28s] this we we're just not going to be able
+[639.20s] to do it that needs to be in the letter
+[642.32s] that you get within 10 days
+[645.36s] sometimes they don't have the records
+[647.28s] right they just said sorry we don't have
+[648.96s] that stuff
+[650.32s] they're obligated then if they know it's
+[652.96s] another agency so if you ask you know
+[656.24s] dds and it's actually
+[658.64s] you know um dys that has those records
+[662.48s] they're supposed to tell you we don't
+[663.76s] have those
+[665.12s] you should
+[666.40s] but you can try this other agency to get
+[669.04s] there
+[670.08s] that's an obligation written clearly in
+[672.16s] the statute
+[673.52s] um they are also supposed to suggest
+[677.92s] any reasonable modification
+[680.72s] that could make them
+[682.40s] able
+[683.36s] to give you what you need
+[685.52s] and again this is an opportunity for
+[687.60s] interaction but it's a statutory
+[690.00s] obligation they are supposed to say well
+[692.32s] you know yes for this but i i could give
+[694.88s] you this would that work what else are
+[696.96s] you looking for so there the statute
+[699.12s] really anticipates a kind of back and
+[701.36s] forth here
+[702.80s] um
+[704.00s] you're also entitled to a good faith
+[706.72s] estimate of what it's going to cost
+[710.00s] um and
+[711.76s] um that will
+[714.48s] that will be very useful because
+[716.64s] sometimes as i'm sure some of you found
+[720.00s] you get a request
+[722.32s] that's you know you get a response
+[724.00s] within 10 days but it's like yeah so
+[726.00s] it'll cost uh 3 500 to get to this and
+[729.68s] it's just like well that's no good but
+[731.92s] if they give you the estimate that gives
+[734.16s] you a basis for pushing back and saying
+[736.40s] well wait a second why why why is it
+[738.24s] going to take this long how about doing
+[740.32s] this how about doing that
+[742.56s] and they are also supposed to tell you
+[746.08s] when a reasonable time is for them to
+[748.72s] get you these documents
+[751.60s] now here the statute is helpful but it's
+[755.04s] harder to enforce the statute reads
+[757.36s] great statute says
+[759.28s] they got to tell you a reasonable time
+[760.88s] frame when the documents will be
+[762.72s] produced but no longer than
+[766.16s] 15 business days after the request if
+[769.68s] it's a state agency or 25 business days
+[774.64s] after the request
+[776.32s] if it's a municipality
+[778.40s] so
+[779.84s] you know the statute's great that's you
+[781.60s] know they're supposed to do it as soon
+[783.12s] as they can but but
+[785.52s] if if it's burdensome enough then the
+[787.92s] statute says okay if it's burdensome
+[790.24s] we'll let you go out to 15 days if
+[792.00s] you're an agency municipalities you have
+[794.24s] fewer resources so you get 25 days
+[797.20s] and if they can't do that
+[800.48s] they have only one other option and they
+[802.56s] for some reason they often don't
+[804.48s] avail themselves of this
+[806.32s] they can get a little bit more time
+[808.56s] if they go to the supervisor of records
+[810.72s] now i've used that i assume most of you
+[812.64s] are familiar with so the secretary of
+[814.40s] state's office has responsibility for
+[816.80s] the public records law there's a unit
+[819.12s] within the secretary of state's office
+[821.60s] that's the supervisor of records and
+[824.16s] there
+[825.44s] i say this in air quotes and enforcement
+[828.08s] unit
+[829.04s] of um the public records law
+[832.00s] but an agency and a municipality can say
+[833.92s] uh you know i met my 15 days i met my 25
+[837.04s] days
+[838.40s] i need a little more and the statute
+[840.64s] says oh okay if the supervisor says
+[843.44s] you're entitled
+[845.84s] um
+[846.88s] then agencies can get another 20 days
+[850.56s] and municipalities can get another 30
+[853.12s] days if they can demonstrate that they
+[855.44s] really need it
+[859.68s] now
+[861.20s] let's talk about enforcement
+[863.20s] one positive thing that gives them some
+[865.20s] incentive to respond
+[867.28s] is that
+[868.72s] if they don't give you that response
+[870.32s] within 10 days
+[872.48s] they can't charge you fees
+[875.44s] um so there is a price they pay
+[878.16s] if they don't
+[880.24s] respond to you within those uh 10 that
+[883.52s] 10 business days
+[886.16s] i do think
+[887.84s] not to be cynical but i do think
+[889.68s] sometimes
+[890.88s] that leads them to
+[892.64s] crank out a response that has
+[894.96s] a big fee estimate while they figuring
+[896.96s] out what the hell they're going to do
+[898.24s] with this request and they say well i
+[900.16s] did respond
+[901.76s] so i can charge i just can't charge that
+[904.32s] much
+[905.20s] so you know like i said there's
+[907.92s] problems with enforcement but that's a
+[910.24s] good part of the law at least you're
+[912.16s] entitled to some response and we've
+[914.32s] certainly seen a lot of instances where
+[916.56s] they drop the ball
+[918.00s] they don't get you the response and
+[920.32s] they're out of luck on on the fees
+[923.60s] um
+[924.72s] so let's say that that that
+[927.36s] they get the extensions or they don't
+[929.20s] get the extensions
+[930.88s] and um
+[931.68s] [Music]
+[932.88s] you but you don't have the the documents
+[936.48s] that you need
+[938.88s] um
+[939.84s] again i think it makes sense to try and
+[942.72s] you know keep the lines of communication
+[945.44s] uh for two reasons
+[947.52s] one
+[949.04s] maybe you get lucky and you can get some
+[952.16s] you know some kind of rolling production
+[954.16s] that gets you what you really need
+[956.08s] first
+[957.04s] um that's always worth the effort
+[960.48s] i mean let me back up here right i may
+[962.56s] be this may rub some sometimes it rubs
+[965.44s] me the wrong way it may rub some of you
+[967.44s] the wrong way it's like
+[968.80s] why the hell do i have to schmooze with
+[970.56s] these people when the law says i'm
+[972.88s] entitled to
+[974.16s] i mean you don't have to but i i just
+[976.48s] think
+[977.44s] it sometimes works and so just like when
+[980.16s] you're working with other sources it
+[982.32s] sometimes works so that's why i think it
+[985.12s] should at least be considered
+[987.52s] um
+[988.40s] but if nothing works then here are here
+[991.04s] are the steps
+[992.48s] um
+[994.56s] you can go to the supervisor you can
+[997.44s] petition that i say petition makes it
+[1000.00s] sound like fancier than it is you can
+[1001.92s] send a letter to the supervisor
+[1004.24s] that says
+[1005.84s] uh
+[1006.64s] i've been denied
+[1008.24s] my i haven't gotten any records or i've
+[1009.92s] gotten some but i haven't got what i
+[1011.36s] think i'm entitled to and i think i'm
+[1013.68s] entitled to an order from you from you
+[1016.56s] supervisor
+[1018.08s] directing this agency or municipality to
+[1021.44s] give me these records um
+[1024.80s] if you have access to a lawyer that's
+[1027.20s] that's great
+[1028.72s] to make some legal arguments it doesn't
+[1030.96s] have to come from a lawyer
+[1032.72s] and you know the people in the
+[1034.40s] supervisor's office do know the public
+[1037.28s] records law
+[1038.64s] um so
+[1039.92s] you know
+[1040.88s] they they
+[1041.92s] it's it's not a waste of time don't say
+[1044.16s] oh you know i can't get a lawyer so i'm
+[1046.72s] not gonna bother
+[1048.08s] um it's it's it's worth it doesn't have
+[1050.64s] to be a
+[1051.60s] fancy letter
+[1053.12s] if you get the interest of the
+[1054.48s] supervisor well they'll rule on it they
+[1056.40s] have to rule within 10 days
+[1058.56s] of your appeal
+[1062.24s] they can the supervisor can say
+[1065.68s] i'd like to the agency or municipality
+[1068.72s] i'd like to see those records
+[1071.28s] i'd like to examine them in order to
+[1073.52s] determine if they really are exempt
+[1075.52s] maybe they should be produced that can
+[1078.00s] be very helpful they can you know if
+[1081.20s] it's attorney if the
+[1083.28s] town or agency is saying it's attorney
+[1086.24s] client privilege communications i don't
+[1088.80s] have to produce them
+[1091.60s] they can still show them to the
+[1093.20s] supervisor without losing
+[1095.44s] the privilege but even if they won't do
+[1097.52s] that they don't have to if it's
+[1099.60s] privileged only attorney-client
+[1101.28s] privilege
+[1102.32s] um
+[1104.24s] they the supervisor can say okay well
+[1106.56s] you you custodian have to produce an
+[1109.84s] index
+[1111.12s] that tells me who it's to who it's from
+[1114.56s] general subject matter and give me
+[1116.40s] enough information so that i can
+[1118.24s] determine
+[1119.44s] if your claim of privilege is actually
+[1121.60s] valid or not so you can really make some
+[1123.92s] headway
+[1125.04s] with the with the supervisor
+[1128.00s] um
+[1129.12s] they have the authority that office has
+[1131.36s] the authority
+[1133.04s] to
+[1134.16s] issue and again i'm going to use air
+[1136.56s] quotes in order
+[1138.72s] granting you relief
+[1141.28s] the reason i use air quotes is because
+[1144.56s] these orders are not self-enforcing
+[1148.48s] so
+[1149.28s] the custodian can say
+[1151.28s] yeah okay
+[1152.72s] you say i need to produce it but i don't
+[1155.68s] think so i think it's exempt i'm good
+[1158.16s] i'm holding
+[1159.76s] um and
+[1161.52s] there's nothing
+[1162.64s] automatic
+[1164.40s] that allows you to enforce
+[1167.44s] the supervisor's orders but you have two
+[1170.48s] options
+[1172.24s] that can result in enforcing
+[1174.64s] um
+[1175.36s] one
+[1176.24s] the attorney general's office has a unit
+[1178.88s] public records unit and you can
+[1181.36s] go to the attorney general's office with
+[1184.08s] your supervisors ruling in hand and say
+[1187.36s] hey i still won't get this will you the
+[1189.76s] attorney general
+[1191.20s] bring an enforcement action in superior
+[1193.76s] court
+[1194.72s] to make
+[1196.24s] the custodian produce these records
+[1199.28s] just having the communication between
+[1201.52s] the ag and the custodian might loosen up
+[1204.80s] some somewhere so that's that's often
+[1207.76s] worth it and they have in the last
+[1209.68s] couple years they've they've brought a
+[1211.28s] few uh lawsuits enforcement actions i
+[1214.32s] always think that's a
+[1217.04s] it's not a perfect system because you
+[1219.52s] know the attorney general's office
+[1221.12s] especially with agencies they represent
+[1223.68s] these agencies right the agencies get
+[1225.92s] sued
+[1226.88s] the ag represents them and then they got
+[1228.88s] to turn around and sue the agency when
+[1231.68s] but but it's different people a
+[1233.20s] different unit and again i don't think
+[1235.44s] it's a waste of time
+[1238.00s] the other option you have
+[1240.80s] is
+[1242.48s] but you need a well i suppose you could
+[1244.56s] file a proceeding complaint but usually
+[1247.28s] it would be a lawyer
+[1248.64s] who would file a superior court
+[1251.52s] case
+[1252.72s] asking for an order that the documents
+[1255.36s] be produced
+[1258.08s] that can be
+[1260.16s] on any number of grounds you know the
+[1262.64s] ones that take the longest
+[1264.88s] are the ones where there's some
+[1267.04s] complicated legal issue you know
+[1270.00s] there's some confidentiality statute and
+[1273.60s] does it really apply to these documents
+[1275.92s] and the judge reads the cases and the
+[1277.68s] statutes and it takes a while and the
+[1280.88s] agency appeals
+[1283.04s] others that are more straightforward are
+[1285.12s] an agency is just not complying
+[1288.08s] it's it's not a tough exemption argument
+[1291.52s] complicated legal argument they're just
+[1294.08s] not complying
+[1295.52s] or they're saying
+[1296.96s] they don't
+[1298.48s] have
+[1299.36s] the resources to do it
+[1302.64s] um
+[1305.04s] just bringing that action
+[1307.28s] can be helpful
+[1309.04s] um yeah you might win it you might have
+[1311.28s] to fight through and win it
+[1314.00s] but there's a couple of other um good
+[1317.04s] things about it
+[1318.56s] sometimes after a lawsuit's filed
+[1321.44s] the custodian produces the records
+[1325.12s] if they
+[1327.04s] that's one scenario sometimes they don't
+[1329.28s] produce the records but you fight and
+[1331.44s] you win the case
+[1333.12s] in either of those two circumstances
+[1336.40s] the statute says
+[1338.00s] you're kind of
+[1339.84s] presumptively entitled
+[1341.84s] to your attorney's fees
+[1343.68s] if the supervisor previously ruled in
+[1346.32s] your favor
+[1347.52s] so that's another reason why you know
+[1349.20s] some people say well should i go to the
+[1350.48s] supervisor if i have access to a lawyer
+[1353.20s] maybe i should just sue one reason why
+[1355.68s] some people might go to the supervisor
+[1358.00s] is if you get that ruling from the
+[1359.76s] supervisor
+[1361.20s] and the custodian ignores the ruling
+[1364.24s] and then they either produce the
+[1366.24s] documents after you sue without a court
+[1368.56s] order
+[1369.44s] or you win
+[1371.52s] you can get your attorney's fees uh
+[1374.40s] awarded and your the statute says you
+[1376.72s] you know it's presumptively in your
+[1378.48s] favor
+[1379.44s] um in those circumstances to get a fee
+[1382.56s] award if the supervisor is ruled in your
+[1385.28s] favor so
+[1386.72s] um that's basically the the
+[1390.56s] the enforcement
+[1392.64s] uh mechanism
+[1394.96s] um
+[1396.16s] i and why you can see it some because
+[1398.80s] part of the reason why i'm an advocate
+[1401.20s] for working the phones with
+[1404.88s] um agencies and municipalities is
+[1408.08s] because of
+[1409.52s] that time it takes if you have to go to
+[1412.00s] court
+[1413.12s] to get the records um the supervisor is
+[1416.16s] a relatively quick
+[1418.32s] process i i would encourage people to to
+[1421.20s] try that you know nefac is around if
+[1424.00s] you're you don't have access to a lawyer
+[1426.56s] we'll field questions and try and give
+[1429.12s] you some
+[1430.40s] help along the way so
+[1432.64s] um don't hesitate to to do that
+[1436.48s] um
+[1437.84s] but
+[1438.60s] [Music]
+[1439.92s] if if you don't need a lawyer to go to
+[1442.32s] the supervisor as i said so i think
+[1444.88s] that's that's worth thinking about we do
+[1447.04s] have one question i don't know if you
+[1448.48s] want to
+[1449.92s] get it up first and then we can take the
+[1451.76s] car oh no let's take the question okay
+[1454.24s] um so
+[1455.76s] this person is asking when the
+[1457.20s] supervisor of records is allowing an
+[1459.20s] agency to drag its feet is it better to
+[1461.92s] directly petition the ag
+[1464.00s] or ask the supervisor to petition the ag
+[1467.52s] for example i asked for ia records from
+[1470.88s] state police
+[1472.88s] they produced some redacted records i
+[1475.04s] appealed the supervisor told them to
+[1477.04s] give me a response but it's been over
+[1479.12s] six months with no response and the
+[1480.96s] supervisor has stopped pushing the state
+[1483.60s] police's attorney
+[1487.04s] yeah i i would i would go to the
+[1489.92s] supervisor and ask them
+[1492.48s] if they
+[1493.92s] will go to the attorney general on it
+[1496.88s] if they won't there's no reason why you
+[1499.28s] can't go to the attorney general
+[1502.00s] and say i you know i've got this order
+[1504.64s] and i got nothing i mean i i think an
+[1507.20s] example like that
+[1508.96s] is
+[1509.84s] that's pretty appalling right they got
+[1512.00s] the order and they're just you know they
+[1513.36s] gave you some and they're just they're
+[1515.36s] just done now i guess right they've said
+[1517.76s] well we gave you some stuff we're done
+[1519.68s] we're on to other things
+[1521.44s] um so i i would try both i would
+[1524.56s] say to the supervisor they still haven't
+[1526.64s] complied
+[1527.76s] would you please go to the attorney
+[1529.52s] general's office and you know the ag can
+[1532.48s] really the statute set up the supervisor
+[1534.80s] would go but the ag can do whatever the
+[1536.72s] ag wants to and if they get an interest
+[1539.60s] in your case i i why not why not try
+[1544.88s] um
+[1546.88s] i the the
+[1549.28s] one thing you may run into that's
+[1552.08s] that's
+[1553.36s] happens a fair amount are exorbitant
+[1556.00s] charges
+[1558.00s] they're not supposed to be exorbitant
+[1560.32s] um but they they can run up and it's
+[1563.60s] it's usually if you're
+[1566.00s] if you're asking for
+[1567.84s] big quantities of high volume
+[1570.88s] where
+[1571.84s] people really do have to search through
+[1573.52s] documents and figure out
+[1575.44s] um
+[1576.88s] what's public and and what's not there
+[1579.92s] are some limitations that you should
+[1581.76s] just be aware of in case the agency
+[1584.64s] doesn't do it
+[1585.92s] um
+[1586.96s] and the statutes set up to
+[1590.00s] give municipalities more leeway than an
+[1593.12s] agency so
+[1595.92s] agencies
+[1597.44s] can't charge you for the first four
+[1599.44s] hours of time
+[1601.60s] it takes
+[1602.64s] them to search for
+[1604.48s] you know collect segregate
+[1606.96s] uh records
+[1609.12s] um
+[1611.12s] uh
+[1611.92s] this i hope goes without saying but let
+[1614.00s] me let me say it anyway if there's it's
+[1616.64s] not unusual to have a document that
+[1619.44s] part of it's public and part of it's not
+[1622.16s] um
+[1623.60s] they just redact or black out the you
+[1626.40s] know maybe there's a vic maybe there's a
+[1627.84s] juvenile victim's name
+[1629.68s] um that's gonna get redacted
+[1632.00s] um
+[1633.28s] that's you know that doesn't mean they
+[1635.52s] can withhold the whole document of
+[1636.96s] course they have to just uh separate
+[1640.08s] segregate what's public and what's
+[1642.56s] private but that can take some time
+[1645.28s] and so
+[1646.64s] what the statute says is
+[1650.00s] if they need if an agency needs
+[1653.52s] usually be a lawyer to do that
+[1656.48s] then they have to
+[1658.80s] charge no more
+[1660.80s] than what the lowest paid employee
+[1664.56s] competent to do the job
+[1667.60s] is paid you know just do the math but
+[1670.24s] their hourly rate turns out to except
+[1673.68s] for an agency it can't be more than
+[1676.88s] 25 bucks an hour
+[1679.44s] um and for a municipality it's um
+[1684.08s] a little bit more
+[1685.84s] um no municipality is still
+[1688.72s] 25 bucks an hour but they can start
+[1690.88s] charging after two hours the agency has
+[1693.60s] to give you four hours um
+[1697.20s] a free
+[1698.32s] search and segregation time
+[1700.64s] there is an option for the agencies to
+[1703.60s] try and get more
+[1705.68s] than 25 bucks and by the way it doesn't
+[1707.68s] say you get to
+[1709.20s] 25 bucks an hour the highest they can
+[1711.92s] charge under the statute is 25 bucks an
+[1714.48s] hour um it could be that
+[1717.36s] there's no legal work involved and you
+[1720.16s] know the lowest paid employee
+[1722.32s] hourly rate is much less than that so
+[1725.36s] you can get it for for a lower rate but
+[1727.60s] the highest they can go is 25 unless
+[1730.08s] again they go to the supervisor and say
+[1732.72s] here's what's unusual about this case
+[1735.12s] it's really gonna
+[1736.96s] um cost more and i i saw one a couple
+[1741.28s] weeks ago
+[1742.96s] where
+[1745.20s] the
+[1746.16s] the town said
+[1748.80s] well there's a lot of legal issues here
+[1751.68s] um
+[1752.80s] we're going to have to charge
+[1754.96s] 240 an hour
+[1757.84s] to do the
+[1759.20s] search and segregation and they went to
+[1761.36s] the supervisor
+[1762.80s] supervisor said no no that's that's you
+[1766.48s] haven't justified why uh you would have
+[1768.88s] to charge that much what you know
+[1771.04s] private law firm my charge so
+[1774.48s] again an example of it's worth it
+[1776.96s] to
+[1777.84s] uh go to the supervisor with
+[1781.20s] um
+[1782.24s] these kinds of issues make them your
+[1784.48s] friend too
+[1785.92s] um
+[1788.16s] so um
+[1790.48s] you know that i
+[1792.16s] my worry about the
+[1795.28s] you guys and public records laws
+[1798.16s] are that
+[1801.92s] you end up thinking
+[1803.60s] i'm going to push and push
+[1806.24s] but unless i have
+[1808.40s] a lawyer
+[1810.08s] um
+[1811.04s] i'm not going to be able to
+[1813.12s] force them
+[1814.56s] to do anything
+[1816.24s] um and i i worry about that as
+[1819.36s] is one of the problems with the law but
+[1822.56s] but i am here to tell you
+[1825.60s] first of all lawyers not exactly a
+[1827.36s] panacea because oh great they file a
+[1829.36s] lawsuit and
+[1830.72s] you're
+[1831.60s] you know
+[1833.28s] a year later you're maybe on appeal
+[1835.76s] you've won and
+[1837.76s] they're supposed to expedite them but
+[1839.44s] they don't always expedite them so
+[1842.64s] excuse me um
+[1845.76s] so the
+[1847.84s] going to the supervisor and
+[1850.40s] pushing
+[1851.52s] is really worth it and i guess this
+[1854.24s] isn't an ad for nefac but kneepak is a
+[1857.36s] resource that i hope i hope you'll
+[1860.72s] use because sometimes
+[1862.96s] five minutes on the phone can help
+[1866.48s] guide your way through
+[1868.32s] a problem
+[1869.52s] um
+[1870.48s] and
+[1872.16s] and
+[1872.96s] i i'll come back to where i started
+[1875.68s] which is
+[1878.16s] think about
+[1879.68s] if you're on the receiving end of a
+[1881.52s] request like this
+[1883.68s] um
+[1884.64s] how you would react to it
+[1887.28s] um
+[1888.32s] i i think of it in two ways
+[1890.96s] one
+[1892.72s] i
+[1893.76s] newspapers sometimes get subpoenas right
+[1896.32s] and
+[1897.28s] um
+[1898.40s] it's totally different process
+[1900.48s] but they're asking for documents and my
+[1903.04s] mindset then is always wait a second
+[1905.20s] that's too much we shouldn't have to
+[1906.72s] produce anything that's too much or how
+[1908.56s] the hell am i supposed to understand
+[1909.76s] what they mean by that i'm not i'm not
+[1911.36s] going to respond to that
+[1913.12s] um
+[1914.24s] so that's one thing that makes me
+[1917.28s] um
+[1918.96s] think about the need to carefully plan
+[1921.92s] the actual requests
+[1924.08s] um but the second reason is i'm you know
+[1928.40s] not
+[1929.20s] this is on zoom so i guess you can tell
+[1931.60s] i'm not a particularly young man
+[1933.76s] so i know some
+[1935.68s] people over the years who have worked
+[1937.52s] for the government
+[1939.36s] who
+[1940.24s] actually try and comply with the public
+[1943.44s] records law
+[1945.76s] but get kind of freaked out by the
+[1947.20s] process i gotta you know they're they're
+[1949.68s] caught what what am i how how can i do
+[1951.92s] this i don't have the resources to to do
+[1954.56s] this it's gonna take me forever to to do
+[1957.04s] that we
+[1958.32s] the the the email
+[1960.56s] uh search sucks i i can't get a good
+[1963.52s] vendor the state won't pay for it so
+[1966.40s] that's that's another reason why i say
+[1969.20s] let's work these people and see
+[1972.00s] um if we can get some
+[1973.77s] [Music]
+[1975.20s] relief with a combination of the
+[1977.76s] supervisor
+[1979.12s] and
+[1980.24s] um
+[1981.68s] just what the statute says which is
+[1985.04s] those agencies and municipalities are
+[1987.04s] supposed to cooperate with you so that
+[1989.36s] you can get
+[1990.72s] what you're what you're looking for
+[1992.88s] well john thank you so much
+[1995.36s] for leading this session on appeals
+[1997.76s] thank you everybody in our live audience
+[1999.52s] who joined in and uh be sure to check
+[2002.32s] out our other videos on nefac's website
+[2006.24s] so thank you
+[2007.84s] thanks bye

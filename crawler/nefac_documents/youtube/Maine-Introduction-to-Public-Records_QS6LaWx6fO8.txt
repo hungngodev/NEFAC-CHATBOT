@@ -1,0 +1,783 @@
+[5.20s] hey everybody my name is emily sweeney
+[7.20s] i'm a reporter at the boston globe i'm
+[9.20s] also on the board of the new england
+[11.12s] first amendment coalition
+[13.12s] and i'm here with sig uh shoots to
+[16.72s] talk about maine public records law
+[20.08s] now sig is a partner with pretty
+[22.32s] flaherty
+[23.36s] and in his media law practice he's
+[25.44s] represented the news media and first
+[27.12s] amendment matters
+[28.88s] defamation and privacy state and federal
+[30.96s] freedom of information
+[32.24s] news gathering and cyber law so he knows
+[34.48s] what he's talking about for sure
+[36.72s] uh and you know i want to thank the new
+[39.12s] england chapter of the society
+[40.72s] professional journalists for
+[42.56s] co-sponsoring this webinar and sig thank
+[45.36s] you so much
+[46.16s] for joining us i really appreciate it
+[49.84s] thanks for having me great to be here
+[51.60s] and thanks for the introduction
+[53.76s] um we don't have a whole lot of time so
+[58.00s] i'll just dive right in so i just start
+[61.44s] out by saying this is not the seminar
+[63.44s] to to this is the teaser slide if you
+[66.64s] want to have a seminar or discussion
+[68.40s] about access to public meetings
+[70.24s] which is kind of the other half of the
+[72.40s] the right to know law
+[74.32s] that'll be coming attraction that's
+[77.04s] certainly an incredibly important issue
+[79.20s] um especially during covet it's really
+[81.28s] been tested with remote access to
+[83.04s] meetings emergency meetings and all
+[85.12s] the ad hoc discussions and decisions
+[87.68s] that were made to respond to that
+[88.96s] emergency
+[90.24s] sometimes without a whole lot of public
+[92.08s] notice or public access
+[95.20s] this is the the seminar to talk about um
+[98.32s] you know access to to uh government
+[101.12s] records
+[102.24s] and um i think it's worth just thinking
+[105.12s] about
+[106.72s] what this what the purpose of these laws
+[109.12s] are meant to accomplish which is really
+[111.20s] to to uh to protect
+[114.64s] the public's right to know what
+[115.92s] government is up to and
+[117.92s] to lead ultimately to an informed
+[120.96s] um and engaged citizenry so that we the
+[124.72s] people in fact know
+[126.32s] you know what's being done by our
+[128.88s] elected officials and
+[130.40s] other public officials on our behalf um
+[133.92s] the concept i i like to think about when
+[136.88s] i'm thinking about public records law is
+[138.64s] that
+[139.76s] the you know government the clerk's
+[142.16s] office
+[142.80s] records custodians you know have
+[146.00s] are charged with protecting and
+[147.44s] preserving public records
+[149.36s] but ultimately those are our records
+[152.08s] those are the people's records the
+[153.44s] taxpayers paid to create them
+[155.76s] they ultimately belong to the people and
+[158.72s] you know we the people should have
+[160.24s] access to them
+[162.40s] and without access to information about
+[164.40s] what government's up to
+[165.76s] we're really sunk i mean our system of
+[167.92s] government can't work
+[169.20s] unless we know what what is being done
+[171.68s] and we have an
+[172.24s] opportunity to hold government
+[173.44s] accountable
+[176.96s] so these purposes and i've just run
+[179.04s] through a bunch of slides
+[180.32s] that relate to this issue but these
+[183.12s] purposes are
+[184.24s] written right into maine's right to no
+[185.92s] law called the freedom of access act you
+[188.08s] know the federal statutes the freedom of
+[189.92s] information act
+[191.12s] foia the main statute is foa the freedom
+[193.92s] of access act and the
+[195.36s] purpose of intent to the act is to exist
+[197.92s] in the conduct of the people's business
+[199.60s] and so that government actions are taken
+[201.36s] openly
+[202.32s] um uh and and
+[205.60s] and to to prevent uh non-public or
+[208.40s] clandestine meetings
+[212.24s] so i say you know federal the federal
+[214.16s] act is foia that applies to federal
+[216.08s] records
+[216.64s] maine law applies to main records so if
+[218.40s] you want to find out what the department
+[219.84s] of interior is up to
+[221.36s] or the environmental protection agency
+[223.76s] you've got to look to the federal
+[224.88s] freedom of information act
+[226.24s] if you want to find out what the main
+[228.08s] department of environmental protection
+[231.04s] is up to or the main department of
+[233.60s] health and human resources then
+[234.88s] obviously you're looking
+[235.92s] to maine law the scope of the state law
+[240.16s] is quite broad it applies broadly to all
+[243.92s] state local government bodies
+[247.12s] even quasi-governmental bodies hybrid
+[249.60s] bodies
+[250.16s] counties of course municipalities the
+[253.28s] one carve out the one branch of
+[254.88s] government that is not
+[256.32s] squarely subject to the right to know
+[258.56s] law is is the courts
+[260.96s] judicial records court records are
+[263.20s] controlled by the judicial branch and
+[264.80s] they have their own
+[265.92s] rules and policies that govern access to
+[268.56s] their records now there are some
+[269.84s] statutes as well
+[271.12s] but in general if you want access to
+[272.64s] court records the freedom of uh
+[274.72s] access law is not the place to look and
+[276.64s] there's actually a
+[277.84s] an unreported court case that that says
+[280.08s] so
+[280.88s] um so i just mentioned that as an
+[283.44s] important carve out
+[284.56s] all the other branches of state
+[285.84s] government and local government are
+[287.20s] subject to the freedom of access act
+[290.56s] you know the presumption going in is
+[292.24s] that any record
+[293.68s] related to the transaction of
+[295.12s] governmental business is a public record
+[298.40s] so when i think you know i get a
+[299.68s] question well is this a public record or
+[301.28s] is that a public record
+[302.40s] my answer is well show me that it's not
+[305.52s] if it relates in any way to governmental
+[307.04s] business it's automatically a public
+[308.64s] record
+[309.12s] unless uh there's a specific carve out
+[312.00s] unless there's a specific exemption
+[313.92s] created by statute and i say is you know
+[316.80s] if you're not sure
+[318.00s] you know ask the government agency
+[321.28s] and if they can't cite a specific
+[323.36s] statute that gives them basis a basis to
+[325.52s] withhold access to a record
+[327.20s] it's public now there are a lot of
+[330.96s] exemptions to be sure
+[332.64s] but the presumption of course as i say
+[335.60s] is that it's a public is that
+[336.72s] everything's a public everything's a
+[338.00s] public record so
+[339.36s] property records police blotter
+[341.44s] government contracts
+[342.96s] accident reports budgets bids on public
+[346.32s] contracts
+[347.12s] salaries of government officials expense
+[348.96s] reports calendars
+[350.48s] etc those are all public records
+[354.00s] the format of the record doesn't matter
+[357.20s] so public records include you know
+[360.88s] traditional old-fashioned records in a
+[362.72s] minimal folder in a file cabinet
+[364.72s] but also all electronically stored
+[366.48s] information email
+[368.72s] voicemail even instant messages text
+[371.44s] messages
+[373.12s] social media posts can be public record
+[375.60s] there's actually a main statute
+[377.36s] in title 5 section 1976 that says in
+[380.56s] effect that any document
+[382.32s] created or stored on a state government
+[385.04s] computer
+[385.84s] is a public record subject to the
+[387.36s] freedom of access act you know think
+[389.12s] about that
+[390.24s] you know any record on a state
+[391.92s] government computer and
+[393.68s] although that statute doesn't refer to
+[396.00s] municipal
+[396.80s] or county computers really the same is
+[399.36s] true
+[400.80s] under other provisions of the statute
+[405.20s] how do you get a public record well just
+[407.76s] ask
+[408.64s] um some uh local governments like to try
+[412.40s] to force people to put requests in
+[414.24s] writing that's actually not
+[415.76s] technically required by the right to
+[417.36s] know law you know any person can
+[419.68s] ask to inspect and copy any record that
+[422.00s] can be made
+[423.76s] you know orally that can be made in
+[425.60s] writing
+[426.83s] [Music]
+[428.24s] almost always no reason needs to be
+[430.24s] given to support the request
+[433.04s] and the records can be used for any
+[434.84s] purpose
+[438.80s] exemptions there are a lot of exemptions
+[442.16s] to the right to no law
+[444.08s] that have crept up over time and they're
+[445.84s] sort of scattered throughout maine law
+[447.84s] there's no
+[448.72s] one place that you can look to see okay
+[451.12s] well here's the comprehensive list
+[453.12s] of every type of record that's exempt
+[455.04s] you know over time
+[456.64s] through the legislative process and
+[458.64s] lobbying efforts and so on
+[460.56s] exemptions have cropped up throughout
+[463.44s] throughout maine law
+[464.88s] some of the primary types of records
+[466.80s] that either
+[467.92s] there's limited access to or or no
+[470.56s] access
+[471.52s] um would be things like criminal and
+[474.72s] civil investigative records
+[476.56s] um you know records where there's an
+[478.96s] ongoing
+[479.84s] uh investigation um some types of
+[483.52s] personnel records personnel information
+[485.60s] you know complaints and charges of
+[486.96s] accusations of misconduct
+[488.88s] are confidential under maine law
+[491.44s] although final
+[492.48s] decisions imposing discipline are public
+[494.64s] records under maine law
+[496.16s] under maine law transcripts of 9-1-1
+[498.80s] calls
+[499.36s] are public but audio recordings of 9-1-1
+[502.32s] calls
+[502.88s] like those many of us have listened to
+[505.52s] regarding that south florida disaster
+[508.72s] the the audio recordings under maine law
+[511.28s] are confidential
+[512.80s] some types of labor negotiating records
+[514.96s] are non-public
+[516.48s] medical records tax records not
+[518.72s] surprisingly
+[519.68s] a lot of student records most student
+[521.44s] records are non-public
+[523.52s] legislative working papers are partially
+[525.76s] non-public
+[527.12s] and then business trade secrets um are
+[529.68s] also non-public
+[531.12s] uh and that that can there can there's
+[533.84s] no
+[534.64s] there can be gray area around what
+[536.48s] qualifies as a legitimate trade secret
+[538.72s] and what doesn't that can be troublesome
+[541.28s] um
+[543.04s] how much does it cost to get access to
+[544.72s] public records under the freedom of
+[546.64s] access act well under the act
+[548.64s] inspection of the records is free but
+[551.68s] searching and copying
+[553.20s] there can be a charge for copy charges a
+[556.24s] reasonable fee
+[557.20s] that's not set by statute an audit by
+[560.08s] the main freedom of information
+[561.36s] coalition a few years ago
+[563.12s] demonstrated that there's a wide range
+[566.48s] of
+[566.80s] uh what's considered to be reasonable
+[569.36s] among
+[569.84s] uh state and local government and even
+[573.28s] among state agencies and you think they
+[574.96s] kind of have their act together to
+[576.56s] get on the same page about what a
+[578.08s] reasonable copying fee might be
+[580.88s] they've got some widely varying ideas of
+[583.28s] what it should cost to get a
+[584.64s] photocopy made and i think the best
+[587.84s] idea there is to try to get your request
+[591.12s] responded by email to responded to by
+[592.96s] email and you don't have a per page
+[594.88s] copying fee
+[596.88s] the first hour of search time is free
+[599.20s] but after that by statute
+[601.84s] search time time to find you records
+[604.72s] you've requested
+[605.84s] and compile them as limited to 15 an
+[608.00s] hour
+[609.92s] government is required to provide an
+[611.44s] estimated cost
+[612.96s] to respond to a record and government
+[615.12s] can require
+[616.00s] advanced payment if the estimated cost
+[618.56s] is over a hundred
+[619.76s] dollars excessive fees are a problem an
+[623.92s] excessive fee
+[625.04s] is a constructive denial there's some
+[626.88s] authority on that
+[628.24s] unfortunately you know that means
+[630.56s] appealing the superior court and it's
+[632.16s] also often not cost effective or
+[634.80s] timely to uh to you know to have a major
+[638.24s] litigation over
+[640.32s] you know a marginally excessive cost now
+[642.88s] what i would suggest is if you get a
+[645.12s] cost estimate that's very high is really
+[647.12s] try to look behind it
+[648.48s] and find what's drive find out what's
+[650.24s] driving that cost estimate
+[652.00s] if you're getting a cost that's very
+[655.20s] significant you know
+[656.64s] is there some aspect of your request
+[658.48s] that's potentially being misinterpreted
+[660.56s] or is the scope getting you know over
+[663.20s] broad
+[663.68s] in such a way that's justifying some
+[666.00s] kind of you know
+[667.36s] dozens of hours of trying to locate the
+[669.28s] records you're looking for but
+[671.04s] costs are supposed to be reasonable or
+[673.04s] certainly the public records law
+[674.72s] is not meant to be a profit center for
+[676.80s] government
+[678.00s] you know on the flip side you know there
+[680.08s] is provision for
+[681.36s] some offsetting of the cost of
+[683.12s] responding to a to a public records
+[684.96s] request
+[687.60s] time under the statute
+[690.72s] the foa statute a denial is due within
+[693.36s] five working days so five business days
+[695.92s] after a request is submitted but
+[699.04s] there is no hard and fast deadline for
+[701.52s] access to records
+[703.12s] the statute provides for access within a
+[705.28s] reasonable period of time after a
+[706.64s] request has been made
+[708.16s] you know the thought process there is
+[709.68s] that
+[711.52s] depending on the nature scope of the
+[713.44s] request the amount of time that may be
+[715.12s] required
+[716.16s] to respond to the request even by a
+[718.00s] diligent government official
+[720.16s] can vary so you could have a very
+[722.00s] elaborate extensive request
+[724.56s] that might legitimately take a
+[726.32s] significant amount of time
+[728.80s] on the other hand you could have a very
+[730.32s] you know straightforward request yeah i
+[731.76s] want to see the town manager's
+[732.88s] employment contract
+[734.48s] um that ought to take no time at all i
+[736.40s] would like to see you know the bid
+[737.44s] package for the
+[738.80s] you know grounds contract the town hall
+[741.28s] i mean that ought to be available
+[742.96s] you know almost instantaneously on
+[746.16s] request and some of the
+[747.28s] the concern with putting a deadline into
+[749.60s] the statute by
+[751.44s] transparency advocates like myself and
+[753.36s] others has been if you put in a deadline
+[755.44s] for a response you end up having that
+[758.08s] become the default deadline for
+[759.68s] responding to even
+[761.44s] requests that could could be met much
+[763.92s] more quickly
+[765.52s] but this is a problem because you do see
+[767.76s] some agencies really dragging their feet
+[769.92s] and responding to requests now i like to
+[772.32s] look at this statute as you know there's
+[773.92s] a government
+[774.88s] there's a a a statutory mandate that
+[778.32s] government agencies make available
+[779.84s] public records and it serves
+[781.68s] principles that go to the heart of our
+[784.16s] democracy
+[785.36s] and so you know yes the clerk at the
+[788.56s] desk
+[789.04s] should put aside the crossword puzzle or
+[792.00s] whatever else they've got on their
+[793.28s] agenda from the town manager
+[794.96s] and that minute try to get you know
+[797.52s] public records into the hands of the
+[799.04s] public um
+[800.24s] that said you know this isn't a statute
+[802.64s] that's meant to
+[803.68s] you know put aside every single other
+[805.60s] priority that may be
+[806.96s] you know on on a government official
+[808.88s] shoulders and have them drop everything
+[810.48s] and
+[811.04s] and and manage your request but you know
+[814.88s] anyway that's what the statute says a
+[816.32s] reasonable period of time
+[818.32s] i'm not going to really go into the the
+[821.52s] the ins and outs of a statutory appeal
+[825.28s] i'll just point out that if you
+[827.52s] do get a denial and you want to consider
+[829.60s] legal action you've got 30 days
+[834.96s] but you can restart the 30-day clock by
+[837.04s] asking again
+[838.08s] for the same records so
+[842.16s] shouldn't be a problem
+[845.76s] this slide just is a actually
+[849.20s] directly taken from the main department
+[851.60s] of inland fisheries and wildlife
+[854.00s] foa administrative policy and you can
+[856.00s] actually access on
+[857.60s] my law firm's website pretty.com the
+[859.92s] administrative policies of every single
+[861.84s] state agency because i followed them
+[863.68s] a few years back for all their foa
+[865.68s] administrative policies and we added
+[867.28s] that to our website
+[869.12s] but this gives you a little bit of a
+[870.80s] kind of a sense from the
+[872.96s] standpoint of the recipient of the
+[874.96s] request what they might
+[877.20s] what what their process might look like
+[879.04s] and this is actually supposed to be
+[880.72s] this department's uh process when uh
+[884.24s] when the request you know hits the desk
+[886.32s] of the government official respond
+[888.08s] responsible for responding to these
+[890.08s] requests so they first gotta
+[892.16s] send the response within five days uh
+[894.64s] notify
+[895.20s] the possibility of redaction figure out
+[897.28s] repositories well where are the records
+[899.84s] especially custodians who has the
+[901.60s] records now in your request
+[903.20s] if you know where your records are
+[904.40s] located and you know who you think
+[906.72s] created the records you can
+[908.88s] short-circuit some of this
+[910.80s] next step will identify search terms if
+[913.12s] you're looking for you know every email
+[915.28s] sent uh by the commissioner related to
+[919.20s] salmon in the last year you know they're
+[921.76s] gonna
+[922.24s] try to you know figure out how they can
+[923.92s] find those in one way would be to
+[925.68s] throw the word salmon into the
+[928.88s] into the into the search window and
+[930.96s] outlook and see what pops up
+[932.96s] so once they figure out what their
+[934.48s] search terms are going to be they try to
+[936.08s] figure out what
+[936.88s] what that's going to cost come back to
+[940.00s] the requester try to get authorization
+[942.00s] to proceed
+[943.20s] possibly look for advanced payment then
+[945.92s] they actually run the search
+[947.84s] then they look at the documents that the
+[949.60s] search yields figure out is it all
+[951.44s] public or not
+[952.48s] process and redact if their you know
+[954.96s] redaction is
+[955.92s] sort of excising legitimately
+[958.08s] confidential information
+[960.16s] i have an example of redaction um
+[964.00s] in a short while then they may send an
+[966.48s] invoice
+[967.52s] email get payment and then finally send
+[970.40s] the records off
+[971.84s] so straightforward
+[975.20s] maybe
+[977.14s] [Music]
+[980.32s] what are a few tips and tricks uh
+[984.00s] you know i think the actually the
+[986.96s] academic literature suggests that you
+[988.80s] get a better response
+[990.48s] by making a formal follow request by
+[992.80s] actually saying
+[993.60s] this is a request for public records
+[995.84s] under state law pursuant to title 1
+[998.40s] section you know 400 and so on and so
+[1001.20s] forth and
+[1002.08s] you know i'm requesting your response if
+[1003.76s] you're going to deny deny within five
+[1005.60s] working days
+[1007.76s] that that's my understanding on the
+[1009.68s] other hand um
+[1012.16s] many people do get better luck with an
+[1013.76s] informal request and especially if you
+[1016.08s] know exactly what you want
+[1017.76s] there's some existing relationship and
+[1019.76s] you're not looking to
+[1021.04s] you know escalate the matter necessarily
+[1024.64s] or or
+[1025.68s] you know you're looking for a quick
+[1027.04s] turnaround and something
+[1028.72s] to get something sort of back informally
+[1032.08s] you you can just you know ask you know
+[1033.84s] gee can i have a copy of whatever it is
+[1035.68s] and
+[1037.12s] that may actually get your results um
+[1039.20s] according to the maine department of
+[1040.56s] agriculture at least as of 2014 informal
+[1043.04s] requests
+[1044.32s] are are not formal for requests that's
+[1047.76s] actually not correct legally but it's
+[1050.88s] interesting to know that they look at it
+[1052.24s] this way
+[1053.12s] um and it's interesting for people
+[1056.08s] dealing with the department to
+[1057.20s] understand
+[1057.92s] that they you may be able to get better
+[1060.56s] results faster
+[1061.68s] by starting with an informal request
+[1066.88s] i mean when you're coming up with a
+[1069.20s] request
+[1069.92s] you know answer some figure out you know
+[1071.84s] what do you want who has it
+[1073.52s] where's it kept who created it um you
+[1076.56s] know if there is a statute or some
+[1078.32s] statutory basis
+[1080.00s] for the type of record you're looking
+[1081.60s] for you know if you know that
+[1083.20s] the department of environmental
+[1084.48s] protection is required to have
+[1086.48s] a written decision on the permit you
+[1088.88s] know ask them for the written decision
+[1090.48s] they issued pursuant to
+[1091.84s] the statute that requires them to issue
+[1093.36s] written decisions
+[1095.20s] look at what the agency's own
+[1097.28s] record-keeping
+[1098.64s] requirements are some of these agencies
+[1101.68s] do have pretty detailed
+[1103.12s] policies or record you know
+[1107.12s] record-keeping requirements and that can
+[1109.68s] really give you
+[1110.40s] a guidepost for what you're looking for
+[1115.44s] be persistent follow up ask again
+[1118.48s] if you get push back ask try to escalate
+[1121.04s] the issue maybe you can negotiate the
+[1122.96s] scope the cost the method of delivery
+[1125.52s] um keep a paper trail if it's you know
+[1128.80s] keep a paper trail of every contact you
+[1130.64s] make with the agency so you've got like
+[1132.32s] a chronology
+[1133.20s] of when you made the request when you
+[1134.80s] first got the response what they said
+[1137.12s] keep your notes keep your correspondence
+[1139.68s] you know show persistence
+[1141.28s] patience and understanding um but you
+[1143.84s] know don't take no for an answer
+[1145.76s] and i mentioned um redaction i mean you
+[1148.88s] you will get
+[1149.84s] responses that look a little like this
+[1152.16s] where
+[1153.20s] uh you get a record that's almost
+[1156.32s] unintelligible
+[1157.60s] sometimes you can push back even on a
+[1159.44s] redaction like this
+[1161.28s] and get the agency to reconsider or at
+[1164.08s] least
+[1164.48s] explain the basis for the redaction um
+[1167.28s] so that you have some
+[1168.40s] and can so you can make some independent
+[1170.32s] judgment about whether the redaction is
+[1172.40s] you know legitimate
+[1175.52s] i mentioned you can elevate the issue
+[1177.52s] sometimes you can go to the supervisor
+[1179.12s] you can ask
+[1180.32s] um the agency or the town or the
+[1182.72s] government you know
+[1183.68s] the whatever level of government you're
+[1185.12s] dealing with to elevate it to their
+[1186.48s] attorney
+[1187.68s] um there is a foa ombudsman brenda kyle
+[1190.64s] t in maine
+[1191.36s] you can involve her ask her to weigh in
+[1195.76s] sometimes you can go to the attorney
+[1197.04s] general's office you may be able to go
+[1199.12s] to your local representative or an
+[1200.80s] elected official
+[1202.08s] to see if you can get a little bit more
+[1203.92s] kind of oomph around your request
+[1206.00s] especially if there's a delay or a cost
+[1208.00s] issue they may be willing to intervene
+[1211.28s] and kind of go to bat for you i i
+[1214.64s] if mom says no ask dad i mean sometimes
+[1218.00s] your record may be in the possession of
+[1219.52s] multiple
+[1220.00s] government agencies and i have seen this
+[1221.92s] where records in the
+[1223.04s] possession of a municipality plus a
+[1225.12s] state agency
+[1226.16s] and the town won't give it to you but
+[1227.92s] you get it from the state agency or vice
+[1230.00s] versa
+[1230.72s] sometimes the records are in the
+[1231.92s] position of you know i had
+[1234.56s] a case where we were looking for records
+[1236.08s] from the city of portland
+[1237.60s] involving a marine incident we were able
+[1239.20s] to get the records from the coast guard
+[1241.60s] um you know if your goal is to find out
+[1243.68s] what's going on
+[1244.64s] figure out if you know just brainstorm
+[1247.04s] might the records be in another
+[1249.60s] another agency's possession um sometimes
+[1253.28s] if the basis for a denial
+[1254.88s] um of a record is a privacy objection
+[1257.12s] you can get a waiver
+[1258.40s] from you know the next to kin the family
+[1260.48s] member the victim the witness
+[1262.88s] uh whoever it may be authorizing you to
+[1265.60s] get access to those records
+[1268.16s] um a few success stories been a few
+[1271.44s] years ago we were in the midst of covid
+[1273.84s] while we were dealing with
+[1274.96s] records uh trying to get records showing
+[1277.68s] the prevalence of
+[1279.04s] chickenpox outbreaks among maine schools
+[1282.08s] and we're getting a lot of pushback from
+[1283.68s] maine cdc at that time
+[1285.44s] but ultimately we were able to get uh
+[1287.76s] the cdc to advise us
+[1290.24s] where chickenpox outbreaks had occurred
+[1294.16s] and what schools and the number of cases
+[1297.28s] actually early in the covet pandemic
+[1300.32s] i was involved with the maine freedom of
+[1302.16s] information coalition advocating
+[1304.08s] that maine cdc release the number of
+[1306.40s] covet
+[1307.12s] cases by town which they were initially
+[1309.92s] refusing to do and reluctant to do
+[1312.00s] and ultimately they they did release
+[1315.04s] those case numbers and they've been
+[1316.48s] you know more transparent as the as the
+[1319.44s] pandemic gains steam
+[1324.32s] 911 transcripts um
+[1327.52s] there's been litigation and battles over
+[1329.44s] getting access to 911 transcripts
+[1332.08s] had to go to the main supreme court on
+[1333.68s] that issue and get some clarification of
+[1335.92s] the law
+[1336.88s] generally 9-1-1 transcripts are public
+[1339.12s] record
+[1342.16s] a state report on a prisoner suicide on
+[1344.24s] county jail
+[1345.36s] we had to go get a court order forcing
+[1348.56s] the department of corrections to release
+[1350.08s] their report
+[1352.16s] looking at the circumstances that led to
+[1354.24s] an inmate suicide at the kennebec county
+[1356.08s] jail
+[1358.48s] the state had argued that the record was
+[1361.20s] a personnel record
+[1362.40s] and that didn't fly with the superior
+[1364.64s] court judge
+[1365.84s] um who wrote what i've got up on the
+[1367.36s] screen um
+[1369.76s] you know just because a record contains
+[1371.44s] the names of government officials
+[1372.72s] doesn't make it a personnel record
+[1375.04s] obviously government is always operating
+[1376.80s] through personnel
+[1378.64s] the judge found that the report examined
+[1380.24s] the operation of a public institution
+[1382.80s] and by and large the public has a right
+[1385.28s] to know that kind of a record
+[1387.60s] even though it related to to an
+[1390.96s] unfortunate
+[1391.68s] you know an unfortunate suicide a little
+[1394.88s] outside traditional
+[1396.08s] public records requests access to court
+[1398.16s] records
+[1399.44s] in the mark strong prostitution case a
+[1401.60s] few years ago this was the zumba
+[1403.84s] uh prostitution case in york county with
+[1406.48s] dozens of
+[1407.92s] locals caught up in a a prostitution
+[1411.04s] ring centered on the zumba studio
+[1414.24s] we actually had to get a court order um
+[1417.04s] protecting the public's right to access
+[1418.80s] to jury selection in the criminal trial
+[1421.12s] and i was actually able to get an order
+[1423.92s] an emergency order from the maine
+[1425.44s] supreme court
+[1426.88s] faxed to the trial judge in the middle
+[1429.04s] of jury selection
+[1430.40s] forcing her to immediately stop jury
+[1432.80s] selection
+[1433.68s] and that night i got a court order
+[1435.76s] ordering her that to conduct the
+[1437.12s] remaining portion of the jury selection
+[1439.12s] in public for the most part
+[1443.12s] um i've got some resources for you on
+[1446.00s] the screen i'll just mention a few other
+[1448.32s] hot sort of ongoing public records
+[1450.96s] battles right now
+[1452.80s] a major uh pretty significant litigation
+[1455.60s] right now is ongoing
+[1456.80s] involving access to state police
+[1459.04s] disciplinary records
+[1461.20s] the state police have been pushing back
+[1463.28s] on providing access
+[1464.88s] to complete copies of final disciplinary
+[1467.52s] decisions imposing discipline
+[1469.12s] on state troopers and the litigation
+[1472.24s] involves the extent to which those
+[1473.52s] records can lawfully be redacted by the
+[1475.52s] state police to
+[1476.72s] limit access to the circumstances
+[1479.44s] leading to disciplinary action
+[1482.24s] a case that's probably going to be filed
+[1485.52s] and very soon
+[1486.96s] involves access to county jail records
+[1490.00s] on the extent to which there have been
+[1491.44s] they've been illegally eavesdropping
+[1493.84s] on calls between inmates and their
+[1496.24s] attorneys
+[1499.04s] a case ongoing right now in federal
+[1501.12s] court in maine involves access
+[1503.20s] to electronic
+[1506.88s] state court records the main courts are
+[1509.20s] going to digital filing
+[1510.96s] online filing and uh
+[1514.32s] and the case involves the extent entire
+[1517.36s] primarily at this point the timeliness
+[1519.36s] of of access
+[1520.96s] whether access will be um on filing
+[1524.48s] or in some period after a record is
+[1526.64s] filed so how quickly you'll be able to
+[1528.08s] get access to court records
+[1529.92s] filed with the judicial branch online
+[1532.40s] using the internet
+[1534.00s] and there's also a case right now
+[1535.76s] ongoing in
+[1537.68s] cumberland county superior court
+[1539.60s] involving access
+[1541.52s] to rent information submitted to the
+[1544.08s] city's
+[1544.72s] newly created rent control board a
+[1548.32s] significant landlord has filed a lawsuit
+[1550.24s] against the city
+[1552.24s] seeking an injunction that would block
+[1553.92s] the city from
+[1555.28s] sharing with the public information on
+[1557.44s] rents charged by landlords
+[1559.76s] you know my view of that is if that
+[1562.56s] information is
+[1564.32s] blocked from the public it's essentially
+[1566.08s] going to allow the rent control board
+[1567.84s] to operate in complete secrecy since
+[1570.08s] rents are at the heart of the entire
+[1571.52s] process
+[1572.48s] and essential to understand
+[1574.00s] understanding whether the rank control
+[1575.36s] board is operating effectively
+[1580.08s] my contact information always available
+[1582.72s] by email or telephone
+[1587.68s] excellent hey sig thank you so much this
+[1590.72s] was like really educational like you
+[1592.24s] know i i wasn't even aware that
+[1594.48s] legislative records are covered under
+[1596.64s] the state's public records law unlike
+[1598.56s] here
+[1599.36s] uh in mass um so i mean that that was a
+[1602.40s] great
+[1603.04s] overview and um you know i want to thank
+[1605.76s] you for taking the time to to talk to us
+[1607.92s] about this
+[1608.88s] and i want to thank the new england
+[1610.48s] first amendment coalition in the new
+[1612.40s] england chapter of the society
+[1613.76s] professional journalists for putting on
+[1615.28s] this webinar
+[1616.48s] and sig thank you again i really
+[1618.16s] appreciate it
+[1619.84s] you're welcome happy to do it

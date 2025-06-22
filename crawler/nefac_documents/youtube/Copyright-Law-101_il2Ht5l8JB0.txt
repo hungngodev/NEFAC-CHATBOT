@@ -1,0 +1,674 @@
+[4.68s] hello everyone I'm Justin Silverman of
+[6.56s] the New England First Amendment
+[7.84s] Coalition thank you for joining us for
+[10.16s] another 30 minute skills for those
+[12.96s] joining us for the first time welcome
+[15.56s] these monthly lessons are a quick and
+[17.20s] efficient way to hone your reporting
+[18.52s] skills and build on your first amendment
+[20.40s] knowledge but as many of you already
+[22.32s] know they're also more than that there a
+[24.00s] way for you to reconnect with a
+[25.56s] community of journalists researchers
+[27.52s] attorneys and academics who regularly
+[29.68s] attend these lessons so to everyone
+[32.24s] please use the chat to introduce
+[33.68s] yourself showcase your work connect with
+[36.36s] others and also make sure you register
+[38.72s] for our upcoming lessons registration
+[40.52s] links can be found at nea.org as a
+[43.68s] reminder previous 30 minute skills are
+[46.12s] available at nea.org and on our YouTube
+[48.48s] channel five freedoms lessons include
+[50.92s] data cleaning Privacy Law Microsoft
+[53.16s] Excel Basics and how to diversify
+[55.40s] sources among many other topics today's
+[58.44s] presentation is the first of two classes
+[61.04s] on copyright law and it's supported in
+[63.72s] part by the estate of Gloria El negri
+[66.44s] Gloria was a trailblazing journalist at
+[68.76s] the Boston Globe for more than 50 years
+[71.56s] this program is part of her Legacy of
+[73.32s] Newsroom education and her lifelong
+[75.56s] commitment to local journalism you can
+[78.00s] learn more about Gloria and other neac
+[79.92s] supporters at nea.org
+[82.52s] supporters we have a lot to cover and
+[84.64s] not a lot of time so let's get started
+[86.60s] Rob all yours good afternoon everybody
+[89.92s] my name is Rob birie I'm a media and
+[91.72s] First Amendment law partner at a
+[93.32s] boutique law fir called Claris law in
+[95.52s] Boston and New York and uh we're going
+[98.16s] to be chewing off taking off a lot to
+[100.56s] chew uh today uh we've got two sessions
+[105.28s] uh as Justin mentioned the first one
+[108.32s] copyright law 101 will be dealing with
+[110.36s] the purposes of copyright what it
+[112.08s] protects what exclusive rights a
+[114.28s] copyright holder has how long copyright
+[116.88s] lasts how you register your copyright
+[119.60s] and some of the scary penalties for
+[122.64s] copyright infringement copyright law 102
+[125.68s] which we'll be offering in a month or so
+[128.36s] excuse me we'll be dealing with uh how
+[130.72s] you can use the work of others uh both
+[133.72s] by permission by license but also the
+[137.00s] very uh interesting and complex subject
+[140.08s] of fair use so let's get right to it one
+[143.64s] fun thing about teaching copyright law
+[146.60s] is that everybody knows something about
+[148.44s] it and uh most people know something
+[151.56s] wrong about it uh but it's something
+[154.68s] that grows out of the US Constitution
+[157.28s] not the First Amendment which many of us
+[159.76s] deal with in parts of our practice but
+[161.92s] Article 1 Section 8 that says that
+[163.88s] Congress shall have power to promote the
+[165.96s] progress of Science and useful Arts by
+[168.48s] securing for limited times to authors
+[170.60s] and inventors the exclusive right to
+[173.40s] their respective writings and
+[176.08s] discoveries so what the copyright Clause
+[179.08s] is doing is it's saying look we're going
+[180.96s] to give the Creator a monopoly on the
+[185.76s] the uh use of their work and the uh sale
+[191.52s] of their work among other things because
+[193.84s] as uh it's been said by Samuel Johnson
+[196.84s] nobody but a fool ever um wrote except
+[200.64s] for money uh you may take exception with
+[203.64s] that fact um with that saying um the so
+[210.04s] that's the one part is to give the
+[212.88s] copyright holder the person who creates
+[215.80s] uh an incentive and reward for creating
+[220.36s] but it's also to provide uh the world
+[223.68s] with the benefits of that creation and
+[225.88s] that's why um that Monopoly is provided
+[228.88s] for only a limited period of time I want
+[232.16s] to just briefly uh point out because the
+[235.36s] concepts can get confused the difference
+[237.16s] between copyright and trademark
+[239.84s] copyright is something that protects a
+[242.00s] Creator's rights to their original
+[244.24s] creative Works their music their movies
+[247.00s] their articles it's intended to
+[248.84s] incentivize that creation as I've
+[250.92s] mentioned um trademark is something
+[253.72s] different it protects words and symbols
+[256.00s] that denote a particular brand cocacola
+[258.52s] is a trademark the Nike Swoosh is a
+[261.08s] trademark I understand that Barbie has a
+[262.96s] trademark on its particular brand of
+[265.36s] pink um and trademark law is really
+[267.84s] designed to facilitate economic
+[270.28s] transactions so that you know the source
+[272.44s] of goods and services so they're very
+[274.96s] very different kinds of Concepts today
+[277.20s] we're dealing with copyright uh which
+[279.76s] protects the original expression of an
+[283.24s] idea that's fixed in a tangible medium
+[287.48s] now you often see uh that little C with
+[291.20s] a circle around it um on a uh book or
+[296.12s] something uh to indicate that there is
+[298.44s] copyright held uh contrary to Public
+[301.00s] Myth that Copyright symbol is not
+[303.64s] required in order to have protection for
+[306.16s] copyright your work is protected by
+[309.04s] copyright the moment you write it down
+[310.80s] on the page or you put it onto that
+[313.04s] recording uh or fix it in any tangible
+[316.40s] medium so long as it is an ex original
+[320.04s] uh expression uh you're not required to
+[322.88s] register it in order to have uh the
+[325.36s] protection of copyright you're not
+[327.08s] required to have that notice now there
+[329.08s] are reasons well you might want to put
+[330.76s] that notice there the obvious one being
+[333.80s] uh to let people know that hey I did
+[336.48s] this work I have the copyright you can't
+[338.36s] use it without getting my permission um
+[341.28s] and I'm the person to contact um so you
+[344.60s] put copyright Time Magazine and they
+[347.88s] know to comp uh to contact copy Time
+[351.12s] magazine in order to get permission to
+[353.92s] uh reuse your work um but it's not
+[357.28s] necessary in order to have the legal
+[359.24s] protection
+[360.80s] um however registration of copyright
+[363.76s] will be necessary before you can sue for
+[366.28s] infringement of that copyright and the
+[369.04s] timely registration of a copyright is a
+[372.84s] necessary uh prerequisite before you can
+[376.92s] uh get the really
+[379.64s] Hammerhead uh penalties of what we call
+[383.08s] statutory damages uh which I'll talk
+[385.68s] about in a little bit uh and statutory
+[388.40s] damages are what make those uh season
+[391.84s] assist notices that you get in the mail
+[394.24s] saying you've inadvertently used
+[396.20s] somebody's copyrighted photograph uh
+[398.72s] that's what makes them so scary that
+[400.60s] statutory damage is attached that have
+[402.92s] necessarily not necessarily any
+[405.32s] relationship uh to the actual injury
+[408.76s] suffered by the copyright
+[410.64s] holder so copyright can protect
+[414.12s] obviously verbatim expression word for
+[416.40s] word expression uh but also close
+[418.88s] paraphrases
+[420.12s] copyright can protect the way you
+[422.96s] express uh the uh and organize your
+[428.72s] composition the story elements the
+[431.28s] organization it can't protect headlines
+[434.00s] or cover lines uh but it can protect the
+[437.12s] name of a series or logos that are
+[440.16s] repeating so if you have a newspaper
+[442.28s] with a repeating column you might be
+[443.96s] able to trademark the name of the column
+[446.48s] but you won't be able to trademark the
+[447.96s] headline on any particular
+[450.24s] article um it does not generally protect
+[453.60s] facts or
+[455.52s] ideas and this is an important thing to
+[457.88s] remember copyright protects expression
+[460.84s] it doesn't protect ideas it doesn't
+[463.84s] protect contemporaneous speeches because
+[466.76s] they're not fixed in a tangible medium
+[470.84s] and it doesn't protect uh works that are
+[473.68s] in the public domain for example because
+[476.00s] their copyright expired or because
+[478.16s] they've been committed to through the
+[479.80s] public
+[481.80s] domain I want to point out the
+[483.72s] difference between plagiarism and
+[485.28s] copyright infringement because they can
+[486.96s] get confused sometimes plagerism happens
+[490.64s] um when you present someone else's work
+[493.40s] as your own and you don't provide
+[495.56s] attribution it's an ethical journalistic
+[498.68s] violation it doesn't it isn't really a
+[501.80s] legal concept it's a scholarly concept
+[505.64s] um it's a concept that may have great
+[508.52s] force and effect at your Newsroom or
+[511.04s] place of employment
+[513.72s] um but attribution is not a solution to
+[518.76s] a copyright problem because copyright is
+[522.24s] copying the creative expression of
+[524.08s] another person without their permission
+[526.92s] even if you attribute it even if you say
+[530.12s] here
+[531.12s] I'm giving you this poem and it's
+[533.28s] written by Rob berie uh and I'm going to
+[535.72s] sell it to you uh you can't do that
+[538.60s] without Rob ber
+[540.04s] permission um even though you've
+[542.12s] attributed it to me that's not
+[543.80s] plagiarism you've given attribution um
+[546.96s] but it is copyright
+[549.56s] infringement so how do you become the
+[552.44s] owner of a copyright obviously the most
+[555.72s] obvious way is you are the creator of
+[558.68s] the work yourself but there are other
+[560.48s] ways that it can come about as well uh
+[563.24s] one is what they call a work for higher
+[565.44s] you're an employee and you created the
+[568.04s] work in the course of your employment um
+[571.08s] typically uh I know many of you are
+[573.36s] journalists that's what you do for a
+[575.28s] living you uh write articles for your
+[578.20s] newspaper or for your website and um the
+[582.28s] work that you create you do not own the
+[584.76s] copyright in it your employer owns the
+[587.36s] copyright in it unless you have a
+[589.00s] contract with them that says
+[591.28s] otherwise um another way you become a
+[594.60s] copyright owner is you commission a
+[596.16s] third party to create a work and you
+[598.52s] designate it as to work for hire in a
+[600.60s] freelance contract so that's what
+[602.56s] happens when you send out a freelance
+[604.92s] contract a magazine for example
+[607.72s] contracts with a freelancer the
+[609.64s] freelancer is the original Creator but
+[612.92s] by virtue of signing that freelance
+[616.20s] agreement the freelancer is assigning
+[618.84s] over to the magazine uh their rights and
+[623.48s] the uh magazine becomes the copyright
+[627.32s] owner
+[629.64s] a third party can assign the copyright
+[631.44s] and the work to you in writing or can
+[633.64s] license certain rights of the copyright
+[636.16s] and the work to you so who owns the
+[638.76s] copyright in this interesting picture
+[643.04s] this is a picture of naruda who is a
+[647.28s] maake uh which I'm probably
+[649.88s] mispronouncing uh ape uh in uh Indonesia
+[656.24s] I
+[657.20s] believe um and and this photo got taken
+[661.28s] because a particular
+[665.48s] uh
+[667.00s] photographer was traveling in Indonesia
+[670.56s] in sui
+[672.04s] Indonesia and was taking pictures when
+[675.16s] suddenly
+[677.68s] Naruto reached out grabbed the camera
+[681.60s] and took a
+[682.96s] selfie and I must say he's an adorable
+[685.60s] little guy if I do say so myself
+[689.72s] um who owns the copyright in
+[692.88s] that the
+[695.04s] the photographer didn't actually click
+[698.56s] the Button he's not the one who took the
+[700.76s] picture nuto is the one who took the
+[702.56s] picture so does nuto own the copyright
+[705.96s] because he's the one who took the
+[706.96s] picture he's the one who set it up he's
+[710.36s] the one who designed it who created that
+[714.00s] scenery such as it is well it became an
+[718.28s] issue uh when the photographer wanted to
+[721.88s] sell this uh photograph and uh pet the
+[728.96s] uh uh Society for the protection uh
+[732.04s] people for the ethical treatment of
+[733.96s] animals uh sued and said no photographer
+[738.04s] you're not entitled to the
+[741.28s] uh profits off of the sale of that photo
+[744.88s] because Naruto is entitled to it and
+[748.68s] we're going represent nuto and he should
+[750.60s] be getting uh the
+[752.96s] profits uh and it actually went to court
+[757.00s] where a judge a district court federal
+[760.00s] district court judge ruled in fact that
+[763.84s] um an animal cannot take uh an
+[769.48s] photograph taken by an animal uh is not
+[772.36s] in fact
+[774.76s] um uh
+[776.84s] copyrightable um and the US copyright
+[779.28s] office took it one step further uh they
+[782.04s] came out with a special report that said
+[785.00s] the US copyright office will register an
+[787.40s] original work of authorship provided
+[789.88s] that the work was created by a human
+[792.76s] being unless there been be any doubt
+[795.80s] about that they they continued the
+[797.88s] office will not register Works produced
+[800.04s] by nature animals or
+[803.08s] plants and then they went even further
+[805.56s] just so we wouldn't be confused they
+[807.92s] gave a list of examples of the types of
+[810.32s] work that cannot be copyrighted they
+[812.60s] said a photograph taken by a
+[814.68s] monkey cannot be copyrighted nor can a
+[818.76s] mural painted by an elephant I don't
+[821.32s] know if we've had one of those yet nor
+[824.04s] can a claim uh be based on Driftwood
+[827.04s] that has been shaped and smoothed by the
+[830.48s] ocean that sculpture of Driftwood that
+[835.28s] has been shaped by the ocean uh is not a
+[838.00s] copyrightable work
+[840.56s] um and then even further because the
+[842.76s] copyright office wants to close out any
+[845.04s] possible eventualities they said
+[847.36s] likewise the office cannot register a
+[849.84s] work purportedly created by Divine or
+[853.04s] supernatural
+[854.92s] beings although the office May register
+[858.16s] a work where the application or the
+[860.36s] deposit copies state that the work was
+[863.36s] inspired by a Divine spirit
+[869.56s] well hea and uh Slater the photographer
+[873.60s] finally entered into a settlement of his
+[875.88s] lawsuit and they agreed that the case
+[878.60s] raises important issues and they uh
+[882.68s] agreed that the prophets from uh this
+[886.80s] Photograph would be going towards a uh
+[890.04s] trust fund to help uh nuto and his
+[893.80s] fellow
+[897.04s] makak what about our artificial
+[899.52s] intelligence who owns to copyright when
+[902.44s] you use dolly or chat GPT to create an
+[905.60s] image or to create a uh literary
+[909.04s] work we say to uh Dolly create an oil
+[913.12s] pastel drawing of an annoyed cat in a
+[915.92s] spaceship and we get
+[918.80s] this do I own the copyright because I
+[922.00s] told Dolly what to do does Dal own the
+[927.44s] copyright similarly we could tell chat
+[930.80s] GPT why
+[932.52s] not I'm busy today so let's have chat
+[935.36s] GPT do it WR a ceon assist letter to a
+[938.48s] media company that has used a celebrity
+[940.56s] photographers photo without
+[943.52s] permission and you do that and this is
+[946.20s] actually what I got your media company
+[948.76s] we're writing to you on behalf of
+[950.04s] celebrity photographer to demand that
+[952.12s] you immediately cease and assist and I'd
+[955.24s] say this is as good as you're going to
+[956.76s] get from many many
+[959.68s] lawyers um the uh copyright office has
+[964.24s] taken the position that artificial
+[967.12s] intelligence uh generated art cannot
+[971.20s] receive copyrights um
+[975.32s] and in a sort of related uh development
+[980.64s] um it's been found that artificial
+[983.72s] intelligence programs might infringe
+[987.16s] copyright themselves by by generating
+[989.60s] outputs that resemble existing
+[992.40s] works because if you can show that the
+[994.80s] output from the artificial intelligence
+[997.96s] generator
+[1000.00s] uh uh is based on having access to
+[1003.88s] somebody's copyrighted work and it comes
+[1007.08s] out with a a substantially similar
+[1009.84s] output to the original work uh then that
+[1013.00s] might in fact be an act of
+[1016.04s] infringement um obviously that is a
+[1019.44s] uh hotly debated and uh rapidly changing
+[1023.96s] part of the law that's worth
+[1026.48s] following what are the exclusive rights
+[1029.24s] what what does being a copyright owner
+[1031.32s] get you well it gets you the right to
+[1033.32s] reproduce the work to make copies of it
+[1035.12s] to give it to other people to put it on
+[1036.68s] your website whatever it may be it gives
+[1039.12s] you the right to prepare derivative
+[1040.64s] works so a second work that's based on
+[1043.28s] some preceding work whether it's a
+[1045.40s] translation or a movie version of a book
+[1048.16s] or a fiction version of a true story A
+[1051.36s] reproduction of an original artwork uh
+[1054.92s] it allows you to distribute copies of
+[1056.88s] the work or to perform the work publicly
+[1059.16s] or display the work
+[1062.28s] publicly so let's do a thought
+[1064.44s] experiment now staring Night by Vincent
+[1067.56s] vano Creed in 1889 is not under
+[1070.72s] copyright protection but uh what if it
+[1074.24s] were what if it were still under
+[1076.32s] copyright protection would some be able
+[1079.36s] to create a derivative work based on it
+[1083.68s] well no so what is that derivative work
+[1087.32s] well is that a derivative work that
+[1091.20s] would be prohibited as an infringement
+[1094.20s] of copyright it's not the same but it is
+[1096.92s] a derivative work based on that original
+[1099.60s] work um what about this
+[1102.96s] one I'm jumping ahead now but some of
+[1105.60s] you may be start be thinking about fair
+[1107.88s] use which we'll talk about in a month uh
+[1111.00s] and maybe this is fa use for reasons we
+[1113.56s] can talk about then same with this
+[1117.76s] one now I mentioned that copyright gives
+[1121.24s] a protection for limited time periods to
+[1124.12s] authors and inventors the idea being
+[1126.24s] although you get a monopoly for the
+[1127.88s] start you can't have that Monopoly
+[1129.92s] forever you only have that Monopoly for
+[1132.84s] a short period of time that short period
+[1135.60s] of time used to be 14 years with a 14
+[1138.48s] year renewal term that's back in 1790
+[1141.48s] that's a reasonably short period of time
+[1145.04s] uh today it has gradually increased and
+[1148.20s] increased and increased and uh to the
+[1151.92s] point where uh we are now at a place
+[1156.00s] where individually held Works have a
+[1158.12s] copyright term of the life of the
+[1159.80s] Creator plus 70 years and a work for
+[1164.16s] hire corporate created work uh has a
+[1166.88s] term of 95 Years From First first
+[1169.88s] publication that created the problem of
+[1172.24s] Steamboat Willie created in
+[1174.56s] 1928 uh and whether he would fall into
+[1176.80s] the public domain in
+[1179.84s] 2024 uh that's say 2004 but I meant
+[1183.92s] 2024 uh and that had Disney all in a
+[1187.96s] tither uh and so they passed what was
+[1190.44s] called The Sunny Bono copyright ter
+[1192.80s] extension act which some mocking call
+[1195.08s] the Mickey Mouse copyright extension Act
+[1198.92s] uh and they extended uh copyright term
+[1202.00s] for 20 years um so that the duration of
+[1205.92s] copyright now uh is at these much longer
+[1209.56s] places the question went at the Supreme
+[1212.00s] Court about at what point
+[1214.64s] does a very very long Monopoly term no
+[1219.12s] longer constitute a limited term of
+[1221.36s] copyright uh in accordance with the
+[1223.68s] Constitution and the Supreme Court
+[1225.72s] essentially said look so long as it's a
+[1227.76s] limited number of years
+[1229.64s] uh it's a limited term um which uh
+[1233.60s] somewhat undermines uh the goals of the
+[1237.20s] copyright uh Clause um that's something
+[1240.76s] you'll find generally with copyright law
+[1242.76s] in general it is uh riddled with
+[1246.08s] contradictions and it has not kept up
+[1248.36s] well uh with technological
+[1251.88s] advances um if you want to figure out
+[1254.60s] whether a particular work is still in uh
+[1257.24s] copyright term or under the public
+[1258.76s] domain I recommend you go to this site
+[1261.36s] which uh is what all the lawyers turn to
+[1263.68s] as well uh that takes you through the
+[1266.00s] complicated uh calculation of what a
+[1269.60s] copyright term is and when it expires
+[1272.36s] here are some of the works that joined
+[1273.56s] the public domain in
+[1274.96s] 20124 House at poo Corner sunny boy lady
+[1279.04s] chatterly's lover Peter Pan and yes the
+[1283.92s] original Mickey Mouse and Minnie Mouse
+[1285.60s] from Steamboat Willie made their way
+[1288.08s] this year January 1
+[1290.12s] 2024 into the public domain now how do
+[1294.12s] you register your copyright I don't have
+[1296.16s] the time to tell you um and it's a lot
+[1298.88s] of detail so I want you to go to the uh
+[1301.36s] us copyright office uh website and they
+[1304.88s] have actually a really great uh series
+[1307.52s] of resources there uh both in terms of
+[1310.40s] describing copyright uh and a level of
+[1313.16s] detail that I haven't been able to hear
+[1315.84s] and in terms of telling you uh how you
+[1318.60s] can register different kinds of Works uh
+[1322.04s] with the copyright
+[1324.36s] office
+[1327.20s] um and what is at stake well we'll talk
+[1330.60s] about this a little bit more next time
+[1332.32s] but what's at stake is that if you
+[1334.16s] infringe someone else's copyrighted work
+[1336.60s] you may be liable for handing over your
+[1338.88s] profits that you got from the infringing
+[1341.92s] work reimbursing the copyright owner for
+[1344.36s] the profits they lost paying their
+[1346.88s] attorney's fees which may be a the the
+[1349.00s] most honorous piece of
+[1351.04s] all um or the copyright holder whose
+[1356.04s] rights have been infringed can choose to
+[1358.72s] receive statutory damages which are
+[1361.40s] damages that don't necessarily have any
+[1363.20s] relationship whatsoever to the actual
+[1365.68s] harm suffered uh and they range from
+[1368.88s] $750 to
+[1371.48s] $30,000 per work infringed I'm dealing
+[1375.00s] now with a copyright claim that involves
+[1376.56s] a calendar photo uh for a weekly
+[1379.28s] newspaper uh that somebody picked up off
+[1381.68s] the internet and popped into their
+[1383.72s] calendar
+[1385.48s] page 10 years ago uh and because statute
+[1389.04s] of limitations is tricky in uh copyright
+[1392.92s] uh claims and because of the statutory
+[1395.04s] damages issue uh the newspaper uh if in
+[1399.84s] fact it is found to have infringed uh
+[1402.76s] could be in the in in for it to the
+[1406.92s] extent of $30,000
+[1409.28s] um even though that bears no
+[1410.88s] relationship to the probably $25
+[1414.16s] licensing fee of that particular
+[1417.72s] work uh and the people who are likely to
+[1420.16s] sue professional photographers stockh
+[1422.28s] houses but also people who with you're a
+[1425.00s] journalist you wrote a story they don't
+[1427.16s] like your story but you did it so well
+[1429.20s] you've learned so well through the liel
+[1430.80s] 60-minute program that they don't have
+[1433.36s] any viable liel claim but they do have a
+[1436.44s] copyright claim perhaps because because
+[1438.60s] you didn't pay as much attention there
+[1440.92s] so they'll bring a copyright claim
+[1442.52s] because all they want to do is get back
+[1444.00s] at you um so it's easy to bring
+[1448.88s] copyright infringement claims it's
+[1451.08s] costly to defend them and that's why
+[1453.44s] it's important to know about all of this
+[1455.72s] and we'll continue with this in a month
+[1457.88s] I'm open to questions great thanks so
+[1460.60s] much Rob appreciate it this is all uh
+[1462.72s] all great stuff and really helpful uh
+[1464.60s] particularly as we uh move forward and
+[1467.84s] and begin to identify creative works
+[1469.32s] that might receive copyright attention
+[1471.72s] couple questions before we wrap up here
+[1474.92s] um I know we'll be we we'll be touching
+[1477.60s] upon it more in depth in our next class
+[1480.12s] but uh we have uh one person would like
+[1482.72s] you to discuss just a bit or or tease
+[1484.92s] for us uh fair use and what is
+[1486.84s] newsworthy related to copyright so for
+[1489.64s] example when someone can use a
+[1491.12s] photograph uh on social media if it has
+[1494.24s] news value um what um something that
+[1498.16s] might be newsworthy you know for someone
+[1500.08s] they post it to Facebook um but they're
+[1502.68s] not giving explicit permission any
+[1505.12s] thoughts there about the news value that
+[1507.00s] photo has and our rights to use it
+[1509.12s] without permission yeah the um fair use
+[1513.92s] can be a very tricky subject the fact
+[1516.28s] that something is newsworthy by itself
+[1519.08s] does not mean and easy to cut and pasted
+[1522.56s] from the internet uh does not mean that
+[1525.00s] it's fair use um it's it's got to be
+[1528.04s] fair use is something where you're
+[1529.36s] actually transforming the use you're not
+[1531.88s] reproducing the work for the purposes
+[1534.16s] that it was created in the first place
+[1536.48s] you're using it for some different
+[1539.04s] reason um so uh let's say there's a
+[1542.56s] controversy about a photograph you might
+[1545.64s] be able to reprint that photograph
+[1547.80s] because you're talking about the photo
+[1551.36s] um but if you're talking about uh well a
+[1556.12s] plane that went on fire uh and you have
+[1558.72s] pictures from somebody uh on Facebook
+[1562.04s] who was next door to the plane and took
+[1565.20s] pictures of it going on fire you don't
+[1567.36s] have the right to use that uh the their
+[1570.96s] pictures without their permission that
+[1573.08s] would be a copyright violation even
+[1574.88s] though they're really important there's
+[1577.48s] no other way you can get them without
+[1579.04s] getting them through them it's very
+[1581.52s] newsworthy um and uh that's what can
+[1584.48s] make their use uh enough of a topic that
+[1587.76s] I've really safed at all for next
+[1590.56s] month great um so a good reminder to
+[1593.80s] register for that class for next month
+[1595.80s] make sure you're receiving updates about
+[1597.68s] that lesson uh a couple others we just
+[1599.52s] have a few minutes left uh how about
+[1601.40s] pictures uh and creative works from
+[1603.44s] sites like Flicker and pixels uh are
+[1606.64s] there is it just the the terms of
+[1608.52s] service for those sites that we need to
+[1610.04s] pay attention to or are there other
+[1611.40s] considerations we should keep in mind
+[1613.92s] you you really need to pay attention to
+[1615.40s] the terms of work there are certain
+[1617.08s] sites that dedic Kate then provide you
+[1620.72s] uh with works that are committed to the
+[1623.16s] public domain and they're saying you can
+[1625.16s] use this or you can use it you've got
+[1627.48s] this under Creative Commons license as
+[1630.16s] well they might say you can use it under
+[1631.80s] certain conditions if you let other
+[1633.76s] people use it and share and share alike
+[1636.08s] and that sort of thing um and so that is
+[1639.28s] a very good source and we'll talk about
+[1640.96s] that a little bit more next time too but
+[1642.72s] that is a very good source of um public
+[1645.48s] domain
+[1647.00s] works and getting back to the um uh the
+[1651.28s] area of ownership uh if you could speak
+[1653.48s] to uh works for hire or employee
+[1656.96s] employer relationships so for example if
+[1660.04s] you have a reporter that uh is using
+[1662.76s] their own computer phone printer all
+[1664.48s] their own equipment uh but then's laid
+[1666.64s] off all that unfinished work that
+[1668.80s] material that that reporter uh collected
+[1671.32s] and created on their own who owns it who
+[1674.00s] does it belong to the
+[1676.64s] employer the employer in most cases
+[1679.04s] because they're an employ working for
+[1680.72s] the because they they did that work as
+[1683.12s] part of their employment now typically
+[1685.32s] you're going to work out something when
+[1687.08s] something like that happens um because
+[1690.80s] uh you need each other uh the the the
+[1695.20s] newspaper can't do anything with it
+[1696.64s] without your help and you can't do
+[1698.52s] anything with it without having the
+[1700.76s] rights to
+[1701.88s] it all right last question uh before we
+[1704.92s] wrap up here now that we're getting
+[1706.64s] better at identifying creative work
+[1708.12s] works and works that might receive
+[1709.56s] copyright attention um any any guidance
+[1712.88s] for those situations where we can't
+[1714.68s] easily figure out who the owner is we
+[1716.52s] have some material in front of us we're
+[1718.12s] trying to get permission how do we
+[1719.80s] figure out who owns the content to begin
+[1722.08s] with it's a huge problem um and it's
+[1725.48s] bigger problem because the term of
+[1727.80s] copyright uh has gotten so long so there
+[1731.48s] are a lot of what they call orphan works
+[1733.64s] works that
+[1735.00s] are theoretically under copyright uh
+[1738.64s] term uh but nobody knows who and
+[1741.92s] nobody's making any use of them nobody
+[1744.56s] knows who has the ownership of them uh
+[1747.52s] use all the powers of the internet uh go
+[1750.56s] to the copyright office which has a
+[1753.36s] catalog that uh is more accessible now
+[1755.80s] than it ever has been in the past um and
+[1759.36s] there are some special uh services that
+[1762.40s] uh do these sorts of searches as well uh
+[1765.48s] but it's
+[1766.80s] uh at the end of the day your uh your
+[1769.76s] guess is as good as mine and how to go
+[1771.88s] about doing that thanks and I I should
+[1774.40s] know another resource that might be
+[1775.56s] helpful is we have a 30- minute skills
+[1777.04s] lesson on uh verifying online sources
+[1779.60s] and in that lesson there are some tools
+[1782.08s] that might be helpful like uh um reverse
+[1785.52s] image searches and and so forth so
+[1787.92s] encourage everybody to to check that out
+[1789.84s] but uh we are out of time unfortunately
+[1792.36s] but we're going to continue uh next
+[1793.76s] month with copyright law 102 Rob thank
+[1796.12s] you so much for this lesson and and
+[1797.84s] being being here today and many thanks
+[1799.92s] to everyone else for joining us too we
+[1802.68s] provide these lessons as a public
+[1804.08s] service to all of you so please return
+[1806.80s] the favor and encourage your colleagues
+[1808.16s] and friends to join us each month we
+[1810.08s] have a lot to learn from each other and
+[1811.84s] I look forward to seeing you all again
+[1813.36s] soon so on behalf of BAC thank you thank
+[1817.16s] you so much for all that you do and
+[1819.12s] we'll see you next month for our next 30
+[1821.88s] minute skills bye everyone

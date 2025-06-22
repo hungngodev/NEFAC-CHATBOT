@@ -1,0 +1,525 @@
+[0.08s] it was like someone had overturned a
+[2.56s] filing cabinet
+[3.68s] and then scanned it in uh and there it
+[6.88s] was just
+[7.28s] completely out of order and i mean
+[8.64s] imagine having to go through
+[10.72s] four or five thousand pages of mostly
+[12.96s] very boring
+[14.24s] uh bureaucratic information
+[16.71s] [Music]
+[21.92s] i'm justin silverman of the new england
+[23.60s] first amendment coalition
+[25.52s] this presentation is brought to you in
+[27.12s] part by the society professional
+[28.88s] journalists foundation
+[30.56s] the sbj foundation supports defects
+[32.72s] efforts to bring journalists into
+[34.00s] communities and to speak with
+[35.60s] readers viewers and listeners about the
+[38.24s] work they do
+[39.20s] and the very important role free press
+[41.44s] plays in our democracy
+[43.36s] many thanks to the sbj foundation for
+[45.12s] its support
+[46.48s] also a quick reminder december 14th
+[49.52s] 7 pm nefac will be offering a very
+[52.80s] special
+[53.36s] exclusive program with cnn's john king
+[56.80s] master of the magic wall many of us have
+[58.72s] spent election day in the days that
+[60.08s] followed
+[60.88s] listening to john a boston native
+[62.96s] discuss the presidential election
+[64.96s] so please join us for that conversation
+[67.20s] you can find out more information and
+[68.88s] register
+[69.68s] at nefac.org
+[73.04s] i'm here today with evan allen a
+[74.56s] reporter at the boston globe
+[76.24s] evan thanks for joining thank you for
+[78.16s] having me
+[79.76s] evan and her colleagues at the globe
+[81.52s] have put together what i believe is a
+[83.52s] very important and useful resource for
+[85.68s] those looking for more transparency
+[88.08s] within police departments specifically
+[90.16s] in this case the boston police
+[91.52s] department
+[92.48s] it's a database that shows allegations
+[95.36s] of misconduct and records supporting
+[97.44s] those allegations
+[98.72s] and provides in a very easily accessible
+[101.36s] and
+[101.84s] useful way as many of us know these
+[104.48s] types of records can be very difficult
+[105.92s] to obtain in communities throughout new
+[108.00s] england
+[108.72s] and evan and colleagues did a fantastic
+[110.48s] job of putting together this database
+[112.08s] that can be used by everyone it's
+[113.84s] available
+[114.40s] at the boston globe's website
+[116.28s] bostonglobe.com
+[117.68s] uh evan could you share with us the back
+[120.72s] story behind this database how you
+[122.72s] identified a need
+[123.92s] for this particular project and how you
+[126.40s] went about
+[127.20s] getting the records that support all the
+[129.04s] information that's presented within this
+[130.80s] database
+[132.32s] sure so uh we actually didn't originally
+[135.20s] set out to do
+[136.32s] a database or a project we originally
+[138.56s] set out to do
+[139.44s] what we thought would be a fairly
+[140.72s] straightforward story about
+[142.64s] the boston police internal affairs
+[145.12s] system
+[146.08s] but as we started reporting we realized
+[148.16s] that there was actually no way to do
+[150.00s] a straightforward story about the
+[151.84s] internal affairs department at the
+[153.28s] boston police department
+[155.76s] so we were hearing from people sort of a
+[158.72s] variety of from officers and from
+[160.64s] different organizations a variety of
+[162.16s] complaints that
+[163.60s] um the ia department was sort of a black
+[166.48s] box
+[167.04s] uh complaints went in and they took
+[168.88s] years to come out and the reasoning
+[170.80s] behind who was punished and who was not
+[173.84s] what was sustained and what was not was
+[176.08s] sort of inscrutable
+[178.56s] and and we were also hearing complaints
+[181.28s] that
+[181.84s] the discipline was uneven racially
+[185.12s] and across genders
+[188.40s] so but we didn't have any good way
+[192.56s] to investigate whether this was true
+[194.00s] because we had no data what we had were
+[196.16s] a few
+[196.64s] high profile examples that have made the
+[199.12s] news
+[199.92s] but comparing one individual example to
+[202.80s] another individual example
+[204.80s] is very difficult because the boston
+[206.80s] police department does not have
+[208.88s] like a matrix for discipline they don't
+[210.72s] have if you do a
+[212.00s] then b happens it's called progressive
+[214.96s] discipline and it's meant to be flexible
+[216.80s] and what that means is that each
+[218.24s] individual officer is handled sort of
+[220.16s] case by case
+[221.20s] so when you try to compare one case to
+[222.88s] another you can always find a reason why
+[225.52s] this guy deserves a light punishment and
+[227.20s] this guy deserves a heavy punishment
+[229.12s] it's only when you look at the cases
+[230.96s] sort of in aggregate
+[232.24s] that you can see trends and you can see
+[234.64s] how different types of cases are being
+[236.48s] handled
+[237.12s] and how different types of officers are
+[239.76s] being handled
+[241.76s] but we didn't have any data at all so
+[245.44s] we started by requesting
+[250.08s] personnel orders which are internal
+[252.08s] documents
+[253.20s] that um the boston police department
+[255.60s] sends out
+[256.64s] uh pretty regularly there's probably
+[258.64s] between three and 500 a year
+[260.64s] and they catalog a lot of different
+[263.92s] things within the department
+[265.60s] it's every promotion every retirement uh
+[268.40s] every hiring
+[269.60s] um but it's also all or a lot of the
+[272.72s] discipline
+[273.60s] um and so we thought we would make a
+[276.32s] database
+[277.36s] with that um and we actually probably
+[280.48s] was
+[280.80s] we got ten years of those personnel
+[282.16s] orders and that
+[283.92s] was somewhere in the vicinity of four or
+[285.84s] five thousand pages
+[287.36s] of uh individual orders
+[291.04s] that were not in order that were not
+[292.96s] complete so before we could even start
+[294.88s] going through them
+[296.00s] we had to go by hand and determine what
+[299.04s] was missing
+[299.92s] and then make a new set of requests and
+[301.68s] so that
+[303.36s] process alone took us probably
+[306.88s] six weeks two months something like that
+[308.96s] uh it was very labor intensive
+[311.12s] um and we got to the end of it and
+[312.48s] realized that we still didn't have a
+[313.68s] complete database
+[314.96s] because uh personnel orders only show
+[318.56s] completed discipline they don't show who
+[321.36s] is being accused of what
+[322.88s] which is really important right uh we
+[324.64s] wanted to know more about
+[326.64s] what officers get accused of things and
+[328.48s] then not punished for them
+[330.24s] um so we did manage to get
+[333.36s] from the police department a log
+[336.56s] of their internal discipline with the
+[339.36s] cases
+[340.16s] when the case came in what the
+[341.68s] allegations were and the outcome
+[344.64s] but that data was very messy uh there
+[347.84s] were lots of repetitions there were lots
+[349.84s] of omissions
+[351.20s] um there were lots of things redacted
+[354.80s] so we had we spent more weeks cleaning
+[357.92s] that up
+[359.20s] and we merged those two data sets
+[362.72s] my colleague andrew ryan did a ton of
+[364.40s] work on this and so we merged those two
+[366.48s] data sets
+[367.28s] and we still didn't have a complete
+[368.40s] database um we needed information
+[370.96s] on who these officers were we wanted
+[372.80s] race and gender information
+[374.32s] so we took uh three different
+[378.00s] city payrolls from 2009 2016 and 2020
+[382.72s] and we integrated that information which
+[384.48s] gives you just like gender and race and
+[387.12s] that stuff
+[388.08s] um but we also wanted more information
+[391.44s] about lots of the individual cases
+[393.20s] themselves
+[394.08s] which sent us on a weeks-long journey of
+[397.76s] just going through you know many
+[401.76s] many district court cases superior court
+[405.44s] federal court
+[406.84s] um civil court um
+[410.00s] probate records uh
+[413.36s] you know we we were going just
+[415.12s] courthouse to courthouse all over
+[416.48s] massachusetts for a long time
+[418.32s] uh trying to fill in some of the gaps
+[420.08s] where we couldn't understand
+[421.44s] what had happened uh to cause
+[424.56s] for example harsh discipline um and then
+[428.08s] uh we also pulled a lot of civil service
+[432.08s] and arbitration documents which helped
+[433.92s] explain
+[435.20s] civil servants and arbitration
+[436.40s] proceedings follow serious
+[439.28s] discipline so terminations or lengthy
+[442.16s] suspensions
+[443.20s] and they can often overturn department
+[445.44s] decisions
+[446.48s] to punish officers but they give a lot
+[448.64s] of context on how
+[450.16s] the internal affairs process works um
+[454.08s] so uh anyway so we spent a long time
+[456.72s] gathering a lot of records
+[458.00s] and putting them all together and
+[459.84s] cleaning them up and making them
+[461.84s] accessible and correct we had to do a
+[463.76s] lot of checking with the police
+[464.88s] department
+[465.44s] and um and just between all the
+[468.24s] documents but
+[469.28s] so the whole process we started sometime
+[472.88s] in i don't know june or july something
+[475.60s] like that
+[477.04s] and we just got it online last month so
+[479.20s] it was very
+[480.72s] it was a huge amount of work well
+[482.56s] congratulations for doing it
+[484.08s] really well done it's a it's a great
+[485.84s] project um
+[488.00s] it's particularly in massachusetts where
+[489.68s] we have a public records law
+[491.36s] that you know ranks i don't know
+[493.60s] mid-level maybe toward the bottom
+[495.28s] as far as other public record laws in
+[497.44s] the country
+[498.32s] um how forthcoming was the police
+[501.36s] department boston police department and
+[502.96s] giving you this information and
+[504.16s] providing you the records that you
+[505.60s] needed
+[506.24s] albeit messy records and messy data but
+[508.56s] how forthcoming
+[509.60s] was the department and giving you the
+[510.88s] information you needed to make this
+[512.24s] database possible
+[514.08s] um you know it was hard to get the
+[516.32s] information
+[517.20s] largely because it came very very slowly
+[520.40s] in sort of dribs and drabs
+[522.24s] uh you know when i when i say that the
+[524.08s] personnel orders
+[526.56s] were difficult to sort through it was
+[528.88s] like someone had overturned a
+[531.20s] filing cabinet and then scanned it in
+[534.48s] uh and there it was just completely out
+[536.40s] of order and i mean imagine having to go
+[538.32s] through
+[539.36s] four or five thousand pages of mostly
+[541.60s] very boring
+[542.88s] uh bureaucratic information about like
+[544.80s] so-and-so is moving from
+[546.32s] c11 to b2 um
+[550.08s] and just looking at the personnel order
+[552.40s] number and trying to log
+[554.32s] which ones you have and which ones you
+[556.56s] don't
+[557.44s] in kind of no order i mean you can't
+[560.40s] even listen
+[561.04s] to music while you're doing it because
+[562.40s] any distraction uh
+[564.08s] will destroy your ability to focus um
+[568.08s] and so so there was the sort of
+[569.92s] messiness in the way the records came in
+[572.80s] um and and they were slow uh you know we
+[576.32s] were waiting
+[577.36s] weeks and weeks for lots of different
+[579.36s] requests uh
+[580.56s] you know we're lucky to be given the
+[582.80s] time to do this i think that
+[585.52s] you know there was we have some requests
+[588.40s] still pending from july
+[590.24s] uh that we don't yet have um but you
+[593.28s] know we have certain like full ia
+[595.12s] records that we attached in there
+[596.96s] and those would take weeks to come in
+[600.00s] um and the ia log that we got uh
+[604.24s] that does cat category like categorize
+[606.80s] the
+[607.36s] you know the case when it comes in the
+[608.88s] case number and how it
+[610.48s] that outcome was fairly red like there
+[613.60s] was a lot of things redacted from it
+[615.52s] uh and it took several go-rounds with
+[617.84s] the police
+[618.56s] to get all of the categories of
+[621.12s] information that we wanted
+[622.80s] uh we based our request for that log on
+[626.24s] several different ones that were sort of
+[627.68s] floating around uh there was one made by
+[630.40s] a city councilor there was one that we
+[633.04s] looked at that was made by a lawyer
+[635.36s] but what we sort of discovered in trying
+[636.96s] to make requests
+[638.48s] was that they would be filled very
+[640.80s] literally so if you weren't asking for
+[643.92s] every specific column that you wanted it
+[647.12s] would
+[647.52s] omit information that you wouldn't even
+[650.48s] realize
+[651.52s] you needed and was missing so for
+[653.28s] example the records that the city
+[655.20s] council had obtained
+[657.68s] appeared to be complete
+[661.12s] however they were missing a whole bunch
+[662.64s] of types of cases because they hadn't
+[664.72s] been specific enough in what types of
+[666.48s] cases they wanted
+[669.44s] so it just it took a lot of thought and
+[671.44s] organization and back and forth and
+[673.84s] double and triple and quadruple
+[675.60s] checking uh to make sure that we were
+[677.84s] actually getting everything that we were
+[679.52s] asking for
+[680.72s] um and it was really a very confusing
+[683.52s] process too
+[685.20s] is this a process now that you're going
+[686.96s] to continue will this database be
+[689.12s] updated moving forward or
+[690.64s] what is the future of this database hold
+[692.96s] yeah we actually have
+[694.08s] um pretty high hopes for the database
+[696.40s] we've got a lot of information
+[698.48s] upstairs in my office uh that we need to
+[700.96s] scan in uh we're planning to
+[703.28s] do a whole bunch of different things
+[704.24s] we're gonna keep adding documents so
+[705.68s] those include
+[706.48s] ia case files that we get we have a
+[708.64s] whole ton
+[709.52s] of complaints uh from civil suits
+[713.44s] um we have uh information
+[716.72s] about people's pensions we're going to
+[718.32s] include information about people's
+[719.52s] salaries
+[720.32s] we have a whole lot of police reports
+[722.08s] from different instance
+[723.76s] incidents that officers were involved in
+[726.72s] and charged in
+[729.28s] you know we'll include links to coverage
+[730.80s] we'd like to make it sortable
+[732.72s] right now it's sortable in a variety of
+[734.48s] ways like by officer
+[736.16s] by case type but we would like to make
+[738.16s] it sortable by
+[739.20s] offense type for example so that
+[740.88s] somebody can say well i want to know
+[742.72s] about use of force of the boston police
+[744.64s] and then they could search for that
+[746.16s] particular allegation
+[748.00s] um so what we'd like to do is
+[751.28s] you know we're getting all of these
+[752.56s] records and we want to share them
+[754.96s] widely uh you know the what
+[758.00s] goes on in terms of police misconduct in
+[760.64s] the boston police department is often
+[762.16s] just
+[762.64s] invisible to the public um and
+[765.92s] even if a citizen files a complaint
+[769.20s] they often don't hear anything more for
+[770.64s] years so we just want to make
+[773.12s] that whole process visible
+[777.84s] now evan it may seem very obvious to you
+[780.24s] and i uh
+[781.04s] nefac has been raising the banner for
+[783.12s] more transparency
+[784.72s] particularly within law enforcement
+[786.24s] agencies for years and
+[788.08s] you work within a newsroom you're part
+[790.56s] of the watchdog media your job is to
+[792.56s] hold government accountable
+[794.16s] but for citizens that don't have our
+[797.52s] background
+[798.80s] can you explain why this database is so
+[800.72s] important why are these records
+[802.96s] and this type of transparency within
+[804.96s] police departments
+[806.24s] so important to the public why should
+[808.40s] the everyday
+[809.60s] average citizen who isn't working in a
+[812.08s] newsroom or doesn't come from a legal
+[813.68s] background
+[814.56s] why should they care i think people
+[818.00s] can feel very powerless in the face of
+[822.00s] an institution like the police
+[823.36s] department they feel like they have no
+[826.24s] recourse they don't understand really
+[827.68s] how
+[828.00s] it works they don't think people will
+[829.92s] believe them when they say something
+[832.00s] negative about the police and often
+[834.24s] they're right
+[835.20s] so uh you know this database is a way
+[838.96s] to sort of shine some sunlight on that
+[842.24s] and make it less of a sort of faceless
+[845.68s] institution
+[847.12s] and more of an understandable system
+[850.56s] that people don't feel so cowed by
+[853.76s] that's great and evan before we wrap up
+[855.52s] here do you have any suggestions for
+[857.28s] other journalists outside of the globe
+[859.12s] that
+[859.76s] are working in communities uh perhaps
+[862.00s] have smaller police departments but
+[864.24s] uh just as secretive just as much of a
+[866.96s] need for transparency do you have any
+[868.96s] suggestions or tips for them on how they
+[871.28s] can get access to these types of records
+[873.20s] and provide that sunlight like you and
+[875.04s] your colleagues did
+[876.32s] uh yeah so a couple things that were
+[878.40s] really useful for us
+[880.08s] um before we started requesting records
+[882.48s] from the department itself we were
+[884.24s] requesting records from
+[886.48s] all sorts of private citizens a lot of
+[888.24s] attorneys helped us out
+[889.68s] a lot of organizations helped us out
+[892.64s] people that think about
+[894.08s] these issues on a sort of day-to-day
+[895.68s] basis they helped us not only with how
+[898.00s] to think about what we needed and how to
+[900.96s] write our requests
+[902.16s] but they also gave us examples um you
+[904.64s] know it was
+[905.84s] we got one one person turned over just
+[909.04s] all of these ia files that they had
+[911.28s] which was fantastic because then we knew
+[912.88s] what kinds of documents are included
+[915.28s] in an ia case and we can ask for them
+[917.04s] specifically so
+[918.48s] uh the more information you have going
+[920.96s] into
+[921.52s] a records request for something that you
+[923.20s] know will be contentious
+[924.72s] uh the more ability you have to get it
+[927.84s] um and
+[931.60s] uh you know we
+[935.52s] there was a lot of incredibly repetitive
+[938.48s] and largely
+[939.52s] fruitless work that went into this
+[941.44s] database that was like mind-numbingly
+[943.36s] boring
+[943.84s] like for we had a list of probably like
+[947.04s] 50 or so officers that we were
+[948.64s] particularly interested in
+[950.56s] uh and we were just like we were
+[952.64s] scanning them in every
+[954.80s] court that we could think of which is
+[957.92s] wildly tedious because you have to if
+[959.60s] they have a hyphenated name you have to
+[960.88s] scan them like
+[962.00s] three different times but you have to
+[964.00s] put their name in through
+[965.92s] like 40 different places i mean if
+[968.88s] you're looking in all the district
+[969.92s] courts in boston
+[970.96s] federal court superior court you're
+[972.48s] looking in probate court you're looking
+[973.84s] in the courts
+[975.04s] in and around the places where they live
+[977.60s] um
+[978.88s] it takes a lot of time and most of it is
+[980.40s] going to come back with nothing but in a
+[982.16s] few different cases
+[983.20s] in very unlikely places we found these
+[985.68s] sort of troves of information
+[987.52s] um and you know that
+[990.88s] type of work i would say that like for
+[993.60s] every
+[995.28s] 200 useless inquiries we had
+[998.40s] one useful inquiry and it took a long
+[1000.16s] time but that is sort of what
+[1004.08s] what you know some of the most important
+[1005.92s] things are some of the most buried
+[1007.60s] things
+[1008.40s] uh so doing work that feels like it's
+[1011.44s] really pointless almost
+[1014.48s] because you're almost never gonna find
+[1015.92s] anything some of that is the most
+[1017.68s] important stuff
+[1018.80s] i mean we only found uh we found one of
+[1021.68s] our sort of
+[1022.32s] main cases by looking in
+[1025.60s] civil court in a county outside of
+[1028.56s] suffolk which is not really where
+[1030.24s] police officers get sued in the first
+[1032.32s] place and it was out of
+[1033.92s] time with all the records that we had so
+[1037.12s] you know we pulled rnv records which
+[1039.04s] were wildly helpful so
+[1040.88s] even things that seem tangentially
+[1042.16s] related can actually wind up being like
+[1044.24s] the key that you need that you don't
+[1045.60s] know that you need
+[1047.44s] thank you that's great guidance and uh
+[1049.20s] great encouragement to all
+[1050.80s] local journalists so thank you for that
+[1052.96s] and thank you for all the work that you
+[1054.56s] do and congrats again on
+[1056.40s] making this database and providing it
+[1058.16s] online for everyone's use
+[1059.84s] great job thank you very much
+[1067.76s] you

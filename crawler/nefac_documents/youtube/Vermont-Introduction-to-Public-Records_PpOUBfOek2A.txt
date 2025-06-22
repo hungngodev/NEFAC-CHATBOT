@@ -1,0 +1,895 @@
+[5.04s] hey everyone my name is emily sweeney
+[7.12s] i'm a reporter at the boston globe
+[9.20s] i also serve as president of the new
+[11.04s] england society of news editors
+[13.36s] and i sit on the board of the new
+[14.80s] england first amendment coalition
+[16.72s] joining me today is leah ernst she sits
+[19.84s] on an effect board with me
+[21.84s] and leah joined the aclu of vermont in
+[25.04s] 2015
+[26.32s] she serves as the legal director and she
+[29.20s] previously served as a judicial law
+[31.04s] clerk for the u.s district court for the
+[33.28s] eastern district of michigan
+[35.12s] in the u.s court of appeals for the
+[36.80s] first circuit
+[38.48s] and leah you're going to give us a nice
+[40.48s] overview of public records law in
+[42.40s] vermont
+[43.44s] thank you so much for joining us thank
+[46.40s] you emily and thank you everyone for
+[47.92s] being here
+[48.72s] um so to begin you know where does the
+[51.68s] public records act come from
+[53.60s] um and it's actually based in the
+[55.36s] constitution our our constitution
+[57.60s] provides
+[58.24s] that all power is inherent and derived
+[60.96s] from the people
+[62.32s] and that therefore all officers of
+[64.08s] government whether legislative or
+[65.92s] executive
+[66.80s] are their trustees and and servants and
+[70.00s] at all times
+[70.96s] in a legal way accountable to them so
+[73.44s] that's a pretty broad and sweeping
+[74.88s] statement that you know
+[76.32s] that we the people give the power to the
+[79.28s] government and they
+[80.24s] therefore owe us accountability so
+[83.60s] the vermont legislature has enacted a
+[85.68s] public records act
+[87.04s] to implement that constitutional
+[89.12s] guarantee
+[90.48s] and says right at the outset of the
+[94.24s] of the law that its policy is to provide
+[97.36s] for free and open examination of records
+[99.36s] consistent with that constitutional
+[100.80s] guarantee
+[102.48s] it mentions again that the officers of
+[104.48s] government are trustees and servants of
+[106.16s] the people
+[107.20s] and it ensures that the public records
+[109.52s] act be read by courts liberally
+[113.04s] to bring about the greatest possible
+[114.72s] government transparency
+[116.16s] and openness and i'm sure you're
+[119.04s] familiar with examples of where
+[121.28s] uh records obtained via the public
+[123.60s] records act have revealed significant
+[125.44s] government wrongdoing
+[126.88s] uh we can certainly think about the eb-5
+[129.04s] scandal and all that's
+[130.16s] unfolding there we at the aclu sought
+[134.00s] records from the department of motor
+[135.60s] vehicles that ended up showing
+[137.68s] ongoing collaboration with immigration
+[140.80s] and customs enforcement
+[142.48s] to help ice detain and arrest folks even
+[146.24s] in dmv
+[146.88s] facilities you've certainly seen body
+[149.28s] body camera footage of police use as a
+[150.96s] force
+[151.68s] these are all records available under
+[153.36s] the public records act
+[155.68s] so when you're considering seeking
+[158.56s] records
+[160.00s] the first question to ask yourself is
+[163.68s] is the entity that has the records a
+[166.08s] public agency within the meaning of the
+[168.40s] act
+[169.20s] and the act spells out a very broad
+[171.28s] definition of what counts as a public
+[173.28s] agency
+[174.16s] uh it's i'll read this quickly because
+[176.48s] it's uh it's long it's
+[178.32s] any agency board department commission
+[180.16s] committee branch instrumentality or
+[181.84s] authority of the state
+[183.28s] or any of its political subdivisions
+[185.52s] that is towns cities
+[187.28s] school districts counties etc so
+[190.32s] a municipal police department would
+[191.92s] definitely be a public agency
+[193.60s] a state agency or human resources
+[195.52s] department
+[197.76s] federal agencies like the united states
+[199.92s] department of transportation
+[201.36s] would not be within vermont's public
+[203.52s] records act but of course there's the
+[204.96s] federal freedom of information act that
+[206.64s] would apply to them
+[209.20s] one interesting question that the courts
+[211.60s] are presently grappling with
+[213.04s] is whether and under what circumstances
+[216.08s] a private contractor
+[217.84s] that is performing a government function
+[219.68s] can be subject to the public records act
+[222.00s] there are two cases
+[223.28s] pending in the vermont supreme court
+[224.80s] right now that seek to answer that
+[226.24s] question
+[227.12s] um so stay tuned stay tuned we're hoping
+[229.92s] for
+[230.72s] um a good resolution of those and then
+[234.08s] lastly private entities that are you
+[236.24s] know not stepping into the government
+[237.92s] shoes to perform a government function
+[240.16s] they would not be within the public
+[241.60s] records act and interestingly the
+[243.84s] vermont judiciary is also not within the
+[246.08s] public records act
+[247.60s] although for its records that aren't
+[249.84s] related to
+[250.80s] specific cases so it's administrative
+[252.40s] records it has
+[255.20s] bound itself to the provisions of the
+[256.88s] public records act for those
+[260.40s] so now you know whether you have a
+[262.00s] public agency on your hands the next
+[263.68s] question
+[264.16s] is is the record you want a public
+[266.56s] record
+[267.68s] and again uh our public records act has
+[270.48s] set forth a very broad definition of
+[272.48s] what counts
+[273.20s] as a public record it's any written or
+[276.64s] recorded information
+[278.32s] regardless of physical form or
+[280.24s] characteristics
+[281.52s] which is produced or acquired in the
+[283.68s] course of public agency business
+[285.68s] there's a very broad definition it
+[287.28s] encompasses you know a police bladder
+[290.08s] um text messages between select board
+[292.64s] members
+[293.28s] if if it relates to the public business
+[296.16s] whether on a private device
+[297.84s] or a publicly owned device
+[301.36s] it would not apply to say love notes
+[303.68s] between state employees even if they use
+[305.36s] the state computer system
+[306.96s] because that is not the course of agency
+[309.12s] business
+[310.16s] um so again it's a very broad
+[313.60s] definition um this language about
+[316.40s] regardless of physical form means that
+[318.40s] you can't say
+[319.84s] it's not a record because it's in a
+[321.36s] database
+[323.04s] we've wrestled with that on occasion
+[327.60s] okay so now you have a public agency and
+[329.44s] a public record how does the how is the
+[331.52s] agency
+[332.08s] permitted to respond there are five
+[334.96s] permissible responses
+[336.64s] one here's your record two that record
+[339.28s] doesn't exist
+[340.64s] three the record's in use right now but
+[343.12s] we can give it to you within a week
+[344.80s] which is longer normally agencies have
+[346.80s] only three business days to produce a
+[348.48s] record
+[349.12s] but it can be up to a calendar week if
+[351.44s] they're if they're using the record or
+[352.88s] it's in storage somewhere
+[354.72s] um in unusual circumstances they're
+[358.08s] allowed to
+[358.80s] to take up to 10 days in my experience
+[362.72s] almost every circumstance is deemed
+[364.40s] unusual and agencies just
+[366.08s] routinely cite this this provision to
+[369.76s] elongate the time to respond
+[372.96s] and then lastly and we'll spend a little
+[374.40s] more time on this later on is
+[377.20s] the record is exempt and this is why um
+[381.04s] so if they tell you no you know
+[384.48s] you can't make a request without putting
+[386.08s] it in writing that is incorrect that's
+[387.84s] not a permissible response
+[389.68s] uh if i gave that out that would just
+[391.92s] cause trouble that's definitely not a
+[393.68s] permissible response
+[395.36s] um if the agency asks you why you need
+[398.64s] it that is not a permissible response
+[400.32s] the requesters
+[401.68s] um identity and motive is irrelevant to
+[404.48s] its obligation to the agency's
+[406.00s] obligations under the public record act
+[408.80s] um so those are those are the
+[410.88s] permissible responses now
+[412.72s] i mentioned we're going to spend a
+[413.68s] little time on exemptions this is where
+[415.76s] a lot of the fights happen in public
+[417.36s] records cases
+[420.40s] so an agency that believes that an
+[422.88s] exemption applies to
+[424.24s] a record or a part of a record must
+[426.72s] identify
+[427.84s] what is being withheld what exemption
+[430.24s] they're claiming
+[431.36s] and provide a statement of reasons and
+[433.68s] supporting facts for denial i found that
+[435.68s] agencies don't tend to
+[437.12s] to do this with much specificity to my
+[440.08s] great frustration
+[442.24s] but that is its obligation under under
+[444.24s] the law
+[445.84s] it can't withhold an entire document
+[447.76s] just because some of the material is
+[449.44s] exempt it is instead required
+[451.36s] to redact what is exempt and produce the
+[453.44s] rest
+[455.04s] unfortunately in vermont we have a
+[458.08s] boatload of exemptions to the public
+[459.92s] records act there are
+[461.36s] 42 delineated in the act itself
+[464.56s] and a couple hundred more scattered
+[466.80s] throughout the statute books
+[468.40s] um so we are definitely not going to be
+[471.04s] spending time on each exemption
+[473.04s] here today but if we have a little time
+[475.04s] at the end i can talk about some of the
+[476.56s] more common commonly invoked exemptions
+[480.56s] so if an agency says we have
+[484.08s] redacted one paragraph of medical
+[486.48s] information because of exemption
+[487.92s] 7 which covers personal documents that's
+[491.20s] sufficient but if they just say we have
+[493.20s] withheld one black binder full of papers
+[495.44s] that is insufficient both because it
+[497.04s] doesn't identify the document
+[498.88s] and it doesn't identify the exemption or
+[501.36s] why it replies
+[502.48s] or why it applies um so that's
+[506.08s] sort of the first few phases of
+[509.20s] um a public records act request
+[513.44s] what often comes next is that the agency
+[515.84s] wants to charge you money
+[517.04s] for fulfilling your public records uh
+[519.44s] request
+[520.56s] they can charge the the actual costs
+[523.68s] of making paper copies of the record um
+[527.28s] they can collect postage for mailing the
+[529.04s] records but
+[530.64s] most expensively and and uh
+[534.16s] frustratingly they're also permitted to
+[536.40s] charge the cost of staff time
+[538.64s] associated with complying with the
+[540.08s] request for a copy of the public records
+[542.72s] um if it takes more than half an hour to
+[545.68s] do so
+[546.64s] or the agency agrees to create a new
+[548.72s] public record that didn't already exist
+[551.04s] or it agrees to provide records in a
+[553.04s] quote-unquote non-standard format
+[555.04s] the half-hour one is the one that almost
+[557.12s] always
+[558.32s] always applies here and so you know you
+[561.68s] might get um
+[563.60s] you might get a response that it's gonna
+[565.44s] cost you you know several hundred
+[567.20s] dollars to get these records depending
+[568.80s] on how much time is involved
+[570.72s] um but importantly uh
+[574.16s] the agency may charge for staff time
+[576.96s] associated with a request
+[578.64s] for copies of records it cannot charge
+[581.44s] for staff time associated with requests
+[583.60s] to inspect but not take possession of
+[585.76s] records
+[586.80s] so you know we always tell people you
+[589.44s] know go ahead and make a request for
+[590.64s] copies if they come back and say
+[592.56s] you know it's going to cost you several
+[594.08s] hundred dollars say okay i'm going to
+[595.52s] come in and inspect them
+[597.20s] that's free and then once you inspect
+[599.04s] you can decide you know is a narrower
+[601.04s] request for copies
+[602.80s] um appropriate you know maybe maybe you
+[605.36s] look at
+[606.40s] several thousand documents but there are
+[608.00s] only two of interest and you can request
+[609.76s] copies of those too and that won't be
+[611.76s] exorbitantly expensive um
+[616.08s] so that's that's costs um
+[620.00s] that uh distinction between inspection
+[623.28s] and copies actually was the result
+[625.44s] well of a supreme court case from
+[628.72s] two years ago um where the aclu
+[631.44s] represented
+[632.48s] an individual who's seeking body cam
+[634.16s] footage of what he believed was an
+[635.76s] unlawful use of force and
+[639.28s] that precedent uh is important because
+[642.16s] it should not be prohibitively expensive
+[644.88s] to understand what your government is
+[646.96s] doing in your name
+[648.32s] um and unfortunately that had often been
+[652.08s] the case for folks who were facing
+[653.68s] just ridiculous fees you know in in my
+[656.80s] personal opinion
+[658.72s] responding to public records requests is
+[660.96s] part of the job
+[662.00s] of being a public official and there
+[664.88s] shouldn't be payment
+[665.76s] on top of what already is your salary
+[668.00s] for doing your job
+[669.04s] but uh evidently not everyone agrees
+[671.84s] with me on that
+[672.64s] on that front um
+[676.32s] so if you've made your request you've
+[679.04s] gotten your response and you don't think
+[680.88s] it's
+[681.52s] adequate either the agency didn't um
+[685.52s] uh didn't produce all the documents you
+[687.84s] thought you were entitled to
+[689.12s] or made um redactions that you did not
+[691.60s] think were appropriate
+[693.12s] before you can go to court you first
+[694.88s] have to appeal the denial to the head of
+[696.72s] the agency which is
+[698.08s] oftentimes uh a futile gesture but
+[701.12s] nonetheless a required one before before
+[704.32s] you go to court
+[705.68s] and then uh after that and
+[708.96s] if that appeal is denied then
+[712.16s] then you can go to court and i generally
+[715.28s] tell people to
+[717.36s] be ready to go to court before they file
+[719.68s] their appeal
+[720.80s] because there's a there's a lack of
+[724.32s] clarity in the law about the timeline
+[726.16s] you have to file suit after you get
+[728.40s] your appeal denied um there are there
+[731.28s] are those who believe you have only 30
+[733.04s] days to do that and that
+[734.40s] could be a pretty quick amount of time
+[735.92s] to write find an attorney write a
+[737.84s] complaint and get it on file so
+[740.24s] uh so as i said i always advise people
+[742.40s] to be ready to go to court before you
+[744.00s] ever file that appeal
+[748.32s] then i'd like to just talk quickly about
+[750.88s] a few strategies
+[752.16s] for making your making your public
+[754.08s] records request
+[756.88s] one identify the documents you want as
+[759.92s] clearly and specifically as possible
+[761.92s] this both makes it more likely
+[764.32s] that you you're going to get what you
+[766.00s] asked for but also
+[767.60s] uh minimize minimizes costs you know if
+[770.40s] if you say
+[772.00s] i want all the records uh with the word
+[776.16s] clam in it that could depending on the
+[779.12s] agency result in a lot of records when
+[781.04s] all you're really trying to find out
+[782.64s] is what went into making a specific
+[785.12s] regulation related to the
+[786.96s] um safety of of
+[790.00s] clams as food i don't you know and so
+[792.32s] you really want to be very specific so
+[794.00s] that you get the record you want
+[795.60s] and you don't get a bunch of junk you
+[796.88s] don't want and you don't end up with
+[799.04s] a very large bill at the end
+[802.80s] i mentioned earlier that there was no
+[804.88s] requirement that the request be in
+[806.56s] writing
+[807.44s] but i nevertheless recommend that you
+[809.36s] put it in writing
+[810.56s] this is helpful both for if you end up
+[813.68s] having
+[814.00s] to appeal and or go to court um there
+[816.96s] won't be any disputes about the clarity
+[819.04s] of what you asked for or the specifics
+[820.64s] of what you asked for
+[821.92s] and so it's just always better practice
+[823.84s] to put your request in writing
+[826.64s] and then here's a little trick i often
+[828.72s] recommend is
+[829.92s] if you're seeking commun uh
+[831.60s] communications between
+[833.28s] two agencies um request
+[836.64s] request the records from both you might
+[838.24s] end up getting something different from
+[839.84s] from each agency this is especially true
+[842.40s] if one is a state agency and one is a
+[844.08s] federal agency because
+[846.24s] as i mentioned vermont has this whole
+[848.40s] slew of exemptions that don't have any
+[850.16s] analog in the federal statute
+[851.92s] and so they can't withhold the same
+[854.00s] documents that the state might be able
+[855.76s] to withhold
+[857.20s] and and but also it may be that you know
+[860.56s] one produces one would really prefer not
+[862.80s] to produce a certain document and
+[865.04s] uh mysteriously just doesn't find it
+[866.80s] when it's searching for documents and
+[868.08s] the other agency might and so
+[870.08s] it's always if both entities are public
+[872.72s] agencies
+[873.44s] it's always a good idea to make your to
+[875.92s] lodge your request
+[877.20s] in both places
+[882.24s] okay so now i think
+[885.36s] it would be a good idea to spend a
+[887.28s] little time on
+[889.36s] the most common exemptions that that we
+[892.08s] see
+[892.96s] um and it's important to note too that
+[895.92s] almost
+[896.72s] all of these exemptions are permissive
+[899.52s] but not mandatory meaning that
+[901.92s] while it might permit an agency to
+[903.92s] withhold it doesn't necessarily require
+[906.64s] an agency to withhold the record there
+[908.72s] are some
+[909.68s] um exceptions you know things that are
+[911.68s] confidential by law things that are
+[913.28s] protected by hipaa
+[914.48s] or ferpa or um things like that the
+[917.60s] agency is required to withhold but
+[919.12s] otherwise
+[920.32s] uh they're they're uh
+[923.60s] they're exemptions that the agency can
+[925.76s] but is not required to avail itself of
+[929.68s] in keeping with the liberal construction
+[932.40s] that the public records act
+[934.96s] is entitled to exemptions are required
+[937.60s] to be strictly construed
+[939.12s] against the agency and the agency bears
+[941.52s] the burden of proving
+[943.04s] that the exemption applies
+[946.48s] so you know a narrow construction of
+[948.40s] exemption meaning means
+[950.08s] if the exemption allowed you to withhold
+[952.08s] records relating to sheep
+[954.96s] that won't also allow you to withhold
+[957.60s] records relating to goats
+[959.28s] notwithstanding similarities and any
+[962.56s] doubts about
+[963.52s] whether the exemption applies are
+[965.28s] decided in favor of the requester in
+[967.12s] favor of open
+[968.00s] access to governmental records um
+[972.40s] so if you get if you uh get a response
+[976.24s] from an agency
+[977.44s] that that has various exemptions claimed
+[981.60s] there are a few things you can try to do
+[983.44s] to resolve the dispute before
+[985.44s] it has to go to court one is
+[988.56s] always always always request that the
+[990.72s] agency
+[991.84s] comply with its obligation to provide a
+[994.00s] list of what's being
+[995.20s] withheld you know description of the
+[996.80s] records the reasons why the exemption
+[998.96s] cited applies to each
+[1000.48s] because just by going through that
+[1001.92s] process they sometimes realize
+[1004.00s] oh you know what that exemption wasn't
+[1005.68s] really justifiable
+[1007.20s] here i'm going to produce this for you
+[1010.40s] um that that has happened in several
+[1013.20s] several instances
+[1014.32s] um when i've made public records
+[1016.00s] requests in the past
+[1017.76s] um and then if if
+[1020.80s] what you're seeking is is um
+[1024.08s] a record that's on some kind of form
+[1026.96s] like a use of force report or something
+[1028.88s] like that
+[1029.84s] request a blank or sample of copy of
+[1033.04s] that form
+[1034.00s] because you can look on that and say
+[1035.60s] okay i could see justifying
+[1038.32s] redacting this field in this field but
+[1040.96s] not all these other fields and so you
+[1042.64s] have
+[1042.96s] you just know specifically and precisely
+[1045.20s] what you're looking for
+[1046.80s] um and you can say okay so you're saying
+[1049.20s] the date of the incident is exempt
+[1051.52s] under under what under what exemptions
+[1053.84s] the supervisor signature under one
+[1055.52s] exemption
+[1056.56s] um and then you'll go um
+[1060.00s] you know through the form that way and
+[1062.24s] oftentimes agency will realize that it
+[1064.24s] can't justify
+[1065.68s] withholding the entire document and
+[1068.16s] instead will
+[1068.88s] put in some redactions
+[1073.20s] so what are the most common exemptions
+[1075.92s] that
+[1076.32s] at least in my practice i come across
+[1080.16s] one is privilege this is most often
+[1083.44s] attorney client privilege although there
+[1085.28s] may be some others
+[1086.72s] that pop up from time to time um
+[1089.92s] so the first exemption in the public
+[1091.76s] records act says
+[1093.04s] it applies to records that if if
+[1095.44s] revealed would cause the record
+[1097.04s] custodian to violate any statutory or
+[1099.20s] common law
+[1100.00s] privilege attorney-client privilege is a
+[1101.92s] common law privilege and so
+[1104.72s] the exemption one excuse me exemption
+[1108.08s] 4 incorporates all these other
+[1110.88s] privileges
+[1112.80s] that exist so you know
+[1116.00s] a select board might say email messages
+[1118.08s] with the town attorney
+[1119.76s] could be withheld under exemption four
+[1121.44s] because their attorney client privileged
+[1124.88s] but oftentimes this is used it's just an
+[1127.36s] extremely
+[1128.24s] broad way that isn't justified because
+[1130.40s] the privilege is actually
+[1131.68s] fairly narrow it only applies when all
+[1134.88s] of the following conditions are met
+[1136.88s] um the communications are private
+[1139.60s] they're between the attorney and
+[1141.12s] the client during the course of
+[1143.36s] representation
+[1144.88s] for the purpose of furthering the
+[1146.32s] representation um
+[1148.16s] so you know a memo
+[1151.36s] written by an attorney to a client but
+[1153.28s] also distributed to third parties
+[1155.20s] um like people at unrelated agencies are
+[1157.52s] sent out as a press release
+[1159.04s] that is not privileged because it's not
+[1161.12s] only between the attorney and the client
+[1162.80s] it's been shared with others
+[1164.64s] um an email that's neither written by
+[1168.72s] nor
+[1169.12s] addressed to an attorney is not
+[1171.04s] privileged um
+[1173.76s] the document from a person who is an
+[1175.60s] attorney but isn't the agency's attorney
+[1177.84s] and representing that agency is not
+[1179.68s] privileged
+[1180.56s] so the privilege is much narrower than
+[1184.16s] just
+[1184.72s] it has to do with something an attorney
+[1186.48s] was involved with um which
+[1188.48s] oftentimes is how agencies treat this
+[1191.44s] exemption
+[1194.64s] exemption 5 deals with police records
+[1197.12s] this one
+[1197.76s] is obviously very very commonly cited
+[1202.16s] it exempts records um dealing with the
+[1206.48s] investigation and detection of crime
+[1209.04s] but only if they meet certain criteria
+[1211.84s] so it used to be
+[1213.04s] the exemption just said records dealing
+[1215.28s] with the investigation and detection of
+[1216.72s] crime
+[1217.36s] are exempt but then following the
+[1220.16s] federal foia they said no no no
+[1222.96s] these records are presumptively um
+[1226.32s] available under the public records act
+[1228.56s] unless
+[1229.52s] their release would cause one of six uh
+[1232.24s] enumerated harms most often
+[1235.76s] could interfere with enforcement
+[1237.20s] proceedings uh deprive someone of a
+[1239.60s] right to a fair trial by tainting the
+[1242.00s] painting the potential jury pool um
+[1245.68s] be an unwarded invasion of personal
+[1247.68s] privacy
+[1248.72s] that sort of thing so um unless the
+[1251.92s] the police department can show that one
+[1255.28s] of these harms is likely to occur
+[1257.60s] the record must be produced um
+[1261.20s] and then there are other types of
+[1262.48s] records that must be released regardless
+[1264.64s] of
+[1265.04s] meeting any of these criteria one is
+[1267.92s] records that show the
+[1268.88s] initial arrest of a person so that's
+[1270.48s] like the ticket citation or traffic
+[1272.00s] complaint
+[1273.04s] um if it reflects a criminal charge or
+[1275.28s] it relates to the management of the
+[1277.04s] agency
+[1279.60s] so oftentimes
+[1282.64s] law enforcement will cite this exemption
+[1285.84s] to withhold a ticket and it's just
+[1287.76s] plainly not
+[1289.20s] appropriate and so you know if that were
+[1291.52s] to happen to you be sure you
+[1293.28s] you push back on that um
+[1298.00s] and then likewise the information that
+[1300.56s] reflects the management
+[1301.84s] and direction of an agency this is stuff
+[1303.76s] that shows agency policies practices
+[1305.84s] guidelines
+[1307.04s] um how the agency structures its
+[1308.72s] business essentially
+[1310.32s] including how it responds to citizen
+[1312.48s] complaints and employee discipline those
+[1314.16s] kinds of policies so those are not ever
+[1316.16s] exempt
+[1316.96s] even if any of these you know triggering
+[1319.44s] harm conditions
+[1321.12s] um is present so uh
+[1325.68s] what what would be exempt under there a
+[1328.56s] psychiatrist report
+[1329.76s] concluding that a criminal defendant is
+[1331.44s] not competent
+[1333.12s] that would be exempt policies and
+[1336.56s] procedures governing police officer
+[1338.32s] discipline definitely not
+[1341.84s] emails dealing with an agency's plan to
+[1344.96s] bring civil lawsuits not exempt
+[1347.44s] um probably a prosecutor's files about
+[1351.20s] upcoming
+[1352.16s] prosecutions would be exempt um
+[1356.00s] this this is something we see a lot
+[1357.92s] around the country
+[1360.64s] records showing names of police officers
+[1362.64s] who have been arrested for domestic
+[1364.00s] violence are not exempt under this
+[1365.84s] exemption
+[1366.80s] um i don't know if you've seen or heard
+[1369.20s] of laurie's list
+[1370.24s] um or other things like that where it's
+[1372.64s] lists of
+[1374.16s] police officers that are for one reason
+[1377.28s] or another
+[1378.16s] um have issues with their credibility if
+[1381.04s] they were called as a witness because
+[1382.56s] they've been arrested for various
+[1384.32s] various crimes um or been you know
+[1388.00s] disciplined for lying on a
+[1389.76s] lying in a report or something like that
+[1391.92s] those types of records
+[1393.28s] should not be exempt and then the last
+[1396.64s] one we see a whole bunch
+[1398.16s] is personal records um
+[1402.56s] and it's important to note this is
+[1403.68s] personal not personnel uh
+[1406.56s] agencies routinely say well that's in
+[1408.64s] the personnel file so it's a
+[1410.48s] personnel record and it's exempt and
+[1412.24s] that's just an incorrect reading of the
+[1413.92s] statute
+[1417.04s] but as construed by the supreme court
+[1419.52s] this is a very narrow
+[1420.80s] exemption that protects only information
+[1424.00s] that shows
+[1425.12s] intimate details of a person's life
+[1427.92s] including information that may subject
+[1429.52s] the person to
+[1430.32s] embarrassment harassment disgrace or
+[1432.40s] loss of employment or fronts
+[1434.16s] and even then if one of those things
+[1435.92s] would happen the court still has to
+[1437.68s] balance the privacy interest in the
+[1439.44s] against the public interest and
+[1440.88s] disclosure so we see this one cited
+[1444.00s] just all the time but it really is meant
+[1446.24s] to apply to
+[1447.20s] very narrow um category of documents
+[1450.80s] so information showing that a public
+[1453.12s] official was fired for watching porn at
+[1455.12s] work
+[1455.84s] that should not be exempt even though
+[1457.44s] it's embarrassing it would subject them
+[1459.36s] to embarrassment disgrace etc
+[1461.92s] the public interest outweighs the
+[1463.52s] privacy interest in that information
+[1468.48s] text messages about how a state trooper
+[1470.40s] propositions female motorists for sex on
+[1472.56s] duty
+[1473.12s] not exempt even if embarrassing um
+[1476.88s] a social security number exempt
+[1480.40s] a convicted felon's dna sequence would
+[1482.88s] be exempt i mean that's
+[1484.16s] very very intimate and there's no public
+[1486.40s] interest in
+[1487.44s] releasing that information um
+[1491.36s] video of police beating a naked arrestee
+[1494.80s] would be partially exempt the um
+[1498.08s] the the the police officer should not be
+[1501.68s] redacted or
+[1502.72s] blurred but the individual who is
+[1505.12s] unclothed
+[1505.92s] should be um the police officer has no
+[1509.20s] privacy interest in not having video of
+[1512.00s] him beating someone up at least
+[1513.52s] whereas the rsd obviously has a strong
+[1515.52s] privacy interest in
+[1517.44s] video of their naked body being released
+[1522.32s] so those are the main uh the main
+[1524.64s] exemptions we come across
+[1525.92s] as i mentioned there are gazillion more
+[1528.40s] but these are the ones that are most
+[1529.68s] important
+[1530.24s] to know we had a question come in from a
+[1533.68s] participant
+[1536.80s] they wanted to know what they had a
+[1538.88s] question about what constitutes
+[1540.40s] personal documents and
+[1543.92s] they said i'm working on a request to
+[1545.92s] professional licensing board where i
+[1547.84s] will be requesting
+[1549.04s] individuals transcripts and board
+[1550.96s] correspondence internal and with
+[1552.96s] individuals
+[1554.24s] related to license licensure for
+[1557.28s] individuals are these transcripts and
+[1559.36s] correspondence
+[1560.64s] public or private in our legal
+[1563.28s] proceedings and outcomes of legal
+[1565.04s] proceedings in connection with
+[1567.12s] professional licensure public or private
+[1570.80s] so i guess it's a two-part question yeah
+[1572.80s] yeah so taking the first part
+[1575.12s] um the internal correspondence
+[1579.28s] and correspondence external to the board
+[1582.56s] with
+[1582.88s] with other individuals
+[1586.08s] should not be exempt unless um
+[1590.08s] unless it can meet this this high bar
+[1593.60s] of showing that it would uh expose
+[1596.48s] intimate details of the person's
+[1598.00s] life and that the public uh
+[1601.04s] interest in that in that information is
+[1602.88s] not outweighed by the privacy interest
+[1604.64s] so it's a very
+[1605.36s] you know fact specific case-by-case
+[1607.68s] analysis
+[1608.96s] you know without knowing what the
+[1610.16s] correspondence said it was impossible to
+[1612.64s] sort of
+[1613.20s] just make an assessment on the fly but i
+[1617.44s] would just say you know the bar is quite
+[1619.20s] high for this
+[1620.00s] exemption um and so
+[1624.08s] the presumption should always be that
+[1626.00s] the record is accessible
+[1628.16s] unless you know this sort of very high
+[1631.20s] bar is
+[1631.76s] met um
+[1634.96s] transcripts if if you're referring to
+[1638.80s] um like school transcripts and and
+[1641.92s] um grades that would uh
+[1645.12s] educational that would be um
+[1648.56s] that would likely not be covered by um
+[1651.84s] that would likely be covered by the by
+[1654.08s] ferpa the
+[1655.60s] the law that protects educational
+[1657.60s] records um
+[1659.36s] and then ferpa gets uh subsumed within
+[1663.12s] the public records act because there's
+[1664.56s] an exemption for
+[1665.68s] records which are made confidential by
+[1667.44s] some other law
+[1669.68s] but if they if they were not within
+[1671.52s] within ferpa they would likely be
+[1673.52s] um likely be accessible and then legal
+[1677.04s] proceedings and outcomes of legal
+[1678.32s] proceedings
+[1679.36s] public or private legal proceedings are
+[1682.48s] presumptively public
+[1683.76s] it's a very very high bar to seal
+[1687.36s] to seal legal documents and to close a
+[1690.00s] courtroom door
+[1691.68s] i can certainly say that
+[1695.04s] for attorney licensure uh all all of
+[1698.00s] that
+[1698.40s] is is public the initial investigation
+[1701.20s] may not be but once
+[1702.40s] there's um once there's an outcome and
+[1705.84s] the person was found to have violated
+[1708.16s] their obligations under our
+[1710.08s] code of professional conduct that's all
+[1712.08s] public
+[1713.76s] we have one more question i think we
+[1715.12s] have time for if that's all right leah
+[1717.28s] yeah of course yeah so somebody asked um
+[1720.72s] what are the private contractor cases
+[1722.80s] being looked at by the supreme court
+[1724.72s] and what records do they involve are you
+[1726.96s] familiar with that
+[1728.32s] yes yeah actually we filed a an amicus
+[1731.44s] brief in one of the cases that's a
+[1732.80s] friend of the court brief
+[1734.00s] um in support of the records requester
+[1736.72s] in that instance
+[1739.68s] a publication that writes on prisoners
+[1742.00s] rights issues requested
+[1745.04s] records of settlements between the
+[1747.76s] private contractor that provides
+[1749.28s] comprehensive health services within
+[1751.68s] department of corrections facilities and
+[1754.56s] and
+[1754.88s] people in doc custody so
+[1758.72s] the argument was the government has a
+[1761.12s] constitutional and statutory obligation
+[1763.20s] to provide health care to people in its
+[1764.84s] custody it delegated that responsibility
+[1767.84s] to
+[1768.48s] this private entity um that entity
+[1771.44s] stepped into the shoes of the government
+[1773.68s] to perform an essential and mandatory
+[1775.68s] government function and therefore should
+[1777.28s] be treated as
+[1778.56s] what's called the functional equivalent
+[1780.40s] of a public agency
+[1782.08s] um the other entity the other case i'm a
+[1785.20s] little less familiar with but
+[1786.72s] it has to do with whether a voluntary
+[1789.76s] school boards association
+[1792.84s] um uh that
+[1795.36s] um is not a public is not
+[1798.48s] function is not technically a public
+[1800.08s] agency but the argument is that it's
+[1801.76s] it's functioning as a public agency but
+[1803.76s] i'm less familiar with the arguments in
+[1805.60s] that case
+[1808.24s] i see i have we have another chat here
+[1812.24s] uh what happens when you're dealing with
+[1815.52s] an
+[1815.76s] entity that doesn't want to give out any
+[1817.36s] information i mean unfortunately you
+[1819.68s] know
+[1820.08s] in in in this context as well as just in
+[1823.52s] you know in discovery in
+[1824.96s] a lawsuit context the system depends on
+[1828.56s] people acting in good faith right if if
+[1831.44s] an agency says we don't have that record
+[1833.76s] it doesn't exist
+[1835.52s] um and you believe they're lying
+[1838.88s] uh that you know you're sort of you know
+[1842.32s] you're sort of in a bind i mean there
+[1843.92s] are
+[1845.12s] uh penalties for not complying with
+[1848.80s] obligations under the public records act
+[1850.80s] there are penalties for destroying
+[1852.56s] documents
+[1853.28s] outside of the mandatory
+[1856.56s] document retention schedule and those
+[1859.20s] can be pretty severe
+[1861.44s] and so you know the system depends on
+[1864.40s] those
+[1865.44s] penalties and prohibitions being
+[1867.20s] sufficient to ensure that people
+[1870.00s] carry out their duties in good faith um
+[1874.32s] then yes you can't take the city back to
+[1877.12s] court every time
+[1879.60s] the the nice thing about our public
+[1881.60s] records act is that
+[1884.32s] as of 2010 or so
+[1889.20s] the the legislature amended the act to
+[1891.68s] ensure that
+[1893.04s] a plaintiff who prevails in a public
+[1895.12s] records act case
+[1896.88s] shall be awarded their reasonable costs
+[1898.96s] in attorney fees
+[1900.00s] by the court so that makes it more
+[1903.20s] reasonable for the
+[1904.24s] for the private bar to take on these
+[1905.92s] cases knowing
+[1907.44s] you know that so long as the case has
+[1909.44s] merit knowing that
+[1910.80s] the defendant agency is going to have to
+[1912.80s] pony up for their fees
+[1914.08s] at the end of the day it used to be that
+[1916.40s] the court could
+[1917.28s] award fees in such cases and the
+[1919.68s] legislature changed it that the court
+[1921.52s] shall which is a pretty big deal
+[1924.64s] thank you so much leah this was really
+[1926.24s] great it's my pleasure
+[1928.56s] have a good evening everybody all right
+[1930.16s] take care everybody

@@ -1,0 +1,799 @@
+[5.00s] I'm Justin Silverman of the New England
+[6.56s] First Amendment Coalition thank you for
+[8.80s] joining us for another round of open
+[10.92s] government lessons during this class
+[13.20s] you'll learn about police misconduct
+[14.88s] records and how you can access them
+[17.56s] under your State's public records law
+[20.08s] during this round of classes we'll be
+[21.52s] joined by an attorney to explain how the
+[23.36s] law works as well as a local journalist
+[25.60s] who will share their experience
+[27.12s] requesting these police records if if
+[30.04s] you haven't already please view our
+[31.76s] previous classes on public records open
+[34.40s] meetings and state court systems the
+[37.24s] lessons they provide are all cumulative
+[38.96s] starting you off with the basics and
+[40.44s] then gradually addressing more nuanced
+[42.44s] areas of law and journalism practice the
+[45.48s] classes are State specific and provide
+[47.84s] practical step-by-step lessons you won't
+[50.52s] find anywhere else you can find them all
+[52.96s] in our foi guide at nea.org and on our
+[55.72s] YouTube channel five
+[57.44s] freedoms before we begin I want to
+[59.56s] recogniz the estate of Gloria negri for
+[61.64s] its support of these classes Gloria was
+[64.36s] a trailblazing journalist at the Boston
+[66.28s] Globe for more than 50 years this
+[69.20s] program is part of her Legacy of
+[70.96s] Newsroom education and her lifelong
+[73.32s] commitment to local
+[76.04s] journalism thank you also to the Rhode
+[78.24s] Island foundation and the New England
+[79.96s] society of news editors for their
+[81.64s] continued support and a big thanks to
+[84.16s] you for taking the time today to learn
+[86.04s] more about how to keep government open
+[88.48s] and accountable in your your state now
+[92.24s] here's Nea Emily Sweeney to introduce
+[94.60s] you to today's instructors everybody I'm
+[97.28s] Emily Sweeny from the Boston Globe and I
+[99.44s] want to thank you for joining us for
+[101.16s] this latest round of lessons brought to
+[103.04s] you by the New England First Amendment
+[105.12s] Coalition with us today is Steven Brown
+[107.68s] he's the executive editor of the
+[109.24s] American civil liberties Union of Rhode
+[111.08s] Island and has served in that role for
+[112.84s] more than 30 years and Tim White who's
+[116.00s] an investigative reporter and managing
+[117.84s] Eda for wpr that c s affiliate in
+[121.64s] Providence Stephen and Tim thank you so
+[124.12s] much for being here thanks for having
+[126.00s] thanks for inviting us what I'm going to
+[127.88s] do is really address two issues I want
+[130.32s] to go over a few seminal cases from
+[132.92s] Rhode Island um that address uh police
+[135.52s] misconduct records and also just very
+[138.48s] briefly talk about um body warn camera
+[141.48s] footage and the policies governing
+[144.40s] that so there are there are three
+[146.84s] seminal cases in Rhode Island that deal
+[149.24s] with um police misconduct records which
+[151.32s] you see see on the slide uh two of them
+[153.72s] are Rhode Island Supreme Court cases uh
+[156.16s] one is an attorney general opinion and
+[159.20s] uh we're going to start with uh the
+[160.72s] first one which is The Rake versus
+[162.96s] goretski um this is a 1982 R Supreme
+[166.20s] Court case and it was the first case uh
+[168.76s] that the Supreme Court interpreted uh
+[171.04s] any provision of our open records law um
+[173.68s] our open record statute was enacted in
+[176.52s] 1979 um we were one of the last states
+[179.12s] in the country to adopt an open records
+[181.48s] law and I think in a lot of ways it
+[183.60s] shows um but this was the first
+[185.76s] interpretation of the law by the Supreme
+[187.56s] Court and it involved an open records
+[190.24s] request by a student newspaper at Brown
+[193.32s] University and they requested a copies
+[196.36s] of all Providence Police Department
+[198.08s] hearing officer reports uh dealing with
+[200.72s] civilian complaints of police abuse
+[202.96s] which were reports that the police
+[204.80s] department was required to keep under a
+[208.28s] uh police brutality case a consent order
+[211.24s] that was issued in that case requiring
+[213.48s] them to keep those records um when they
+[216.12s] filed the request the police department
+[218.48s] um uh denied access to any of the
+[221.12s] records and they relied specifically on
+[224.92s] um a Personnel exemption in the law
+[227.28s] which you see quoted uh on the slide it
+[229.92s] it it's been revised since then but at
+[233.16s] the time it was completely open-ended um
+[236.36s] it it contained an exemption for all
+[238.36s] records identifiable to an individual uh
+[241.24s] including Personnel
+[242.80s] records and the police department argued
+[246.12s] that this is these are Personnel records
+[249.08s] we put them in the individual's
+[250.52s] Personnel files we think they're
+[252.48s] Personnel records they're handled by our
+[254.64s] local Personnel bu our our our um Police
+[257.48s] Department Personnel Bureau so so their
+[260.40s] person their personnel records um the
+[263.40s] Supreme Court rejected those arguments
+[265.72s] um uh one of the one of the key findings
+[268.88s] was that non-confidential matter is not
+[271.76s] to be insulated from disclosure merely
+[274.20s] because it is stored by an agency in its
+[276.28s] Personnel files um the court said these
+[279.56s] were not these were uh important public
+[282.36s] records uh involving public matters and
+[285.84s] and Personnel uh involvement was really
+[288.96s] secondary and particularly because the
+[292.52s] lower court in the case had ordered that
+[294.80s] the names of the police officers and the
+[296.36s] complainants be deleted from the reports
+[298.28s] and I'll get back to that later
+[300.24s] um it's a key issue in terms of gaining
+[303.12s] access to police misconduct records in
+[305.80s] Rhode Island so the Supreme Court said
+[307.80s] that since the names of the officers and
+[309.64s] complainants are redacted um there's
+[312.00s] really no privacy invasion in in
+[313.96s] releasing the records um uh it really is
+[318.48s] not a Personnel record if you don't know
+[319.84s] who the Personnel is now the police
+[322.12s] department argued that even with the
+[324.32s] redactions they were concerned that a a
+[327.24s] Savvy reporter or a student or whoever
+[330.28s] might be able to match um the records
+[334.04s] with newspaper accounts in you know
+[335.88s] high-profile incidents um the court
+[338.96s] acknowledged that it said it was
+[341.16s] possible um but they said that uh on
+[344.16s] balance the Public's right to know
+[346.16s] outweighed uh that
+[348.28s] possibility uh and so the records were
+[350.96s] ultimately given to uh the rake it took
+[354.04s] uh it took over six years for that case
+[356.40s] to finally come to an end and for the
+[359.72s] newspaper to get the records which is
+[361.48s] you know one of the problems with a lot
+[363.84s] of open records law how long it can take
+[365.92s] sometimes to get records even when
+[367.64s] you're entitled to them uh the second
+[370.64s] case um which occurred 16 years later uh
+[373.92s] direct action for rights and equality
+[375.60s] versus Ganon uh involved a uh Providence
+[379.32s] Community Grassroots community group uh
+[381.68s] known as dare um and it sought a ton of
+[384.84s] records as well it sought six the past
+[387.88s] six years of Civilian Complaint reports
+[390.80s] from the Providence police the findings
+[393.12s] of the internal investigation of those
+[395.52s] reports and the hearing officer
+[398.32s] decisions um so the way it works is
+[402.48s] there's an investigation there's a
+[404.32s] hearing an officer makes a decision the
+[406.84s] decision is then um provided to the
+[409.72s] police chief uh and the police chief
+[412.04s] makes uh makes a final
+[414.32s] recommendation um but uh for purposes of
+[417.40s] these cases um uh the the plaintiffs
+[420.16s] argue that the hearing officer's
+[422.04s] decision is their final decision and
+[424.04s] therefore it's a final record uh in the
+[426.60s] Superior Court um the police department
+[429.36s] raised uh The Identical arguments they
+[431.68s] had in the Dare case they argued that
+[433.28s] they were they should be considered all
+[434.76s] these things should be considered
+[435.92s] Personnel records They also raised a
+[438.32s] very general privacy argument um that
+[441.04s] the open records law recognizes that
+[442.92s] there is a right to privacy that has to
+[444.72s] be considered as well um but the
+[447.60s] Superior Court rejected those arguments
+[449.60s] ments and uh it went further um it
+[452.48s] decided that uh under the First
+[454.32s] Amendment um this group was entitled to
+[457.04s] non-reacted disclosure of the records so
+[459.16s] that they could get the records with the
+[461.40s] names um of the police officers and
+[464.72s] individuals involved uh in order to
+[467.72s] further their their first amendment
+[469.72s] rights not surprisingly the police
+[471.84s] department appealed that decision uh to
+[474.48s] the to our state supreme court and the
+[476.80s] Supreme Court did a few things first of
+[478.56s] all not surprisingly they reversed the
+[481.32s] lower court uh in terms of uh the
+[484.52s] unredacted release of the documents so
+[486.96s] the court said uh relying on its uh on
+[490.04s] that language in the Dare decision that
+[493.20s] uh what kept them from being uh
+[495.88s] invasions of privacy was redacting the N
+[499.36s] the personally identifiable information
+[501.72s] of the officers um so It reversed that
+[504.84s] part of the ruling but it upheld the
+[506.32s] rest uh once again it found that these
+[508.60s] Civilian Complaint reports were public
+[510.28s] documents uh and they had to be
+[512.08s] disclosed as long as they were disclosed
+[513.92s] in redacted form um the other
+[516.24s] interesting thing is that the Supreme
+[517.80s] Court um also relied on another
+[520.32s] provision in the open records law to
+[522.12s] find that these records were
+[524.00s] public uh Rhode Island does have a
+[526.16s] fairly broad exemption as I assume most
+[528.40s] open records law do for law enforcement
+[531.44s] records um but there's a specific
+[533.92s] provision that says records relating to
+[536.80s] management and direction of a law
+[538.48s] enforcement agency shall be public um so
+[542.00s] any records that fit within that
+[544.28s] standard there's no you know there's no
+[547.40s] challenge there uh and the the court
+[549.52s] said these Civilian Complaint reports um
+[553.04s] should be considered records relating to
+[554.64s] management and direction of a law
+[555.88s] enforcement agency which was a really
+[557.56s] positive uh decision um and uh again it
+[562.08s] took it took forever for this group to
+[564.64s] get the records the the litigation
+[567.00s] lasted even longer than the rake case um
+[569.80s] but they did Prevail and and they
+[571.88s] finally got redacted versions of these
+[573.64s] records and and did some Community work
+[576.32s] uh with
+[577.48s] them the third opinion um uh which is uh
+[581.64s] the most recent one and and probably the
+[584.32s] most disturbing one uh is an attorney
+[586.44s] general advisory opinion called piskov
+[589.24s] versus town of naragansett and piskov
+[593.08s] was a member of an organization called
+[596.04s] the Rhode Island accountability project
+[598.44s] and this organization was looking at
+[600.60s] police
+[601.68s] misconduct um across the state and they
+[604.08s] were filing lots of open records
+[606.16s] requests with every Police Department
+[608.96s] trying to get copies of their Internal
+[611.40s] Affairs reports and in this instance um
+[614.64s] they filed a request with the naraga
+[616.96s] police department and they asked for the
+[618.96s] copies of the last 10 Internal Affairs
+[621.60s] reports that they had um so they were
+[623.68s] just doing you know just sort of
+[625.40s] randomly they just randomly wanted to
+[627.32s] look at what is the police department
+[629.04s] doing so they asked for the last
+[631.44s] 10 um the Attorney General issued
+[633.60s] opinion which was really troubling in a
+[635.76s] lot of ways uh first notwithstanding the
+[639.00s] Dare case and the rake case um the
+[641.68s] Attorney General held that not all these
+[643.88s] reports were public um for the first
+[646.76s] time it made a distinction between CI
+[650.56s] civilian filed complaints and internal
+[654.04s] complaints um and it pointed out that in
+[657.12s] both there and the rake uh the the
+[659.44s] groups there had asked for copies of
+[662.48s] Civilian complaints of police misconduct
+[665.36s] now in our opinion there's nothing in
+[667.48s] either of those decisions that said that
+[669.16s] that was somehow critical to its
+[671.76s] findings but the attorney general just
+[674.04s] made this distinction uh and said uh
+[677.24s] when you're dealing with internal invest
+[679.56s] investigations that were started
+[681.36s] internally um there's a different
+[683.36s] standard in place they aren't
+[684.60s] necessarily automatically public um and
+[688.20s] they had to be examined on an
+[691.08s] individualized basis um the court ALS
+[695.64s] the Attorney General also in looking at
+[698.76s] those types of Records the Attorney
+[700.00s] General also said uh we need to look at
+[702.68s] whether there's a public interest in in
+[705.08s] those records and it held that um when
+[709.44s] you're dealing with internal
+[710.56s] investigations they not not necessarily
+[712.28s] any public interest at all um uh piskov
+[715.72s] had not given any public interest for
+[717.80s] these records and and the Attorney
+[720.08s] General was saying you know these might
+[721.48s] be in you know small violations of
+[723.84s] internal policies that really didn't uh
+[727.00s] provide any meaningful information about
+[730.24s] uh how a law enforcement agency operates
+[733.32s] uh and therefore uh they were not
+[735.44s] necessarily going to be uh they NE did
+[737.92s] not necessarily have to be made public
+[740.64s] um and instead um they had to be
+[742.72s] considered on an individual basis um the
+[747.16s] we were very concerned about that ruling
+[748.76s] and the were a few other police
+[750.08s] departments that followed it we actually
+[752.28s] filed a lawsuit uh on on their behalf uh
+[755.84s] against the city of Pucket um that case
+[759.40s] ended up getting settled um although in
+[762.56s] a preliminary decision that the judge um
+[765.68s] tended to agree with the attorney
+[767.16s] general's opinion we wanted to appeal it
+[769.48s] to the Supreme Court but in the meantime
+[771.92s] the town agreed to give uh the group
+[775.04s] just about all the records They asked
+[776.36s] for so the case was was mooded out
+[779.68s] um but it's that what we thought was a
+[781.96s] really troubling precedent um the only
+[784.36s] good thing I can say about it is that um
+[787.48s] most police departments still hand out
+[790.04s] all the all the records in redacted form
+[792.56s] they don't make the distinction that the
+[794.88s] Attorney General's opinion allows them
+[797.04s] to make um but nonetheless that opinion
+[799.80s] is still out there it's the last word on
+[801.84s] the subject because there there are no
+[804.20s] formal Court decisions addressing the de
+[807.68s] uh addressing this these issues ises so
+[810.60s] uh it is something that um we and others
+[813.32s] have been working to try to get our get
+[815.88s] the open records law amended uh to deal
+[818.44s] with that so the bottom line uh for for
+[823.08s] um gaining access to police misconduct
+[825.52s] records is you can get them generally um
+[829.44s] you can but you can get them only in
+[830.88s] redacted form and you know that's a
+[833.24s] that's a major deficiency you know there
+[835.64s] are a number of states that actually
+[837.76s] have public datab bces of police
+[840.60s] misconduct records you can look up an
+[842.48s] officer's name and see uh you know see
+[845.36s] what their record of misconduct is um
+[848.72s] that is not the case here um the most
+[851.64s] you can get are these inter these uh
+[854.00s] complaints um with redacted names which
+[856.76s] which still has you know has a useful
+[858.60s] purpose I don't want to um diminish um
+[862.32s] the importance that that one can get
+[865.36s] from from looking at those records but
+[867.36s] the fact that you can never see the name
+[869.96s] um is is really
+[871.92s] troubling um so those are those are the
+[874.64s] three major the three major cases
+[876.68s] dealing
+[877.72s] with um uh access to public records law
+[881.72s] and I just want to spend a minute or two
+[884.28s] talking about police body warn cameras
+[886.32s] because there are uh this obviously is
+[888.48s] an important tool for reviewing police
+[891.12s] misconduct and um there is there are
+[893.72s] attorney general regulations governing
+[896.76s] uh police body warn cameras um first of
+[900.04s] all um and what should be uh obvious and
+[903.56s] not required debate is that body warn
+[906.00s] common footage is subject to the open
+[907.76s] records law so all the standards that
+[909.56s] are in the open records law apply um
+[913.16s] however in in a couple of instances the
+[915.48s] Attorney General's regulations make
+[917.28s] special um establish some special rules
+[920.68s] one in particular uh has to do with use
+[923.56s] use of force incidents as defined by the
+[926.16s] attorney general and in those in those
+[928.72s] in is the the regulations say that the
+[930.80s] footage should be released no later than
+[933.36s] upon the sub substantial completion of
+[935.32s] the investigation which should generally
+[937.44s] be within 30 days now on the one hand
+[941.16s] that's a positive thing because there's
+[943.20s] a broad investigatory exemption in the
+[946.32s] open records law for police records so
+[948.48s] technically they could say if we haven't
+[950.96s] completed our investigation we can keep
+[953.12s] these records secret for however long it
+[955.28s] takes um on the other hand when you're
+[957.72s] dealing with the use of force incident
+[959.60s] there's obviously a very strong public
+[961.72s] interest in gaining access to to that
+[964.24s] footage sooner rather than later um so
+[968.20s] uh while it's good in some respects we
+[971.32s] certainly believe that 30 days should be
+[973.16s] the outer limit for for releasing
+[976.08s] records when you have these serious use
+[977.76s] of force incidents um now uh again
+[981.56s] there's some good and bad about how it
+[983.44s] works in practice the good thing is is
+[986.04s] that there have been a handful of use of
+[988.12s] force uh serious use of force incidents
+[991.28s] in the past couple of years and uh uh
+[994.28s] including um uh deaths of individuals
+[997.68s] and the police departments have been
+[999.24s] incredibly impressive in getting footage
+[1002.40s] out um literally within days of the
+[1005.08s] incident um so some of the police
+[1007.40s] departments have recognized the
+[1009.64s] importance when you're dealing with
+[1010.96s] these very serious incidents of getting
+[1012.96s] the information out there quickly um uh
+[1016.48s] on the other hand there are problems
+[1018.12s] with the regulation in some respects and
+[1020.16s] I'd actually be interested in hearing if
+[1021.80s] Tim has had any um experience with it
+[1025.52s] the regulations um uh set a a variety of
+[1029.60s] situations where police can turn the um
+[1033.20s] the audio and video off um they're
+[1036.32s] allowed to do it if they think minors
+[1038.12s] are president present they're allowed to
+[1040.48s] do it uh if they think it might be
+[1043.04s] intimidating to a victim or witness
+[1045.20s] they're allowed to do it if they discuss
+[1047.20s] law enforcement matters with other
+[1048.92s] police officers so there's a really big
+[1051.56s] gaps um how they actually use those
+[1055.16s] exemptions I don't know um but it's
+[1057.72s] something to keep in mind um as more and
+[1060.92s] more police departments use this body
+[1063.12s] warn camera footage and release records
+[1066.04s] so that's uh that's my summary in
+[1069.44s] nutshell and I'm glad to turn it over to
+[1071.04s] Tim now I I want to actually uh discuss
+[1074.80s] applying the important information that
+[1077.08s] you just heard there uh uh you know from
+[1079.88s] a practical standpoint and I and I do
+[1081.96s] want to pick up right where he left off
+[1084.96s] and just briefly Talk on body warn
+[1087.08s] camera video uh because it's become such
+[1090.80s] an important part of our reporting on
+[1093.24s] law enforcement matters uh then I do
+[1095.60s] want to uh discuss recommendations on
+[1098.24s] making public records requests for uh
+[1100.80s] police misconduct records and the very
+[1103.72s] real headwinds that we're facing there
+[1106.52s] um and also talk about where else you
+[1108.44s] can find this information to try and
+[1110.24s] avoid those headaches uh and I will end
+[1113.12s] on police misconduct and use of force
+[1115.52s] information that is available to you by
+[1117.32s] Statute through um annual reports so on
+[1122.08s] police body warn cameras uh Stephen
+[1124.76s] covered the the most important uh the
+[1127.56s] thrust of the Attorney General's policy
+[1130.88s] there uh it is routine in our Newsroom
+[1134.36s] and in the investigative unit to request
+[1137.12s] body warn camera footage of media to
+[1139.12s] large police events um while as you just
+[1143.32s] heard most departments and I should say
+[1145.44s] most not all have signed on to the AG's
+[1147.92s] policy reality is somewhat different as
+[1151.36s] every department handles the requests uh
+[1154.04s] differently uh you heard one you know
+[1156.68s] one problem we face is the audio issue
+[1159.68s] that um Stephen brought up I can tell
+[1161.52s] you just anecdotally anytime in the
+[1164.20s] video officers come together um all of
+[1167.44s] them hit the button on their bodyw warn
+[1169.52s] camera and the audio goes away um so
+[1173.96s] there it's often
+[1175.88s] muted um and it's my third slide there
+[1179.68s] but I'll jump ahead because it it's
+[1181.12s] related uh the video that you often get
+[1183.76s] is comically blurred out uh it's a video
+[1186.84s] form of redactions I recommend
+[1189.32s] challenging that and a couple of
+[1190.64s] thoughts here is look unless an officer
+[1193.96s] Works under cover they should not be
+[1195.80s] blurred um and if someone is a object of
+[1199.44s] an arrest to an arrest I should say
+[1201.32s] arrest reports are public record thus
+[1203.56s] they should not be blurred out in the
+[1205.80s] bodyw warn camera video so consider uh
+[1208.60s] challenging those and appealing those um
+[1211.72s] back up to the second bullet point there
+[1214.40s] look we make these requests right away
+[1217.20s] uh and as Stephen pointed out they fall
+[1219.44s] under the appara so I re recommend
+[1221.64s] setting a calendar reminder for the 10
+[1224.96s] business days to for them to just
+[1227.64s] respond to your request
+[1229.32s] and often they just tack on another 20
+[1231.96s] business days so again business days
+[1233.48s] we're talking about a month and a half
+[1234.96s] here you might forget they might forget
+[1238.00s] or they might hope you forget um so own
+[1241.56s] the statutory clock set a calendar
+[1244.04s] reminder in Google I this is a practice
+[1246.60s] of mine every time and if they go beyond
+[1249.92s] the the statutory framework they're in
+[1252.80s] violation of the APPA and you have some
+[1255.48s] strong footing to uh make make a
+[1258.60s] complaint and my final just thing that I
+[1262.32s] think is important to know because uh
+[1264.72s] stepen talked about use of force video
+[1266.92s] is the language down there is a a cut
+[1269.16s] and paste from the Secretary of State's
+[1272.28s] retention policy uh that requires that
+[1275.48s] all use of force uh video body warn
+[1278.80s] camera video is retained for seven years
+[1281.12s] I believe the just run-of-the-mill body
+[1283.64s] warn camera footage falls under a threee
+[1285.96s] threeyear clock um but body use of force
+[1289.48s] video needs to be held on for a lot
+[1291.60s] longer so just keep that in mind if
+[1293.52s] you're told that the video doesn't exist
+[1296.80s] anymore records requests um when seeking
+[1300.80s] police misconduct records it's a good
+[1303.08s] idea to understand the the Department's
+[1305.60s] policy and process so look for or
+[1309.68s] request the Department's policy on
+[1311.68s] internal affairs investigations and on
+[1313.56s] the right is the Providence Police
+[1316.76s] Department's IIA um policy you you want
+[1321.84s] to try and mirror the language that they
+[1324.08s] use in their policies when requesting
+[1326.08s] certain documents I mean I I often use
+[1328.48s] the any and all you know any and all
+[1331.24s] records pertaining to blah blah blah
+[1332.88s] blah blah um which is useful but
+[1337.56s] sometimes a request can be too broad
+[1339.20s] that bogs it down makes it more costly
+[1342.84s] gives more footing to say no um
+[1346.60s] so I try to use
+[1349.28s] the more specific language you use the
+[1351.40s] better chance you have of getting what
+[1352.76s] you're looking for so for instance the
+[1355.28s] Providence Internal Affairs department
+[1357.20s] is known as the office of professional
+[1360.24s] responsibility so you want to seek an
+[1362.96s] opr report other departments it's an
+[1365.16s] internal affairs report uh some
+[1367.24s] departments have sustained findings uh I
+[1370.36s] have seen disciplinary action memos
+[1372.96s] again these are all languages in a
+[1374.84s] language used in their policies um and
+[1377.76s] when a department pursues disciplinary
+[1380.16s] action on an officer they will will
+[1382.84s] often use what's called a charging
+[1385.20s] document which outlines the violations
+[1387.28s] the admin violations that the
+[1389.00s] administration says the officer
+[1391.96s] committed and look that is um that is
+[1394.12s] hit oriss depending on the agency in
+[1397.20s] getting those but ask um the this Dove
+[1400.56s] tales with the law enforcement officer
+[1402.84s] Bill of Rights in Rhode Island and I'm
+[1404.44s] going to talk about that more in a
+[1405.72s] moment zooming out for a second this
+[1408.96s] kind of parallel to police misconduct
+[1412.08s] records but when there is an incident
+[1414.28s] let's say a shootout or a police chase
+[1416.24s] or something like that most departments
+[1417.76s] will write up what's called an after
+[1419.48s] incident report and here you will have
+[1422.92s] better luck with the the officer
+[1426.04s] redaction issue that uh Stephen talked
+[1429.80s] about with police misconduct records uh
+[1432.68s] that doesn't apply to air um here but
+[1435.96s] just for argument sake if if the off if
+[1439.16s] the department wants to redact the
+[1440.76s] officer's name um it's harder for them
+[1444.08s] to argue the balancing test favors
+[1446.00s] non-disclosure with after incident
+[1448.16s] reports that are about an incident as a
+[1451.60s] whole as opposed to an individual police
+[1454.52s] officer uh misconduct record so okay go
+[1457.96s] ahead and redact it and then maybe have
+[1459.52s] that fight later about removing that but
+[1461.88s] when there's a big thing that happens
+[1463.88s] think about requesting or not think
+[1465.40s] about request the after incident report
+[1467.52s] on those and then finally annual reports
+[1470.28s] are so very very important and I'm going
+[1472.56s] to do at the end of this uh section just
+[1474.96s] on that uh let's State the obvious
+[1477.88s] you're going to face a lot of headwinds
+[1480.08s] trying to get police misconduct records
+[1482.28s] Stephen laid out the reasons um there
+[1485.64s] are several exemptions that agencies can
+[1487.88s] try and leverage to be opaque but I
+[1490.72s] guess you know what I want you to walk
+[1492.72s] away from this is having the mindset
+[1495.92s] that the agency is not required to
+[1498.92s] withhold a record even if it could fall
+[1501.08s] under an exemption this is not me saying
+[1503.64s] this by the way the Rhode Island uh
+[1506.48s] Supreme Court ruled this way so in other
+[1509.60s] words government agencies including
+[1511.28s] police departments can be as transparent
+[1513.76s] as they want to be and for journalists
+[1515.68s] it's important that after a certain
+[1518.24s] certain amount of time that is fair uh
+[1520.88s] to tell the public when you're getting
+[1522.36s] blocked because you as a reporter it's
+[1524.60s] not just you getting blocked but it is
+[1527.32s] uh the public that is getting blocked
+[1529.28s] because you of course serve the
+[1530.32s] community in which you report so um it's
+[1533.56s] important to write about when when that
+[1535.36s] is happening and let the public know
+[1537.56s] something we are seeing uh is the
+[1540.36s] intersection of APPA and liore and this
+[1543.20s] is the law enforcement officer Bill of
+[1545.28s] Rights the law that regulates how police
+[1547.16s] misconduct is investigated and
+[1549.00s] disciplined just a quick like 60-second
+[1552.04s] summary of leore this is very basic um
+[1556.40s] any unpaid suspension of an opp off of
+[1558.88s] greater than two days can trigger the
+[1562.40s] leabo process the law now and there's a
+[1565.32s] few bills that are looking to reform it
+[1567.64s] is an officer can request a hearing
+[1569.40s] before a three- member panel of other
+[1571.28s] members of law
+[1572.60s] enforcement uh one of their choice one
+[1574.88s] of the Departments and then a a third
+[1576.88s] that's a
+[1577.76s] neutral we the public reporters have
+[1580.60s] been blocked from getting access to
+[1582.52s] those Administrative Hearings we could
+[1584.12s] do um a session just on that that's an
+[1586.92s] entirely different conversation
+[1588.80s] but there's language in the law that
+[1590.48s] specifically states that no public
+[1592.96s] statement shall be made as a leapor
+[1596.32s] process is ongoing meaning a police
+[1598.28s] chief uh say can't talk about the case
+[1602.56s] against the officer it's it's right in
+[1604.80s] the law and what we've seen is that is
+[1607.04s] used as an excuse for not releasing
+[1610.16s] records look a public statement is not
+[1613.04s] the same as a record um and uh I like to
+[1616.36s] point to a 2012 case we had against
+[1619.12s] Wicket police this is a u this is an
+[1623.20s] attorney general's public records uh
+[1625.44s] opinion in that case um it was an arrest
+[1629.00s] report of an officer that we were denied
+[1631.04s] and we won that appeal with the AG
+[1634.32s] because the excuse that an internal
+[1636.16s] affairs investigation meant they could
+[1637.84s] not release the report didn't fly and I
+[1641.12s] think that the same applies with leore
+[1643.52s] which is purely about a Personnel matter
+[1646.48s] so bottom line uh don't walk away when
+[1649.76s] someone says well there's a leore thing
+[1651.40s] going on so we can't give you that that
+[1653.28s] that is not true
+[1655.92s] um so other avenues I for people who
+[1659.68s] know me I've used the uh statement quite
+[1662.08s] a few times uh that if doors locked try
+[1665.00s] the window and I think it's important to
+[1667.68s] ask yourself besides the four corners of
+[1669.76s] the police department where else would
+[1672.16s] the record
+[1673.64s] exist um or at least information from
+[1676.84s] the record if it's not the full police
+[1678.48s] misconduct record and just here's a
+[1680.36s] couple of quick thoughts on it uh this
+[1683.00s] is not exhaustive but letters of intent
+[1686.64s] by law in Rhode Island if someone wants
+[1688.68s] to sue a municipality they have to send
+[1691.00s] the city or town a letter of intent
+[1693.16s] before filing in court uh those can
+[1696.44s] often outline some of the information
+[1698.00s] you might be seeking if someone who had
+[1700.20s] an adverse interaction with a police
+[1701.84s] officer is planning on filing suit those
+[1704.60s] are public records by my experience when
+[1707.16s] they do Sue of of course some of this is
+[1708.96s] obvious but I'm just going to say it the
+[1710.36s] courts are a great resource both state
+[1712.88s] and federal on the right hand side um
+[1715.28s] actually is a federal lawsuit against
+[1716.96s] the Providence Police Department that
+[1718.32s] shed light on a use of force incident
+[1720.88s] that uh we ended up reporting on uh what
+[1723.20s] you're looking at there is a civil
+[1724.44s] complaint then there are stick with the
+[1726.64s] docket there are motions um you know in
+[1730.00s] civil in a civil case almost always a
+[1733.36s] defendant will file a motion for summary
+[1735.00s] judgment arguing the case should be
+[1736.32s] tossed before it even goes to trial look
+[1738.52s] for that but more importantly look for
+[1740.32s] the plaintiff's response to that because
+[1742.72s] there might add more details from
+[1744.92s] Discovery um in that motion and that's
+[1747.20s] going to shed more light on it this one
+[1749.12s] is very obvious but if a police officer
+[1751.04s] has been criminally charged there's even
+[1753.04s] more that's available the arrest report
+[1755.60s] always either ask the Attorney General's
+[1758.24s] office or look forward in the uh court
+[1760.80s] file something called an information
+[1762.96s] packet which will have uh affidavits and
+[1767.44s] other information that will provide more
+[1770.24s] details on on the criminal case against
+[1773.48s] the officer narrative so on so forth and
+[1776.64s] again like I said with civil cases
+[1778.16s] motions and responses track the docket
+[1781.04s] uh it's again a good use of of calendar
+[1783.92s] reminders here to check in with the case
+[1785.88s] every so often ask yourself are there
+[1788.40s] any oversight agencies of the police
+[1790.44s] department that might have access to the
+[1792.20s] information that you are seeking has
+[1794.68s] anything gone before a city or town
+[1797.00s] Council um has a police chief have had
+[1800.44s] to talk about it at an open meeting a
+[1802.36s] lot of that will happen in an executive
+[1803.92s] session but maybe not look for it there
+[1806.28s] has a member of the public made a public
+[1808.56s] comment complained about the police
+[1810.00s] department because of an incident that
+[1812.48s] occurred uh that would be another Avenue
+[1814.80s] to track that person down and uh see if
+[1817.96s] you can find out some information from
+[1819.92s] them um and improvidence specifically
+[1822.56s] there's the Providence external review
+[1824.44s] Authority it's a it's an oversight body
+[1827.72s] uh
+[1828.72s] it looks at the Providence Police
+[1830.84s] Department right now it's in a time of
+[1832.88s] transition they haven't been really
+[1834.60s] meeting but I just use it as an example
+[1837.40s] of of an oversight agency and maybe
+[1839.60s] they're going to fire back up again
+[1841.36s] Providence Police Department in Rhode
+[1842.64s] Island is the large largest law
+[1844.52s] enforcement um agency
+[1847.20s] finally um annual reports uh state law
+[1853.28s] requires every law enforcement
+[1856.04s] agency town city
+[1858.56s] sheriffs State Police to compile
+[1861.40s] information and put it into an annual
+[1864.92s] report and the information that's
+[1868.04s] included in there is primarily data
+[1870.64s] Civilian Complaint data internal
+[1873.16s] investigations that were sustained and
+[1875.44s] not sustained disciplinary actions uh
+[1879.72s] how often use of force uh happen what
+[1883.04s] kind of force taser baton dogs uh lethal
+[1887.28s] Force firearm discharges motor vehicle
+[1890.44s] Pursuits it goes on and on uh on on uh
+[1894.92s] with these types of annual reports and
+[1896.64s] here's a couple of just like Snippets
+[1898.52s] from them on the bottom is Rhode Island
+[1900.68s] state police I I had from 2021 on the
+[1904.12s] right hand side is an example of an opr
+[1907.24s] annual annual report from uh the
+[1909.84s] Providence Police Department and look um
+[1912.68s] it doesn't have officer names in there
+[1914.44s] which is sort of the the main
+[1916.12s] conversation that we're having here but
+[1917.48s] it's a great source of information on
+[1920.16s] complaints that came in as I said how
+[1922.04s] many were sustained how many not and um
+[1925.36s] a few years ago we asked for the annual
+[1928.28s] reports from every Department in Rhode
+[1930.84s] Island to do a story on how often Police
+[1933.28s] use of force occurred and found nearly
+[1936.32s] all of them were deemed Justified after
+[1938.76s] an internal Department review so you see
+[1940.76s] there were
+[1942.04s] 8,635 instances of force and only four
+[1944.92s] of them were uh deemed not justified so
+[1948.04s] the vast majority were and the story
+[1950.64s] also include that Federal lawsuit that I
+[1952.88s] showed you a little bit earlier uh to
+[1956.08s] draw out an example in which Providence
+[1958.28s] Police Department actually settled with
+[1960.84s] the uh the plaintiff in that case and
+[1964.28s] what we found was that um use of force
+[1967.92s] even though they settled was deemed
+[1969.44s] Justified so it was a nice
+[1972.00s] contrast uh between what the court
+[1974.32s] record showed and you know the and the
+[1977.88s] two sides settling and what the data
+[1980.32s] from those annual reports um showed so
+[1983.16s] those are a great resource to to keep in
+[1986.04s] mind um even if you can't get those full
+[1988.48s] police misconduct records you you still
+[1990.68s] might be able to U help shed light on uh
+[1995.56s] the philosophy of a police department or
+[1997.84s] you know uh how they operate you know
+[2000.72s] every year when they have to uh when
+[2002.40s] they have to file those so just
+[2003.76s] something to to request under police
+[2006.28s] misconduct and that's what I got
+[2008.44s] this was really great so thanks
+[2010.36s] everybody and if anybody has any
+[2012.36s] questions feel free to drop I'm I'm
+[2014.60s] happy to to help out

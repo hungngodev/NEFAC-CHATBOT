@@ -1,0 +1,721 @@
+[3.52s] welcome everyone I'm Justin Silverman of
+[5.24s] the New England First Amendment
+[6.76s] Coalition thank you for joining us for
+[9.04s] another 30 minute skills today's
+[11.12s] presentation is supported in part by the
+[13.96s] estate of Gloria negri Gloria negre the
+[16.28s] late Gloria negri was a trailblazing
+[18.32s] journalist at the Boston Globe for more
+[20.44s] than 50 years and I encourage everyone
+[22.56s] to learn more about Gloria as well as
+[24.32s] our other supporters at mea.org
+[27.64s] supporters also a reminder links to all
+[30.72s] of our 30 minute skills are available at
+[32.44s] nea.org as well as on our YouTube
+[34.96s] channel five freedoms lessons include
+[37.72s] data cleaning Privacy Law Microsoft
+[40.40s] Excel Basics how to diversify sources
+[43.16s] and how to protect yourself as a
+[44.48s] journalist among many other topics I
+[46.72s] also encourage everyone to visit nea.org
+[48.68s] and view our growing list of upcoming
+[50.52s] presentations and events focused on the
+[52.44s] first amendment in journalism nearly all
+[55.04s] of them are free and open to the public
+[56.52s] so please check them out and consider
+[58.40s] joining us today we'll be discussing AI
+[61.68s] tools that journalists and others can
+[63.36s] use to help strengthen their reporting
+[65.20s] storytelling and other research we have
+[67.72s] a lot to cover and not a lot of time so
+[69.76s] let's get started Rea all yours all
+[72.76s] right hi uh good morning or good
+[74.88s] afternoon there in New England I'm here
+[76.44s] in sunny uh Arizona and um thank you for
+[80.08s] the opportunity to talk about uh a
+[82.40s] really important subject um and that
+[85.08s] subject is artificial intelligence this
+[87.40s] is the year of AI which will of course
+[91.32s] you know change so much of what we all
+[93.56s] do and I just want to go over uh some of
+[96.40s] the tools that I use for storytelling
+[98.44s] and a few on uh on reporting um there's
+[101.72s] a lot about Ai and we don't have time to
+[104.32s] get into General artificial intelligence
+[106.88s] as opposed to narrow so we're just going
+[108.88s] to focus on some storytelling tools that
+[111.68s] I have um used uh in the last year and
+[115.92s] why I use those so I wanted to focus in
+[118.80s] on all the things about AI just the
+[120.84s] skills that can help your storytelling a
+[123.32s] little bit about me so I was a
+[125.40s] traditional journalist back at the
+[127.12s] Washington Post uh but then in
+[130.72s] 1995 I went over to the uh internet side
+[135.56s] and helped put together the uh site that
+[137.96s] became washingtonpost.com I was the
+[139.96s] local editor and as such I had a lot to
+[142.72s] do because people had already read the
+[144.68s] newspaper that day so I created all
+[147.24s] kinds of interactive content you know
+[149.84s] such as the state back then fell in love
+[152.00s] with that and I've been doing it ever
+[153.28s] since I was hired um a few years later
+[156.32s] to be the vice president of Black
+[157.88s] Entertainment Television and to start
+[160.16s] bet.com and then 16 years ago I came out
+[164.04s] to Arizona to be the Innovation lab
+[167.32s] director at the Walter Kon Kai School of
+[169.52s] Journalism and now I'm the uh director
+[171.96s] of innovation for the school and I'm on
+[174.20s] the provos AI committees and you know
+[176.48s] doing a whole lot of stuff and trying to
+[178.28s] get people up to speed now we know that
+[181.12s] AI will be disruptive in our industry as
+[183.64s] well as a whole lot of other Industries
+[185.40s] but I want to focus on the skills that
+[187.16s] are really attainable at the New Media
+[189.60s] Innovation Lab at the KRON Kai school
+[191.24s] that I've been running for 16 years
+[192.84s] we've for a very long time used
+[194.92s] immersive media to supplement journalism
+[197.56s] and storytelling um and just as with the
+[200.28s] Washington Post at New York Times USA
+[202.16s] Today and other major media Outlets
+[204.52s] we've been experimenting for years with
+[206.56s] interactive and immersive media um from
+[209.76s] doing using AR extreme weather just like
+[212.40s] the weather channel does except for I
+[214.32s] created a way to do it um in a for Less
+[217.40s] cost and to make it geolocated want a
+[220.24s] grant from NAB on that to AR maps to
+[223.12s] tell people what's in their neighborhood
+[224.84s] to news games and simulations the bottom
+[227.52s] line is not that I'm a genius it's just
+[229.76s] that I am unafraid of the technology I'm
+[233.00s] not going to blow anything up and I want
+[235.04s] to encourage you to believe in
+[236.92s] yourselves that you can Master this my
+[239.04s] students come in into the lab at the
+[240.64s] beginning of a semester not knowing much
+[243.08s] of any of this and by the end of the
+[245.12s] semester 15 weeks they're producing
+[247.20s] really amazing content and I'll show you
+[249.08s] some of that in a minute so we take our
+[252.00s] inspiration from some of the major news
+[254.72s] organizations that of course have much
+[257.04s] more money than we do and you know whole
+[259.40s] division like the New York Times R&D or
+[262.60s] Washington Post but we take our
+[264.72s] inspiration we look at what they're
+[266.20s] doing as well as what I'm interested in
+[268.20s] and the students are interested in
+[269.68s] create content I love this uh tosa race
+[273.40s] Massacre um uh mapping that they put
+[276.92s] together a few years ago where they
+[278.76s] recreated the neighborhood that was
+[281.52s] attacked back in 1921 and and destroyed
+[285.24s] and all these people were killed and you
+[287.44s] know more than 1,200 homes were burnt
+[289.48s] down um I took inspiration from that I
+[292.40s] always also take inspiration for example
+[294.96s] from USA Today they did a great 1619
+[297.76s] project where they actually went over to
+[301.16s] um West Africa and they were able to
+[303.92s] recreate this interactive um view of um
+[309.20s] a slave ship and from the journals and
+[311.84s] all their research they were able to
+[313.36s] recreate what that experience was like
+[316.16s] um so I take inspiration from that but I
+[318.64s] also take inspiration from some of you
+[321.36s] who are a little bit older might
+[323.52s] remember Walter kronites you are there
+[326.44s] and this was back in the 50s and 60s
+[328.40s] where Walter kronite do a simulation to
+[331.20s] recreate an event and I'm not going to
+[333.52s] play this but this one is the signing of
+[335.48s] the Declaration of Independence and then
+[337.92s] he would have a reporter go back and
+[339.84s] talk to Thomas Jefferson and Benjamin
+[342.12s] Franklin as they come out step outside
+[344.28s] of the deliberations and get their
+[346.16s] opinions just like they would if they
+[347.96s] were covering um Washington DC so I
+[350.88s] definitely took inspiration for that I'm
+[352.80s] just going to skip ahead here so what we
+[355.16s] would do is we' look at that and say how
+[357.04s] can we do this in a cheaper way so for
+[359.56s] example using old Insurance maps and
+[361.84s] some other things we would manually
+[363.48s] extrude for example this building which
+[365.88s] is the headquarters of the uh Union
+[367.96s] general at Fort Monroe in Virginia at
+[370.12s] the start of the Civil War I did that
+[372.24s] with a contract 3D designer and a
+[374.28s] contract developer and we were able to
+[376.60s] do that um we also um used those same
+[380.48s] type of skills to recreate our first
+[383.44s] sort of plan Community here in um in in
+[386.76s] Phoenix uh it was the first M modern uh
+[389.80s] like the levit town again use a contract
+[392.16s] 3D designer have five students and a
+[394.60s] very frustrated developer who's like why
+[396.48s] are you always coming up with this stuff
+[397.92s] but you know I had to do it but um
+[401.56s] budgets are tight and fortunately after
+[405.12s] um that developer moved on uh we uh uh
+[409.24s] AI came along just a couple months later
+[412.28s] and the explosion of all these tools
+[414.08s] mean that we can do so much more
+[415.92s] ourselves and I self-taught myself how
+[419.08s] to do all the stuff that I'm going to
+[420.40s] show you we use uh generative AI images
+[423.68s] based on all photos that we've clip uh
+[425.64s] cleaned up in AI um we uh generate
+[429.04s] images to tell stories that would have
+[430.64s] been difficult to do without without a
+[432.56s] 3D designer or developers previously
+[435.20s] we've been able to create scenes and
+[436.84s] days rather than months we generate
+[438.92s] voices that can read scripts based on
+[441.04s] research and we use AI to make old text
+[444.08s] such as 250 year old journals or Census
+[447.16s] records or whatever else um readable so
+[449.92s] these are some of the ways of practical
+[451.52s] ways that we use AI to help us tell
+[454.88s] these stories and bring history or
+[457.36s] scenes or journalism alive for a whole
+[460.12s] generation of people who like
+[462.04s] interactive content so this is a process
+[465.48s] that um we've been working on a project
+[467.92s] around the American Revolution because
+[469.92s] of course in 2026 is the 250th
+[473.12s] anniversary of the founding of our
+[474.80s] country and so we've been telling all
+[477.00s] these stories of what I call ordinary
+[478.84s] Revolution
+[479.84s] people who just stepped up and did
+[482.00s] something but we don't know their names
+[484.12s] many times we've reached out to
+[485.60s] genealogy associations um uh family uh
+[490.24s] uh historians um people who are the
+[493.56s] genealogists within their group to tell
+[495.92s] all these Amazing Stories and we've
+[497.44s] heard quite a few especially from New
+[499.48s] England but also down in Virginia
+[501.64s] Georgia and South Carolina and this is
+[504.00s] an example of our process where um
+[507.04s] there's a guy he was a a pastor uh
+[509.68s] William tennet we didn't have any
+[512.48s] visuals of him but we had his journals
+[514.72s] we had a lot of information but we did
+[517.24s] have an old a photo of an old um
+[520.04s] original painting of his grandfather and
+[522.36s] that's the first one that you see on the
+[523.96s] left so we got that we use AI to Res or
+[527.96s] in Photoshop using neuro filters and you
+[530.80s] have to kind of download this in the
+[532.40s] 2024 version of Photoshop uh in beta to
+[536.88s] restore that original image so we had
+[539.48s] more clarity and then we ran that
+[541.68s] through a AI um image generator to get
+[544.80s] this uh uh photo that you see on the
+[547.44s] right so that's a generated image based
+[549.56s] on what his grandfather looked like best
+[552.08s] we could do they didn't have um
+[553.92s] photography back there so that's how we
+[556.08s] did it and then what we'll do is we'll
+[558.16s] take that and we animate that again
+[560.68s] using a program that I'll discuss in a
+[562.60s] moment so we can make a portrait of
+[565.08s] William tennet III we use another
+[567.72s] program called 11 lab to again based on
+[570.56s] this guy's own writings and journals to
+[573.60s] kind of bring him alive so that uh
+[576.08s] students and other people who are
+[577.76s] interested in the American Revolution
+[579.32s] can get a sense of some of these
+[580.64s] ordinary revolutionists and I'm going to
+[582.64s] go ahead and play that my name is
+[584.32s] William tenant thei I am a presbyterian
+[587.20s] Reverend from South Carolina known as
+[589.40s] the Firebrand Parson for the way in
+[591.36s] which I preach animated and
+[593.96s] demonstrative with tensions growing
+[595.92s] between the colonies and the British
+[597.36s] crown in the 1770s I was tasked in 1775
+[601.64s] with informing the people of South
+[603.12s] Carolina's dangerous rural Backcountry
+[605.40s] of growing descent against the crown my
+[608.08s] okay I'm got to stop that and then what
+[610.24s] this one student who you know again
+[612.16s] learning it from scratch was able to do
+[613.92s] is create this interactive scene now we
+[616.56s] have bots in the photo right now or in
+[619.08s] this interactive scene because we're
+[621.28s] still working on the process to create
+[624.40s] um very goodlooking
+[627.32s] avatars uh that won't cost a ton of
+[630.28s] money and that always that are
+[631.84s] lightweight that people can look at on
+[634.40s] their phone or on their U desktop
+[637.52s] without having to put on a headset
+[639.12s] necessarily or look at it with a a cont
+[641.60s] my name is William tenant the and move
+[643.76s] on here um so but this scene was created
+[647.40s] by the student he did a good job putting
+[649.20s] it fog um making all the um the terrain
+[653.32s] here having quests so people could learn
+[655.76s] more about what the conditions were like
+[657.64s] and the fact that South Carolina was a
+[659.32s] hot bed of loyalist sentiment so again
+[662.28s] moving on so I said we had research so
+[665.44s] we were able to get this guys uh uh
+[668.00s] journals that were um online but it's in
+[671.80s] Old English and it's very hard to read
+[675.64s] um so if you look at this writing it was
+[677.80s] just impossible and if you've ever gone
+[679.64s] through old Census records or other
+[681.84s] records you know how hard that is but
+[684.04s] using a uh company called transus we
+[687.40s] were able to upload this clean it up so
+[690.32s] that we could read it and then have a
+[691.92s] better interface so the way we did that
+[694.80s] is and you can do it yourself is find
+[696.72s] old or handwritten documents try going
+[699.24s] to the America Revolution pinion records
+[701.68s] or maybe genealogy records in your own
+[704.08s] family download those either as a JPEG
+[706.76s] or PDF F upload those in
+[710.08s] transcribes um you can create account an
+[712.36s] account or just do it on the homepage um
+[714.84s] just to test it upload your documents in
+[717.44s] about three to five minutes they'll be
+[719.04s] transcribe so you can easily read those
+[722.32s] and then clear it up I just did this the
+[724.24s] other day you see where it has the state
+[726.00s] of delette uh tusx County just go in and
+[729.28s] clean it up a little bit but you can go
+[731.20s] ahead and read that so that's a lot of
+[733.44s] fun the other thing that we do quite
+[735.56s] often when we're creating these uh
+[737.72s] scenes is I can do all this stuff myself
+[740.80s] but being a busy Professor being on a
+[743.12s] bunch of committees you know working um
+[745.76s] trying to um innovate the curriculum I
+[748.52s] might not have time and so one of the
+[750.96s] things that's really helpful when you
+[752.64s] want to do interactive uh storytelling
+[756.04s] is as the originator you might have a
+[758.28s] story in your head or a scene that you
+[760.32s] want to create so I use um uh generative
+[764.20s] AI to help me create a um storyboard
+[768.32s] storyboards are really really important
+[770.64s] and if you've worked with a with a
+[772.32s] graphic designer or if you've worked
+[774.04s] with a videographer or document uh
+[776.28s] documentary maker you know how important
+[778.40s] it is to the storyboard things but I can
+[781.36s] go in mid Journey which is the
+[783.80s] generative AI of choice that I like a
+[786.12s] lot now it costs it was free at one
+[788.24s] point but now it costs money but there
+[790.08s] are a ton of others that you can use and
+[791.84s] I'll get into some of the resources in a
+[793.60s] moment and I can I can um uh imagine or
+[798.04s] create all the different scenes I want
+[800.04s] to have uh in this you know two scene
+[804.08s] reenactment so um we have the INF
+[806.96s] infirmary where there are so sick at
+[809.52s] Valley Forge and so many of them had
+[811.60s] disease but others their feet were
+[813.96s] frostbitten and torn up because they
+[816.84s] didn't have shoes now um we got used to
+[820.28s] calling U Washington George so George
+[822.80s] this is a second shot of where he's
+[825.00s] pleading to the Continental government
+[826.72s] for boots and other supplies and he
+[828.88s] would every few days have to write and
+[830.92s] plead for for boots and supplies the
+[833.84s] problem was the supply side now how do
+[835.96s] you make supply side economics sexy well
+[838.60s] this is an example of where one guy you
+[841.08s] know stood up raised his hand and said I
+[843.12s] can figure this out um this is an
+[845.48s] excerpt from a letter that uh George
+[848.60s] sent to the Continental Army back on
+[851.16s] December 23rd
+[852.76s] 1777 by the way I had a couple of
+[855.12s] relatives back in in um Valley Forge uh
+[858.28s] free men during that time then I have a
+[860.68s] medium shot of William Henry who is the
+[863.28s] guy who was a gun maker at one point and
+[866.00s] then he had aspirations like Hamilton to
+[868.44s] rise up in his station and do other
+[870.64s] things then we have a shot of where he
+[873.00s] put together this whole system of of
+[875.56s] hiders and cobblers and other people so
+[878.84s] that he was able to produce a steady
+[881.08s] flow of boots which of course helped to
+[883.24s] win the Revolution and what we do is we
+[886.32s] put all of this and I've created what I
+[888.12s] call the Hall of ordinary revolutionist
+[890.68s] and I've created this Hall where as as
+[893.44s] you go through this Hall you can see all
+[896.08s] these extraordinary stories of different
+[898.16s] people and you can actually portal into
+[901.76s] um scenes and if I click on this it
+[904.20s] should go to the live one right quick um
+[907.60s] and this is uh just a vehicle that we're
+[909.64s] using and we're working with Arizona PBS
+[912.48s] and all of PBS to support the Ken Burns
+[914.76s] film that'll come out in uh September of
+[918.80s] um
+[920.72s] 2025 um so you can walk down this Hall
+[924.36s] and you can um you know visit all these
+[926.92s] stories there's William tennet there's
+[929.20s] Oliver Brown there's um Hannah till um
+[933.12s] there's just so many people that you can
+[935.12s] get a sense of what's going on um let me
+[939.00s] uh close that down and go back to my
+[940.84s] presentation here um so I did most of
+[943.92s] that for like under $2,000 whereas a few
+[946.92s] years ago by the time I hired the
+[949.24s] developer and the 3D artist and the blah
+[951.56s] blah blah blah it would be 15 or
+[953.96s] $166,000 to do a similar um type of
+[958.20s] thing now I've only got three more
+[960.04s] minutes before there's time for uh Q&A
+[962.64s] so I wanted to go over some of the
+[964.28s] resources that I use I talk a lot about
+[967.04s] you know YouTube University and
+[969.08s] literally all of this is self-taught
+[971.40s] looking at videos um and they might be
+[974.32s] doing videos on how to make a game or
+[976.24s] how to make a you know a zombie uh game
+[979.24s] or something like that but I take their
+[982.24s] instruction on how to do all of this and
+[984.88s] I think about how I can repurpose that
+[987.24s] for journalism so um as I mentioned with
+[990.40s] art generation I love mid Journey um and
+[994.64s] I use it all the time but there are
+[996.28s] others that are out there whether it's
+[998.80s] Leonardo uh. a Adobe Firefly which is
+[1003.00s] updated versions of adobe if you update
+[1005.32s] from 2019 to 2023 24 you should be able
+[1008.80s] to get all of this stable diffusion um
+[1011.92s] so many more one of my favorite sites is
+[1014.36s] a is a a site called futur tools. which
+[1017.76s] is Contin ously listing new AI tools and
+[1021.28s] platforms that come out people can up um
+[1024.36s] upgrade them so you can just get the
+[1026.04s] better ones you can fig figure out if
+[1027.76s] it's free premium or you might have to
+[1030.00s] pay they all start out as free or
+[1031.96s] premium and then they put the um the
+[1034.80s] firewall or the pay wall um down and
+[1038.24s] some of them are worth it if you need
+[1040.40s] quick video creation I I find that kyber
+[1043.52s] is a really good one um that doesn't
+[1046.16s] cost a whole lot of money that you can
+[1048.00s] upload images or you could upload um
+[1050.92s] video and it can you know turn them into
+[1053.44s] these really cool animations for you it
+[1055.56s] only takes a few minutes uh even uh if
+[1058.36s] you do $5 a month you get a whole bunch
+[1060.56s] of credits that you can use and that can
+[1062.96s] enhance your storytelling there um I
+[1065.92s] mentioned uh transus um which does the
+[1069.76s] um the updating or it does the
+[1072.96s] translation of old text or clean it up
+[1075.48s] so you can read it again if you go to
+[1077.48s] Adobe um Photoshop 2024 beta version and
+[1081.44s] you add in your neural filters you can
+[1084.04s] um take old photos and clean those up or
+[1086.76s] colorize them 11 Labs is something that
+[1089.52s] I use for voice uh creation we don't
+[1091.96s] make up things we try to do our um we
+[1094.52s] try to do our um research and find trans
+[1099.00s] journals or speeches or books written
+[1101.28s] about it so we can bring those
+[1102.88s] characters and we can also do portrait
+[1105.36s] uh animation and it's really easy um
+[1108.68s] reach. love is something that was
+[1110.52s] created by one of my colleagues um Nani
+[1112.88s] derap I'm sure some of you know about
+[1115.16s] her really easy to create immersive
+[1117.48s] scenes spatial.ai is what I use to
+[1120.56s] create the Hall of ordinary
+[1121.96s] revolutionist as well as some of these
+[1123.60s] scenes that the students did reality
+[1126.08s] composer you can do it on your phone if
+[1127.88s] you want to try artificial intellig
+[1130.40s] excuse me um augmented reality super
+[1133.04s] easy um you can make 3D elements to put
+[1135.88s] in your scene let's say you need a a you
+[1138.04s] know pot or a you know something from
+[1140.52s] the uh 18th century you can make that in
+[1142.76s] Luma AI um Claude AI is something that
+[1146.28s] you can use it's a Production Tool but I
+[1148.76s] was thinking about the Jeffrey Epstein
+[1150.64s] uh documents that came out yesterday
+[1152.40s] that's something that you can take long
+[1154.72s] u PDFs and files upload those and it can
+[1158.52s] summarize them for you which is really
+[1160.32s] helpful if you're on Deadline um last
+[1163.48s] thing that I would say is um I know
+[1166.48s] we're really concerned about uh jobs
+[1169.24s] being lost and I know that that will
+[1171.36s] happen particularly around uh production
+[1174.60s] but um I just want to say that while I
+[1177.56s] can and do use all of these programs and
+[1180.72s] many more to create all manner of
+[1183.40s] content I really prefer to hire a smart
+[1186.36s] designer who can use these Technologies
+[1188.64s] for the same reasons I hire a CPA to do
+[1191.48s] my taxes rather than me trying to doing
+[1193.44s] my Turbo Tax journalists really should
+[1196.28s] see these productivity tools um as a A
+[1200.32s] plus rather than an existential threat
+[1202.88s] yes jobs will be lost but let's
+[1205.88s] encourage um young people that we mentor
+[1208.80s] and yourselves to uh try some of this
+[1211.64s] because it's really not that difficult
+[1214.40s] thanks Rutha a couple questions actually
+[1217.20s] um first could you direct us to any uh
+[1221.08s] local newsrooms that are using AI um
+[1224.64s] very effectively or there any specific
+[1228.28s] uh projects that uh we can research on
+[1231.20s] our own and look into that really um
+[1234.80s] display you know all of the um all of
+[1238.76s] the uses for these resources that you're
+[1241.44s] sharing today um yeah I mean and I don't
+[1244.60s] know what all these other places are
+[1246.24s] using but for example if you go to the
+[1248.16s] New York Times R&D um their research and
+[1251.36s] development lab they are usually really
+[1253.32s] transparent about how they create the
+[1255.48s] things that they do for example if
+[1257.44s] they're doing photogrammetry and they go
+[1259.72s] into Chinatown and take thousands of
+[1261.64s] photos and then they you know piece them
+[1263.48s] all together so you can walk through
+[1264.96s] Chinatown and then use uh different
+[1267.44s] programs to make see what it looked like
+[1269.52s] back in the 1920s versus now um The
+[1272.80s] Washington Post has been using uh AI for
+[1275.44s] many many years to write certain
+[1277.60s] databased stories um and and they've
+[1280.48s] been in that um and ganette uh has you
+[1284.20s] know experimented of course they've had
+[1286.24s] some missteps in terms of having uh AI
+[1290.04s] write stories for them and um I wouldn't
+[1293.48s] advise that right now because it's still
+[1295.92s] really glitchy um but there's a new tool
+[1299.16s] that we'll be experimenting with this
+[1301.72s] year uh in our Newsroom at cronite is
+[1305.04s] called nat n OA and it's a production
+[1308.44s] tool that can help if you're on
+[1309.84s] WordPress especially for smaller uh uh
+[1312.68s] companies to be able to write those
+[1314.48s] headlines get those social media posts
+[1317.20s] ready or to uh suggest photos either the
+[1320.68s] photos that your staff reporters uh take
+[1323.44s] or that maybe it's one from a um like a
+[1326.92s] Getty or shutter stock so there's so
+[1329.28s] many out there um that you not not all
+[1334.16s] of the newsrooms are saying what they're
+[1335.72s] using but there's um we're encouraging
+[1338.64s] that uh all of the content be La uh
+[1341.56s] labeled AI the um Associated Press I was
+[1345.20s] on a conference uh panel with them and
+[1347.40s] they said that going to be labeling
+[1349.16s] everything uh and they're experimenting
+[1351.40s] with integrating um AI into their work
+[1355.28s] great I'm glad you brought that up
+[1356.60s] because my my next question is just
+[1357.96s] about uh best practices we have a number
+[1360.44s] of journalist newsrooms this uh
+[1363.44s] technology entirely new to them and
+[1365.68s] they're going to take all these
+[1366.64s] suggestions that you're given and
+[1367.68s] they're going to start to dip their toes
+[1369.48s] into uh Ai and start experimenting with
+[1372.32s] all of these tools is there a list of
+[1375.32s] best practices or some other resources
+[1377.76s] that that you could share or point us to
+[1380.32s] that um would make sure that we're using
+[1382.96s] this technology in a ethical responsible
+[1385.68s] way I don't have a list per se but I
+[1388.36s] know again the Associated Press has
+[1390.40s] talked about labeling I know some of the
+[1393.12s] um discussions over the summer and and
+[1395.76s] various forums has been you know if
+[1397.76s] you're using a generated image uh as
+[1400.56s] your image then in the cutline it
+[1402.56s] instead of saying you know this is a
+[1404.28s] photo or graphic created by you it would
+[1407.60s] it was say created through Ai and I
+[1410.12s] think just being
+[1411.52s] transparent um even if you're writing
+[1413.80s] doing a data story a weather story and
+[1415.68s] you're using one of these older
+[1417.84s] platforms to write that I think we
+[1419.96s] should disclose uh that that's where we
+[1422.52s] got it from um with simulations and
+[1426.32s] other things in your
+[1428.04s] introductory uh of course you want to
+[1430.08s] say how you created that I mean maybe
+[1432.96s] most of us know that photography wasn't
+[1435.24s] around in the 1770s some people might
+[1438.36s] not know that um and and it's okay to
+[1441.28s] say how we put this together and I think
+[1443.36s] that's something that should go on any
+[1445.76s] um package uh when all of this is ready
+[1449.36s] at the end of this uh summer um and we
+[1452.24s] have it ready to support um PBS and Kim
+[1455.04s] Burns's film will say how we did
+[1456.92s] everything and that's what the you know
+[1458.76s] New York Times has been doing for many
+[1460.32s] years great yeah it goes to that that
+[1462.36s] transparency and making sure there's the
+[1464.68s] trust that exists you know between the
+[1466.20s] newsrooms and their their audiences
+[1468.56s] uh a couple other questions before we
+[1470.20s] wrap up I know we only have a few more
+[1471.56s] minutes um uh but one question regarding
+[1474.44s] uh AI tools that can create a summary of
+[1477.40s] audio recordings uh attending a long
+[1480.32s] meeting going to a government meeting an
+[1482.20s] open meeting perhaps you're there
+[1483.80s] recording everything are there any tools
+[1486.08s] that you know of off the top of your
+[1487.36s] head that would allow uh us to take that
+[1489.92s] recording and then have it uh
+[1491.52s] transcribed or is that technology still
+[1493.92s] a little ways off no um I'm I'm sure
+[1496.64s] it's there and I'm going go over to
+[1499.28s] Future tools right quick um see what's
+[1502.60s] in here and this guy he's a YouTuber who
+[1505.52s] kind of you know tries to um stay up on
+[1509.48s] everything so um so
+[1513.92s] summarize uh audio files see if we what
+[1518.68s] we get here okay uh so nothing let's
+[1523.00s] just say audio
+[1526.68s] transcribing
+[1528.72s] and if we don't see it here you know
+[1531.04s] I'll definitely you know look around um
+[1534.88s] okay hopefully I'm signed in
+[1538.72s] um but um okay but what he normally does
+[1542.72s] is he has a list of everything and you
+[1544.56s] can go in and
+[1546.28s] see uh uh copywriting Speech to Text
+[1550.88s] podcasting voice modulation video
+[1553.60s] editing I'll go through this and see if
+[1555.68s] I can find something but Future tools is
+[1558.00s] just like a really good um resource and
+[1560.76s] as I said people will upvote the better
+[1563.32s] ones um he gives you a little summary of
+[1565.88s] it and how it works and I'm sure there
+[1567.84s] are some out there I just can't think of
+[1569.32s] any off the top I'm sorry no that's
+[1571.68s] great that's a great uh resource great
+[1573.28s] website and again I'll provide links to
+[1575.40s] all these resources in that website and
+[1577.40s] the uh the notes to the recording of
+[1578.92s] this lesson um another question here as
+[1582.04s] well getting away from the idea of using
+[1583.68s] AI for storytelling and more just to to
+[1586.28s] to save time and news Gathering are
+[1589.32s] there any tools that you know of that
+[1591.36s] could help a reporter for example you
+[1593.16s] know sift through public records or
+[1595.32s] databases um or where if there are those
+[1598.68s] tools where can we find them where
+[1600.04s] should we start yeah I mean um it it in
+[1603.96s] in terms of if you have documents if you
+[1606.48s] have PDFs you get a data dump on
+[1608.44s] Deadline again being able to use some of
+[1610.44s] these tools like Claude And even uh um
+[1613.48s] you can build a a model off of um a GPT
+[1617.60s] for so they can very quickly go through
+[1620.00s] and kind of summarize stuff for you um
+[1623.00s] otter uh is one that for example if you
+[1625.76s] turn on Otter on this webinar it's going
+[1629.12s] to take notes for you and then you can
+[1631.04s] go back through it even Adobe now with
+[1634.32s] um Premiere uh uh has a way that you can
+[1638.04s] go in and edit out all the ums and the
+[1641.08s] and the O and all that stuff when you're
+[1643.52s] editing uh a piece of uh video and so
+[1647.08s] that's really really helpful instead of
+[1648.68s] trying to slice out every little thing
+[1650.60s] so that it's uh uh again uh smooth so
+[1654.12s] there's so many tools out there that I
+[1656.36s] really am starting to you know have a
+[1658.16s] hard time uh keeping up with it all um
+[1661.16s] there are tools that will help you with
+[1662.76s] video generation as well with animation
+[1666.12s] uh paika Runway just so many out there
+[1669.28s] that I have to find time just to test
+[1672.00s] the ones that I think would work for me
+[1674.12s] and free for my students or low cost for
+[1677.00s] my students so that we can do all of
+[1678.76s] that but from a production standpoint
+[1681.32s] that's huge uh chat GPT all the open AI
+[1684.20s] some of the stable diffusion stuff you
+[1686.24s] know look in there and see what it is
+[1688.88s] that um you're looking to do and just
+[1691.56s] Master even if it's just that one for
+[1693.48s] right now so it'll help speed up your
+[1695.28s] production but hey NADA is the one that
+[1697.68s] I talked about Hy NADA n OTA and it was
+[1701.24s] created by former content um management
+[1705.24s] officials and Technologies at the LA
+[1707.12s] time so very journalist friendly in
+[1709.36s] terms of speeding up your production
+[1711.20s] you've written something it'll it'll
+[1712.84s] give you three headlines you can you can
+[1715.36s] accept one or you can like one and kind
+[1717.68s] of like it and then edit the headline
+[1719.44s] but that's going to save you right there
+[1721.08s] write those social media posts so you
+[1722.88s] can get it out there and let people know
+[1724.76s] what you've created great and and in the
+[1727.20s] interest of time if there if there is
+[1728.92s] just one tool that uh we can all leave
+[1731.24s] this session with and go experiment with
+[1734.08s] is that the one or are there others that
+[1735.80s] you think are equally as accessible and
+[1738.44s] and useful if we only have time to focus
+[1740.44s] in on one AI tool oh my god um I would
+[1744.88s] say for storytelling I would use
+[1747.68s] something like Runway or pabs or one of
+[1750.88s] those to create short videos because a
+[1754.24s] lot of us who came from a print
+[1755.64s] background we don't know much of that um
+[1758.56s] and if we just want to put together
+[1760.08s] something to an explainer video how
+[1762.24s] tsunami works I'm going to be teaching
+[1763.84s] that to my students in a little bit uh
+[1765.96s] how you know earthquake or volcano
+[1768.36s] erupts you can use one of those to
+[1770.04s] create a really good explainer so and
+[1772.40s] that's what journalists do really well
+[1775.44s] great well thank you retha I appreciate
+[1777.52s] all of this this is so helpful and uh to
+[1780.28s] everyone again links to all the sites
+[1782.12s] Rea mentioned will be shared in the
+[1783.84s] video notes of this lesson uh you can
+[1786.04s] find those links as well as uh many
+[1788.40s] other 30 minute skills all at nea.org
+[1791.44s] sl30 minutes skills so again many thanks
+[1794.76s] everyone for joining us today if you
+[1796.68s] found today's class helpful to your work
+[1798.72s] in any way please consider becoming a
+[1801.20s] sustaining member of neac at nea.org
+[1804.48s] jooin your annual support is what helps
+[1807.00s] us provide classes like this one thank
+[1809.60s] you again we'll see you next month for
+[1811.64s] our next 30 minute skills Take Care
+[1813.64s] thank you guys

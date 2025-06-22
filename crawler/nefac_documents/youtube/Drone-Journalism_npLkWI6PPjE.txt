@@ -1,0 +1,578 @@
+[5.04s] i'm justin silverman of the new england
+[6.72s] first amendment coalition welcome to
+[9.04s] this month's 30 minute skills class on
+[11.44s] drone journalism every month we at nefac
+[14.64s] offer lessons on valuable practical
+[16.72s] skills that can be used immediately to
+[18.64s] expand your work
+[20.32s] if you miss the class they're all
+[21.76s] available at efact.org 30 minute skills
+[25.52s] previous classes include web scraping
+[27.60s] data visualization how to verify
+[29.84s] information online and how to respond to
+[31.84s] a subpoena among many other topics
+[35.12s] we have a lot to cover today and not a
+[37.04s] lot of time so let's begin
+[39.20s] leading today's class is mickey oscar
+[41.20s] writer general counsel to the national
+[43.44s] press photographers association
+[45.76s] mickey all yours
+[47.76s] oh we've been working on uh on drones
+[50.40s] and the use of drones for journalism oh
+[52.80s] it's probably going on uh 10 years now
+[55.44s] so people have always wanted to fly
+[59.28s] uh leonardo da vinci's sketches uh a
+[62.88s] great quote from him
+[65.28s] in terms of
+[66.56s] how people just always looked up in the
+[68.48s] air and wanted to be up there it wasn't
+[70.80s] too long before the 1700s
+[73.44s] in france they developed hot air
+[75.36s] balloons and right around
+[77.04s] the same time
+[78.40s] there was this other invention called
+[80.48s] photography and that's one of the first
+[82.56s] known pictures that was taken with a
+[84.40s] camera obscura uh it wasn't too long
+[87.04s] before somebody said wait a minute
+[89.20s] balloons hot air up in the air cameras i
+[92.16s] think we can take a camera up there and
+[94.00s] so they did uh this is a view of boston
+[97.68s] it's one of the first aerials uh the the
+[100.48s] first view was of paris but that
+[103.04s] does not exist any longer and then
+[105.44s] people have
+[106.56s] found all kinds of ways to put cameras
+[108.72s] up in the air with kites
+[110.72s] and uh and pigeons
+[113.12s] and and then certainly uh with with
+[115.76s] airplanes and then cameras got smaller
+[118.56s] uh when george eastman developed the
+[120.72s] brownie in the late 1800s and sold it as
+[123.36s] a dollar
+[124.56s] kind of interesting is that people
+[126.40s] thought the right to privacy is they
+[128.16s] knew it was over like you know before
+[130.32s] that people had to sit in a chair and
+[132.48s] hold still for these long exposures or
+[135.44s] have really big cameras as we saw in
+[137.28s] some of the pictures or when matthew
+[139.12s] brady you know traveled around in a
+[141.12s] covered wagon in with all kinds of
+[143.28s] equipment um but then they thought oh
+[145.60s] somebody's got a handheld held camera
+[147.36s] they can go out in the street and the
+[149.04s] right to privacy as we know it is over
+[152.00s] and lewis brandeis who was a harvard law
+[154.32s] student uh you know looked at things and
+[157.04s] said you know let's look at the right to
+[159.60s] privacy and and the the article that he
+[162.96s] wrote
+[164.40s] back in the late 1800s if you read it
+[166.88s] now and if you google right to privacy
+[168.88s] you can read it you think he was talking
+[171.12s] about drones today but people really
+[173.68s] hated cameras they they you know were
+[176.24s] worried about people taking pictures of
+[177.92s] the beach even though people wore more
+[180.40s] to the beach back then than they were to
+[182.00s] church today and so again some more
+[184.40s] aerial photography
+[186.08s] and here we have drones and the
+[188.56s] combination of so many different
+[190.88s] technologies in terms of high definition
+[193.20s] cameras
+[194.40s] gps global positioning systems battery
+[197.76s] life
+[198.64s] all of those things have culminated in
+[200.56s] the use of drones um so
+[203.12s] people have been flying remotely
+[204.96s] controlled aircraft for over 60 years
+[207.76s] but it's just this kind of confluence of
+[210.40s] all these technologies coming together
+[213.12s] that got congress to pass the
+[215.76s] faa modernization act of 2012. and they
+[220.00s] really wanted to incorporate uas
+[222.48s] unmanned aerial systems and we call them
+[225.04s] drones into the nas they love acronyms
+[228.24s] the national airspace and they wanted
+[230.32s] them to do it by 2015 well
+[233.20s] they were about 18 months behind but
+[235.36s] finally in uh in in 2016
+[239.44s] they came out with the part 107 rules
+[242.40s] prior to that there were all these kinds
+[244.24s] of requirements you actually had to have
+[246.64s] a pilot's license a medical exam
+[250.08s] all kinds of waivers to be able to fly a
+[252.32s] drone
+[253.28s] but that changed with part 107.
+[256.48s] and so what are we talking about when we
+[258.16s] talk about drones well
+[259.76s] just we're going to go through a couple
+[261.36s] of things here uh they have to be below
+[264.24s] 55 pounds in weight they have to be
+[266.80s] operated within visual line of sight
+[269.60s] they can't be operated over 100 miles an
+[272.00s] hour they can't be operated at an
+[274.32s] altitude higher than 400 feet above
+[276.72s] ground level and there's an exception to
+[279.20s] that if you're flying within 400 feet of
+[281.76s] a building
+[283.68s] the radius of the building you can go
+[285.60s] 400 feet above that structure
+[288.56s] because the way it was thought is that
+[291.04s] since you have to give way to manned
+[292.88s] aircraft if there's an aircraft flying
+[295.84s] uh close enough to 400 feet above the
+[298.32s] structure it's got a whole lot more to
+[300.56s] worry about
+[302.56s] than than a small drone yeah as i said
+[304.88s] you must yield the right-of-way to other
+[307.20s] aircraft
+[308.56s] and that you can't operate a drone in a
+[311.28s] reckless or careless a manner so the faa
+[314.72s] has defined uh controlled airspace in
+[318.00s] certain classes class a is 18 000 up to
+[321.44s] 60 000 feet uh class g is completely
+[325.04s] uncontrolled uh airspace and then their
+[327.92s] spaces in the middle and we could spend
+[330.08s] the whole time
+[331.20s] looking at those classes but just know
+[334.00s] that they exist
+[335.44s] um you have to have three miles of
+[337.52s] visibility
+[338.80s] in order to operate you can operate
+[341.92s] as i said it's not above 400 feet so
+[343.84s] certainly not in class a airspace and
+[346.72s] then you can operate in the other
+[348.32s] classes of airspace
+[350.40s] with certain air traffic control
+[352.16s] permission class g airspace which really
+[355.04s] comprises most of the country you don't
+[357.44s] need permission but you still can't go
+[359.68s] above 400 feet above ground level so the
+[362.56s] faa has all kinds of things set up
+[365.04s] there's different classifications
+[367.28s] for being a drone pilot you can fly
+[370.00s] recreationally be a modeler as part of a
+[372.96s] community based organization
+[375.60s] you can have your part 107 certificate
+[378.72s] as a remote pilot or commercial operator
+[381.28s] and part 107 basically looks at any
+[384.16s] operation
+[385.36s] that's not any one of these other
+[387.36s] operations as being commercial you can
+[389.92s] be a public safety or government user
+[393.60s] an educational user and if you go to the
+[396.08s] faa website uh where you see these
+[398.48s] you'll just click on any of them and
+[400.00s] you'll get all kinds of instructions uh
+[402.32s] and and there's the website uh that you
+[404.32s] would go to um that deals with unmanned
+[407.04s] aerial systems
+[408.40s] so please feel free to take a picture
+[410.72s] screen capture we may be able to share
+[413.04s] that in the chat um if justin's able to
+[417.52s] but that's where you go to pretty much
+[419.52s] find out everything and that information
+[421.76s] is all free you may come up if with
+[424.40s] google searches with sites that want to
+[426.40s] charge you for information and things
+[428.56s] just go to the faa they're the source of
+[431.28s] all this and it's all free
+[434.48s] so um
+[436.48s] what do you need to know to become uh
+[439.60s] an faa pilot um and you need to
+[442.64s] understand
+[443.84s] what the rules are uh to be eligible to
+[447.12s] take uh the remote pilot's
+[449.68s] test you have to be at least 16 years
+[451.76s] old be able to read write and speak and
+[454.80s] understand english and be in physical
+[457.04s] and mental condition to fly the uas
+[459.52s] safely
+[460.88s] and
+[461.68s] all drones
+[462.88s] no matter what class they're in need to
+[464.88s] be registered and that costs five
+[467.36s] dollars and the registration is valid
+[469.52s] for three years
+[471.04s] um faa drone zone another thing you can
+[473.84s] click on once you go to that the link
+[476.24s] that we gave you before you'll find out
+[478.32s] all kinds of things there's an app a no
+[480.72s] before you fly again you can install
+[483.44s] that on your phone and it will help you
+[485.76s] in terms of air spaces and what kinds of
+[488.88s] requirements you have for those airspace
+[490.96s] classifications
+[492.64s] there are certain
+[493.84s] other limitations you can't operate a
+[496.32s] drone for removing vehicle
+[498.72s] operation at night beyond visual line of
+[501.60s] sight having a visual observer
+[504.40s] the operation of multiple unmanned
+[506.64s] systems these are things you need
+[508.48s] waivers for in certain uh situations uh
+[512.16s] and so they have all those limited those
+[514.08s] are all links up there again going to
+[516.72s] the faa website is the best thing
+[520.32s] we were supposed to besides part 107
+[523.36s] have um
+[524.80s] rules for operating over people that was
+[527.28s] supposed to happen a while ago it became
+[529.60s] effective last april one of the things
+[532.08s] that was holding that up and also um
+[534.88s] holding up night flights is is the fact
+[538.00s] that uh the government
+[540.24s] a number of agencies the department of
+[542.08s] homeland security uh the department of
+[544.48s] justice wanted to have remote id
+[548.24s] and remote id they're worried about
+[551.04s] people who are bad actors uh they talk
+[553.68s] about the uh the clueless the cl the
+[556.72s] careless and the criminal uh and uh and
+[559.92s] they worry mostly about the criminal
+[562.96s] so
+[564.88s] that's what they're having now in terms
+[566.88s] of remote id
+[568.64s] they're still trying to figure out how
+[570.72s] that's going to work and how some of the
+[573.36s] already existing drones can be
+[575.04s] retrofitted
+[576.56s] that is not going to become effective
+[578.32s] until september of 2023
+[580.88s] they may push that back as well
+[583.36s] uh one of the things that i talk about
+[585.52s] all the time is when you're using your
+[587.68s] drone when you're out there operating it
+[589.84s] the person you're going to encounter
+[591.92s] first is not going to be from the faa
+[594.08s] they're not going to be from the ntsb
+[596.64s] they're not going to be probably from
+[598.24s] some federal government agency they're
+[600.24s] going to be a law enforcement officer
+[602.56s] and so nppa has spent a great deal of
+[604.88s] time of working with law enforcement uh
+[607.92s] on on on having them understand first
+[611.52s] amendment rights i do a lot of training
+[613.92s] uh regarding uh the first amendment
+[616.16s] rights of citizens and journalists to
+[618.32s] photograph and record in public and i
+[620.24s] look at
+[621.84s] aerial photography using drones as just
+[624.24s] another extension of that
+[626.16s] so um the
+[628.24s] drone the law enforcement folks i've
+[630.56s] been working closely as i said with the
+[632.24s] faa they've developed
+[634.00s] this leap card which tells officers who
+[637.04s] often times have absolutely no knowledge
+[639.92s] about drones and what can and can't be
+[642.00s] done uh it's a two-sided pocket card and
+[645.44s] it tells them how to get uh you know the
+[647.92s] information that they need
+[649.84s] uh but the thing that you need to know
+[652.24s] uh is that when you're operating as a
+[654.64s] part 107 you have to have
+[657.12s] your remote pilot certificate and you
+[659.04s] have to have your registration and just
+[662.08s] like license and
+[663.84s] registration we all hear about uh when
+[666.40s] we're driving a car the same thing is
+[668.32s] true with a drone and you have to be
+[670.24s] able to produce that so if you're flying
+[672.96s] for a company you need to make sure that
+[674.88s] that company has policies and guidelines
+[677.92s] whether it's for staffers and there are
+[680.24s] organizations such as cnn and sinclair
+[683.84s] and usa today dinette
+[686.00s] that have a large drone fleets and use a
+[689.36s] lot of drone pilots but they also
+[691.76s] they and other news organizations hire
+[694.00s] freelancers so you really need to know
+[696.56s] what requirements that you must meet and
+[698.64s] one of them is carrying enough
+[700.84s] insurance
+[702.56s] we're just going to go through a quick
+[703.92s] list of things
+[705.52s] using drones it's a federal law
+[708.64s] part 107 is part of federal law the
+[711.92s] federal government can exercise what's
+[714.00s] known as preemption as in their law
+[716.80s] applies unfortunately we've seen lots
+[719.60s] and lots of states almost at least 40 or
+[722.88s] more of them have enacted some type of
+[725.76s] drone legislation
+[728.56s] we've seen more legislation enacted
+[731.36s] regarding flying over or near critical
+[734.08s] infrastructure as i mentioned state laws
+[736.72s] there are a lot of municipalities
+[739.04s] that have drone regulations
+[741.36s] we just saw a case in michigan where a
+[743.84s] local municipality tried to put one of
+[746.16s] those regulations in place
+[748.32s] michigan itself had a state law and they
+[751.52s] said hey our state law preempted
+[754.00s] the local law
+[755.36s] and then federal government really
+[757.20s] preempts any of that uh illegal
+[760.16s] challenges uh we nppa has been
+[762.96s] challenging uh a drone statute in the
+[766.40s] state of texas and and that case is
+[768.72s] developing we survived a motion to
+[770.64s] dismiss
+[771.60s] and we've made all of the filings and
+[773.92s] waiting to see what the judge says on
+[775.60s] the motion for summary judgment
+[778.32s] so we're seeing legal challenges to a
+[780.40s] number of these other laws take place
+[782.72s] around the country they said insurance
+[785.04s] is an important thing ethics you know we
+[787.36s] talk about legal what you can do what
+[789.20s] you can't do
+[790.48s] but ethics is more what you should do
+[792.24s] and what you shouldn't do
+[793.84s] and it's really important to have those
+[796.32s] ethical discussions
+[798.32s] privacy rights that's what everybody's
+[800.24s] afraid of that's what i talked about uh
+[802.56s] with the brownie and uh it's even more
+[805.20s] so with drones uh ntia
+[808.32s] which is the national uh
+[809.80s] telecommunications and information
+[811.68s] agency they came up with some best
+[814.08s] practices for the use of drones nppa uh
+[817.76s] participated in those uh those
+[821.28s] roundtable discussions and we were able
+[823.76s] to put first amendment considerations
+[825.68s] into place we did the same thing with
+[827.68s] the uniform lock commission that was
+[829.76s] trying to develop a uh a model tort law
+[833.20s] drone act uh again and the uh
+[837.44s] law institute is working on the same
+[839.12s] thing where there's this
+[841.20s] basically competition between first
+[843.36s] amendment rights and people's privacy
+[845.44s] and property rights
+[846.96s] so um again
+[848.80s] nppa developed a drone journalism code
+[851.28s] of ethics that's available online
+[854.00s] through our website it's npva.org and if
+[857.44s] you just type in or if you just google
+[859.76s] drone journalism code of ethics mdba
+[862.40s] you'll come up with it as well because
+[863.92s] people are very much worried about you
+[866.56s] know drone snooping is the shadow of the
+[869.20s] ominous drone
+[870.72s] looking in somebody's window my life was
+[872.96s] kind enough to pose for this picture
+[875.92s] but drones can really serve an
+[878.56s] incredible purpose in terms of
+[880.32s] storytelling it really should be looked
+[882.48s] at as just another tool in the toolkit
+[885.28s] this was a a gas explosion in the bronx
+[888.72s] and it dropped the whole building
+[891.28s] you really couldn't show
+[893.36s] the devastation and how that building
+[895.60s] dropped without the use of a drone uh
+[898.72s] you know again a boat on fire i don't
+[901.12s] know how close i'd get with my plastic
+[903.04s] drone because the heat certainly is
+[905.04s] intense but it's certainly a lot safer
+[907.52s] and more economical than bringing in uh
+[910.40s] a fixed rotary wing aircraft i i love
+[913.44s] this image of of crocodiles if you look
+[916.08s] on the lower uh left hand side you'll
+[918.40s] see the reflection of the drone
+[920.48s] again ethics you you need to think about
+[923.20s] wildlife and whether the drone is now a
+[926.64s] bothering a wildlife uh just as much as
+[929.36s] it might be bothering bothering people
+[932.24s] another one of my favorite pictures uh
+[934.72s] those look like the camels but they're
+[936.96s] actually the shadows of the camels and
+[939.04s] if you if you actually look at the
+[940.96s] little white and the red those are the
+[942.72s] riders um but the shadows being cast by
+[946.00s] uh by a sun that's uh that setting
+[950.08s] the news media coalition this is the
+[952.24s] number of organizations nppa belongs to
+[956.16s] where we have advocated
+[958.24s] on behalf of the use of drones
+[960.56s] for news gathering
+[962.16s] i i show this um
+[964.48s] let's see if i can actually get it to
+[966.16s] play
+[992.14s] [Music]
+[994.00s] so uh talk about fake news that would be
+[997.68s] fake news and i can't tell you how many
+[999.92s] millions of hits
+[1001.60s] uh this uh video has gotten this is
+[1004.80s] completely uh computer generated uh that
+[1009.20s] winglet of a southwest airliner uh
+[1012.24s] was actually filmed
+[1014.32s] but the drone striking it and it
+[1016.08s] disintegrating never happened but trying
+[1018.96s] to convince people of that uh is is
+[1021.76s] something that has been a huge uh
+[1024.24s] undertaking a couple of other videos
+[1028.24s] that have raised some concerns and
+[1030.96s] certainly those of the department of
+[1033.04s] homeland security
+[1035.28s] somebody built their own drone
+[1037.52s] and then attached a firearm to it
+[1041.12s] this person was actually tried
+[1044.24s] in connecticut
+[1045.36s] [Music]
+[1047.76s] of that charge but then
+[1049.76s] he kind of got to uh another point said
+[1052.32s] well if i could do something with a
+[1054.00s] drone
+[1055.28s] i could certainly do something with a
+[1057.52s] flamethrower
+[1059.68s] maybe i could cook a turkey and well you
+[1062.72s] know this seems rather extreme and
+[1066.00s] everybody's always talking about wow
+[1068.80s] that's really out there
+[1070.56s] um
+[1071.44s] here's a drone and this is taken in
+[1073.44s] north korea and this was debris that
+[1076.08s] ended up getting caught on a high
+[1079.04s] power line and rather than
+[1081.44s] de-energizing the line of having people
+[1084.24s] lose power uh those lines are built to
+[1087.60s] withstand a great heat and lightning
+[1090.48s] strikes and so they thought well let's
+[1092.32s] put up a drone and use a flamethrower
+[1095.12s] and just burn the debris off
+[1097.92s] so
+[1099.12s] that
+[1100.00s] in a very very quick nutshell is uh
+[1104.40s] is the use of drones for news gathering
+[1106.96s] mickey we have a couple questions here
+[1108.48s] before we wrap up the first has to do
+[1110.48s] with law enforcement you've provided us
+[1112.72s] a lot of really helpful guidance and
+[1114.40s] great resources to start using drones
+[1117.36s] but assuming that we take all that
+[1119.04s] guidance and we begin using drones
+[1121.36s] following every applicable law we still
+[1124.16s] may encounter some law enforcement or
+[1126.16s] police officers that don't like us
+[1128.40s] flying our drones around and may tell us
+[1130.88s] to stop or to hand over the video that
+[1133.44s] we've captured
+[1134.96s] how should we respond what's the best
+[1136.88s] way to manage a situation like that
+[1139.36s] i have these conversations all the time
+[1142.16s] mppa does a drone journalism leadership
+[1144.64s] summit where i bring together where we
+[1146.96s] bring together
+[1148.32s] both journalists and law enforcement and
+[1151.20s] the faa and department of homeland
+[1153.52s] security and my biggest conversation is
+[1157.36s] uh and my biggest piece of advice is
+[1159.84s] have conversations with your local law
+[1162.48s] enforcement before
+[1164.48s] you fly
+[1166.08s] i can't tell you how important that is
+[1168.56s] first of all a lot of police departments
+[1171.12s] are trying to get their own drone
+[1172.56s] programs so it's really there's that
+[1174.96s] commonality i think they'll want to talk
+[1176.96s] about that but reach out to them and
+[1179.44s] tell them look we've got a drone program
+[1181.52s] we'd like you to introduce it whether
+[1183.28s] you are an individual independent
+[1185.76s] journalist or certainly if you are a
+[1188.40s] news organization reach out to them have
+[1191.52s] meetings explain what you do
+[1194.08s] and so
+[1195.44s] even when you can if you're just getting
+[1197.36s] a beauty shot you're not doing
+[1198.80s] investigative journalism you're not
+[1200.32s] doing anything other than maybe getting
+[1202.64s] a locator it certainly would behoove you
+[1205.76s] to call them up after you have these
+[1207.60s] conversations so they know who you are
+[1209.84s] and say hi uh you know channel seven
+[1212.72s] we're going to be flying at noon today
+[1215.04s] over maine and broad we're going to be
+[1216.96s] there for about 10 minutes we're getting
+[1219.12s] a locator in case you get any calls and
+[1221.76s] then when grandma jones calls up and
+[1224.16s] says there's a drone flying over my
+[1226.16s] house they can go yes mrs jones we know
+[1229.20s] it's channel 7. they'll be there about
+[1231.60s] 10 minutes you don't really have to
+[1233.60s] worry
+[1234.40s] that saves them dispatching a car it
+[1237.36s] saves you from having to explain to an
+[1239.60s] officer who probably has no idea about
+[1242.32s] drones but will probably order you to
+[1244.40s] land uh may as justin said you don't
+[1247.44s] want to take the drone seize it as
+[1250.24s] evidence all kinds of things we've seen
+[1252.80s] that happen before the best way to avoid
+[1255.44s] that
+[1256.48s] is to have conversations with your local
+[1258.96s] law enforcement and first responders
+[1261.36s] fire department ahead of time
+[1263.68s] so that they know and i think that in
+[1266.16s] itself will help build better of police
+[1269.04s] press relations so
+[1271.04s] that's my advice the time to trying to
+[1273.12s] be explaining to law enforcement that
+[1276.24s] you know more than they do that almost
+[1278.72s] never goes over well anyway
+[1280.96s] because they're the authority they got
+[1282.72s] the badge the gun and they think that
+[1284.40s] they know everything when most of the
+[1286.88s] time they don't
+[1288.80s] mickey last question goes back to that
+[1290.72s] 400 foot rule that you mentioned
+[1293.04s] where does that 400 foot count begin
+[1296.08s] does it take into consideration uh
+[1298.56s] natural features like a tree line or
+[1301.04s] does it literally start right at the
+[1303.20s] ground and work its way up
+[1306.40s] as agl it means agl above ground level
+[1310.64s] they're not taking into consideration
+[1313.36s] the trees
+[1314.64s] though you know
+[1316.96s] i could make an argument that as long as
+[1318.96s] they've got the exemption there for a
+[1320.96s] structure
+[1322.08s] you know that let's say you've got
+[1325.20s] an aerial tower that's up a broadcast
+[1328.16s] tower and you're doing somebody's doing
+[1329.84s] a tower inspection what that allows them
+[1332.24s] to do is as long as they're within that
+[1334.48s] 400 foot radius of the tower they can go
+[1337.84s] 400 feet above it i think you could
+[1340.08s] probably make the argument if you're
+[1342.08s] flying 400 feet above the trees if
+[1345.52s] there's a a manned aircraft uh
+[1349.84s] that's that close to you they got a
+[1351.84s] whole lot more to worry about than
+[1353.84s] hitting the drone they have to worry
+[1355.36s] about hitting the trees you still have
+[1356.96s] to
+[1357.84s] yield the right of way to them
+[1360.48s] but
+[1361.28s] the way the rule is written with the faa
+[1364.16s] it's 400 feet above ground level
+[1367.92s] thank you so much mickey and thanks to
+[1370.08s] all of you who joined us today
+[1372.24s] if you found what was taught here
+[1374.08s] valuable please consider supporting this
+[1376.40s] program with a donation at nefac.org or
+[1379.20s] better yet become a sustaining member at
+[1381.20s] nefac.org
+[1382.80s] join help us continue to provide this
+[1385.20s] type of programming free as a public
+[1387.84s] service
+[1388.80s] thank you all again for joining us today
+[1391.04s] i look forward to seeing you all next
+[1392.56s] month for our next 30-minute skills

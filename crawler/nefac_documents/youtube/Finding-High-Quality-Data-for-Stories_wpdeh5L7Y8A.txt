@@ -1,0 +1,588 @@
+[3.30s] hello everyone I'm Justin Silverman of
+[6.00s] the New England First Amendment
+[7.08s] Coalition welcome to another 30-minute
+[10.32s] skills class today we'll be discussing
+[12.24s] how to find high quality data for your
+[15.36s] stories
+[16.32s] for those of you who are new to our
+[17.76s] program please check out our previous
+[19.50s] lessons at kneefact.org 30 minute skills
+[23.76s] you'll find their classes on Microsoft
+[25.92s] Excel data cleaning web scraping and
+[28.74s] data visualization among many other
+[31.26s] topics relevant to journalism and open
+[33.72s] government
+[34.68s] we have a lot to get to and not a lot of
+[36.66s] time so let's get started joining us
+[38.94s] today is Margo Williams the research
+[40.74s] editor for investigations at The
+[43.14s] Intercept Margot thank you for being
+[45.48s] here
+[46.74s] thanks very much uh I'm Margo Williams
+[50.40s] um and I am actually a news researcher
+[54.02s] uh I my background is as a librarian and
+[57.48s] I have been doing research and newsrooms
+[59.46s] for more than 40 years so I'm going to
+[61.92s] talk about a lot of basic skills for
+[64.56s] conducting research on investigations
+[67.32s] Okay so
+[70.08s] so you might not be familiar with there
+[73.02s] being researchers in The Newsroom and
+[74.94s] there used to be a lot more of us than
+[77.10s] there are now uh but because of layoffs
+[79.92s] and
+[80.94s] newspapers shutting down
+[83.04s] and whatever but um these are some of
+[85.68s] the skills that researchers use and and
+[90.00s] in being a part of a team in a newsroom
+[92.46s] and we're always part of a team we know
+[94.86s] we're not lone wolves so
+[97.56s] um just all we we do backgrounding we do
+[100.70s] uh training we analyze data uh so so a
+[105.72s] lot of things and uh let me just go on
+[108.72s] about how we think about uh uh setting
+[112.44s] out on a looking for a quest to answer
+[115.20s] to a question or looking for data
+[117.14s] working on a project what I do before I
+[120.84s] start searching is I think about well
+[122.76s] the answer would look like instead of
+[124.56s] going into Google and typing in words
+[126.60s] like
+[128.10s] um and then who will have that answer so
+[131.22s] that I'm not just asking Google to tell
+[133.38s] me where where the answer is but I'm
+[136.20s] specifically saying I need it from a
+[139.50s] university I need it from a government
+[141.42s] organization I need it from whichever
+[145.50s] place I might need every newspaper so I
+[147.78s] would specifically search within those
+[149.82s] places I also think about what kind of
+[153.06s] format it will be in am I looking for a
+[155.88s] a document a PDF document am I looking
+[158.52s] for a report that would be in a PDF am I
+[161.10s] looking for data that would be in a
+[163.02s] spreadsheet I you can use Google's
+[165.72s] advanced search features to narrow
+[168.36s] searches so that you are looking
+[169.86s] specifically what you want to find and
+[173.94s] so you're finding and not searching part
+[176.70s] of that is what keywords you put in your
+[179.94s] question are the keywords that are going
+[182.46s] to be in the resource that you are
+[185.94s] you're looking for the answer from so it
+[189.18s] may be in a different language and you
+[191.22s] may need to use a translation tool to
+[193.74s] search for the same terms in another
+[196.92s] language or it may just be in some kind
+[199.86s] of jargon that you should be using in
+[202.74s] your search
+[205.38s] another thing to think about is will the
+[208.50s] thing you're looking for be online it
+[210.60s] may not be online it may be older it may
+[213.06s] be in a quote book unquote it may be in
+[216.54s] some other place that is not an online
+[219.54s] Source like going to a Library of
+[223.80s] Congress or a research library or the
+[226.86s] public library to find things that are
+[229.08s] not available online and the last is
+[232.32s] that is this a thing that even exists or
+[235.26s] may exist in a place where it is not
+[237.60s] available to the public in which case
+[240.12s] you may need to file a freedom of
+[242.28s] information request for that document or
+[245.46s] you may need to actually create
+[247.44s] something yourself by
+[250.34s] finding the data and organizing it in in
+[253.92s] a way that allows you to um to analyze
+[257.82s] it
+[259.98s] so uh part of what I just said was about
+[263.52s] things that are not indexed by search
+[265.92s] engines and that some of the types of
+[267.84s] things would be uh information within
+[270.84s] databases that is only searchable on
+[273.00s] site or data that's only downloadable so
+[276.48s] an example of this is the Europe prisons
+[279.42s] website for the U.S department of
+[283.08s] Prisons
+[284.30s] you need to go to that website and put
+[287.34s] in the prisoner's name and then you will
+[289.68s] come up with the data from that uh
+[292.98s] a lot of archives and public record
+[295.32s] information is not available for Google
+[299.28s] search because they're in databases and
+[303.00s] Google can't search within databases so
+[304.98s] there's just a number of thing places
+[307.20s] that you would need to go outside of
+[310.44s] Google to get to the data that you need
+[312.54s] things that are updated every day Google
+[316.22s] scan stew and scrapes through and
+[319.20s] billions of pages a day but they can't
+[321.60s] get to every page every day and if the
+[324.12s] database has changed that day
+[326.48s] you won't get to it through Google and
+[329.40s] you have to go to the original site so
+[331.32s] I'm going to show you some tools for
+[332.70s] locating databases where you can go to
+[336.12s] those first and then find the specific
+[338.46s] site you need to go to
+[341.82s] um so what are all these sources we use
+[343.80s] for investigations and you know you know
+[346.44s] very well all of these places to go
+[349.76s] companies industry organizations places
+[353.34s] to look for courts legal and
+[355.44s] international law
+[357.42s] academic information uh shipping
+[361.02s] information maybe if you're working on
+[362.52s] that statistical information social
+[365.16s] media that's a separate you know also
+[367.68s] thing that that you may need to go to
+[369.96s] the social media sites and learn how to
+[372.66s] mine them
+[374.70s] um and besides all of this information
+[377.00s] there is a whole huge range of sources
+[381.90s] that are fee based so you have to use
+[385.14s] your thinking cap and your budget and
+[387.72s] figure out if you should be using some
+[390.60s] of these fee based sources of valuable
+[392.88s] information rather than just trying to
+[394.62s] find things for free while searching
+[397.08s] online
+[399.06s] um so there's many tools and skills that
+[402.96s] to to that we use in um in doing
+[406.38s] investigative research and
+[409.38s] um by the way it's it's research it just
+[413.28s] means open source intelligence is just
+[416.28s] research it's stuff that we find that is
+[419.28s] in the is open to us and that we can it
+[423.12s] is not classified it's not proprietary
+[425.88s] it's not private information it's open
+[427.92s] information so some of this open
+[430.02s] information would be primary sources and
+[432.36s] public records Which social media is a
+[435.60s] primary source but court records are a
+[438.30s] primary source and government documents
+[440.94s] corporate records real estate records
+[443.10s] archives and manuscripts and things that
+[445.32s] are in foia Reading rooms I always think
+[447.54s] about like if it's a leak is it an open
+[450.18s] source document well it's open source
+[453.00s] once it's leaked because it's posted on
+[454.74s] the web but it actually it could be a
+[457.68s] classified or proprietary company
+[460.14s] information that has been leaked by a
+[463.74s] whistleblower or has been hacked and
+[467.16s] been posted so it uh it's a you have to
+[470.52s] discuss this before you publish
+[472.02s] information from from Malik other kinds
+[475.26s] of tools that are available are
+[477.72s] secondary sources like news sites News
+[480.12s] archives reference books online or not
+[483.54s] online translated Works fact checking
+[486.42s] sites and of course Wikipedia these are
+[489.30s] you know secondary sources of
+[490.92s] information
+[493.02s] um and then there are the feebase that I
+[495.06s] just mentioned when you're searching in
+[497.28s] Nexus Lexus factivo Westlaw if you have
+[500.82s] access to Accurate TLO or pipo if you
+[504.84s] have access to a site in from the UK
+[506.76s] called arachnus and if you are able to
+[510.36s] log on to your you know your your Alum
+[513.18s] organization at your Camp the former
+[515.34s] campus if you have access to proquest
+[517.62s] and jstor another tool is called sayari
+[521.04s] these are just examples of all of the
+[523.02s] different kinds of fee-based uh sources
+[525.78s] that are really valuable and you know
+[528.32s] important and necessary to do a full
+[531.54s] investigation
+[534.00s] so when you're looking to see what kind
+[535.98s] of fee based Source you might need you
+[538.50s] have to think of all of these things
+[539.88s] which are actually you know the
+[541.14s] traditional librarian skills which is
+[543.18s] where I'm from which is like what is the
+[545.10s] source of the information what is the
+[547.56s] scope of the information how many years
+[549.54s] does it cover how what countries does it
+[551.88s] cover you know that kind of scope note
+[554.54s] uh is it easy to search does it have a
+[557.46s] good search is it updated frequently and
+[560.28s] then of course what does it cost so you
+[562.86s] wonder whether what it has in it in your
+[565.74s] evaluation is worth the price
+[568.86s] and what is in your toolbox so we could
+[571.08s] have a whole list of things of what you
+[573.12s] have available to you and um that would
+[575.58s] be something to share if you have any
+[577.62s] questions about that put in the quest q
+[579.48s] a maybe we can share some information
+[581.10s] there
+[582.66s] so as far as searching in Google uh
+[585.66s] there's many uh search functions that
+[588.24s] you can use that make it more more
+[589.86s] specific so you're it's not just your
+[592.56s] words and then the the what Rises to the
+[595.74s] top frequently along with an ad so the
+[599.04s] advanced search page which I'm going to
+[601.08s] show you you could just use that to
+[602.94s] figure out what the the terminology is
+[605.46s] to search and then you don't need to use
+[607.32s] that advanced search page anymore one
+[609.54s] thing one thing I like to point out is
+[611.16s] that I go to the Google uh my personal
+[613.38s] dashboard and Google and I I uh Delete
+[616.56s] or you know get rid of all of this this
+[619.14s] special features that Google has to
+[622.38s] bring me things that uh
+[624.96s] that I've seen before you know so I turn
+[628.02s] off the uh type ahead I turn off the uh
+[633.18s] whatever it is that is your interest I
+[635.52s] want to come fresh to Google every time
+[637.68s] I I do a search there
+[639.48s] so this is what the advanced search uh
+[641.76s] form looks like so you can see that
+[643.98s] you're able to uh search any of these
+[646.50s] words none of these words all of these
+[648.48s] little Tools in a language on a website
+[650.46s] an example here is the great thing about
+[653.28s] Google is It's a Wonderful search engine
+[655.34s] but uh some sites have search engines on
+[659.58s] the site that are lousy so sorry if
+[662.22s] you're from library or congress but the
+[663.78s] search on Library of Congress is not as
+[666.36s] good as Google itself so you can search
+[669.12s] with the Google search function with the
+[671.52s] Google search engine at another site
+[673.98s] like by putting in the word site colon
+[677.82s] and this in this example loc.gov which
+[681.60s] uh Barbara was able to find more
+[683.94s] information about the person she was
+[685.80s] looking for by using Google to search
+[688.20s] Library of Congress and actually
+[689.52s] searching the Library of Congress search
+[691.44s] box
+[693.00s] so we're going Beyond here I'm just
+[694.98s] putting in some few links and um if you
+[697.80s] are interested in getting my links you
+[699.66s] can write to me at my email address and
+[702.30s] I have a handout that I can send to you
+[705.42s] um I'm not an expert in using social
+[708.30s] media tools and then and searching them
+[710.70s] for this for disinformation but Jane
+[713.16s] lipinenko is and um there's the
+[716.16s] verification handbook from European
+[718.56s] journalism Center uh that that is
+[721.26s] updated and a very good tool to use to
+[724.62s] learn how to do that kind of work also
+[727.08s] bellingcat has a page with all the
+[729.66s] sources they use for their research and
+[732.48s] Maliki at the New York Times he has a
+[734.52s] really simple page with a great list of
+[736.56s] sources
+[737.94s] and another thought is that there are
+[740.34s] also other search engines that are not
+[742.14s] Google for example this one which is
+[744.42s] DuckDuckGo which does not keep
+[746.58s] information about your searches or about
+[748.62s] you
+[749.64s] uh there are also other sources of
+[751.80s] information of news information and this
+[754.32s] one is a global news service from the EU
+[757.32s] called emm news brief and it has about
+[760.62s] 15 20 languages that you can search in
+[763.14s] you can see in the box there
+[765.92s] uh another kind of search engine is to
+[768.72s] search in a site like GPO uh the
+[771.90s] government in gov infosight and you can
+[774.24s] search through all of the Federal
+[775.38s] Register and the Congressional Record
+[777.12s] and all of these different uh US
+[779.28s] Government sources at the same time or
+[782.16s] separately with on this site called gov
+[785.16s] info
+[786.36s] another place that I use to find if I'm
+[789.72s] trying to figure out where I need to go
+[791.58s] for data and information is to go to
+[793.50s] subject guys that have been put together
+[795.18s] at University libraries this one at
+[798.12s] Georgetown is on security and
+[799.88s] intelligence studies this one at
+[802.56s] University of Nevada Las Vegas is a tool
+[806.64s] for for finding information about
+[808.56s] gambling and gaming because that's their
+[810.78s] specialty there
+[812.16s] uh this is a site from occrp organized
+[816.36s] crime and Corruption reporting project
+[818.76s] which is based in in Sarajevo and they
+[822.66s] have a database that they've collected
+[824.82s] data from leaks and from government
+[826.50s] sites that they've scraped it's a great
+[828.78s] place to go to look for data and links
+[832.02s] to data for Global Research
+[835.80s] uh icij where I remember also has the
+[839.76s] offshore leaks database online it's a
+[842.10s] great place to go looking for people who
+[845.46s] have offshore companies and who is
+[847.68s] behind them this comes from the leaks
+[849.60s] that ICA they've been working with for
+[851.10s] many years and they have made the data
+[852.90s] available in the offshore leagues
+[854.76s] database
+[856.20s] uh Global investigative journalism
+[858.54s] network is another journalism
+[860.52s] organization that has an enormous number
+[863.88s] of resource guides for searching on
+[866.16s] specific topics
+[868.08s] um I I recommend going there to their to
+[870.18s] the help desk page so that you can see
+[872.76s] what journalists around the world have
+[874.56s] been using in the in the award-winning
+[876.96s] projects that they've published
+[879.90s] uh uh I also try to find experts by
+[884.34s] looking in directories of experts that
+[887.16s] are credible like this directory of
+[889.32s] Scholars of Africa the middle east and
+[891.18s] south Asia
+[892.74s] um and it's from Columbia University
+[896.16s] uh when you're working on a project that
+[898.80s] has to do with any kind of industry uh
+[901.86s] of course there's an industry
+[902.94s] Association of more than one for most
+[904.68s] Industries and this is one that is just
+[906.84s] an example of lotteries so uh the
+[910.50s] lottery organization has a membership
+[912.12s] and they have pages on a website to help
+[914.70s] their members who are uh Lottery
+[917.28s] companies or and gambling companies
+[920.60s] uh often for I would go to a lot of
+[924.24s] different sites to uh find state laws
+[927.48s] and and legislation in progress but the
+[929.58s] National Conference of state
+[930.72s] legislatures is is has its website and
+[933.60s] also is very willing to help journalists
+[936.48s] so
+[939.18s] so uh other kinds of cool tools that I
+[942.00s] gather together is like whenever I need
+[944.22s] to do different kinds of math I'm rather
+[947.76s] than just looking at my you know my
+[949.44s] phone there are the journalist toolbox
+[952.14s] has many things on it but one thing that
+[954.12s] I use it for is the math for journalist
+[956.16s] page so that you can you know find all
+[958.56s] kinds of calculators converters and
+[960.66s] other kind of tools to make sure that
+[963.12s] your numbers that you're using are
+[964.74s] bulletproof
+[967.50s] um these are just some people that I
+[969.18s] follow because I want to see you know
+[971.16s] they know more than I do about a lot of
+[972.72s] things and they have uh tools that they
+[975.24s] share as well so uh the the trick is to
+[979.62s] make your own toolbox for every project
+[981.62s] and I have an exercise that I can send
+[984.24s] you if you'd like which is when you're
+[986.70s] given a new project what are the things
+[988.98s] that you need to put together so that
+[990.78s] you can get going
+[992.28s] um what are the sites that you need to
+[994.20s] collect what are the databases that you
+[996.12s] need to collect ways to go about that
+[998.58s] so it's just basic it's basic reporting
+[1002.54s] it's it's research but it's you know the
+[1005.18s] same things that you know when you're
+[1007.04s] doing your reporting the sources have to
+[1009.32s] be trusted if you're on Deadline and
+[1011.72s] you're in competing you have to get
+[1013.28s] there first should get the documents in
+[1016.22s] case they've just you know that they
+[1018.62s] might disappear and you just have to
+[1020.66s] keep on going Gathering string verifying
+[1023.12s] fact checking and going over it so I I
+[1026.54s] tend to uh depend on public records so
+[1030.56s] uh what I have in the handout that I'll
+[1033.02s] send to you is a a big selection of
+[1036.44s] public records uh places to find public
+[1039.56s] records and there are several different
+[1041.78s] sites for you to go to that will tell
+[1043.64s] you in a certain state in a certain
+[1045.74s] country where would you find the
+[1047.54s] property records where would you find
+[1048.92s] the court records where would you you
+[1050.54s] know find land records so these sites
+[1054.02s] help you get to those places
+[1056.78s] just an example of using one kind of
+[1059.54s] tool for other things is this is the
+[1062.06s] Federal Election Commission uh campaign
+[1064.58s] Finance database and when no one knew
+[1067.34s] who where Edward Snowden lived it turned
+[1069.92s] out he had given a campaign contribution
+[1072.44s] to Ron Paul and it had his address in
+[1075.26s] the U.S and and other stuff that uh that
+[1077.84s] helped us figure out who he was
+[1079.76s] uh at that point we had the address put
+[1083.18s] in the address and the real estate agent
+[1085.16s] that that rented the place to him her
+[1087.74s] name and phone number and email were in
+[1090.26s] there so that was like a clue to get you
+[1092.60s] someplace on deadline
+[1094.58s] I know that we're waiting to get a lot
+[1096.62s] of other questions but I just want to go
+[1098.60s] through some more things uh finding
+[1100.70s] people and some of the tools you use to
+[1103.76s] find people of course LinkedIn is really
+[1105.56s] great but it won't give you anyone's
+[1107.12s] email and it won't give you their phone
+[1108.92s] number so then you have to go on from
+[1110.90s] from LinkedIn to try to find where the
+[1112.82s] person is if the person is in a licensed
+[1116.54s] occupation which you know it's like
+[1118.16s] doctors and lawyers but not just that
+[1119.78s] but manicures and plumbers and
+[1122.24s] electricians in every County and every
+[1124.70s] state is licensed and so you can go to a
+[1128.12s] few of these sites to try to find
+[1129.56s] whether someone has a license in a
+[1131.30s] profession and including Pilots of
+[1134.00s] course at the FIA site there's a whole
+[1136.10s] database of every pilot who is certified
+[1138.08s] and where they live and information
+[1140.06s] about them
+[1143.12s] um just another example uh with the
+[1145.40s] pulse uh nightclub uh
+[1148.10s] horror that happened on that day we were
+[1150.98s] able to find that the perpetrator
+[1154.46s] um had a license in Florida for being a
+[1157.16s] security officer and had a firearms
+[1159.20s] license so you can just like go to
+[1161.24s] different websites here was his mortgage
+[1163.10s] so you can just go to different uh
+[1166.40s] public record sites in a state and if
+[1169.04s] you're if the person's in Florida you
+[1171.08s] really have a lot of luck because
+[1172.58s] Florida is where an enormous number of
+[1175.76s] records are available online
+[1178.82s] voter registration for example here's a
+[1181.16s] flower his father Florida voter
+[1183.14s] registration so all kinds of information
+[1184.52s] is available
+[1185.90s] New York City has great property records
+[1188.42s] uh for the five boroughs in New York
+[1190.76s] it's called Acres you go in there you
+[1192.74s] find the mortgages you find you know the
+[1194.78s] Deeds you find all kinds of information
+[1196.34s] about a piece of property the original
+[1198.02s] with the signatures on it and everything
+[1201.68s] UK sameth has the same kind of thing but
+[1204.14s] you have to pay for the UK site
+[1207.64s] yearbooks is another great source of
+[1209.96s] information
+[1210.76s] and uh uh they are also original primary
+[1214.88s] sources they're they're yearbooks so you
+[1216.80s] can go into all kinds of places to get
+[1218.66s] someone's yearbook fine when they
+[1220.04s] graduate and find who their classmates
+[1221.66s] were then maybe you'd want to get in
+[1223.40s] touch with them for an interview this is
+[1226.10s] finding uh Gina haspel the director of
+[1228.68s] the CIA uh when she was first no she's
+[1231.86s] no longer but when juicers appointed
+[1233.42s] finding out what school she went to and
+[1235.16s] information is her high school
+[1236.42s] graduation picture
+[1240.02s] I know we need to go but I just want to
+[1242.30s] point out that uh of uh the internet
+[1245.66s] archive Wayback machine is an essential
+[1249.26s] tool for finding web pages and documents
+[1253.58s] that are no longer there the URL has
+[1256.04s] died the link doesn't work pages have
+[1258.26s] been removed websites change websites
+[1261.14s] have died or disappeared content has
+[1263.84s] removed been removed intentionally oh no
+[1266.42s] where do you find it go to the Wayback
+[1268.22s] machine
+[1269.90s] and uh this is just an article about how
+[1273.08s] many hyperlinks have died but when
+[1275.48s] you're doing your research a good idea
+[1277.52s] to help yourself and others on the
+[1279.62s] Wayback machine page in the lower right
+[1281.54s] corner is save this page all you do have
+[1284.36s] to click and then that page is saved
+[1286.70s] forever for the way back for the way
+[1288.62s] back machine for you and your others and
+[1290.78s] I use that URL now when I footnote it my
+[1294.92s] my work because I know that doc that
+[1297.68s] page will not be dead it will be
+[1299.54s] available on the Wayback machine
+[1304.22s] um that that that the example I use for
+[1306.32s] that is the Iraq Coalition provisional
+[1308.72s] Authority when the U.S was in charge of
+[1311.66s] Iraq for that brief period
+[1314.18s] um that site is gone but the the Iraq
+[1316.88s] Coalition provisional Authority is lives
+[1319.58s] on at the internet archive
+[1324.26s] so
+[1325.94s] I could get really much further into
+[1327.92s] courts in criminal justice but I'm
+[1329.78s] waiting uh for your questions and we'll
+[1332.00s] see how that goes Margo if you could
+[1333.86s] while we're waiting for questions
+[1335.54s] um you know please continue maybe uh if
+[1337.58s] you could tell us if there are like
+[1338.96s] maybe one or two very specific uh
+[1341.78s] sources that you could refer people to
+[1344.36s] if they don't have a lot of experience
+[1345.86s] with databases if they're just starting
+[1347.90s] to research a particular issue uh other
+[1350.72s] than using those great tools for Google
+[1352.58s] or there any other sources of data that
+[1355.76s] you'd Point people to
+[1357.56s] oh one thing that I use is a statista
+[1361.16s] that's you can have a free uh a free
+[1364.94s] subscription to part of the statistic
+[1367.76s] database I what I just recommend is to
+[1371.84s] go to the source that's for your topic I
+[1374.30s] mean and to find the best source that's
+[1376.94s] for your topic and find the you know so
+[1379.16s] this enormous amount of data but it's it
+[1381.38s] has to be for the story that you're
+[1383.18s] working on so so one one uh one question
+[1385.52s] here uh related to climate change in
+[1388.34s] Africa any good starting points for this
+[1391.64s] particular reporter uh again working on
+[1394.52s] stories related to climate change in
+[1396.86s] Africa I would go to the g i j n uh help
+[1402.92s] desk page I know they have they have
+[1405.80s] international resource guides to
+[1407.84s] different topics and I know climate
+[1409.58s] change in Africa has to be one of them
+[1411.20s] because they have so many members you
+[1413.78s] know that that contribute to to these
+[1416.06s] sites and and that's a big topic we know
+[1418.22s] for Africa
+[1419.48s] excellent another question we have a
+[1421.88s] financial journalist in Bangladesh
+[1424.46s] um you know looking for uh more
+[1427.40s] information than you provided today
+[1428.78s] additional resources references what is
+[1431.36s] the best way to get in touch with you uh
+[1433.76s] for those that may have follow-up
+[1435.38s] questions or looking for some of the
+[1436.70s] additional materials that you reference
+[1438.74s] I'm margo.williams gmail.com
+[1441.98s] and I'm at Margo Williams on Twitter
+[1445.54s] DM me you know you can get to me there
+[1449.00s] great thank you thank you so much I
+[1451.40s] appreciate it these are all great
+[1452.66s] suggestions a lot of resources and for
+[1454.94s] those that are looking to educate
+[1456.02s] themselves more about data sets database
+[1458.42s] reporting please again check out
+[1461.20s] kneefact.org 30 minute skills you'll
+[1464.00s] find all of our lessons there pertaining
+[1466.22s] to database reporting and a lot of other
+[1467.84s] really important helpful topics
+[1470.30s] many thanks again Margot appreciate it
+[1472.46s] and thank you all to those who joined us
+[1475.16s] today we look forward to seeing you next
+[1477.38s] month for our next 30 minute skills

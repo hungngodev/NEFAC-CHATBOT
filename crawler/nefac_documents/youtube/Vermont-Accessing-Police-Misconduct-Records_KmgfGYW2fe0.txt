@@ -1,0 +1,735 @@
+[5.24s] I'm Justin Silverman of the New England
+[6.80s] First Amendment Coalition thank you for
+[9.04s] joining us for another round of open
+[11.16s] government lessons during this class
+[13.44s] you'll learn about police misconduct
+[15.12s] records and how you can access them
+[17.80s] under your State's public records law
+[20.32s] during this round of classes we'll be
+[21.76s] joined by an attorney to explain how the
+[23.60s] law works as well as a local journalist
+[25.84s] who will share their experience
+[27.36s] requesting these police records if you
+[30.32s] haven't already please view our previous
+[32.56s] classes on public records open meetings
+[35.40s] and state court systems the lessons they
+[38.00s] provide are all cumulative starting you
+[39.64s] off with the basics and then gradually
+[41.40s] addressing more nuanced areas of law and
+[43.88s] journalism practice the classes are
+[46.28s] State specific and provide practical
+[48.68s] step-by-step lessons you won't find
+[51.04s] anywhere else you can find them all in
+[53.32s] our foi guide at nea.org and on our
+[55.96s] YouTube channel five
+[57.68s] freedoms before we begin I want to
+[59.96s] recognized the estate of Gloria negri
+[61.76s] for its support of these classes Gloria
+[64.48s] was a trailblazing journalist at the
+[66.20s] Boston Globe for more than 50 years this
+[69.44s] program is part of her Legacy of
+[71.20s] Newsroom education and her lifelong
+[73.52s] commitment to local
+[76.24s] journalism thank you also to the Rhode
+[78.48s] Island foundation and the New England
+[80.16s] society of news editors for their
+[81.84s] continued support and a big thanks to
+[84.40s] you for taking the time today to learn
+[86.24s] more about how to keep government open
+[88.68s] and accountable in your state now here's
+[92.72s] Nea Emily Sweeney to introduce you to
+[95.32s] today's instructors hey everybody I'm
+[97.48s] Emily Sweeney from the Boston Globe and
+[99.88s] I want to thank you for joining us for
+[101.36s] another round of open government lessons
+[103.88s] brought to you by the New England First
+[105.16s] Amendment Coalition during this class
+[107.60s] you're going to learn about police
+[109.00s] misconduct records and how if at all you
+[112.20s] can access them under your States public
+[114.56s] records
+[115.68s] law so with us today is um Le Elder
+[120.64s] Connors he's Vermont Public Public
+[123.28s] Safety reporter focusing on law
+[124.96s] enforcement courts and the prison system
+[127.48s] and we're going to kick it off with
+[128.92s] Harrison stock he's a staff attorney at
+[131.56s] the Vermont ACLU affiliate where he
+[134.04s] litigates a range of civil rights and
+[136.56s] civil liberties matters in state and
+[138.44s] federal court thanks so much for joining
+[141.16s] us
+[143.12s] guys thanks so much Emily it's great to
+[145.16s] be here um and uh also great to be in
+[147.40s] conversation with with you Liam um this
+[150.04s] is a topic close to my heart and really
+[151.80s] appreciate NE fact putting this together
+[154.20s] all righty so I think we're hoping to
+[156.64s] make this a little bit more of a
+[157.80s] conversation uh so really quickly just
+[160.36s] going to run through a little bit of the
+[162.08s] legal landscape and some of the
+[163.48s] considerations that might come into play
+[165.12s] when you're trying to access police
+[166.88s] misconduct records through our public
+[168.40s] records act and so we're just going to
+[170.60s] do a couple things really quickly one
+[172.56s] we're going to talk about the general
+[173.80s] rules for accessing police misconduct
+[175.52s] records and talk about some of the most
+[177.12s] common obstacles to seeking them through
+[178.72s] our public records Act
+[180.44s] then we're going to talk about any
+[181.84s] techniques you might be able to use for
+[183.52s] records that are even less accessible
+[185.44s] those are ones that are designated
+[187.00s] specifically to be confidential by long
+[189.28s] and then last I just want to touch
+[190.68s] really briefly on a couple of avenues
+[192.72s] you might pursue if you don't have
+[195.48s] access to particular investigative Files
+[197.72s] about misconduct but you want to get at
+[199.84s] some of the underlying facts or um try
+[202.36s] to get a lead a potential
+[204.92s] misconduct so really quickly uh police
+[208.44s] misconduct records generally here in
+[211.00s] Vermont we would have what I would
+[212.48s] describe as a qualified right of public
+[214.88s] access to police records that means that
+[217.36s] police records are treated just like any
+[219.36s] other government public record there is
+[221.08s] not a general carveout for local police
+[223.84s] records um there is not a specific rule
+[226.40s] that goes to police records instead they
+[228.68s] are presumptively disclosable but
+[230.80s] subject to any of the traditional
+[232.24s] exceptions in our public records Act and
+[235.04s] the largest barrier by by far to
+[237.40s] accessing police misconduct records um
+[240.24s] essentially every time I've requested
+[241.84s] any records within this sphere I've run
+[246.00s] into exemption C7 which is for personal
+[249.88s] documents relating to an individual
+[251.64s] including information any files maintain
+[253.72s] to hire evaluate promote or discipline
+[256.60s] any employee of a public agency again
+[259.16s] this isn't specific to police in
+[260.88s] particular this applies to any employee
+[263.00s] of a public agency but this is
+[264.60s] frequently the one you run into first
+[266.40s] when you're accessing you're you're
+[268.12s] requesting police Miss conduct records
+[271.12s] and I want to just talk about this
+[272.96s] exception in a little bit more detail
+[274.44s] because you're likely to run into it the
+[276.32s] first thing to note is that it's a
+[277.80s] personal privacy exemption that protects
+[280.16s] personal records not Personnel records
+[283.24s] and the reason I say that is you'd be
+[284.56s] surprised to see how common it is to
+[287.36s] request misconduct records and to have a
+[290.36s] department come back and say well these
+[292.24s] are Personnel records and basically
+[294.32s] everything in an employees file is off
+[296.04s] limits that's simply wrong the exemption
+[299.00s] only goes to personal files which the
+[301.36s] Supreme Court has clarified are actually
+[303.24s] quite narrow they're documents that
+[305.44s] reveal intimate details of a person's
+[307.52s] life including any information that
+[309.24s] might subject the person to
+[310.48s] embarrassment harassment disgrace or
+[313.32s] loss of employment and threats and so
+[315.12s] that's actually a very narrow category
+[316.72s] of Records within a personnel file and
+[318.88s] so the vast majority of things in an
+[321.32s] employes file you should be able to get
+[323.32s] access to the other thing I want to
+[325.36s] point out about it is that it the
+[327.00s] Supreme Court has been clear that this
+[328.44s] is a
+[330.12s] type of exemption which requires
+[331.72s] redaction of withheld information so
+[333.76s] this is not a basis for an agency to
+[335.84s] withhold a record as a category or a
+[338.60s] record in full if there's information
+[340.32s] that falls with this exemption the
+[343.16s] agency or the department is entitled to
+[345.16s] redact that information but cannot rely
+[347.20s] on this to withhold the entire record
+[349.84s] unless literally the entire record
+[352.52s] contains information that would reveal
+[353.88s] the intimate details of a person's life
+[356.76s] the last thing that is important about
+[358.64s] this this exemption is that it's a
+[360.92s] balancing test the court has been clear
+[363.28s] that in order to determine whether or
+[365.32s] not something should be
+[366.64s] disclosed the custodian has to balance
+[368.96s] the personal privacy interest of the
+[370.68s] individual against the public interest
+[372.80s] in disclosure of the information that's
+[374.80s] both an advantage and a disadvantage if
+[377.00s] you're the person seeking these records
+[379.40s] it's an advantage because it gives you
+[382.20s] essentially a register or grounds to
+[385.52s] explain why you're entitled to the
+[387.20s] records and essentially a
+[390.64s] a landscape on which to have these
+[392.32s] disputes the reason it's a disadvantage
+[394.56s] is because when you're balancing two
+[396.56s] fairly abstract values it's always going
+[400.16s] to be a little bit of a judgment call
+[401.64s] and so there's some discretion and some
+[404.36s] I think some reasonable disagreement
+[406.00s] about whether a record falls on the side
+[407.96s] of personal privacy or the public
+[410.76s] interest in
+[412.60s] disclosure and anytime you are facing
+[416.64s] down this exemption um I want to point
+[418.92s] folks to to a particular case which is
+[420.80s] Rutland Herald versus city of Rutland
+[423.08s] this is a 2013 remont Supreme Court case
+[425.92s] that um kind of fleshes out some of the
+[428.72s] considerations that go to the particular
+[430.96s] weight going to an interest in privacy
+[434.24s] versus an interest in public disclosure
+[436.32s] and what the court said is there's
+[437.36s] essentially three factors there's what's
+[439.12s] the significant of the public interest
+[440.76s] what's the type and gravity of the
+[441.96s] consequences the invasion of the
+[443.08s] individual's privacy and are there other
+[444.84s] ways to get the information and the
+[446.76s] reason that this case is particularly
+[448.04s] important I think if you're requesting
+[449.40s] records is because it concerned a number
+[451.68s] of employees at a police department who
+[454.20s] had been caught watching pornography on
+[456.40s] their work computers including child
+[458.36s] pornography and one of the things that
+[461.08s] happened is that the department sought
+[463.52s] to redapt both the individual
+[467.28s] information about the officers as well
+[468.68s] as the punishment they faced saying that
+[470.96s] yes the fact that the officers were
+[473.16s] caught doing this is perhaps issue of
+[475.04s] public interest but there's really no
+[476.60s] public interest in the particular
+[478.48s] details about the way that they were
+[479.88s] disciplined or their identity the V
+[482.08s] Supreme Court said no that's actually
+[483.44s] not right that the way that the
+[485.36s] department reacts to individual
+[486.96s] instances of misconduct including who
+[489.16s] the individuals are and the discipline
+[491.80s] imposed is itself a matter of public
+[494.32s] interest because it can tell you about
+[496.16s] the way that the department is
+[497.64s] disciplining its employees or or kind of
+[499.60s] handling these incidents um I think this
+[502.52s] is a great case for sort of showing why
+[504.80s] things that even don't have a might not
+[507.16s] be sort of directly in intuitively
+[509.80s] matters of public interest for police
+[511.36s] misconduct do in fact have
+[516.24s] uh cut in favor of um this closing
+[519.80s] records and so basically anytime I'm
+[521.60s] having a fight where this record comes
+[523.92s] up up pardon me um I'm citing this case
+[527.44s] I'm looking to it and uh would recommend
+[529.96s] that folks take a peek at it because I
+[531.88s] do think it it gives a lot of very
+[533.76s] helpful language for what types of
+[537.04s] considerations their particular weight
+[540.80s] that's all for records that are just
+[542.72s] traditional presumptively
+[545.52s] disclosable uh Records that are running
+[547.68s] into additional
+[549.68s] exemption while there aren't there isn't
+[552.48s] a general carve out for police records
+[555.20s] uh there are there is in the public
+[557.28s] records act uh a kind of freestanding
+[560.04s] exemption for any record that is
+[561.76s] designated confidential by law and
+[563.48s] unfortunately there are a number of
+[565.80s] non-public records act statutes that
+[567.60s] create specific car for particular types
+[570.44s] of misconduct records two of the most
+[572.60s] prominent ones are um one that says that
+[577.24s] files within the office of internal
+[579.24s] investigation for the State Police
+[580.72s] advisory commission should be
+[581.92s] confidential as well as records of the
+[583.76s] criminal justice Council and the reason
+[585.92s] I I uh want to call attention to this is
+[588.08s] because just because these records are
+[590.56s] designated confidential by law does not
+[592.76s] necessarily mean that there's no way to
+[594.80s] get them through a public records act
+[596.48s] request um and
+[599.88s] folks anytime they're encountering a
+[601.88s] particular specified exemption like this
+[603.76s] for a particular office should look
+[605.88s] really closely at the language of the
+[607.52s] exemption because there may be
+[609.72s] opportunities to trace the records back
+[611.80s] to essentially their original source and
+[613.48s] request them from that custodian and
+[615.68s] there's a recent case uh coming out of
+[617.84s] the Superior Court um which I think sort
+[620.64s] of highlights how this works there you
+[623.12s] had discipline records from uh an
+[625.64s] officer who was employed by the town of
+[627.00s] Stow that were sent to the Vermont
+[628.60s] criminal J jce Council when journalists
+[631.04s] went to the department and said we want
+[632.72s] records about this particular type of
+[634.12s] misconduct the town said well we're
+[636.80s] prohibited by law from giving them to
+[638.36s] you because they're now they now reside
+[640.52s] essentially with the criminal justice
+[642.32s] Council and what the judge said is
+[644.52s] that's not right just because a record
+[646.24s] eventually makes its way to an office
+[648.84s] which is Exempted from disclosure does
+[650.60s] it mean that all instances of that
+[652.16s] record wherever they may originate are
+[653.88s] necessarily exempt and so um by
+[657.44s] requesting this from the town
+[660.04s] the record had to be disclosed there's a
+[662.00s] nice little juvenile quote who watches
+[663.72s] the Watchmen for your classes out there
+[665.40s] too um but that that logic of the
+[668.08s] opinion um really should apply to any
+[672.48s] particular exemption that is going to a
+[675.92s] particular office just because a record
+[677.68s] may eventually end up there does not
+[679.20s] mean that wherever it is it exists it's
+[681.84s] necessarily confidential so it could be
+[683.36s] helpful to go back and sort of see where
+[684.84s] the record has been who else might have
+[686.44s] a copy of it or which office it
+[687.92s] originated from
+[690.76s] really briefly I I also want to talk
+[692.44s] about um techniques for uncovering or
+[695.80s] getting at police misconduct even if you
+[697.96s] are unable to get at a particular
+[699.92s] investigative record that maybe
+[701.16s] documents that misconduct the first one
+[703.32s] which is I know something that that Li's
+[704.52s] going to talk about a little bit more
+[705.76s] are Brady letters these um are letters
+[709.16s] that are maintained by prosecutors
+[710.92s] States attorneys in Vermont that
+[712.64s] highlight credibility issues for
+[714.40s] officers these are um required
+[717.40s] disclosures under legal ethics rules
+[718.96s] rules that basically when someone is
+[720.64s] being prosecuted for a crime if the
+[723.36s] officer has documented issues about
+[726.40s] essentially their their credibility
+[727.68s] whether or not they're they're
+[728.64s] trustworthy that has to be disclosed to
+[730.52s] the criminal defendant uh and because
+[733.96s] they are maintained in these offices you
+[736.20s] can often get them through a public
+[737.48s] records act request we've been
+[738.88s] successful in getting a number of them
+[740.76s] um they're of somewhat limited value in
+[743.08s] that they often don't have a ton of
+[744.88s] detail about the underlying facts that
+[746.80s] led to that credibility determination um
+[749.36s] and of course not all officer misconduct
+[752.48s] is necessarily going to be the kind of
+[754.72s] trustworthiness issue that that would
+[756.72s] appear in a Brady letter but it's a
+[758.40s] great starting point and it often has
+[760.16s] the name in fact it always has the name
+[762.96s] um of the particular officer so it can
+[764.88s] be a great place to to look if you're
+[766.92s] trying to get a lead on on whether or
+[768.52s] not there are files somewhere about
+[770.68s] something a particular officer has done
+[773.16s] and the last thing I want to talk about
+[774.88s] is uh body warn camera footage and and
+[778.48s] what to do if you suspect that there is
+[781.36s] body War camera footage that maybe
+[782.96s] documents a particular instance of
+[785.24s] police misconduct and the reason I want
+[787.00s] to bring this up is because um as
+[790.64s] journalists or transparency Advocates
+[792.44s] know it can often be difficult to get
+[794.44s] body warn camera footage from the police
+[796.28s] departments um and some of the
+[799.48s] considerations that make that true in a
+[801.24s] typical case I actually think are lessen
+[802.96s] in a case of police misconduct uh
+[806.16s] typically it can be difficult to get
+[807.68s] these records in Vermont because there's
+[809.52s] a a a an exemption for um records going
+[813.68s] to the investigation for Crime this is
+[815.72s] C5 records dealing with the detection of
+[817.84s] Investigation of crime uh in statute it
+[821.08s] says that Vermont's exception basically
+[823.32s] tracks exactly uh the a similar
+[827.04s] exemption in the federal Foya um
+[831.80s] but body warn camera footage is is kind
+[834.64s] of a difficult fit for the investigative
+[837.96s] files exemption and that it's not really
+[839.56s] an investigative record at all it's
+[842.00s] usually merely a piece of evidence and
+[844.20s] more than that the the underlying
+[845.76s] considerations that the values that this
+[847.76s] exemption is really supposed to protect
+[849.72s] just don't only apply when it comes to
+[852.28s] officer misconduct usually the rationale
+[854.72s] for not disclosing body Camp footage is
+[856.32s] that it would alert a particular uh or
+[859.56s] or the sorry not for body cam footage
+[861.20s] specifically but um for this record more
+[863.32s] broadly the justification is
+[866.00s] that we don't want
+[869.72s] folks who are the subject of a criminal
+[871.80s] investigation to necessarily know that
+[874.00s] they're under surveillance or to be able
+[876.00s] to find out kind of exactly what the
+[878.80s] police know about the potential crime
+[882.12s] because it might facilitate them
+[883.32s] covering it up in some way destroying
+[885.40s] evidence something similar when it comes
+[888.04s] to body warn camera footage that is
+[890.72s] documenting what the officer is
+[893.44s] doing none of those rationale really
+[895.72s] apply because there there's no question
+[897.44s] that the officer who's wearing the
+[898.76s] camera knows that they're being recorded
+[900.48s] in some sense and unlike your
+[904.88s] hypothetical criminal defendant in in a
+[907.48s] traditional a traditional case the
+[909.64s] officer already has access to the camera
+[911.12s] footage in most in most instances and so
+[913.28s] it doesn't make sense to say that the
+[915.52s] individual who
+[917.76s] you're investigating for potential
+[920.52s] misconduct who already can knows that
+[923.08s] they're being that there's some reporing
+[924.56s] of it and uh probably already has access
+[928.64s] to the footage um that any sort of
+[932.68s] legitimate value in law enforcement is
+[935.00s] being furthered by letting them have
+[936.48s] access to the footage but not the public
+[939.44s] this is a relatively untested issue I
+[941.28s] think in in a number of Courts but
+[942.52s] particularly here in Vermont so I flag
+[944.72s] this just in case it comes up um we'd
+[946.60s] certainly be interested if uh folks come
+[949.16s] across this but um want to plant that
+[951.72s] seed for folks who are out there uh in
+[953.88s] case they they confront this because I
+[955.28s] do think there's some opportunities to
+[957.00s] uh make some good rules here
+[959.68s] that was just a sort of a quick overview
+[961.96s] uh I'm going to turn it over to Liam now
+[963.40s] who's going to get into some more detail
+[964.80s] about some of the Practical
+[966.04s] considerations that folks can run into
+[967.84s] when uh investigating these these
+[971.16s] instances on the ground and so um with
+[973.36s] that I'll turn it over to you um so what
+[977.20s] I've we what I'll be doing is going
+[979.64s] through um some stories that I have
+[982.16s] reported throughout my career dealing
+[984.84s] with uh police misconduct and sort of
+[987.12s] walk through a little bit on how I got
+[989.60s] them how I used records or how I used
+[992.84s] the lack of Records to get to a story um
+[995.64s] and I'll also show some examples of the
+[997.40s] public records requests I made in those
+[1000.48s] stories to get the records and then talk
+[1002.48s] a little bit about just some general
+[1004.08s] experiences I've had and and I might
+[1005.72s] even have questions for Harry about uh
+[1008.04s] some of the law as well um so this this
+[1010.72s] first is a story that I did four years
+[1013.48s] ago now um about uh a officer in St
+[1019.40s] who uh pepper sprayed a turned out to be
+[1022.48s] an 18-year-old who was handcuffed and
+[1024.24s] Shackled In a holding cell and this was
+[1026.84s] a case where we didn't know no one knew
+[1030.56s] about it when it happened it happened
+[1032.76s] quietly the officer was resigned in the
+[1035.92s] middle of the internal investigations
+[1038.12s] and the AG the Attorney General's office
+[1040.60s] at the time reviewed that use of force
+[1042.56s] and said no criminal charges so this it
+[1045.08s] happened quietly kind of went away
+[1047.20s] nothing really came of it
+[1049.16s] the way I came about it was doing some
+[1052.20s] general reporting into um how often the
+[1055.28s] Attorney General's office files criminal
+[1057.68s] charges against officers who have used
+[1060.76s] Force um because in 2020 there was an
+[1065.64s] officer at St albin's Police Department
+[1068.04s] same place where this pepper spraying
+[1069.52s] incident happened where um an officer
+[1073.72s] punched a handcuffed woman who was in a
+[1076.32s] holding cell the same holding cell where
+[1078.64s] this teenager was pepper sprayed a few
+[1080.72s] years prior and so I was just sort of
+[1084.80s] curious to know if the AG had you know
+[1087.64s] just was looking kind of doing my normal
+[1089.16s] digging and I asked for a list of all
+[1091.80s] the cases that the Attorney General's
+[1093.76s] office had reviewed involving officers
+[1096.24s] uses of force um which includes when an
+[1099.32s] officer or a police officer shoots a
+[1101.48s] suspect so I got this list here um so
+[1104.32s] that was the first records request I did
+[1105.96s] for the story was just give me a list of
+[1108.40s] all the cases you've reviewed and so
+[1111.92s] when I looked at it this list here I
+[1115.24s] recognized a lot of the names because a
+[1117.16s] lot of them were uh what they call here
+[1120.00s] ois which is Officer involved shooting
+[1123.08s] which is when a police officer shoots
+[1125.08s] somebody that's just the terminology
+[1126.72s] that law enforcement will use um and
+[1130.20s] knew most of these there are mostly
+[1131.68s] high-profile cases the last one was um
+[1134.68s] the individual who had been charged with
+[1137.68s] punching the woman in a Cell um but then
+[1140.16s] I saw that in 2018 a year prior there
+[1143.76s] was another officer at St albin's uh who
+[1147.64s] had been investigated for a use of force
+[1149.48s] incident there was no prosecution but
+[1151.48s] I'd never heard about it and I was
+[1153.16s] curious to know a little bit more so I
+[1155.76s] made a records request for um all the
+[1159.84s] records uh related to that use of force
+[1163.88s] investigation including the video so
+[1166.28s] this was just sort of the records
+[1167.52s] request that I
+[1169.24s] uh wrote for it and what ended up
+[1172.80s] happening was I didn't get the records
+[1175.16s] of their investigation because they went
+[1176.96s] back they looked at the records and they
+[1179.12s] decided to reopen the criminal
+[1180.80s] investigation into this P into this uh
+[1183.96s] former St Albin cop because uh the
+[1187.44s] Attorney General at the time told me
+[1189.16s] that he thought that he got the review
+[1191.04s] wrong and wanted to go back and look at
+[1192.68s] the case um I was able to get some
+[1194.80s] details about what happened through
+[1196.80s] interviews but essentially what happened
+[1198.48s] with this is I didn't get any records
+[1200.00s] but the lack of Records sort of led to
+[1203.04s] getting into the story and eventually
+[1205.72s] the AG's office brought criminal charges
+[1207.88s] against this officer um body camera
+[1210.04s] footage has since been released and that
+[1211.60s] officer pleaded guilty to simple assault
+[1214.12s] um it was just last year that happened
+[1216.20s] so that case is resolved um but that was
+[1218.92s] one where kind of early in my career of
+[1221.12s] looking at issues of police misconduct
+[1223.48s] where I didn't have a lot of records and
+[1225.80s] I sort of was having to go on a lot of
+[1228.72s] nothing and sort of use that lack of
+[1231.12s] Records to find things so just because
+[1233.48s] someone doesn't give you anything
+[1234.72s] doesn't mean you can't get somewhere and
+[1238.36s] I think in situations like that holding
+[1240.76s] out uh and you know demanding on the
+[1243.44s] record interviews demanding information
+[1245.20s] on the record can be useful um to find
+[1247.96s] out a little bit more of what's going
+[1251.44s] on um all right so I'm just going back
+[1256.84s] so these next two stories um are related
+[1260.88s] to what Harry was talking about with
+[1262.76s] Brady Giglio letters um so this one
+[1266.16s] story you know I was just looking at all
+[1268.60s] the r Giglio letters that have been
+[1270.72s] filed in a year the second story was a
+[1272.64s] little bit more focused on one
+[1275.12s] Department um and with the Brady Giglio
+[1279.16s] letters like Harry was saying there's
+[1280.80s] not a lot of information in those but
+[1283.28s] when I requested them um I was at least
+[1286.44s] sorry my dog is uh having a moment there
+[1289.28s] but when I requested the Brady Giglio
+[1291.52s] letters I was at least able to see all
+[1294.04s] of the officers that might have had
+[1296.44s] potential internal investigations into
+[1299.00s] them and in fact in some of the Brady
+[1300.92s] letters they actually referenced the
+[1304.08s] internal investigation for the reason
+[1306.36s] why they were issuing the Brady letter
+[1308.48s] and so I would get the Brady letters
+[1311.04s] read the Brady letters see that there
+[1312.52s] was an internal investigation reference
+[1314.60s] in that and then request that Brady or
+[1318.00s] request that internal investigation I
+[1320.24s] did actually made those internal
+[1321.96s] investigation requests to a few
+[1324.40s] different sources to try to deal with
+[1326.08s] the issue that Harry was talking about
+[1327.60s] where sometimes a records withheld and
+[1329.84s] they say this is designated confidential
+[1331.96s] by law whatever so I requested those
+[1335.92s] records both from the State's Attorney's
+[1338.24s] offices that wrote the Giglio letters
+[1341.08s] but then also the individual departments
+[1343.36s] where those internal
+[1345.16s] investigations um originated from and in
+[1349.48s] actually all of the cases and this was
+[1350.88s] the first time that it happened I
+[1352.08s] actually got all these internal
+[1353.52s] investigations which I'd never been
+[1356.08s] successful in getting internal
+[1357.84s] investigations before but when I was
+[1360.36s] doing this reporting I was able to get
+[1362.48s] those records and they were incredibly
+[1364.72s] helpful in um sort of fleshing out the
+[1368.12s] details of what was the alleged
+[1370.44s] misconduct that led to uh a prosecutor
+[1373.84s] determining that there was some you know
+[1376.72s] un untruthful there's a truthfulness
+[1378.96s] issue with the particular officer and so
+[1381.36s] the story ended up being kind of uh
+[1384.00s] looking at these 13 cases and looking at
+[1387.64s] a number of the ones with the internal
+[1389.24s] investigations like what actually
+[1390.44s] happened like and how different Counties
+[1392.84s] have sort of different in some ways
+[1394.68s] almost levels of what Rises to
+[1397.36s] misconduct where they'd write a Brady
+[1398.76s] letter just sort of trying to get at
+[1400.48s] some of those disparities around the
+[1402.20s] count is um and this the Second Story
+[1405.64s] with half of police with potential CR
+[1408.40s] credibility issues in Northfield that
+[1410.28s] came later as part of my reporting is
+[1414.28s] just regularly checking on Brady letters
+[1416.28s] to see what new ones have been filed and
+[1418.60s] as I was doing that I was looking at my
+[1420.72s] spreadsheet and saw that you know
+[1422.80s] northville's a pretty small Police
+[1424.16s] Department or was it is a small police
+[1426.12s] department and it's only got six or
+[1428.12s] seven officers and uh three of those
+[1431.16s] officers all had Brady letters in fact
+[1433.24s] one of them had recently left the
+[1436.08s] department after he been chief of the
+[1438.40s] department and Brady letter got issued
+[1440.80s] internal investigation he left that
+[1442.52s] department hopped over to Northfield and
+[1446.04s] so that was sort of a a followup to the
+[1448.64s] followup but I think it also highlights
+[1450.68s] just a good you know it's good to stay
+[1453.28s] on these things and make regular records
+[1455.12s] requests for things like Britt letters
+[1457.32s] and then following up with records
+[1459.04s] requests from those um so this is the
+[1462.48s] records request uh that I use for Brady
+[1465.12s] Giglio letters just for this particular
+[1466.68s] one all Brady gigo letters filed by 14
+[1470.08s] States attorneys between a time frame um
+[1472.92s] and my experience it's they're uh pretty
+[1475.92s] quick in getting those back and you I
+[1478.20s] make those requests to the Department of
+[1479.76s] State's Attorneys and sheriffs which is
+[1482.28s] uh the department that kind of oversees
+[1484.68s] or it doesn't oversee but um they're
+[1486.92s] sort of the Clearing House for these
+[1489.40s] things um this is a similar situation um
+[1494.32s] where I Brady Giglio letter sort of
+[1497.12s] opened up this this case um I don't have
+[1499.72s] too much to say on this one other than
+[1502.28s] um a value in when you're making a
+[1504.76s] request to ask for all audio and visual
+[1508.48s] material that is part of the internal
+[1510.72s] investigation um in this one I got audio
+[1514.48s] of um the this this police officer who
+[1518.56s] is accused of using excessive force I
+[1520.52s] got video or audio of him being
+[1523.48s] interviewed by another detective about
+[1526.32s] the incident and that was just some very
+[1529.00s] useful uh quotes and things to actually
+[1531.68s] be able to use in the piece to try to
+[1534.40s] show a little bit more of what was going
+[1536.04s] on and you don't always get these things
+[1540.08s] sometimes I've been denied but it's
+[1542.60s] always good to ask because you never
+[1544.08s] know sometimes you'll get something um
+[1546.84s] and that's one issue I found is that the
+[1548.88s] inconsistency sort of between
+[1551.16s] departments around the state of who will
+[1553.80s] give you what how quickly they'll give
+[1555.56s] it to you and like how much you might
+[1557.04s] have to fight to get it so um that's
+[1560.60s] generally been my experience um and for
+[1564.48s] for this I just asked for all the
+[1566.04s] materials related to the internal
+[1567.52s] investigation into the officer and I got
+[1570.96s] a you know a link to like a sharefolder
+[1574.36s] so generally I think when doing this
+[1576.84s] making regular records requests are
+[1578.84s] really helpful for things like Brady
+[1580.48s] Giglio letters just doing that every you
+[1582.76s] know doesn't have to be every month but
+[1584.20s] maybe every quarter doing that just to
+[1586.32s] sort of check in
+[1588.12s] um there's also the ACT 56 register
+[1592.52s] which is the uh act 56 was the law
+[1596.88s] designed to sort of track and regulate
+[1599.88s] law enforcement better and the Vermont
+[1602.52s] criminal justice Council which is the
+[1604.20s] sort of Professional Regulation body for
+[1606.48s] law enforcement officers has regular
+[1608.40s] meetings where they discuss whether or
+[1610.00s] not an officer should be certified and
+[1612.84s] so it's good to check that register to
+[1615.04s] see when meetings are coming up if
+[1616.84s] they're going to be discussed in
+[1618.08s] decertification and sometimes those
+[1620.36s] notices of hearings actually frequently
+[1623.16s] those notices of hearings will contain a
+[1624.76s] lot of information about the alleged
+[1626.28s] misconduct that's that's gone on they'll
+[1628.20s] sort of lay out facts of the case and if
+[1631.60s] it's a contested hearing um then it
+[1634.16s] essentially is a mini trial where the
+[1636.40s] officer will be defending their conduct
+[1639.04s] and the state will be making a case for
+[1641.24s] why that officer should suffer a
+[1643.40s] particular penalty or or have to face a
+[1645.52s] certain consequence um
+[1648.44s] and then lastly just staying organized
+[1650.52s] I'll see if I can open it up but just uh
+[1653.88s] here is just a spreadsheet that I I made
+[1657.60s] when I did my initial Brady Giglio
+[1659.68s] reporting just you know when the letter
+[1662.00s] was filed who's the state's attorney
+[1663.96s] what county what department is that
+[1666.16s] person in who's the officer and then a
+[1668.32s] little description of what the incident
+[1671.92s] was and as well as links to any coverage
+[1675.68s] of it this line here was just sort of
+[1678.24s] looking at whether or not that incident
+[1679.80s] had been publicized already which is
+[1682.08s] just sort of helpful for me to keep
+[1684.36s] track of um so yeah that's uh that's
+[1688.12s] what I got and happy to I think Harry
+[1690.44s] and I are both happy to answer some
+[1691.72s] questions or talk a little bit more
+[1693.84s] about any of this I want to thank
+[1695.68s] everybody who tuned in for this session
+[1698.20s] and encourage everybody to check out our
+[1701.04s] previous classes uh on nea's website
+[1704.68s] nea.org and on our YouTube
+[1707.96s] Channel Liam Harry thank you so much for
+[1711.40s] joining us and leading us on this
+[1713.08s] session it was very educational I know I
+[1715.24s] learned a lot um and yeah thanks so much

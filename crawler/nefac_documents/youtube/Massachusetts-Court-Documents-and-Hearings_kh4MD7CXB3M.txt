@@ -1,0 +1,927 @@
+[4.80s] I'm Justin Silverman of the New England
+[6.66s] First Amendment Coalition thank you for
+[9.36s] joining us for this lesson on New
+[10.92s] England state courts this lesson is the
+[14.34s] second in our series on state court so
+[16.20s] if you haven't already please view the
+[17.88s] introductory class for your respective
+[19.62s] State before moving on to this lesson
+[22.32s] all classes can be found in our foi
+[24.54s] guide at knifac.org as well as on our
+[27.42s] YouTube channel five freedoms
+[30.00s] in addition to state courts we also
+[32.04s] offer lessons on state public record and
+[34.08s] open meeting laws as well as the federal
+[36.24s] Freedom of Information Act each class
+[38.94s] builds off one another and they all
+[40.98s] collectively provide a curriculum you
+[43.08s] won't find anywhere else
+[45.12s] before we begin today's lesson a special
+[47.28s] thanks to everyone who is helping us
+[49.14s] make these classes happen SBJ New
+[51.90s] England the Rhode Island foundation and
+[54.42s] the New England society of news editors
+[56.40s] we appreciate everyone's support
+[60.00s] now to introduce you to today's
+[62.34s] instructor
+[63.54s] Emily Sweeney hey everybody I'm Emily
+[66.90s] Sweeney from the Boston Globe and I want
+[68.82s] to thank you for joining us for this
+[70.62s] webinar which is brought to you by the
+[72.42s] New England First Amendment Coalition
+[74.06s] now this session is going to focus uh on
+[77.22s] the courts in Massachusetts we're going
+[79.02s] to go in a little bit more detail and
+[81.00s] talk about how to access court documents
+[83.76s] and hearings in Massachusetts with us is
+[86.82s] Bob ambrogi he's the executive director
+[89.22s] of the Massachusetts newspaper
+[90.84s] Publishers Association and he's going to
+[93.24s] explain in Greater detail how the courts
+[94.92s] work in the Bay State Bob thank you so
+[97.32s] much for being here
+[100.32s] thanks Heavenly for having me I'm really
+[101.88s] looking forward to doing this
+[102.90s] presentation
+[104.94s] um uh all right uh and it also occurred
+[107.46s] to me that in this slide I did not put
+[109.56s] my contact information anywhere but I
+[111.48s] welcome you to follow up with me
+[113.22s] directly uh my email address if if you
+[116.04s] want to write it down is just my last
+[117.36s] name ambrogi
+[119.00s] ambrogi
+[121.10s] legalign.com that's
+[124.40s] l-e-g-a-l-i-n-e.com and feel free to
+[126.84s] email me with any questions you might
+[128.82s] have
+[129.96s] uh so
+[131.76s] um
+[137.12s] let's just kind of talk about some
+[139.26s] generalities first before we get into
+[140.88s] the specifics and first of all I'm
+[143.58s] talking here about access to state
+[145.02s] courts this is not about the federal
+[146.76s] courts which have some slightly
+[148.68s] different rules but we're talking here
+[151.02s] about the Massachusetts court system
+[152.94s] pretty much all the way from the lowest
+[155.64s] level up to the Supreme Judicial Court
+[157.74s] which is the highest court
+[159.78s] the general rule here is that
+[164.90s] unless there unless there's some other
+[167.46s] exception
+[168.74s] then the courts are open to the public
+[171.90s] and that means to the press as well this
+[175.50s] is a quote from an 1884 case where they
+[178.92s] talk about the fact that this is not
+[181.44s] just an issue not just because we want
+[183.96s] to see you know citizens disputes played
+[187.26s] out in in some sort of a sort of a
+[189.00s] gossipy public forum but this is really
+[191.66s] fundamental to our system of democracy
+[194.88s] it's fundamental that that the public
+[197.66s] be able to see how government works uh
+[202.32s] and that those who as this quote says
+[204.66s] Those Who administer Justice should
+[206.88s] always after Act
+[208.98s] under uh the uh whoops stare of the uh
+[213.84s] of public responsibility that every
+[216.06s] citizen should be able to satisfy
+[217.38s] themselves with their own eyes as to the
+[219.18s] mode in which the public uh capacity is
+[223.32s] is performed
+[225.36s] um and uh a second Point here is that
+[228.60s] the the media's right of access to
+[230.64s] judicial proceedings
+[232.38s] is entirely synonymous with the Public's
+[235.32s] right the media has no greater or lesser
+[237.96s] right
+[239.04s] with maybe a slight exception regarding
+[241.14s] using technology in the courtroom that
+[243.00s] I'll talk about but our general right of
+[245.22s] access is the same as that of any other
+[247.02s] citizen or person in Massachusetts
+[250.80s] and those rights kind of derive from a
+[253.80s] from a couple of different sources a lot
+[256.50s] of it is simply just
+[258.30s] hot what they call you know common law
+[259.98s] the idea this goes back to the the
+[262.26s] British con the British Commonwealth
+[263.94s] days that uh people have always had a
+[267.00s] right to come in and watch Court
+[268.98s] proceedings and it goes as far back as
+[271.08s] as history records uh in the common law
+[273.84s] system
+[274.76s] there is also some constitutional right
+[277.26s] the the U.S Supreme Court not the
+[279.60s] Massachusetts Supreme Court but the U.S
+[282.24s] Supreme Court has uh held repeatedly
+[285.18s] that the First Amendment uh to the
+[287.46s] Constitution provides a right for
+[291.12s] journalists and others members of the
+[292.92s] public to attend criminal trials in most
+[295.44s] cases
+[297.12s] um and uh the First Amendment
+[301.46s] possibly provides a right to attend
+[303.96s] civil or non-criminal trials that hasn't
+[306.96s] ever firmly been decided by any uh sort
+[310.14s] of top Appellate Court the Supreme Court
+[311.82s] has never ruled on that and the mass SJC
+[314.64s] has never ruled on that but there is a a
+[316.98s] general presumption that there's a basic
+[319.44s] constitutional right of access and then
+[322.32s] in criminal cases of course the the
+[324.66s] Sixth Amendment which is the one that
+[326.52s] protects the rights of defendants in
+[328.14s] criminal trials they they also have a
+[331.32s] their own right to have the public
+[333.06s] attend their trials to make sure that
+[335.34s] their trials are conducted properly
+[338.82s] um but so again that that's not absolute
+[340.80s] and there are certainly circumstances
+[342.66s] where a judge can find that there is
+[344.40s] some sort of a compelling overwhelming
+[346.86s] interest uh to exclude the press and the
+[349.56s] media but it's very rare for the most
+[351.78s] part in a general criminal case
+[355.74s] so I'm going to talk first about access
+[358.26s] to court proceedings going into hearings
+[360.78s] and trials and whatnot and then secondly
+[363.60s] about public records uh or court records
+[367.20s] access
+[369.30s] um and um
+[372.72s] foreign
+[374.06s] the general rule is that uh most cases
+[377.76s] are open I've tried to put put together
+[379.32s] a little bit of a list of of the kinds
+[381.42s] of proceedings that are considered to be
+[383.40s] open to the public and to the media in
+[386.22s] Massachusetts
+[387.14s] uh the what one two three four five the
+[389.94s] sixth bullet point down there is
+[391.32s] probably the most important which is
+[392.58s] they said trials I mean for the most
+[395.04s] part with very few exceptions trials are
+[397.98s] open to the public
+[399.74s] but also other kinds of hearings
+[402.00s] arraignments bail hearings probable
+[403.80s] cause hearings uh motions to hearings to
+[407.04s] suppress evidence
+[409.50s] um
+[410.18s] uh you know all you can go through this
+[413.16s] list on your own and I think you will
+[414.78s] get copies of these slides or this will
+[416.52s] be made available so I'm hoping you'll
+[418.44s] be able to have this and I don't need to
+[420.48s] go through it all in detail but the
+[422.10s] general rule again is these things are
+[424.68s] all open to you and you should be able
+[426.06s] to go in and access them
+[428.28s] there are certain kinds of proceedings
+[430.32s] uh that are closed uh by default uh uh
+[435.72s] grand jury proceedings are probably the
+[437.76s] most
+[438.96s] um uh important of those we would all
+[442.44s] love to be able to go in and sit in on
+[445.08s] grand jury proceedings but they are
+[447.12s] closed to the public
+[449.04s] uh and there are rules against even
+[451.86s] making the transcripts uh of grand jury
+[455.04s] proceedings available to uh to the media
+[458.22s] or to the public although there's an
+[460.68s] interest there's been some interesting
+[462.00s] law around that issue
+[464.88s] um uh one of them has involved the issue
+[468.06s] when say a a newspaper gets access to a
+[472.14s] grand jury transcript indirectly
+[474.84s] somebody leaks it out to somebody else
+[476.88s] and somebody else gives it to a reporter
+[478.68s] And the reporter has it can the reporter
+[481.44s] write about what was in that grand jury
+[483.36s] transcript and the law has been pretty
+[485.22s] clear that yes the reporter can write
+[487.44s] about what's in it if the reporter if it
+[490.08s] wasn't the reporter didn't like sneak
+[491.58s] into the courthouse and steal it uh you
+[494.52s] know somehow directly commit a crime to
+[496.68s] get access to the transcript then
+[498.18s] otherwise they have a right to use that
+[500.30s] also notably uh a grand juror one of the
+[504.42s] people sitting on a grand jury
+[506.40s] proceeding if they want to step out and
+[508.98s] and and talk about the proceeding to you
+[512.34s] they can do that I know the judge may
+[515.22s] have them under some kind of an order
+[516.78s] during the grand jury proceedings but
+[518.58s] once the once the grand jury is
+[520.50s] completed its work and if they want to
+[522.18s] go out and talk to you about what the
+[523.56s] grand what happened on the grand jury
+[525.00s] they're totally free to do that and
+[527.10s] you're totally free to report on it
+[530.28s] some of these other proceedings are are
+[532.14s] pretty obvious the juvenile proceedings
+[534.12s] for the most part uh are are closed to
+[536.88s] the Press unless it involves a juvenile
+[539.22s] who's committed murder over age 14 or a
+[542.94s] few other exceptions uh an inquest uh is
+[546.48s] something that hardly ever actually
+[547.80s] happens but that's a proceeding where a
+[550.14s] judge is looking into whether uh uh the
+[554.16s] circumstances surrounding a death in
+[556.08s] order to determine whether there may
+[557.64s] have been a crime committed with regard
+[559.50s] to the death
+[561.42s] uh and then there are some proceedings
+[563.16s] where uh access is discretionary with
+[565.50s] the judge where the judge can make uh
+[567.72s] make a ruling onto whether or not to
+[570.72s] allow access one of the sore points here
+[573.78s] is for the media has been the third
+[575.82s] bullet point here magistrate hearings
+[577.80s] these are clerk magistrate hearings in
+[580.08s] District Court uh which are uh where
+[583.02s] there's been an application to issue a
+[584.88s] criminal complaint in the and the judge
+[586.74s] holds a hearing on that uh our
+[589.92s] organization several other newspapers
+[592.02s] and and press associations in
+[594.06s] Massachusetts what went to court over
+[595.80s] that issue uh trying to get a ruling
+[598.98s] that magistrate hearings are
+[601.38s] presumptively open to the public and
+[603.66s] should be
+[605.28s] um and and we've got we've got a ruling
+[608.16s] from the uh uh uh SJC saying that they
+[613.08s] can be open in some cases but they are
+[615.36s] presumptively closed unfortunately so if
+[618.18s] if there's a magistrate hearing that you
+[620.70s] know of it's going to a hearing in a
+[622.32s] district court where maybe a local
+[624.26s] sometimes he's involved you know look
+[626.22s] very prominent local people get it get
+[629.72s] involved in some kind of a criminal
+[631.74s] allegation generally a minor allegation
+[634.50s] but if it's something you want to cover
+[636.54s] uh you can go to the magistrate and make
+[639.72s] a request and make an argument for why
+[641.52s] this is in the public interest and they
+[643.74s] can make a ruling in your favor to let
+[645.48s] you let you in
+[648.18s] um
+[649.26s] uh again a couple of things where
+[651.12s] there's absolutely no right of
+[652.08s] attendance depositions and Lobby
+[653.70s] conferences
+[656.46s] um now I've said before that the the
+[659.30s] Press has no greater or lesser access
+[662.10s] than the public but this is the one
+[664.38s] exception in Massachusetts and this has
+[666.30s] to do with
+[667.68s] using cameras and electronic devices in
+[670.44s] the courtroom and uh there's a rule SJC
+[673.62s] rule 119 which governs this uh and and
+[677.52s] let me be very clear this some people
+[680.70s] have read this rule to to apply to
+[684.38s] journalists going into a courtroom it
+[687.60s] does not apply to that journalists can
+[689.16s] go into a courtroom without regard to
+[691.50s] this rule this only rule only applies to
+[694.20s] when you want to bring in a computer or
+[695.94s] bring in a camera and use that in the
+[697.50s] courtroom uh and uh so this is a rule
+[700.98s] that basically requires uh the news
+[704.34s] media uh it provides certain parameters
+[708.00s] around using these devices in a
+[709.62s] courtroom significantly it it prohibits
+[713.16s] certain I'm going to jump ahead to my
+[714.48s] slide here this is kind of the most
+[715.74s] important part here which is that it
+[717.78s] requires news media to register with the
+[720.90s] sjc's public information officer Prime
+[723.36s] prior to using an electronic device in a
+[725.64s] courtroom again this has met a lot of
+[727.88s] resistance over the years from from uh
+[730.92s] people in the Press who feel that they
+[733.56s] should not ever have to register with it
+[736.44s] with any government agencies in order to
+[738.12s] cover the activities of government uh
+[741.00s] and and let me just say one more time
+[743.28s] this is not about whether whether you
+[744.84s] can cover or not you can cover it
+[746.40s] without registering but if you want to
+[747.96s] use a device you have to register and
+[750.96s] the rule defines uh who's eligible to
+[754.80s] register as news media and it defines it
+[757.80s] as someone who either an organization
+[760.32s] that regularly gathers prepares
+[761.94s] photographs records writes edits reports
+[764.10s] or publishes news or information about
+[766.32s] matters of public interest for
+[768.42s] dissemination to the public in any
+[769.86s] medium whether print or electronic and
+[772.32s] individuals who perform a similar
+[774.18s] function now often typically what will
+[776.70s] happen is if your organ if you're
+[778.38s] working for a large organization if
+[779.76s] you're working for the globe like like
+[780.96s] Emily you once your organization has
+[783.90s] registered you can it makes it super
+[786.72s] easy for you I mean you can essentially
+[788.10s] show a business card or something else
+[789.96s] and and and you're all set but you don't
+[793.86s] have to work for a you know
+[795.36s] quote-unquote mainstream uh news
+[797.76s] organization you can be a blogger uh who
+[801.18s] regularly covers issues uh any kind of
+[806.34s] Citizen journalist can qualify under
+[808.20s] this rule but you do have to go in and
+[811.14s] register then let me just backtrack I
+[814.20s] mean once you once you have then you can
+[817.44s] you can go in and operate these devices
+[820.98s] in the courtroom a judge can set
+[822.84s] parameters around it and there are
+[825.12s] certain kinds of recording that are
+[826.62s] limited but as a general rule uh you're
+[830.10s] then able to use these devices
+[833.58s] um if you want to go in and record or
+[835.80s] use a computer in a SJC appellate
+[837.96s] argument our argument there's a slightly
+[841.02s] separate
+[842.22s] rule
+[844.32s] um
+[845.42s] that requires uh you to request
+[848.48s] pre-authorization from the clerk of the
+[851.34s] SJC uh before 4 pm on the day before
+[855.84s] oral argument uh and then it's up to the
+[859.02s] clerk to decide whether to let you in to
+[861.00s] do that or not
+[865.68s] um
+[866.28s] so uh that's Court proceedings and again
+[869.70s] that to summarize to say what I've said
+[872.22s] 10 times already really is that that as
+[874.44s] a general rule most of those chord
+[875.94s] proceedings going to be open with
+[877.38s] certain specified exceptions
+[879.54s] now let's talk about access to court
+[881.34s] records which also has some unique rules
+[884.76s] around it and
+[886.98s] um you know an important point to keep
+[889.26s] in mind is that the Massachusetts Public
+[891.12s] Records law which applies to other
+[893.34s] government records does not apply to The
+[895.44s] Courts at all just as it does not apply
+[898.08s] to the legislature and arguably to the
+[900.54s] governor's office
+[901.74s] uh but so you don't have a right under
+[904.02s] the public records law to get any court
+[906.06s] records and and that even extends to not
+[909.66s] just court case records but court
+[913.04s] administrative or bureaucratic records I
+[915.48s] mean if you want records regarding the
+[917.22s] Accord budget or or Court management
+[920.34s] activities that have nothing to do with
+[922.08s] any particular cases in the courts
+[925.20s] um you can't get those under the public
+[927.48s] records law you can ask for them and the
+[929.34s] court will consider your request but
+[931.32s] there's no no right of access under the
+[933.66s] mass public records law
+[936.18s] uh but there is a a rule uh put forth
+[940.38s] fourth a couple years ago by the trial
+[942.48s] court called trial court rule uh 1914 uh
+[946.80s] if I can know my Roman numerals uniform
+[948.72s] rules on public access to court records
+[951.78s] uh and this is the general guideline the
+[955.20s] general document that and I put a link
+[956.88s] at the end of the slide to how you find
+[958.32s] this but this is the general document
+[960.12s] that's going to tell you uh what kinds
+[962.22s] of Records you can access and how you
+[963.78s] can access them and where
+[965.46s] generally it provides for three types of
+[967.32s] access uh in a courthouse at the counter
+[970.26s] of the clerk's office in other words you
+[971.64s] walk up to the clerk's counter and say I
+[973.98s] want this record
+[975.24s] or in a courthouse via a kiosk that
+[978.06s] accesses records electronically or
+[980.88s] remotely versus via the the public
+[983.04s] internet portal and I'll talk more about
+[986.10s] all those in a second but uh first of
+[988.62s] all what is a court record the rule
+[990.72s] defines it as any all or any portion of
+[993.84s] a court paper document exhibit order
+[995.94s] recording docket or other records that
+[998.22s] are made entered filed and or maintained
+[1000.08s] by the clerk in connection with a case
+[1002.18s] so essentially all of the the the
+[1004.78s] documents uh exhibits and other
+[1007.58s] materials related to a case
+[1009.92s] what is not a court record
+[1012.16s] administrative records which is I said
+[1014.30s] deal more with the management side of
+[1016.22s] the courts the Personnel side of the
+[1018.20s] courts uh and that don't have to do with
+[1021.20s] particular cases pending in the courts
+[1026.48s] and under this uniform Rule and under
+[1030.80s] basic law of the Commonwealth the
+[1032.96s] general policy is that most court
+[1034.94s] records are presumptively pop public
+[1036.98s] documents unless required to be withheld
+[1040.40s] from public inspection by Statute Court
+[1042.68s] rule standing order case law or court
+[1044.84s] order
+[1046.10s] so unless there's a statute Court rule
+[1048.80s] or some other kind of order or law the
+[1051.80s] records are presumptively open
+[1054.74s] and uh in a clerk's office uh the court
+[1058.52s] records are available for Public Access
+[1060.74s] during normal hours uh unless again
+[1064.46s] unless otherwise prohibited by quarter
+[1066.32s] law so that means you can go into the
+[1067.70s] clerk's office at any time and ask for
+[1070.16s] these records
+[1072.08s] um and there's a rule regarding allowing
+[1073.94s] judges to impound records which closes
+[1075.98s] them to public View and I'll talk about
+[1077.24s] that in a second too
+[1079.22s] but so here's where the rules get uh
+[1082.22s] make some distinctions uh in terms of
+[1084.68s] what you can access and how you can
+[1086.48s] access them
+[1087.74s] uh So within a courthouse uh this is uh
+[1094.24s] you get you get the broadest access to
+[1097.34s] records by going and asking for them in
+[1099.08s] a courthouse uh you can go into the
+[1101.00s] clerk's office submit a request and you
+[1103.58s] can also look at them at a computer
+[1104.90s] kiosk or terminal located in the
+[1107.00s] courthouse and there's no fee to access
+[1110.98s] and you can get access to pretty much
+[1113.48s] any record by doing that again unless
+[1115.82s] it's been closed for some legal reason
+[1119.00s] um and you can get them in you can get
+[1121.28s] paper copies you can get printouts of
+[1123.38s] electronic materials uh you can if the
+[1127.16s] if the court has a copy machine you're
+[1128.96s] entitled to get them copied although
+[1131.30s] they can charge you a fee for that uh if
+[1134.06s] there are audio visual recordings uh
+[1137.12s] they can provide they can they have to
+[1139.40s] provide those as well although again
+[1141.08s] they can charge some fees for for media
+[1143.42s] that they reproduce them on uh and
+[1146.84s] whatever format they might be in whether
+[1148.70s] electronic or whatever uh they should
+[1151.64s] reproduce them for you
+[1154.64s] um
+[1156.02s] they even the rule even specifically
+[1158.24s] provides for uh you uh going in and
+[1161.78s] using your own device to duplicate a
+[1164.24s] court record meaning if you want to take
+[1166.70s] photos with your mobile phone you can do
+[1169.88s] that if you have some kind of a small
+[1171.82s] scanner or something like that that you
+[1174.26s] want to bring in you have the right to
+[1176.24s] do that under these rules although again
+[1178.52s] you always need to check with the clerk
+[1180.20s] on this and and uh
+[1182.50s] you know make sure it's all uh
+[1185.42s] I'll uh
+[1189.74s] all uh uh appropriate there
+[1194.36s] um
+[1199.18s] now another kind of sore spot for the
+[1203.90s] for the media over these roles when
+[1205.76s] these roles were enacted
+[1207.74s] what was it five years ago or so uh it
+[1210.92s] deals with
+[1212.18s] um
+[1213.68s] getting Court data now the rules do
+[1216.08s] provide for you to request compiled data
+[1219.46s] uh and uh to get compiled data you need
+[1222.92s] to again go in and make a request to the
+[1225.32s] court administrator
+[1227.20s] uh administrator's office about what
+[1229.94s] data you're seeking and the purpose for
+[1232.52s] what you're seeking it and it the role
+[1235.82s] specifically allows these kinds of
+[1238.58s] requests by the public for scholarly
+[1240.20s] educational journalistic and other
+[1242.36s] purposes
+[1243.74s] but by compiled data they're basically
+[1246.02s] saying uh you know you're you're asking
+[1248.60s] for something with some specificity uh
+[1251.78s] you want data on
+[1253.58s] you know I don't know all all DUI cases
+[1256.94s] dismissed uh for a particular reason
+[1260.60s] during this time period or something
+[1263.00s] like that uh and and and they have to
+[1266.00s] provide that to you although again they
+[1267.86s] can charge you a fee uh for
+[1271.70s] um for getting that data uh what the
+[1274.64s] what the rule prohibits the court from
+[1276.86s] doing and and which was uh to the
+[1278.96s] Chagrin of many reporters is providing
+[1281.78s] bulk data uh and uh there are reporters
+[1285.44s] out there uh uh who would like to be
+[1290.12s] able to get access to
+[1292.94s] the court uh the court docket data in
+[1296.48s] bulk so that they could go in and kind
+[1298.16s] of run various kinds of analytics and
+[1299.90s] searches across it and and look for
+[1301.94s] Trends or or you know analyze look for
+[1305.18s] look for something that stands out that
+[1306.98s] they can't they don't even necessarily
+[1308.84s] know to ask for in the first first place
+[1310.90s] uh but the courts have said that is not
+[1314.24s] available
+[1335.44s] you can search for cases by party name
+[1338.48s] case number or other various other
+[1340.46s] criteria
+[1341.66s] uh but you're limited in what you can
+[1343.88s] get you're not going to get the full
+[1345.08s] documents you're going to get as it
+[1347.36s] lists here the name of each party
+[1348.68s] related case or case numbers uh names
+[1351.86s] and mailing addresses of attorneys who
+[1354.08s] entered an appearance for the party the
+[1356.66s] docket the docket of a specific case
+[1358.94s] which is not docket isn't the documents
+[1361.58s] it's sort of the listening of events
+[1363.56s] that have happened in that case uh in
+[1366.26s] any calendar information of hearings
+[1368.06s] that may be coming up or something like
+[1369.62s] that
+[1370.58s] uh but so that's a that's a lot less
+[1373.10s] than you can get by going into a clerk's
+[1375.14s] office where you can actually get the
+[1377.00s] the physical or electronic documents or
+[1379.46s] other materials associated with the case
+[1381.80s] and that's in civil cases in criminal
+[1383.60s] cases you're actually even slightly more
+[1386.06s] limited again you can get the the name
+[1388.40s] of the defendants and the related cases
+[1390.68s] and whatever else but the way you're
+[1392.90s] limited here is that you can search only
+[1395.54s] by case number in the uh for criminal
+[1398.60s] cases so you you can't search by a name
+[1401.96s] if you're looking to find out if there
+[1403.76s] has been a criminal case involving John
+[1405.74s] Smith you would have to know in advance
+[1409.16s] the docket number of the case for John
+[1412.46s] Smith in order to be able to find out
+[1413.96s] anything about it on the online system
+[1415.82s] which is really limiting uh in terms of
+[1419.36s] the usefulness of that of that tool
+[1425.00s] um
+[1425.84s] and
+[1428.42s] we I don't need to go through all of
+[1430.28s] this but something else this rule does
+[1431.96s] is create a list provide a list of
+[1434.78s] Records excluded from Public Access uh
+[1437.96s] and this this list is pretty much
+[1441.56s] drawn from
+[1443.90s] what had been already decided to be
+[1446.30s] excluded from Public Access by case law
+[1448.82s] over the years or or by Court rule or
+[1451.10s] other means uh I'm not going to go
+[1453.80s] through all of this I'll you'll you'll
+[1455.36s] get the slides and and you you can read
+[1457.28s] through it but there clearly are a
+[1460.76s] number of of types of records that that
+[1463.58s] you simply will not be able to get
+[1465.56s] whether you go into the clerk's office
+[1467.06s] or try and do it online or any other
+[1468.80s] means
+[1471.14s] um
+[1471.74s] I've gone through and kind of done a a
+[1473.96s] flip side of that in a way of some of
+[1476.06s] the records that therefore are available
+[1478.34s] or you should expect to be available
+[1481.28s] and again I don't know if it's a good
+[1482.60s] use of our time for me to go through all
+[1484.46s] of this because you'll I'll give you
+[1485.96s] this this PowerPoint uh but that's a
+[1488.78s] there's two slides on that and uh I I
+[1491.30s] think I've
+[1492.86s] I I'm sure I probably missed something
+[1494.96s] but I've tried to get as many uh uh
+[1497.54s] categories on here as I could as I could
+[1499.70s] think of
+[1500.84s] uh and then there are excuse me there
+[1503.00s] are some records where it just continues
+[1504.80s] to be a matter of discretion uh and
+[1508.16s] where you may actually have to ask a
+[1510.02s] judge or or a clerk may look for
+[1512.96s] information from a judge as to whether
+[1514.46s] to provide them to you
+[1516.76s] uh there are there is a procedure also
+[1519.56s] in Massachusetts it's important to know
+[1520.88s] about regarding impounding records
+[1523.34s] um and uh
+[1526.04s] parties in a case can ask a judge to
+[1530.06s] impound the records in a case and once
+[1532.52s] they're impounded they are closed to
+[1534.14s] public View
+[1536.48s] um and
+[1538.04s] um
+[1542.14s] the uh the second to the last paragraph
+[1545.00s] on this page basically sets out what the
+[1547.70s] standard is here which is the court
+[1548.90s] you'll consider all relevant factors
+[1550.52s] including but not limited to the nature
+[1552.32s] of the parties and the controversy uh
+[1554.90s] the type of information the Privacy
+[1556.70s] interests involved the extent of
+[1558.14s] community interests and the reasons for
+[1559.76s] the request
+[1561.02s] but there's a general balancing act that
+[1563.42s] it should be only an extraordinary
+[1565.40s] circumstances that a judge in pounds the
+[1567.92s] case I think unfortunately the reality
+[1569.96s] is the judges are a little bit Freer uh
+[1573.32s] about doing this than they should be
+[1575.90s] but significantly for the news media
+[1577.88s] here
+[1578.78s] um
+[1579.52s] if you know that there's of a request uh
+[1583.16s] that's been entered to impound records
+[1585.56s] but maybe it hasn't been uh entered yet
+[1587.84s] uh the news media has a right to ask the
+[1592.16s] court
+[1592.94s] to give them an opportunity to argue
+[1596.30s] against the impoundment uh and again
+[1598.58s] this is covered in the third paragraph
+[1600.62s] here where it says the court May order
+[1602.00s] notice be given to interested third or
+[1604.34s] third parties such as the media and you
+[1607.04s] can go in and argue with the judge you
+[1608.42s] don't have to be a lawyer to do this uh
+[1610.28s] it might help you you might be better
+[1612.02s] off if you have a lawyer but you can
+[1613.78s] oppose these impoundment requests before
+[1617.00s] they're entered once they're entered
+[1618.92s] they're a little bit harder to lift and
+[1620.42s] then at that point you might need to get
+[1622.34s] a lawyer to try and try and get that
+[1624.20s] done
+[1626.30s] um grand juries I I've talked about that
+[1628.82s] already
+[1630.32s] um
+[1631.48s] but as a general rule those records are
+[1634.82s] not are not available
+[1649.00s] a lot of reporters are sometimes
+[1651.14s] reluctant to do that but judges
+[1655.10s] are required by their own judicial
+[1657.74s] conduct code to abstain from public
+[1660.74s] comment about pending or impending
+[1663.02s] proceedings so they're not supposed to
+[1665.00s] comment on cases that are immediately
+[1668.06s] pending before them now some judges
+[1671.78s] interpret this more or less liberally I
+[1673.88s] mean
+[1674.68s] there are Judges who might say well I
+[1677.60s] can't comment on the specific facts of
+[1679.52s] this case but I can tell you that
+[1681.80s] generally speaking the law in
+[1683.36s] Massachusetts is such and such or
+[1685.34s] generally speaking here's how we handle
+[1687.08s] these types of matters and you will find
+[1688.58s] judges who are more willing to make
+[1690.44s] those kinds of comments you can also you
+[1694.76s] know reporters again are somewhat
+[1696.14s] reluctant to do this but you can
+[1697.22s] sometimes get
+[1699.38s] judge a to comment on the case pending
+[1702.44s] before judge B and there's absolutely no
+[1705.44s] uh prohibition against a judge doing
+[1708.26s] that uh although again the judges are
+[1711.08s] pretty reluctant to make those kinds of
+[1712.88s] comments but again if a judge wants to
+[1715.52s] make comments that's sort of generally
+[1717.44s] talk in an educational way about what
+[1719.96s] the law is about a certain kind of case
+[1722.02s] without getting too specific as to the
+[1725.06s] facts they are free to do that under the
+[1727.22s] rules same with lawyers lawyers are kind
+[1729.92s] of shy often well some lawyers are not
+[1732.14s] at least a bit shy other lawyers are
+[1733.94s] very shy about talking about their their
+[1736.94s] matters uh but but the the the
+[1740.06s] restriction on them is that they
+[1741.98s] shouldn't be
+[1743.18s] saying anything to the press or the
+[1745.52s] public if they think it will have a
+[1747.50s] substantial likelihood of materially
+[1749.18s] prejudicing uh an adjudicative
+[1752.18s] proceeding in a matter that they're
+[1754.52s] perceived that they are participating in
+[1756.44s] uh so you know again we see judges we
+[1760.28s] see lawyers all the time out making
+[1762.56s] statements about cases that are involved
+[1765.02s] in but they will be somewhat constrained
+[1767.78s] and perhaps in some cases in trying to
+[1769.82s] get in getting too much into the facts
+[1772.52s] or specifics of a case especially if
+[1774.92s] they feel it may skew the case one way
+[1777.50s] or the other
+[1780.02s] um so uh I've put a bunch of resources
+[1783.14s] at the end of this slide of of links
+[1785.90s] these are all links to some of the
+[1788.06s] items I've talked about here but uh rule
+[1790.82s] 119 is the electronic access to Court's
+[1794.36s] rule uh there's a link to the page to
+[1797.06s] write for news media to register under
+[1798.74s] rule 119 uh there's another page that
+[1801.86s] lists the news media that is already
+[1803.36s] registered under rule 119
+[1806.66s] um there's a page from the SJC on its
+[1810.02s] protocol for news media access to its
+[1812.18s] courtroom
+[1813.14s] uh linked to the public information
+[1814.82s] officer
+[1816.26s] the Judiciary media committee
+[1819.70s] Court Basics this is a a document
+[1824.66s] I think the court put out on
+[1825.80s] informational guide for journalists
+[1827.12s] rules on impoundment uh the rules on
+[1830.00s] public access and trial court electronic
+[1832.16s] access just a quick note about the
+[1834.08s] Judiciary media committee uh I'm on this
+[1836.30s] committee this has been a committee
+[1837.44s] that's been around for
+[1839.54s] I think since the 70s or 80s actually
+[1842.18s] and it's it's a committee of lawyers
+[1844.28s] judges and members of the media
+[1847.24s] and the purpose of this committee is to
+[1850.40s] kind of serve as an interim intermediary
+[1852.92s] among those three groups and
+[1854.60s] particularly as between the courts and
+[1857.18s] the media and
+[1860.24s] it doesn't get too many of these
+[1862.40s] requests anymore it used to get more of
+[1864.02s] them but if you are having an issue with
+[1867.20s] access to the courts that that you're
+[1869.00s] not able to resolve with the clerk or
+[1871.16s] through the local Court officials
+[1873.20s] you might want to take it to this
+[1875.06s] committee that's part of what it exists
+[1876.74s] for is to try and serve as an
+[1879.44s] intermediary to resolve disputes over
+[1881.72s] over access to the courts by the media
+[1884.26s] certainly take it to the Public sjc's
+[1886.94s] Public Information officer
+[1889.34s] um and uh and and she can often help uh
+[1893.18s] resolve the issue but if not it can kind
+[1896.36s] of get moved to this Judiciary media
+[1898.04s] committee and they can sort of uh
+[1900.08s] convene uh you know as a little bit of a
+[1902.54s] SWAT team and see if they can they can
+[1904.16s] resolve it
+[1905.56s] there are issues where you just may need
+[1908.24s] to end up having to get a lawyer if
+[1909.86s] you're if you're if your access is
+[1911.30s] getting blocked and of course that's not
+[1913.94s] a good option if you don't if you don't
+[1915.98s] work for a big news organization with
+[1917.36s] lawyers on the payroll
+[1919.70s] um but uh there is has been some talk I
+[1923.60s] know by the uh reporters committing
+[1925.94s] freedom of the press about setting up a
+[1927.98s] free media resource uh here in
+[1930.32s] Massachusetts I don't know where that
+[1931.64s] stands but that that may be something to
+[1934.16s] watch out for down the pike where they
+[1935.84s] would provide lawyers on a pro bono
+[1937.46s] basis to journalists with access issues
+[1942.08s] um so that's all I have
+[1944.24s] um Bob thank you so much that those are
+[1946.28s] really great overview of accessing
+[1949.04s] um court records and hearings and um
+[1951.62s] only one question came up while you were
+[1954.20s] speaking
+[1956.42s] um and someone asked if you had to share
+[1959.42s] your opinion on domestic violence and
+[1961.94s] sexual
+[1962.90s] violence cases
+[1965.44s] apparently Ali jarmanning at bur has
+[1968.78s] done some reporting on this do you
+[1970.34s] believe the Massachusetts law should
+[1971.96s] stay as is
+[1975.20s] um
+[1978.02s] are they I'm not sure if they're talking
+[1979.88s] about the police reports issue or the
+[1982.40s] um yeah I'm not sure don't worry ask the
+[1986.18s] question if if you can clarify that a
+[1988.10s] little bit I mean I know I I I guess I
+[1991.28s] think there's been a few different I'm
+[1993.08s] not sure what Ellie germining has been
+[1994.70s] reporting on it but I know one issue was
+[1997.04s] the uh uh a few years ago the law was
+[2001.42s] changed so that uh police records would
+[2005.38s] no longer be public with regard to uh
+[2008.88s] complaints of allegations of domestic
+[2011.98s] violence or sexual violence and
+[2016.54s] uh
+[2018.64s] I I I I I know at at the time uh when
+[2022.90s] that law was changed I actually opposed
+[2024.76s] it uh because I I felt that that was
+[2028.54s] actually protecting the perpetrator more
+[2030.94s] than protecting the victim uh because
+[2033.70s] what was happening was reports
+[2035.94s] reports of of individuals involved in
+[2039.88s] sexual violence uh were not being
+[2043.78s] made available to the public and uh uh
+[2046.96s] you know and and often in some cases the
+[2049.54s] police also wouldn't follow up on these
+[2051.46s] matters and uh uh people were then able
+[2054.64s] to uh
+[2055.90s] uh
+[2057.58s] you know
+[2059.34s] commit uh acts of violence a second or
+[2062.50s] third time before it finally led to some
+[2064.66s] further consequences
+[2067.06s] yeah no I know as a reporter it's you
+[2069.52s] know anything to do with domestic
+[2070.84s] violence and stuff it just gets
+[2072.34s] completely redacted or we don't have
+[2074.32s] access to it it's really tough
+[2076.42s] um we have another question too and and
+[2078.70s] uh just to clarify the person who did
+[2080.44s] ask the question said yes it was about
+[2081.76s] police records so yeah
+[2084.22s] uh and so Maggie mobile Hill
+[2087.40s] um asks has the Judiciary media
+[2089.74s] committee done a study of any kind on of
+[2093.28s] the number of types of cases that have
+[2095.68s] been impounded in recent years or has
+[2097.90s] anyone
+[2099.10s] looked at this I recently reported on a
+[2101.80s] judge in Middlesex County who impounded
+[2103.96s] documents for 50 years with no
+[2105.76s] explanation
+[2107.20s] until 2072
+[2109.66s] and no justif justification provided for
+[2112.54s] the impoundment of the documents so has
+[2114.64s] anybody really looked at this
+[2116.68s] uh first of all hi Maggie uh good to see
+[2119.74s] you out there uh and uh second
+[2122.92s] um
+[2124.06s] the Judiciary Community Committee has
+[2126.10s] not
+[2127.30s] I don't know of anybody who has
+[2131.08s] um
+[2132.04s] where's Todd Wallach when you need him
+[2134.38s] um
+[2135.22s] that looks like the kind of thing he
+[2136.54s] would have gone into at some point but I
+[2138.16s] I don't know of anybody who studied that
+[2139.78s] I think
+[2141.70s] um
+[2142.60s] yeah it would be a great project to go
+[2144.46s] into you know I think the other thing is
+[2147.04s] I mean there are
+[2148.96s] just you just need to challenge those
+[2150.70s] those empowerment orders can be
+[2152.08s] challenged and taken up on appeal and uh
+[2155.98s] I think as I said during the
+[2157.90s] presentation I think judges
+[2160.06s] are just too free to issue impoundments
+[2162.88s] Without Really following the standard
+[2165.78s] you'll find judges I I hear stories from
+[2168.70s] lawyers who talk about Judges who don't
+[2170.86s] even realize there's a rule on
+[2172.06s] impoundment they'll just issue an
+[2173.26s] impoundment suicide without
+[2175.42s] you know even going through the
+[2176.80s] procedure provided by the rule so it's a
+[2179.08s] really abused area I think of of the
+[2181.84s] procedural rules in Massachusetts
+[2186.52s] yes and different definitely frustrating
+[2188.74s] for reporters and editors that's for
+[2191.02s] sure
+[2192.58s] um I don't know if there's any other
+[2193.60s] questions but
+[2195.70s] um Bob I want to thank you so much
+[2198.70s] for
+[2200.02s] um this presentation it was really
+[2201.40s] helpful uh we have folks in the chat who
+[2203.74s] are thanking you too including Maggie
+[2206.50s] um and uh she said thankfully judge
+[2208.84s] Patrick Hagen unimpounded those records
+[2212.68s] thanks Bob and Emily so thank you Maggie
+[2215.80s] for tuning in and thank you everybody
+[2217.06s] else we had quite a quite a few people
+[2219.16s] tuned in for our live audience today
+[2222.76s] um and uh I just want to encourage
+[2224.26s] everybody to check out our previous
+[2226.00s] episodes which you can find on neefax
+[2228.70s] website kneefact.org and on our YouTube
+[2231.22s] channel and uh Bob thank you so much for
+[2234.10s] taking the time to do this thanks for uh
+[2236.62s] thanks for including me Emily thanks to
+[2239.14s] everybody
+[2240.10s] excellent thank you thanks everyone see
+[2243.10s] ya bye

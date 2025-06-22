@@ -1,0 +1,690 @@
+[0.00s] [Music]
+[3.84s] First Amendment freedoms and government
+[5.96s] transparency. This is the foundation to
+[8.40s] a healthy democracy. Welcome to the
+[10.56s] NEFAC Report, where we discuss your
+[12.56s] rights to free speech, freedom of the
+[14.56s] press, and an open, accountable
+[16.48s] government. I'm Alexander Tavalone,
+[18.64s] production manager for the NEAC Report
+[20.56s] and part of a student team at Roger
+[22.32s] Williams University working with the New
+[24.24s] England First Amendment Coalition.
+[26.00s] Thanks for joining us on this episode.
+[28.32s] Megan Rin at the National Freedom of
+[30.16s] Information Coalition describes common
+[32.08s] open government challenges those around
+[33.76s] the country are now facing. She spoke
+[35.60s] with NEAC executive director Justin
+[37.52s] Silverman prior to Sunshine Week last
+[39.28s] month. Later in the show, Bangor Daily
+[41.84s] News investigative reporter Sawyer
+[43.52s] Loftess tells us about a promise made by
+[45.68s] Maine courts to put their records
+[47.20s] online. A promise still unfulfilled
+[49.20s] after nearly 10 years and millions of
+[51.12s] dollars spent on new technology. But
+[53.12s] first, here's Justin and Megan. Thanks
+[55.68s] for being here, Megan. Happy Sunshine
+[57.92s] Week to you. Or perhaps it's more cause
+[60.64s] for concern than celebration. You and I
+[63.36s] were going to be at the Sunshine Fest in
+[65.04s] DC talking about a lot of transparency,
+[67.28s] open government issues. You're going to
+[68.72s] be giving a discussion about a number of
+[71.12s] issues faced by those in every state.
+[74.72s] maybe you could give us some insight
+[75.84s] into what some of those issues are, what
+[77.92s] your experience has been perhaps dealing
+[79.84s] with them yourself, and just give us a
+[81.60s] bit of an overview as to what some of
+[83.92s] the most common issues facing open
+[86.48s] government advocates are in the country.
+[88.96s] Sure. Sure. So, I think right now there
+[92.24s] are some specific issues and I'll get to
+[94.08s] those in a second, but I think it's
+[95.60s] important for people to realize the
+[97.84s] atmosphere right now is that what's
+[99.92s] going on at the federal level is sucking
+[102.32s] the oxygen out of the state level, which
+[105.76s] you know has its problems from a
+[108.24s] accountability standpoint, but also it
+[110.80s] has its problems from a just a citizen
+[113.52s] engagement standpoint. you know that we
+[116.08s] at the state coalitions who work on open
+[118.88s] government issues, it's hard to get the
+[121.12s] attention of the public about the
+[122.96s] importance of transparency of of of
+[126.32s] access to records, access to meetings
+[128.32s] when they are so focused on what's going
+[130.80s] on in Washington. Then there are
+[132.80s] certainly some specific issues. I think
+[136.00s] one that is plaguing everybody is the
+[139.28s] cost of obtaining public records. Every
+[142.08s] state has a different mechanism for
+[145.76s] charging. But no matter what that
+[148.80s] mechanism is, people will find ways to
+[151.60s] exploit it and manipulate it to make
+[154.32s] records inaccessible to most people. You
+[158.24s] know, maybe people with a lot of money
+[159.92s] and a lot of time on their hands can do
+[161.68s] it, but every state is dealing with
+[164.48s] individual citizens or news media who
+[167.04s] are finding themselves being priced out
+[169.20s] of obtaining records that they're
+[170.88s] legally entitled to. Yeah, there
+[172.96s] actually reminds me of a situation
+[174.80s] recently in Massachusetts where we had a
+[176.48s] newsroom investigating the death of a
+[178.40s] state police cadet. This cadet died
+[180.88s] during training. They sought records
+[183.04s] just related to the to the training
+[184.88s] itself and the experiences of other
+[186.80s] cadets and state police responded by
+[189.52s] saying, "We'll happily provide you all
+[191.36s] this information, although it's almost
+[193.20s] all going to be redacted and it's going
+[194.96s] to cost you over 200 grand." So, I'm
+[197.12s] sure there are many stories like that
+[199.04s] that you could share where we're getting
+[201.44s] these incredibly unreasonable price
+[204.56s] estimates for records that really should
+[206.16s] be just provided to the public. They're
+[207.84s] in the public's interest. Yeah. I mean
+[210.56s] and and I do think fees are used by some
+[214.72s] by bad actors as a deterrent. There's a
+[217.84s] caveat there though in that one, yes
+[221.60s] there are also bad actors as requesters
+[224.72s] who were trying to you know stick it to
+[226.88s] the government make it hard and for and
+[228.64s] all that stuff but worse still is that
+[231.60s] and this is one of my other you know
+[233.68s] issues I was going to bring up is that
+[235.52s] we're just drowning in electronic
+[238.56s] records and so even ordinary requests
+[241.76s] can really balloon in terms of the
+[244.64s] volume of records that are going to be
+[246.56s] produced for a relatively simple request
+[249.60s] and all those records have to be
+[251.76s] reviewed and they get redacted and so on
+[254.80s] and so forth and so I remember 25 years
+[257.84s] ago we were like oh electronic records
+[260.40s] and email it's going to make everything
+[261.76s] so much better because we can search for
+[263.44s] them and you know there we don't have to
+[265.28s] go make copies of them but it's now
+[268.56s] because we use email for everything we
+[272.72s] attach record attachments to it we copy
+[275.60s] everybody We we quote the previous
+[278.16s] message over and over and over again and
+[281.04s] so that just keeps ballooning the
+[283.68s] records and that has an impact on price.
+[286.48s] Megan, let's talk about this for a
+[287.84s] little bit because you're right and this
+[289.44s] is a really good point with electronic
+[292.24s] records. There can be a significant
+[294.40s] burden on on agencies to go through all
+[296.96s] of these records to make sure they're
+[298.56s] properly reviewed. There's a lot of time
+[300.96s] and money involved. While this is going
+[303.12s] on, there are some efforts by states to
+[305.68s] create new laws that deal with what they
+[308.64s] would term to be harassing or vexacious
+[311.36s] requests. So, tell us a little bit about
+[313.52s] that. The term vexacious requesttor
+[316.88s] keeps popping up, which just kind of
+[318.48s] cracks me up because whoever uses the
+[320.08s] word vexacious in any other context, but
+[322.40s] that's based on the notion of that bad
+[324.24s] actor I mentioned earlier. There are
+[326.24s] those people who are using public
+[328.08s] records laws to try to grind the
+[330.56s] government to a halt. Those kinds of
+[333.28s] restrictions, those attempts to try to
+[335.44s] deal with those kinds of requesters
+[337.92s] really threaten to throw the baby out
+[340.32s] with the bathwater because you you start
+[342.96s] getting into trying to def you know, oh,
+[345.04s] what is a vexacious requester? Is it
+[347.04s] someone's intent? Do they want to be a
+[349.60s] problem? You know, well, how are you
+[350.88s] going to approve intent? Are they trying
+[352.64s] to harass? you know, how are you going
+[354.16s] to define harassment? And just because
+[356.40s] someone's unpleasant, does that make
+[358.40s] them, you know, a harasser or something
+[360.96s] like that? So sometimes then people say,
+[363.36s] well, let's just do this numerically
+[365.44s] then. You can file X number of requests
+[368.40s] within a month or something like that.
+[370.80s] And that's problematic too because of
+[372.88s] all the people who, you know, they they
+[375.52s] make their first request and then they
+[377.04s] go, "Oh, actually this makes me want to
+[379.28s] learn more and I want to follow up on
+[381.04s] that." or a news reporter who likewise
+[384.24s] is like in looking into a story and
+[386.40s] realizes, oh, this key word that I
+[388.96s] didn't realize they were using, I need
+[390.96s] to find out about that, too. You're the
+[392.80s] First Amendment expert, not me. But I
+[395.44s] would imagine that there's some speech
+[397.68s] problems with trying to define a
+[399.52s] vexacious requesttor. Yeah, there's a
+[401.60s] lot of concerns, particularly from
+[403.12s] journalists that file a lot of requests,
+[406.80s] but for very good reason and with very
+[409.36s] good intentions. So on one hand I can
+[411.68s] understand particularly when you have
+[412.96s] small agencies that are completely
+[414.80s] overwhelmed by the number of requests
+[417.52s] even more so when you have like you
+[419.60s] described a bad actor that isn't making
+[421.92s] requests to inform the community or has
+[425.28s] any kind of public interest in mind but
+[426.88s] is doing it solely to grind those gears
+[430.48s] bring a halt to government agencies. But
+[432.80s] a lot of states as we're seeing are
+[434.64s] defining these harassing vacious
+[436.88s] requests in a way that can pull in
+[438.56s] journalism and other public
+[440.00s] interestminded requests as well. And
+[441.84s] that can be really problematic. So if
+[443.84s] they're going to create any kind of new
+[445.92s] law that deals with this, there's a very
+[448.16s] fine line that needs to be walked if
+[450.08s] that balance can be found at all. I
+[451.84s] don't really know how you balance it
+[453.36s] because you mentioned journalists and
+[455.20s] certainly that is an important
+[456.68s] distinction but it also implicates John
+[460.72s] Q public who wants to know why the
+[463.60s] sewage treatment plant is going to be
+[465.60s] built next to his farm. You know that's
+[468.32s] not maybe maybe not in the public
+[470.40s] interest but it certainly means a whole
+[472.00s] heck of a lot to him. So why should he
+[474.48s] be penalized just because he's really
+[477.04s] concerned about this particular issue?
+[479.60s] And and that's what I was meaning by
+[481.12s] baby getting thrown out of the bathwater
+[482.80s] is you're potentially blocking requests
+[486.48s] that are really meaningful to people
+[488.24s] whether it's on an individual level or
+[490.32s] on you trying to do public interest
+[493.04s] journalism or advocacy work or what have
+[495.76s] you. It's a difficult situation. In my
+[498.16s] position, I would rather use whatever
+[500.32s] exemptions already exist in the law as a
+[503.04s] way to deter requests that are truly
+[506.16s] harassing or vacationious and then
+[508.08s] provide additional resources to
+[510.08s] government bodies. So, they have the
+[512.24s] ability to respond to all of these
+[514.56s] requests and to make sure that
+[515.84s] information is getting out to the public
+[517.28s] because that's kind of the the whole
+[519.12s] point of these laws anyway, right? That
+[522.00s] is so key, the resources. We just in
+[524.64s] Virginia, we just went through this
+[526.32s] train wreck where we studied an issue
+[529.04s] about fees for five, six months,
+[532.00s] something like that. And we had this
+[533.84s] bill. It goes through the legislative
+[536.00s] process. And the bill included with it a
+[538.80s] budget amendment to get some resources
+[541.60s] in the hands of particularly local
+[543.44s] governments so that they can process
+[545.44s] these more easily, whether that means
+[547.12s] getting the technology or whether it
+[548.80s] means hiring people. And in the end, on
+[551.52s] the very last day that it was up for
+[553.52s] passage, it got killed by a group of
+[556.48s] people who said, "Well, the bill doesn't
+[558.24s] deal with these vexacious requesters."
+[560.16s] So, it's all tied together. Any open
+[562.72s] meeting law related issues that you
+[565.52s] think are worth noting? Common
+[567.52s] challenges to those attending open
+[569.44s] meeting laws that you've seen from state
+[570.72s] to state? Yeah, I think we're all
+[573.28s] struggling with electronic meetings and
+[577.28s] with public comment periods. It's my
+[579.92s] understanding that most open meeting
+[581.92s] laws in most states don't actually
+[584.96s] dictate how public comment periods are
+[587.32s] run. But nonetheless, these are the
+[590.40s] types of calls that I think all of the
+[592.48s] state coalitions get because people are
+[595.76s] really confused about what is and isn't
+[598.48s] allowed. You know, what kinds of
+[599.92s] restrictions are permissible? And then
+[601.92s] on the electronic meeting side, we
+[604.80s] certainly learned during COVID that we
+[607.20s] can do electronic meetings, but then
+[609.12s] after CO it was like, oh well, we want
+[611.92s] the ability to meet more electronically
+[614.64s] amongst ourselves, but we don't really
+[617.28s] want to give the public guaranteed
+[618.96s] access through electronic means. We've
+[620.96s] discussed on previous episodes the First
+[622.64s] Amendment implications of restrictions
+[624.56s] on speech during during open meetings,
+[626.80s] but to conclude here, Megan, just
+[628.96s] emphasize for us the importance to have
+[630.96s] the ability to engage with government to
+[634.32s] make sure that we're able to speak our
+[636.72s] minds and to be present to hear what our
+[640.24s] representatives and those in government
+[641.68s] are doing on our behalf. Yeah. Well, and
+[644.08s] I, you know, in New England in
+[645.44s] particular, where there's the cliche
+[648.56s] town hall, I mean, that's the tradition
+[650.48s] that we descend from. And so, there's
+[652.96s] definitely this long historical
+[655.52s] tradition of citizens being able to
+[658.32s] observe and interact or, you know,
+[661.28s] somehow have the opportunity to speak
+[663.68s] their mind to the people who represent
+[665.92s] them, people they elected. Southern
+[667.76s] states don't have that quite that same
+[670.52s] tradition, but it's still the same
+[672.64s] notion. And I think just about every
+[674.72s] public meetings law around the country
+[677.20s] has a policy statement. And in that
+[679.28s] policy statement, it usually says they
+[681.36s] it exists so that the public can witness
+[684.80s] the operations of government, not just,
+[687.68s] you know, be told things. And and the
+[689.92s] big part of witnessing it is being in
+[692.32s] the room where it's going on and then
+[695.04s] being able to share their thoughts with
+[697.12s] their elected officials when there's
+[699.04s] time and when it's appropriate. Yeah,
+[701.20s] that sounds a lot like democracy and how
+[703.76s] it's supposed to work. Megan, thank you
+[706.08s] for for all you do and thanks as well
+[708.48s] for all of your work on behalf of the
+[709.92s] National Freedom of Information
+[711.28s] Coalition, a longtime partner of NEIFAC.
+[713.76s] Really appreciate all you do. Sure.
+[715.92s] Thanks for having me.
+[718.96s] I'm Ed Fitzpatrick, a reporter at the
+[720.88s] Boston Globe, a NEFAC board member and
+[722.80s] the host of the Rhode Island Report
+[724.40s] podcast. Our Globe Rhode Island team is
+[726.64s] based in Providence, providing daily
+[728.48s] digital coverage of all things Rhode
+[730.00s] Island. We also have a daily roadmap
+[732.24s] newsletter and a weekly Rhode Island
+[733.76s] food club newsletter. We conduct
+[735.76s] investigations holding the people in
+[737.36s] power accountable. We tell the stories
+[739.04s] that make Rhode Island so unique. And we
+[741.12s] remain committed to helping student
+[742.48s] journalists play a vital role in our
+[744.24s] democracy. To learn more, go to
+[746.60s] globe.com/roh
+[752.84s] Island. Hey, this is Alexandra again. If
+[756.00s] you want to learn more about the topics
+[757.52s] being discussed in this episode, please
+[759.28s] take a look at our show notes. A link is
+[761.04s] provided wherever you're listening to
+[762.32s] this podcast. These notes include knee
+[764.72s] resources, research on the issues
+[766.56s] mentioned by Megan, and so much more.
+[768.72s] Now, let's hear from reporter Sawyer
+[770.56s] Loftess about a promise made by the main
+[772.40s] judiciary nearly a decade ago and why
+[774.64s] those in the state are still waiting for
+[776.24s] the court to make good on its
+[777.96s] word. Thanks for being here, Sawyer.
+[780.40s] Last episode, we discussed the issue of
+[783.04s] online access to court records in
+[785.28s] Vermont and some of the changing
+[786.72s] policies that we're seeing there. We
+[788.24s] have a similar situation in Maine,
+[790.56s] though with some pretty big differences
+[793.12s] in that policy was officially made
+[796.40s] almost 10 years ago now to take all of
+[799.28s] the records we could get inside main
+[801.84s] courouses, put them online, and we're
+[804.72s] now nearly 10 years past that
+[806.80s] announcement, and we're no closer to
+[808.56s] that goal, and millions of dollars have
+[810.72s] been spent in this endeavor, and we have
+[812.56s] very little, if anything, to show for
+[814.24s] it. So, I'm going to have you discuss
+[815.76s] all of those issues and particularly how
+[818.00s] that's problematic within the scope of
+[820.08s] your job as a journalist, Sawyer. But
+[822.00s] first, catch us up to speed. Start us
+[823.84s] with the history of this issue going
+[825.92s] back 10 plus years and bring us the
+[827.76s] current. So, as you correctly pointed
+[830.72s] out, this is something that's been
+[832.80s] happening in the state of Maine for
+[834.32s] almost 10 years. back in 2016, there was
+[838.24s] a culmination of years of discussion
+[840.32s] around implementing an electronic court
+[843.20s] case filing system in the state. And in
+[845.72s] 2016, the main judicial branch, signed a
+[848.96s] contract with Tyler Technologies, which
+[852.08s] is a software company based in Texas.
+[855.20s] And they do have some offices in Maine,
+[857.36s] interestingly enough, but this is what
+[859.04s] their specialty is. They provide online
+[861.68s] content management systems. And so they
+[863.76s] signed this contract to develop Maine's
+[865.92s] ecort system. And that contract is worth
+[868.88s] about $15 million and was set to be paid
+[871.84s] out over the course of the 10 years of
+[873.68s] work. Back then, the lawmakers in the
+[876.88s] state approved letting the judicial
+[879.28s] branch pay for that contract through
+[881.52s] bonding. So, you know, a special type of
+[883.52s] state loan process. But some new
+[886.00s] reporting from the Portland Press Herald
+[888.08s] down in Portland, Maine this week by one
+[890.56s] of their great reporters, Emily Allen,
+[892.48s] revealed that the judicial branch has so
+[894.64s] far spent around 9.8 million of that
+[898.08s] bond. So more than half of the bond, and
+[900.72s] then an additional 7.7 million in
+[903.84s] operational fees to Tyler Technologies,
+[906.96s] and the contract's not even up yet, and
+[908.72s] they haven't even fully paid out the
+[910.08s] bond. So that estimated cost of 15
+[912.72s] million is clearly not where we're going
+[915.04s] to be paying. And so the real push here
+[917.36s] back in 2016 to create the system was
+[920.16s] because Lee correctly pointed out that
+[922.40s] Maine is one of the last states in the
+[924.96s] country that relies almost entirely on a
+[928.08s] paperbased court system, which is kind
+[930.32s] of crazy to think about. Even back in
+[932.52s] 2016, the federal courts have been
+[935.12s] online for a while and access through
+[937.92s] Pacer is typically pretty easy, but
+[941.12s] nothing like that existed in Maine in
+[943.16s] 2016. Initially, the goal was to have a
+[946.96s] similar system as the federal courts
+[949.20s] where you could quickly and easily
+[951.28s] access court files for research
+[953.52s] purposes, or journalism purposes, and
+[955.52s] then on the flip side, folks interacting
+[957.52s] with the justice system could file
+[959.60s] cases. It's a one-stop shop. And so that
+[962.56s] original system that was pitched and
+[964.32s] promised by the main judicial branch was
+[966.40s] supposed to be similar in function to
+[968.72s] the federal courts. But, you know,
+[970.48s] almost 10 years later, it is not quite
+[973.12s] ending up like that. There was actually
+[975.28s] a hearing that I was at on behalf of
+[977.52s] NEAC speaking to Supreme Court justices
+[980.56s] about the need to take all these
+[982.32s] records, put them online, and I was
+[985.76s] there. A number of reporters were there,
+[987.36s] other open government advocates. We were
+[988.80s] all there with our best arguments in
+[990.64s] hand. And before anyone even had an
+[993.20s] opportunity to speak, the chief justice
+[994.80s] said before we began just making an
+[997.28s] announcement. We have decided that this
+[999.92s] is the system that we're going to
+[1001.36s] proceed with. We are in fact going to do
+[1003.68s] what everybody wants. We're going to put
+[1005.28s] these records online. Now remember there
+[1006.88s] was kind of like some shock at the time
+[1008.88s] because no one had expected that
+[1010.64s] announcement to be made especially
+[1012.64s] before we even had an opportunity to
+[1014.40s] make our arguments for it. So at that
+[1017.12s] time there's a lot of optimism and a lot
+[1019.12s] of hope then the years to come this
+[1021.36s] system would be created. Millions of
+[1023.44s] dollars have been spent since then and
+[1026.00s] to the court's credit some records have
+[1028.64s] been put online and we have taken some
+[1031.04s] steps forward to ultimately have the
+[1033.68s] online system that we were promised in
+[1036.04s] 2023. Most of that progress was then
+[1039.48s] eliminated out of some security concerns
+[1042.48s] that the court hasn't been very clear
+[1044.64s] about. NEFAC has sent a letter asking
+[1047.12s] for some more details about those
+[1048.72s] security concerns and when we can see
+[1050.96s] the limited online access that we had
+[1052.72s] restored and we haven't received a
+[1054.72s] response. We're almost a decade into
+[1056.80s] this process here and we have perhaps
+[1059.76s] less access online to records now than
+[1063.60s] we did going back to 2016. Tell us now
+[1067.04s] though how that impacts your work and
+[1069.76s] not just your work as a journalist, but
+[1071.60s] how it also impacts generally the the
+[1073.60s] public's right to know about the court
+[1074.96s] system and why it's so important that
+[1077.20s] ultimately we get the online access that
+[1080.80s] we were promised in 2016.
+[1083.52s] Speaking first from the perspective of a
+[1085.76s] journalist, I work with records all the
+[1088.32s] time. I love and live in a land of
+[1091.20s] public records and public access. And
+[1094.00s] initially before 2023, it was really
+[1097.60s] easy to access the records I needed to
+[1099.60s] online in the immediate Bangor area from
+[1102.08s] the courts. I hardly ever had to go to
+[1104.00s] the courthouse. But since 2023, I almost
+[1108.56s] never used the efile system that exists
+[1112.08s] online. So right now, there are two
+[1115.12s] different ways that you can look at
+[1116.64s] records online through the main ecourse
+[1118.48s] system. One is the older outdated
+[1120.64s] version called Odyssey and then the
+[1122.72s] other one is this newer search function
+[1125.04s] that they're trying to introduce called
+[1127.08s] research. Research is supposed to be
+[1129.12s] where everything is being uploaded.
+[1131.20s] However, in my experience, I've actually
+[1133.28s] found that cases there stop at a at a
+[1136.56s] particular point, 2023, and you can
+[1138.72s] actually see and find newer cases in the
+[1141.68s] Odyssey system, but you still can't see
+[1143.76s] any documents outside of the courthouse.
+[1145.12s] So you still have to take that eventual
+[1146.80s] trip to your local courthouse to find
+[1149.52s] it. And so the the big part about having
+[1152.08s] an efile system and allowing folks, not
+[1155.52s] just reporters, but the public to access
+[1157.52s] court records from anywhere in the state
+[1161.04s] is really important for one, like from
+[1162.88s] an accessibility standpoint. There are
+[1164.88s] folks who require access to records that
+[1168.00s] have varying physical accessibility
+[1170.96s] needs. for one, not everyone can get in
+[1173.36s] a car and drive themselves to a
+[1175.12s] courthouse. And so having the ability to
+[1177.52s] access those records from your computer
+[1179.36s] kind of eases that. Uh and then
+[1181.44s] additionally, like these records are
+[1183.04s] presumed to be public for the most part.
+[1185.20s] And the promise was made that this was
+[1187.12s] going to be a publicly accessible system
+[1189.12s] where people could get the information
+[1191.12s] that they needed. And more importantly,
+[1193.76s] the court system could move away from
+[1195.76s] having to store all these paper files
+[1198.08s] which take up an absurd amount of square
+[1200.24s] footage in courouses. And so without a
+[1202.56s] consistently reliable ecort system,
+[1205.68s] we're kind of back at square one and
+[1208.32s] access to records that should be public
+[1211.44s] and online are are pretty much nearly
+[1215.52s] never available. Yeah. So it's really a
+[1218.56s] matter of both efficiency and equity.
+[1221.36s] And I think those that are in other
+[1223.36s] states might have a difficult time
+[1224.96s] understanding. Rhode Island comes to
+[1226.80s] mind. Rhode Island is moving their
+[1229.84s] online court system to a similar
+[1232.32s] platform using research Tyler
+[1233.92s] technologies. Rhode Island's a small
+[1235.92s] state. If you had to go from one
+[1238.00s] courthouse to the next, very
+[1239.76s] inconvenient and maybe that some people
+[1241.52s] have some transportation issues, but a
+[1243.52s] different story when you're in Maine,
+[1245.04s] much larger state, a lot more distance
+[1247.28s] between those courouses, much bigger
+[1249.44s] burden. So efficiency, equity certainly
+[1252.80s] driving this this process to get all
+[1255.28s] records online, get away from paper
+[1257.76s] records. Our position all along uh as
+[1260.64s] far as NEIFAC is concerned is that
+[1262.24s] what's public is public and if you can
+[1264.80s] get it at a courthouse, you should be
+[1266.72s] able to to get it online. Why do you
+[1269.52s] think that's important? Wrapping up
+[1270.56s] here, Sawyer, to make sure that we hold
+[1273.52s] true to that principle that if document
+[1275.84s] is public, it should be public
+[1278.24s] everywhere and there shouldn't be any
+[1279.84s] restrictions as to whether or not we get
+[1281.84s] it online, in the courthouse or
+[1284.16s] otherwise. So, I think foundational to
+[1287.04s] our democracy is public participation
+[1289.68s] and public oversight of a government
+[1292.64s] that is largely, you know, represented
+[1294.64s] by the people. And one of the best ways
+[1296.08s] to do that is by accessing and
+[1298.48s] requesting public records. Now in the
+[1300.88s] state of Maine, the judicial branch
+[1303.76s] falls outside of our public records law.
+[1305.92s] So they they have their own set of
+[1308.40s] public access rules. And right now it is
+[1311.44s] a challenge to even get the court system
+[1313.92s] to consistently follow those public
+[1316.48s] access rules. They have deemed records
+[1318.96s] public, but I challenge the idea of what
+[1322.00s] they consider to be public. if you have
+[1323.92s] to jump through so many hoops just to
+[1327.12s] access a simple piece of paper. You
+[1329.44s] know, for example, you can still go to
+[1331.52s] the courthouse and request to look at
+[1332.96s] cases, but it's been my experience that
+[1335.44s] more times than not, a a court clerk
+[1337.36s] will not pull up a case if you don't
+[1338.88s] have a docket number. How are you
+[1340.80s] supposed to get that docket number if
+[1343.12s] you are not at court every day listening
+[1345.36s] to what is happening? The ideal
+[1347.20s] situation would be that you can use the
+[1349.20s] efile system to access that docket
+[1351.60s] number and then bring it to the
+[1353.20s] courthouse to try to pull that record.
+[1355.28s] But you can't even do that. In some
+[1357.36s] places, I've been charged a search fee
+[1359.68s] of $20 if I only have a name of a
+[1362.40s] person. So, the clerk will literally
+[1364.24s] type into their computer. It's not like
+[1365.68s] they're going back to the file room and
+[1367.76s] like digging through the cases
+[1369.08s] physically. They're sitting at a
+[1370.96s] computer inputting a name. And I I could
+[1373.20s] have been doing that at my office.
+[1374.80s] people could be doing that at home. So,
+[1377.04s] the court system made a promise to the
+[1378.72s] people of Maine in 2016 that we were
+[1380.64s] going to make these records accessible
+[1383.04s] and that's just not what's happened for
+[1385.60s] a variety of reasons. And I think the
+[1388.56s] other important thing to consider here
+[1390.64s] is is the amount of money spent. You
+[1393.20s] know, we're talking about in the end
+[1395.52s] it's supposed to be slated to be around
+[1397.20s] a $15 million program. We've already
+[1399.76s] spent close to 10 on just the roll out
+[1403.04s] and then an additional 7.7 million in
+[1405.76s] administrative costs. That is going to
+[1408.48s] push us over the the $15 million target
+[1411.92s] that the main people were promised. So,
+[1414.08s] I think that there's a bit of a
+[1415.68s] discussion that could happen there
+[1417.12s] around how this money is being spent and
+[1419.60s] was it the most efficient use of
+[1420.96s] taxpayer dollars.
+[1423.12s] Yeah, well said. One final thought here
+[1425.04s] as we wrap up. You know, this brings
+[1427.44s] back the idea of uh this this concept
+[1430.16s] called practical obscurity, which was,
+[1433.20s] you know, very very much part of the
+[1435.04s] policies within courts uh many years
+[1437.52s] ago. We've gotten away from it. And and
+[1440.00s] what that means is practical obscurity.
+[1442.08s] Meaning if you have you might have
+[1444.08s] public records that you could easily get
+[1446.00s] in the courthouse. Uh but even though
+[1447.84s] they are public and available to anyone
+[1449.52s] in one form at one location, there are
+[1451.92s] certain policies in place that restrict
+[1454.00s] your access to those same exact
+[1456.00s] documents online or in other formats.
+[1459.04s] And in recent years, we've gotten away
+[1461.20s] from some of those policies, but it
+[1462.48s] seems like the situation here in Maine,
+[1464.32s] you know, that still very much exists.
+[1466.16s] And I'm going to end here with a a quote
+[1468.08s] from attorney Sigman Schutz, who's been
+[1469.92s] a longtime board member of NEAC. What
+[1472.08s] sig at the time said was quote, "The
+[1474.64s] public does not benefit from a secret
+[1476.56s] court system operating in obscurity with
+[1479.76s] meaningful access limited only to
+[1481.84s] persons deemed worthy of finding out
+[1483.84s] what's going on." And unfortunately,
+[1486.40s] that is the situation that we continue
+[1488.16s] to deal with in Maine. Sawyer, thanks so
+[1490.08s] much for being here and walking us
+[1491.60s] through the the history and the ongoing
+[1493.60s] issues that we're dealing with when it
+[1495.44s] comes to online access to court records.
+[1502.72s] Thanks again for listening to the NEFAC
+[1504.40s] Report. Join us next time when we speak
+[1506.00s] with NEAC mentor and Boston University
+[1508.16s] professor Megan Irons about her
+[1509.92s] experience with student journalists and
+[1511.52s] the difficult though vital role that
+[1513.28s] they play in our communities. Here's a
+[1514.88s] preview. This is where I see student
+[1517.52s] journalists being so instrumental in
+[1520.00s] filling those gaps. offering newspapers
+[1523.04s] that lack finances to hire, you know,
+[1525.28s] multiple people to cover their local
+[1527.12s] government, but offering them talented
+[1529.76s] journalists who are out there looking at
+[1531.76s] the issues in the various communities.
+[1534.00s] We'll also hear from senior legal
+[1535.76s] counsel for the student press law
+[1537.36s] center, Mike Hasten, about a TUS
+[1539.52s] University student who was detained by
+[1541.28s] federal immigration authorities because
+[1542.88s] of an op-ed she wrote last year. And
+[1544.80s] Ra's op-ed piece was fully protected
+[1547.60s] speech. There's not even a sliver of
+[1549.92s] doubt that there was anything other than
+[1552.64s] just 100% protected speech in that
+[1555.36s] op-ed. This program is produced by the
+[1557.76s] New England First Amendment Coalition in
+[1559.60s] partnership with Roger Williams
+[1561.12s] University's Communities of Hope and
+[1562.64s] under the guidance of Professor Bernardo
+[1564.32s] Mata. I want to give a huge shout out to
+[1565.92s] our student team, David Peters and
+[1567.60s] Matthew Downey for the editing, Anna
+[1569.52s] Peligrini for program logos, Will
+[1571.76s] Fineold for music, Sarah Price for the
+[1574.64s] show notes, along with Briana Fryora and
+[1577.12s] Lex Benson Amaranti for production
+[1579.00s] assistance. We'll see you next time.

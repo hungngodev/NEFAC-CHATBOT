@@ -1,0 +1,740 @@
+[5.04s] i'm justin silverman of the new england
+[6.72s] first amendment coalition
+[8.80s] thank you all for joining us for this
+[10.32s] month's 30 minute skills lesson on how
+[12.48s] to avoid libel and news reporting
+[15.52s] a reminder all of our classes are
+[17.36s] available to you at nefac dot org
+[20.48s] 30 minute skills
+[22.16s] there you'll find lessons on data
+[23.60s] visualization web scraping hipaa and
+[26.32s] public records self-care for journalists
+[29.20s] and many other important topics
+[32.00s] we have a lot to cover today not a lot
+[33.60s] of time so let's get started your
+[35.92s] instructor is gregory v sullivan general
+[39.36s] counsel for the union leader in new
+[40.88s] hampshire and a long time board member
+[43.04s] of nefac greg all yours
+[46.40s] and there we have the first amendment
+[48.80s] and whenever we're talking about
+[51.04s] defamation
+[52.48s] i think it's important to keep
+[54.64s] the dictates of the first amendment in
+[56.88s] mind as we know the first amendment
+[59.76s] guarantees five basic freedoms to all
+[62.24s] u.s citizens religion speech press
+[64.96s] assembly and petition
+[67.60s] and
+[68.72s] although it says congress shall make no
+[70.72s] law we now know
+[72.56s] that the first amendment applies to all
+[74.72s] governmental action
+[76.48s] and since 1925 all
+[79.12s] federal state and local officials are
+[82.24s] subject to the dictates of the first
+[84.40s] amendment
+[85.68s] so i saw this freedom of speech and i
+[88.48s] thought i'd exercise it because my
+[90.16s] friend was running for mayor of the city
+[92.88s] and the incumbent mayor was a very nice
+[94.80s] woman but i want her to lose so i took
+[96.88s] out an ad in the paper a few days before
+[98.80s] the election saying don't vote for the
+[100.56s] incumbent mayor she's a child molester
+[104.00s] well i found out the hard way
+[106.08s] that my speech is not always free
+[109.68s] found out that this
+[111.84s] lady could sue me successfully in court
+[114.72s] for defamation because i accused her of
+[117.20s] being a child molester and it was
+[119.52s] totally false
+[121.44s] so what is
+[124.00s] defamation
+[129.20s] there are governmental interests that
+[131.84s] clash and crash head-on with our first
+[134.88s] amendment rights
+[137.60s] national security public safety
+[139.60s] protection and education of children
+[141.68s] come to mind readily
+[143.44s] along with protection of reputation
+[146.24s] there are others
+[148.00s] that we're not going to talk about today
+[150.16s] we're going to focus on protection of
+[152.32s] reputation
+[154.08s] and where do we get this right to enjoy
+[156.96s] a good reputation that we can
+[159.12s] sue people
+[160.72s] and it will override their free speech
+[162.96s] rights if they make a false statement of
+[165.84s] fact that injures our reputation
+[168.64s] i tried to figure out where we where we
+[170.56s] get that right i can't find it in the
+[172.56s] first amendment i can't find it in the
+[174.48s] bill of rights i can't find it in the
+[176.16s] constitution
+[177.84s] turns out it comes from an ancient body
+[180.08s] of law known as the ten commandments
+[182.96s] the eighth commandment says thou shalt
+[184.88s] not bear false witness against thy
+[186.80s] neighbor
+[187.76s] and from those ancient times to today we
+[190.48s] get the law of defamation
+[194.24s] there is a body of
+[196.24s] law
+[197.12s] called the restatement of torts
+[200.00s] is also restatement of other areas of
+[202.24s] the law
+[203.20s] but the restatement of torts defines
+[205.68s] defamation
+[207.36s] as a false and defamatory statement of
+[210.32s] fact
+[211.52s] concerning another defamatory means
+[214.48s] injurious to reputation
+[217.04s] an unprivileged publication to a third
+[219.28s] party and we'll talk about privilege
+[222.40s] fault amounting to at least negligence
+[225.04s] on the part of the publisher
+[227.44s] and this is a difficult one to say and
+[229.76s] swallow but actionability actionability
+[232.40s] means a successful lawsuit actionability
+[235.20s] of the statement irrespective of special
+[237.60s] harm
+[238.64s] or the existence of special harm caused
+[241.52s] by the publication
+[243.36s] by the way when i say
+[245.12s] publish
+[246.16s] i mean speak
+[247.76s] post
+[248.80s] write
+[250.72s] to a third person
+[254.08s] and we know that
+[255.92s] it's defamatory if it harms the
+[258.56s] reputation lowers them in the estimation
+[261.36s] of the community or deters third persons
+[264.72s] from associating with
+[266.84s] them thanks to justin i have this slide
+[270.48s] again libel and slander false defamatory
+[274.48s] statement of alleged fact concerning a
+[276.96s] third party communicated to a third
+[279.60s] party without defense
+[282.48s] there are only four defenses to a
+[285.68s] defamation action
+[287.52s] the biggest and best of course is truth
+[290.96s] secondly we have
+[292.56s] privilege
+[294.24s] the one we'll focus on today is called
+[296.96s] the reporter's privilege or the fair
+[299.28s] report privilege
+[301.12s] opinion and hyperbole
+[303.60s] those are the only four defenses
+[305.52s] available to a defamation action
+[309.04s] we'll start with hyperbole the classic
+[312.16s] case of hyperbole
+[314.48s] uh was the supreme court of the united
+[316.72s] states overturned a state
+[319.76s] issued verdict that jerry falwell got
+[322.32s] against hustler magazine
+[324.80s] some of you may remember jerry falwell
+[326.80s] he's passed away now
+[328.72s] but he was an evangelical minister down
+[331.28s] in virginia
+[333.12s] very holier than now kind of fellow i
+[335.28s] think
+[336.32s] and hustler had been running ads for
+[339.60s] campari liqueur
+[341.60s] and the first one was
+[343.28s] they they played on sexual innuendo
+[345.68s] marilyn monroe's first time was the
+[347.52s] headline
+[348.64s] and then it would go on to say first
+[350.72s] time marilyn monroe drank campari was at
+[353.04s] the beverly hills hotel well frank
+[355.36s] sinatra's first time the first time
+[357.28s] frank sinatra had compared he was in the
+[359.76s] backseat of a 1939 ford on and on these
+[362.96s] ads with famous people but the ad
+[365.04s] campaign ended
+[367.28s] and hustler thought they'd play a joke
+[369.12s] on jerry
+[370.32s] so basically they they said his first
+[372.80s] time having sex
+[374.80s] uh was in an outhouse with his mother
+[377.84s] during a drunken orgy and it goes on and
+[380.48s] on wasn't it crowded in there not when i
+[382.40s] kicked a goat out and says his mother
+[384.88s] had had sex with everybody in town on
+[387.60s] and on it was
+[389.44s] so ridiculous so over the top that the
+[392.40s] supreme court overturned the verdict
+[394.32s] saying no reasonable person
+[397.36s] would believe this was a statement of
+[399.52s] alleged fact
+[402.40s] there are two kinds of plaintiffs in a
+[405.04s] defamation action the public plaintiff
+[408.16s] and the private plaintiff
+[410.88s] and this was established in the landmark
+[413.52s] case of new york times v sullivan in
+[416.12s] 1964.
+[418.00s] uh we'll look later on at the actual
+[420.56s] publication that commissioner sullivan
+[422.80s] louis sullivan was the police
+[424.24s] commissioner
+[426.00s] in montgomery alabama
+[428.88s] and the supreme court for the first time
+[431.92s] decided these public officials and
+[434.84s] public figures
+[437.52s] madonna
+[438.80s] lady gaga
+[441.28s] tom brady public figures
+[443.84s] they must prove
+[445.52s] if there is a false statement of alleged
+[447.52s] fact published about them that the
+[450.24s] publisher
+[451.36s] knew
+[452.32s] that the statement was false or at least
+[454.64s] acted with a reckless disregard for the
+[456.88s] truth
+[458.32s] court went on in later cases to define a
+[461.44s] reckless disregard for the truth saying
+[463.44s] it's evidenced when the publisher
+[465.04s] publishes
+[466.24s] despite entertaining serious doubts
+[468.88s] about the truthfulness of the
+[470.48s] publication it is a very high bar
+[474.16s] for a public plaintiff to me
+[476.80s] on the other hand
+[478.40s] private figure who's defamed
+[481.36s] must only show
+[483.12s] that the publisher was negligent
+[485.68s] i.e failed to act as a reasonable
+[488.16s] publisher under the circumstances
+[493.20s] now i talked a little earlier
+[495.76s] in the restatement about special harm
+[498.80s] and again special harm is
+[500.80s] a monetary loss
+[502.72s] or
+[503.60s] persons do not want to associate with
+[505.76s] you
+[506.80s] well a plaintiff and a defamation action
+[510.00s] if its defamation per se does not have
+[512.80s] to prove special harm and is still
+[515.12s] entitled to a monetary award of damages
+[519.28s] so there are four categories of
+[521.28s] defamation per se
+[523.52s] and if you are in a newsroom if you are
+[525.84s] writing on your blog or you are speaking
+[528.88s] to someone
+[530.24s] and you're accusing someone of
+[534.32s] committing a criminal offense
+[536.40s] or having a loathsome disease a sexually
+[539.28s] transmitted venereal disease
+[541.68s] i've been wondering whether coven falls
+[543.76s] into that category but
+[545.76s] never mind that
+[547.68s] the third one is to me the most
+[550.24s] difficult of a matter incompatible with
+[552.80s] this business trade profession or office
+[555.76s] and you can go to the restatement of
+[557.36s] thoughts these sections are amplified
+[560.56s] and then there are cases uh underneath
+[563.04s] each section explaining them
+[565.28s] and the last one serious sexual
+[567.12s] misconduct not sexual misconduct but
+[569.92s] serious sexual misconduct not really
+[571.92s] sure what that is
+[574.00s] but this third one
+[576.40s] uh and this is from the restatement
+[579.20s] one who publishes a statement that
+[580.88s] ascribes to another conduct
+[583.60s] that would adversely affect their
+[585.68s] fitness for the proper conduct of their
+[588.48s] lawful business trade or profession
+[591.36s] or of their office
+[593.28s] is subject to liability without proof of
+[595.68s] harm
+[597.20s] so if i say
+[598.56s] that lawyer can barely put two coherent
+[601.92s] sentences together
+[604.24s] is that defamation
+[608.40s] and if it's not defamation per se but
+[611.68s] there is special harm
+[613.60s] to the plaintiff the defendant is liable
+[617.36s] to them
+[619.84s] now
+[621.68s] we said earlier one of the elements of
+[623.68s] defamation is a false statement of
+[626.32s] alleged fact
+[629.44s] there is no such thing as a false
+[632.64s] opinion the supreme court of the united
+[634.80s] states has made that abundantly clear
+[637.76s] the mayor is a jerk
+[639.68s] the mayor is an idiot
+[642.08s] that's opinion
+[644.84s] however the restatement says and the
+[647.84s] courts have held
+[649.52s] that if the opinion
+[652.32s] implies the allegation of
+[655.08s] undisclosed defamatory facts as the
+[658.24s] basis for the opinion
+[660.48s] then
+[662.08s] the publisher of that opinion may indeed
+[664.40s] be subject to liability
+[667.04s] very tricky i think and counterintuitive
+[669.60s] undisclosed defamatory facts
+[672.80s] i'll try to give you an example
+[675.44s] don't vote for the mayor she is a bad
+[678.00s] alcoholic
+[679.36s] trust me i've spent time with her every
+[682.08s] day for the past 60 years
+[684.72s] she's got a bad booze
+[686.84s] problem that's my opinion but i'm
+[689.36s] implying that i know things that you
+[691.84s] don't know that i have undisclosed facts
+[695.04s] as the basis for my opinion
+[697.36s] and if it's not true
+[699.60s] i may be liable for that opinion for
+[702.24s] publishing that opinion
+[704.16s] now had i said
+[706.24s] don't vote for the mayor she's a bad
+[708.32s] alcoholic
+[709.52s] trust me i've spent time with her every
+[711.44s] day for the past 60 years
+[714.00s] and on the third thursday of every month
+[716.56s] at four o'clock in the afternoon she
+[718.96s] drinks a half a glass of beer
+[721.52s] i don't think she drinks other than that
+[723.12s] but boy she's a bad alcoholic
+[725.68s] now i've given you the opinion but i've
+[727.92s] given you the facts that underlie that
+[730.56s] opinion and therefore
+[732.80s] i cannot be held liable because the
+[735.28s] listener the recipients of that
+[737.28s] publication are free to say wait a
+[739.44s] minute
+[740.32s] that lawyer is the idiot and the mayor's
+[742.72s] not an alcoholic she barely drinks it
+[744.80s] all
+[747.60s] very key and that's why i put it in red
+[750.56s] uh i have gotten over the years quite a
+[753.36s] bit in newsrooms somebody saying well
+[755.84s] we're going to publish this because it
+[757.36s] was published earlier in the
+[760.00s] boston globe
+[761.84s] or the new york times
+[765.60s] one who repeats or republishes
+[768.40s] defamation is just as subject to
+[771.12s] liability
+[772.56s] as if you she they had originally
+[775.68s] published it
+[778.24s] there is a reliable source defense that
+[782.08s] is
+[783.04s] not as widespread as it used to be when
+[785.28s] we only had the wire services of ap and
+[788.16s] upi
+[789.44s] but
+[790.24s] there is such a defense
+[792.24s] uh which you can claim in front of a
+[795.04s] jury we only publish this because it was
+[797.20s] in the new york times and we trusted
+[799.04s] them as a as a reliable source but
+[801.92s] you don't want to do that if you're
+[803.28s] going to publish something
+[805.28s] that raised a red flag
+[807.92s] in your mind when you went to publish
+[809.92s] then double triple check the facts in
+[812.96s] your sources
+[815.76s] we do have the fair report privilege but
+[818.00s] it's very limited
+[819.76s] and this is what it says the publication
+[821.84s] of defamation concerning a third person
+[825.28s] in a report of an official action or
+[828.00s] proceeding
+[829.36s] or of a meeting open to the public that
+[831.84s] deals with a matter of public concern is
+[834.08s] privileged so long as that report is
+[836.80s] accurate
+[837.84s] or at least a fair abridgement of what
+[840.32s] happened
+[841.52s] someone gets up at a city council
+[844.48s] meeting
+[845.76s] and accuses someone of a crime
+[849.84s] and it's false and its defamation
+[853.12s] we
+[854.24s] are free to republish that re-speak it
+[857.28s] put it in the newspaper
+[859.04s] as long as it's accurate
+[861.68s] um
+[862.88s] the police chief calls a press
+[864.88s] conference
+[866.00s] says we have an outstanding warrant on
+[868.80s] john smith he's wanted for distribution
+[872.16s] of narcotics
+[874.56s] it turns out
+[876.96s] the chief meant to say jon jones
+[879.52s] he's defamed
+[880.96s] john smith
+[882.40s] but we can publish that because it was
+[884.32s] at a press conference
+[885.92s] now if the mayor says it to re to a
+[887.92s] reporter saturday morning at the diner
+[890.48s] over breakfast
+[892.32s] and we publish it
+[894.40s] the publisher is going to be liable
+[896.64s] because we don't have that fair report
+[898.80s] privilege because it wasn't at an
+[900.96s] official action
+[903.20s] such as a press conference
+[907.04s] interestingly enough
+[909.44s] we can defame
+[911.76s] products companies or individuals that
+[914.32s] produce products
+[916.96s] if it's going to damage that individual
+[920.40s] or company
+[922.16s] a couple of classic cases that have
+[924.88s] always concerned me one uh
+[927.44s] bose radio
+[929.12s] sued a publication because the
+[930.72s] publication said that bose radio was no
+[933.52s] good the sound bounces off the walls
+[935.36s] it's hard to hear it was a terrible
+[936.88s] report
+[938.24s] and uh bose sued unsuccessfully
+[942.96s] uh because there was an opinion defense
+[946.56s] same thing with rain-x
+[948.64s] there was a publication that said rain-x
+[950.48s] doesn't work it makes the windshield
+[952.24s] worse when you're driving in the rain
+[954.40s] which i thought was very false
+[957.52s] but held to be an opinion
+[959.44s] but you can be guilty
+[962.00s] of defamation relative to products
+[966.84s] corporation
+[968.48s] profit or non-profit
+[970.56s] um if we
+[972.64s] say something that's false and injurious
+[975.60s] corporation can recover just like an
+[977.60s] individual
+[979.92s] partnerships on incorporate associations
+[982.64s] same thing
+[986.56s] now groups
+[988.64s] the group
+[990.00s] an individual who's in the group has to
+[992.40s] be identifiable because the group is so
+[995.12s] small if i say all boston cops are on
+[999.04s] the take and corrupt
+[1001.76s] no individual boston cop is going to be
+[1003.84s] able to sue me successfully because
+[1006.80s] the number of individuals in that group
+[1008.96s] is so large
+[1010.72s] but if i'm talking about little town usa
+[1013.28s] where there's only three police officers
+[1015.28s] and i say all little town police
+[1017.36s] officers are corrupt and on the take
+[1020.72s] each one of those individual officers
+[1023.04s] would have a successful defamation
+[1025.92s] action
+[1027.28s] unless what was published was true they
+[1029.92s] were on the tape
+[1032.96s] so
+[1034.96s] this is the publication that
+[1038.96s] led to the case of
+[1041.92s] new york times versus sullivan
+[1044.64s] louis sullivan the police commissioner
+[1046.72s] had received a verdict in alabama
+[1050.00s] that was affirmed by the supreme court
+[1052.08s] of alabama
+[1053.76s] and the supreme court of the united
+[1055.52s] states as i said earlier went to great
+[1057.68s] lengths to distinguish public plaintiffs
+[1060.56s] versus private plaintiffs
+[1062.88s] but in reality
+[1064.64s] the reason uh
+[1067.12s] commissioner sullivan lost his case
+[1069.44s] because the court said this publication
+[1071.52s] was not of and concerning him
+[1074.64s] he was not readily identifiable
+[1077.84s] it talked about the police doing things
+[1080.80s] that were in actually there were a
+[1082.48s] number of false allegations in the ad
+[1085.44s] relative to the police conduct but
+[1088.48s] it was not of and concerning
+[1090.64s] commissioner sullivan
+[1093.44s] we had a case uh recently
+[1097.04s] in new york where the new york times was
+[1099.92s] successful in defending a defamation
+[1102.16s] action by a woman from alaska
+[1104.64s] named palin
+[1107.60s] and because she's a public figure had
+[1109.92s] been the governor of alaska and had run
+[1112.00s] for some other public office
+[1114.72s] unfortunately
+[1116.40s] um
+[1116.76s] [Music]
+[1118.80s] she did not meet according to the judge
+[1122.00s] the actual malice standard
+[1124.96s] again
+[1126.56s] she had to prove
+[1128.16s] that the new york times
+[1130.24s] knew that it was false when it said
+[1134.40s] and you'll see it down there in the
+[1135.84s] corner
+[1137.68s] when it said there was a link between
+[1141.12s] shootings
+[1142.56s] and murder
+[1144.00s] and sarah palin's political action
+[1147.04s] committee
+[1148.56s] indeed her committee had circulated a
+[1151.12s] map
+[1152.16s] targeting districts that including
+[1155.28s] gabby gifford's representative
+[1157.68s] with uh targeted crosshairs over each
+[1160.72s] district and giffords district was one
+[1163.04s] of them
+[1164.64s] but there was no
+[1166.64s] link between that shooting
+[1169.60s] and
+[1170.88s] sarah palin's there was no evidence that
+[1173.04s] the shooter had ever seen
+[1175.12s] or knew anything about
+[1177.44s] this
+[1179.20s] map that was circulated by
+[1181.52s] palin's committee
+[1184.00s] that case
+[1187.04s] probably is going to be appealed
+[1189.04s] although the judge let the jury come
+[1191.04s] back with their verdict after he
+[1192.64s] announced not to the jury that he was
+[1194.56s] going to dismiss the case so that is
+[1196.88s] weakening her ability to have a
+[1198.48s] successful appeal
+[1200.08s] but there are two justices on the
+[1201.76s] supreme court of the united states who
+[1203.76s] want to
+[1205.76s] do away with this actual malice standard
+[1211.12s] um
+[1212.40s] in that i've underlined what palin was
+[1216.88s] complaining about
+[1218.48s] the link to political incitement was
+[1220.40s] clear before the shooting palin's
+[1222.40s] committee
+[1223.44s] uh
+[1225.04s] distributed this map
+[1228.64s] this is uh
+[1230.64s] and i don't know if we have time i
+[1232.48s] should have emailed everybody this this
+[1234.48s] is a case
+[1236.16s] where
+[1237.36s] a food critic
+[1238.80s] came to a new restaurant a cajun
+[1241.12s] restaurant being
+[1242.80s] opened in boston
+[1244.96s] and
+[1245.84s] the publication said these people
+[1247.52s] couldn't run a hot dog stand they were
+[1249.44s] by the way very successful restaurateurs
+[1252.24s] uh the food tank cage and tank creole
+[1254.56s] taint french taint nothing but putrid
+[1257.20s] the supposed beef was actually all fake
+[1259.36s] food ground up schmutz
+[1261.44s] stay away from the place unless you
+[1262.88s] enjoyed being greeted by a hostess
+[1264.96s] and eating nasty animal scraps
+[1267.92s] quite a review
+[1269.36s] uh and for some reason the restaurant
+[1271.44s] was
+[1272.48s] took exception and sued for defamation
+[1276.00s] so
+[1276.96s] i'd like to hear from you all
+[1279.92s] as to whether or not
+[1281.52s] the beacon hill bugle and its
+[1285.12s] reporter committed defamation against
+[1288.16s] the restaurant
+[1289.84s] because that's the end of my
+[1292.40s] time
+[1294.24s] and i want to take as many questions as
+[1296.00s] we can
+[1297.04s] but if you want to jot this down
+[1300.00s] i'd be glad to receive communications
+[1303.12s] via email questions thoughts comments
+[1306.08s] i've got a few questions lined up and
+[1308.00s] we'll get to them the time remaining uh
+[1310.96s] the the first one goes back to the the
+[1312.88s] palin case the actual malice standard
+[1315.52s] and the idea of a public official a
+[1317.84s] public person
+[1319.44s] you know as one person writes we have
+[1320.96s] this rise of people on social media and
+[1323.20s] blogs high profile
+[1325.60s] very public
+[1327.28s] individuals
+[1328.88s] how do we determine who's a public
+[1331.12s] figure and who's a private figure what
+[1333.52s] are some of the uh primary
+[1335.20s] considerations to make
+[1337.44s] well probably the most primary
+[1339.76s] consideration is whether or not the
+[1341.52s] individual has thrust themselves into
+[1343.76s] the vortex of a public controversy
+[1346.64s] some people are public figures for all
+[1349.92s] purposes public official is easy
+[1352.48s] president governor
+[1354.16s] mayor etc
+[1355.68s] public figures some are public figures
+[1357.84s] for all purposes one that comes to mind
+[1359.84s] is that fellow
+[1361.44s] trump who used to be the president of
+[1362.80s] the united states he's a public figure
+[1364.96s] for all purposes
+[1366.80s] uh the more difficult task is
+[1368.88s] determining when someone thrusts
+[1371.36s] themselves sufficiently into a
+[1373.04s] controversy that they become a public
+[1375.60s] figure it's important to remember that
+[1377.84s] the publisher
+[1379.20s] cannot create
+[1380.72s] the public figure
+[1382.24s] they can pick on an individual and write
+[1384.24s] about them repeatedly but if the person
+[1386.16s] has not sought the public spotlight has
+[1389.36s] not injected themselves into
+[1391.68s] a debate on a matter of public concern
+[1394.56s] then they're a private figure
+[1398.40s] thank you uh another question here uh
+[1401.36s] of uh particular importance for many of
+[1404.32s] the journalists that are joining
+[1406.00s] us today uh the fair report privilege i
+[1408.64s] know you mentioned it earlier on but can
+[1410.24s] you talk about that a little bit more
+[1411.52s] and maybe explain in uh you know more
+[1414.16s] simple terms what this privilege is and
+[1416.24s] when it applies
+[1417.92s] sure
+[1419.28s] i mean it's important to note that it
+[1421.12s] only applies if we are reporting
+[1424.72s] on a public
+[1426.96s] action taken by
+[1429.20s] a government official or someone
+[1431.60s] participating in for example a town
+[1433.92s] meeting
+[1435.68s] city council hearing
+[1438.16s] testimony before the legislature
+[1441.36s] press conferences called by a mayor or a
+[1444.40s] chief of police it has to be reporting
+[1446.96s] on
+[1448.00s] an official public action or meeting
+[1452.40s] period
+[1454.00s] not something the police chief tells you
+[1457.44s] one on one
+[1459.12s] or one on 35 unless it's an officially
+[1462.08s] called press conference
+[1464.88s] press release
+[1466.16s] for example
+[1467.44s] by a police department
+[1469.76s] we had a case recently where the
+[1472.40s] police department issued
+[1474.64s] a press release saying there are
+[1477.44s] 16 people that are wanted for
+[1479.44s] distribution of drugs and they not only
+[1481.92s] listed their names they
+[1483.84s] provided pictures
+[1485.60s] of the individuals and those it was
+[1487.92s] published
+[1489.28s] on television and in a number of
+[1491.84s] newspapers online in print
+[1494.80s] and one of the individuals named by the
+[1497.60s] police release
+[1499.44s] indeed was not
+[1500.96s] the subject of a search for
+[1503.84s] uh being guilty of just
+[1506.00s] distributing drugs
+[1508.08s] fact he was in jail at the time
+[1510.32s] uh and and
+[1512.08s] food
+[1513.28s] but because it was
+[1515.68s] republished from
+[1517.76s] an official government release the fair
+[1520.72s] report privilege applied
+[1523.04s] and the media defendants were able to
+[1525.68s] get the case dismissed
+[1528.56s] thank you have another question here
+[1529.92s] specific for uh reporters what uh good
+[1532.72s] practices would you suggest uh reporters
+[1535.60s] take to protect themselves from libel so
+[1537.44s] for example uh a reporter finds
+[1540.00s] themselves
+[1541.12s] um being accused of liable they come to
+[1543.44s] you for counsel you know what is the
+[1545.44s] first thing you would ask from them
+[1547.44s] would you uh ask for their notes you
+[1549.76s] know from the past x years or other
+[1552.72s] materials you know what can reporters do
+[1554.88s] as far as their news gathering and the
+[1557.52s] way that they uh you know maintain all
+[1559.76s] the materials that they gather to help
+[1562.88s] defend themselves against libel claims
+[1565.44s] but i get a lot of inquiries
+[1568.00s] uh early on in the process during the
+[1570.32s] reporting prior to the publication and
+[1572.96s] one of the first questions i usually ask
+[1575.28s] you is well
+[1576.72s] did you did you get the other side of
+[1578.88s] the story
+[1580.00s] did you track down the person who's
+[1582.00s] being written about um which is not
+[1585.04s] always easy to do and but you at least
+[1588.16s] may put in your story attempts to
+[1590.88s] locate and communicate with
+[1593.76s] the subject of the story
+[1595.76s] uh or
+[1597.68s] of no avail
+[1599.12s] but yeah you got to get both sides of
+[1600.96s] the story particularly when you're
+[1602.64s] talking about
+[1603.92s] those defamation per se category someone
+[1606.48s] being accused of a crime etc get their
+[1609.20s] side of the story and you know um
+[1613.12s] leg work is huge
+[1615.44s] of course now a lot of our leg work is
+[1617.44s] done electronically thank goodness but
+[1620.00s] you're going to write about a court case
+[1622.72s] look at the actual documents on file in
+[1625.84s] court don't take somebody's word for
+[1628.24s] what they say
+[1630.80s] so you know check your sources
+[1633.28s] recheck your sources recheck your facts
+[1635.76s] you want to make sure
+[1637.52s] that what what you're publishing is the
+[1640.00s] truth thank you again greg and i want to
+[1642.48s] thank everybody else for joining us
+[1643.92s] today uh again if you found today's
+[1646.24s] lesson helpful in any way i want to
+[1648.40s] encourage you to make a donation at
+[1650.08s] nefac.org
+[1651.76s] these lessons that we provide every
+[1653.44s] month are a free public service by our
+[1655.68s] coalition we depend on your support to
+[1658.24s] offer them along with the many other
+[1659.76s] first amendment programs that we offer
+[1662.08s] throughout the year we're also looking
+[1663.84s] for suggestions on future topics so if
+[1666.00s] there's a 30 minute skill that you're
+[1667.68s] looking to learn let us know by emailing
+[1670.08s] me directly at justin
+[1672.84s] nefak.org
+[1674.80s] many thanks again to all of you i'll see
+[1676.96s] you back here next month for our next 30
+[1679.68s] minute skills
+[1681.12s] can i say one thing absolutely what i i
+[1684.32s] wanted to get people's opinion on on the
+[1686.48s] fact pad and i put up about the cajun
+[1688.48s] food so if anybody wants to email me
+[1690.48s] i'll be glad to email you that
+[1692.00s] particular fact patent and we can talk
+[1694.32s] about it because i'm interested in what
+[1696.40s] people think about that case
+[1699.12s] excellent i would encourage everybody to
+[1700.64s] do so
+[1702.40s] thank you again greg appreciate your
+[1704.08s] help today
+[1705.12s] thank you justin thanks everybody

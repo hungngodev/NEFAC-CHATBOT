@@ -1,0 +1,858 @@
+[3.52s] hello everyone I'm Justin Silverman of
+[5.72s] the New England First Amendment
+[7.12s] Coalition thank you for joining us for
+[9.16s] another 30 minute skills for those
+[12.04s] joining us for the first time welcome
+[14.44s] these monthly lessons are a quick and
+[16.00s] efficient way to hone your reporting
+[17.40s] skills and build on your first amendment
+[19.52s] knowledge but there also more than that
+[21.60s] there a way for you to reconnect with a
+[23.28s] community of journalists researchers
+[25.12s] attorneys and academics who regularly
+[27.16s] attend these lessons to everyone pleas
+[30.00s] please use the chat to introduce
+[31.36s] yourself showcase your work and connect
+[33.64s] with others also make sure you register
+[36.32s] for our upcoming lessons on how to
+[38.28s] develop a beat how to protect yourself
+[40.36s] online and audio reporting among many
+[42.76s] others registration links can be found
+[45.28s] at nea.org as a reminder links to all
+[49.68s] our previous 30 minute skills are
+[51.56s] available at nea.org and on our YouTube
+[53.96s] channel five freedoms lessons include
+[56.44s] data cleaning Privacy Law Microsoft
+[58.80s] Excel Basics and how diversify sources
+[61.28s] among many other topics today's
+[63.68s] presentation is focused on climate
+[66.08s] reporting and it's supported in part by
+[68.16s] the estate of Gloria negri Gloria was a
+[71.08s] trailblazing journalist at the Boston
+[73.12s] Globe for more than 50 years this
+[76.16s] program is part of her Legacy of
+[77.64s] Newsroom education and her lifelong
+[79.84s] commitment to local journalism you can
+[82.28s] learn more about Gloria and other neac
+[84.40s] supporters at nea.org
+[87.08s] supporters we have a lot to cover and
+[89.32s] not a lot of time so let's get started
+[91.48s] Annie all
+[93.84s] yours hi thanks so much for having me
+[96.76s] it's great to be with you all and see
+[98.32s] some friends in the chat so um yeah so
+[102.28s] I'm I'm an independent climate
+[103.80s] journalist I'm based in Camden Maine in
+[105.88s] the mid coast and I've worked in other
+[107.92s] spots all across New England over um
+[110.64s] many years as well as other places I
+[112.56s] have a public radio past um and I mostly
+[115.88s] right now for energy News Network and
+[117.84s] Outlets like that and um I'm also on the
+[120.60s] board of the Society of environmental
+[122.24s] journalists so it's great to be with you
+[124.28s] all uh I'm going to talk today about how
+[126.76s] to bring in climate change links across
+[129.04s] all of the beats that you all cover um
+[131.36s] how to engage your audience on these
+[132.96s] topics even if they're not you know
+[134.84s] climate wonks and um how to find those
+[137.16s] connections no matter what you're
+[139.00s] covering so this is a map of the places
+[142.52s] that I've worked and I show you this to
+[144.56s] um bring home that first of all you
+[146.76s] don't have to be a climate expert or an
+[149.48s] environment Al science major you know to
+[152.00s] cover uh climate change effectively and
+[154.88s] you can do it from any beat and um I
+[157.04s] know this because I spent many years as
+[158.80s] a general assignment reporter and on
+[160.36s] other beats such as business and
+[162.04s] agriculture um and really the way I
+[164.16s] built an environmental specialty was I
+[166.40s] mean first just out of what personal
+[167.80s] interest this is just a topic that I've
+[169.36s] always really liked and enjoyed I love
+[171.00s] getting outside you know it's definitely
+[173.68s] it's the it's a great beat if you want
+[175.60s] to get out of The Newsroom ever it
+[177.04s] really encourages that which is a lot of
+[178.64s] fun um but everywhere that I've worked
+[182.04s] uh has really had this real sense of
+[183.64s] place you know it's been places that
+[186.28s] have strong connections to their
+[187.80s] environment whether that's through how
+[189.24s] they use the natural resources there
+[191.28s] like through agriculture or industry or
+[193.84s] just being kind of outdoorsy having a
+[196.16s] place that's really shaped by its
+[197.60s] weather and its relationship to the
+[200.56s] ocean for example like when I worked in
+[202.36s] Alaska's uan Islands um and you know
+[205.84s] this sense of place is really one of the
+[207.28s] ways that people connect with your
+[209.12s] stories the most no matter what they're
+[210.64s] about um so I was always looking for
+[212.80s] those environmental links you know how
+[214.88s] people's relationship with their place
+[216.48s] was changing and why and and what that
+[219.24s] told us about you know all kinds of
+[221.00s] other um issues at play City politics um
+[226.00s] Housing Development you name it um and I
+[229.00s] I really believe we need to bring those
+[230.48s] ties up to that sense of place and this
+[232.80s] gets to climate change into our stories
+[234.96s] in the name of accuracy if nothing else
+[237.20s] to just help people understand the
+[240.08s] places that they live and love and play
+[242.08s] and work are changing um what their role
+[245.16s] in that change is what it means for them
+[247.04s] and what adaptation you know looks like
+[249.44s] in that context so so that's my first
+[251.84s] pitch to you if there's no other reason
+[253.32s] to cover climate change as part of all
+[254.76s] your stories do it in the name of
+[256.08s] accuracy help people connect with that
+[257.84s] sense of complexity and understand
+[260.12s] what's going on with these places that
+[261.80s] they that they love uh the second thing
+[264.68s] I want to bring home is that climate
+[266.20s] change is a systemic structural issue
+[268.92s] just like racis ISM or any kind of
+[271.48s] inequality and it's actually felt as
+[273.84s] sort of a form of structural inequality
+[275.64s] so the effects of climate change are not
+[278.08s] contributed to equally by all they will
+[279.88s] not be felt equally by all and it's
+[282.40s] really important when you're telling
+[283.56s] climate stories that you don't tell them
+[285.40s] in a vacuum I mean it's not just that
+[287.52s] the climate is changing it's what does
+[289.28s] that mean for us as animals that live on
+[292.04s] this planet and that use these natural
+[294.28s] resources um what does it mean for our
+[296.84s] political and economic systems our
+[298.60s] culture um um so you know it's it's
+[301.96s] great to talk about climate change in
+[303.68s] that kind of vacuum just a sort of a
+[305.48s] starting point um and we're seeing that
+[308.44s] change I think across the media
+[309.80s] landscape to just more mentions of it or
+[311.92s] even just more acknowledgement that
+[313.76s] climate is changing even if you're not
+[315.36s] using the words and there's debate about
+[317.16s] that that you know I'm me to get into if
+[319.64s] folks are interested but uh it's really
+[322.56s] about the the best stories I think are
+[324.60s] about saying that next sentence and so
+[326.52s] these are some examples of stories I've
+[328.00s] done that try to do that and
+[330.24s] uh these all come from sort of the
+[331.64s] period in which I really became someone
+[334.48s] who identifies more as a climate
+[335.88s] reporter than um just sort of a general
+[339.48s] energy and environment reporter um this
+[341.80s] was 2019 to 2021 when I was working for
+[344.56s] New Hampshire Public Radio um we were
+[346.96s] setting up a climate desk at this time
+[348.84s] it's called B degrees it's still going
+[350.40s] on today which is really gratifying for
+[352.72s] for me to have uh to see that continue
+[355.20s] to grow and that coverage and and the
+[357.40s] the goal of B degrees you know is really
+[359.72s] to to tell these climate stories in a
+[362.36s] way that engages uh the audience and
+[365.52s] helps answer their questions to empower
+[368.44s] them and make them feel like they know
+[370.92s] what to do next once you give them the
+[372.72s] really scary information about how the
+[374.56s] climate is changing the big question we
+[376.88s] were hearing from our audience around
+[378.40s] this time was what do I do like how do I
+[380.32s] know what to do and how do I know what's
+[382.00s] true and how to make decisions about
+[384.08s] everything from what I buy to how I vote
+[385.88s] to just what I tell my friends and
+[387.44s] family about my knowledge of the crisis
+[389.88s] and um so these stories you know sought
+[392.68s] to do that and and answering those
+[394.80s] questions is always going to lead you to
+[396.28s] intersections so whether you're coming
+[398.36s] at climate reporting from another beat
+[400.24s] or trying to broaden your climate
+[401.88s] reporting out from the environment beat
+[403.96s] to politics or infrastructure or um or
+[409.56s] housing uh you know these are some
+[412.28s] examples of ways that you can do that um
+[415.44s] I also was lucky around this time to
+[416.96s] participate in a number of um trainings
+[419.64s] such as uh Columbia University's energy
+[421.84s] journalism Institute um I did a sine
+[424.56s] training in Iowa political or science
+[427.16s] Essentials for political reporters um
+[429.64s] which was great and I did a reporter
+[431.24s] convening in Vermont with Beyond
+[432.68s] Plastics they're still doing those they
+[434.20s] do them kind of all over the country and
+[436.44s] the combination of those three plus I
+[437.92s] did the metf institute's science
+[439.60s] journalism training uh from the
+[441.12s] University of Rhode Island virtually in
+[443.32s] 2020 um those really really helped me
+[445.92s] with some sort of basic um facts rules
+[448.80s] of thumb scientific info that I you know
+[452.72s] was gathering in sort of a peace meal
+[454.52s] way but I don't want to pretend this
+[456.12s] isn't a beat where you do need some of
+[457.60s] that technical knowledge perhaps even
+[459.36s] more so than on on certain other beats
+[461.40s] and and it's hard to tell these stories
+[463.40s] without that basis so next I'll offer
+[465.72s] you some some tools for getting started
+[467.96s] if you um if you're feeling a little
+[469.88s] lost as to where to get some of that
+[471.32s] info or you need a refresher and that's
+[473.12s] really going to help you start to tell
+[475.16s] these stories uh in more of a habitual
+[477.72s] way and not have it be such a sort of a
+[480.04s] chore or like a scary going out on a
+[482.20s] limb where you don't really know what
+[483.56s] you're talking about um which we all do
+[485.72s] when we're reporting off our beat or
+[487.24s] starting a new beat um how to how to get
+[490.36s] more comfortable telling these stories
+[491.88s] and bringing these Connections
+[493.68s] in um so the first framework I want to
+[496.80s] offer you for this is something I got
+[498.04s] from that Seline training which was in
+[499.60s] Iowa it was the Vermont state
+[501.28s] climatologist lesli and dupin jiru who
+[503.76s] um who gave us this one and I've used it
+[506.40s] like every day ever since it's just a
+[508.20s] really simple way for break climate
+[509.96s] change down into three parts you have
+[511.52s] its causes which are uh fossil fuel
+[514.68s] emissions the burning of fossil fuels
+[516.20s] land conversion cutting down forests um
+[520.12s] uh other industrial emissions basically
+[522.36s] why is it happening then the impacts
+[524.32s] which are what is happening as a result
+[526.16s] the weather is changing the planet is
+[527.76s] getting warmer sea levels are rising and
+[530.08s] the impacts that those things have so
+[531.76s] sea level rise leads to more nuisance
+[533.92s] flooding in our Coastal communities or
+[536.84s] uh hotter Summers uh threat
+[540.20s] outdoor workers uh health so those are
+[542.72s] all impacts and then our responses are
+[544.64s] what we do about it so the strategies
+[546.56s] for either um mitigating climate change
+[549.40s] which would be lowering emissions
+[551.60s] reducing or slowing the impacts of
+[553.76s] climate change and slowing the causes um
+[556.60s] or adapting to it which is what do we do
+[559.60s] to live more resiliently and sustainably
+[562.76s] with the um changes and the impacts that
+[565.00s] are kind of baked in no matter what or
+[567.64s] the impacts that will happen to the
+[568.96s] extent that we don't take action to
+[571.16s] mitigate climate change um as quickly as
+[573.52s] scientists say that we should so these
+[575.44s] are whoops these are um just a helpful
+[577.88s] three-legged stool for you to refer back
+[579.92s] to if you're feeling a little
+[580.92s] overwhelmed and and leslieanne said at
+[583.28s] the time and this was five years ago
+[584.88s] that she felt that the media does a
+[586.52s] really good job um covering impacts and
+[590.80s] that it doesn't so often cover the
+[592.36s] causes or the responses I think this has
+[594.84s] changed some in the past five years but
+[596.68s] we certainly have a long way to go and
+[598.52s] as I mentioned you know we do see a lot
+[600.36s] of stories that might mention the
+[602.00s] impacts in a vacuum but they don't
+[604.60s] explain why these impacts necessarily
+[607.36s] are happening who is responsible because
+[609.04s] it's human activity that we know is
+[610.72s] causing the Lion Share of these impacts
+[613.56s] and they don't talk about so what do we
+[615.16s] do as a result of that and that's why
+[617.44s] climate stories I think could often
+[618.88s] leave the audience really scared and
+[620.84s] confused and in despair or just
+[623.56s] frustrated like it doesn't give them an
+[626.68s] action to take and I think this is a
+[629.04s] feel where where that can really make
+[630.68s] your stories um better you know to and
+[633.52s] and I think that's true of any um beat
+[635.84s] but this is certainly no exception um
+[638.96s] where where you need to just zoom out a
+[641.20s] little bit add that extra sense about
+[644.48s] why is this happening what does it mean
+[646.24s] not just it's happening but the why and
+[648.88s] the response um that it's happening as a
+[652.40s] result these are sort of my four
+[654.92s] ingredients that I think make a good
+[657.12s] climate story again on any beat you know
+[659.44s] and really again these are good
+[661.56s] ingredients to any kind of Journalism
+[663.68s] I'm sure you all can see that I think
+[665.96s] the one exception with um with climate
+[669.12s] reporting and in particular energy
+[670.72s] reporting as a sort of subset of that is
+[673.24s] that it is really Technical and it takes
+[675.72s] some amount of of learning and and sort
+[679.08s] of science knowledge Engineering Systems
+[681.84s] knowledge that is um is is really is
+[686.32s] tough to a crew and is maybe not typical
+[688.20s] of every single beat or is certainly not
+[690.00s] something that we all are going to learn
+[691.84s] in you know journalism school or like
+[694.28s] basic government classes or things like
+[696.20s] that um I'm not going to say this is the
+[698.28s] only beat where that's the case I was
+[700.40s] thinking about like the health beat for
+[702.36s] example I mean as a regular person I
+[705.96s] can't really deal with my own health
+[707.68s] insurance I have no idea what's going on
+[709.20s] there the thought of being a health beat
+[710.76s] reporter I can't even imagine and it's a
+[712.72s] similar thing you know we all have to
+[714.12s] get the um the basics of our beat down
+[717.80s] so so that's important for for for
+[719.36s] climate reporting and you do that with
+[721.48s] science and data and then this sense of
+[724.36s] how climate change relates to these
+[726.20s] other topics and you get more
+[727.44s] comfortable seeing those intersections
+[729.04s] as you do more of these stories talk to
+[730.88s] more people who are working on this
+[732.88s] topic in an applied way um and then
+[736.00s] always to just remember what's at stake
+[737.68s] and this is something um that uh my old
+[741.00s] editor at nhpr Corey prell who now runs
+[743.28s] the New England news collaboratives news
+[744.80s] team um would always say is is remember
+[748.16s] the stakes and part of those Stakes are
+[750.20s] what is the cost of doing nothing we
+[752.72s] hear a lot about the costs of climate
+[754.80s] Solutions and those costs are certainly
+[757.52s] there and important to talk about but
+[759.72s] the cost of doing nothing is also very
+[761.28s] real and that cost is you know in terms
+[763.40s] of worsening climate change and so
+[766.00s] that's something that is important to
+[767.32s] take into account when you cover those
+[769.20s] Solutions I think um and then just tying
+[772.08s] really all of this together with those
+[774.72s] human stories and human voices this
+[776.96s] again is a good rule of thumb in any
+[778.80s] beat but um but with climate change I
+[782.28s] think people tend to maybe shut down if
+[784.72s] they are either skeptical or they don't
+[787.24s] feel informed on the topic it can be
+[789.48s] sciency energy especially can be so
+[791.88s] wonky it's really hard to bring it to
+[794.00s] life and so you have to go the extra
+[796.32s] mile to get those those human faces and
+[798.84s] those real world present tense stories
+[801.76s] um to to put at the top of your climate
+[803.96s] reporting to make people understand that
+[805.80s] this isn't something that's happening
+[807.12s] far away it isn't something that's
+[808.64s] happening in 100 years it's happening to
+[810.72s] real people just like you right now uh
+[813.24s] and that means something for you even if
+[814.84s] that's not your community but especially
+[816.52s] of course if it
+[818.56s] is um so in terms of um some of those
+[823.12s] science and data Basics I'll this is
+[825.32s] just one of the various rules of thumb
+[827.32s] that I wanted to leave you with that is
+[828.92s] really helpful as you tell climate
+[830.40s] stories to make them a little more
+[831.52s] airtight a little harder for those sort
+[833.72s] of vocal minority audience members to
+[835.60s] maybe quibble with although I really
+[837.36s] want to emphasize fewer people are
+[840.16s] climate deniers these days than you
+[842.40s] might think um there's going to be a
+[844.40s] link in a slide or two to uh a resource
+[847.24s] from Yale's Center for climate
+[848.80s] Communications where they do some
+[850.12s] climate opinion polling and um it's a
+[852.80s] really smaller percentage of the
+[854.48s] American population than it probably
+[855.96s] feels like and certainly a smaller
+[857.52s] percentage than it was five or 10 years
+[859.20s] ago so that's important to keep in mind
+[861.00s] it really is a vocal minority that
+[862.44s] you're going to be hearing these
+[863.36s] quibbles from about you know you didn't
+[865.48s] get the science quite right or like the
+[868.16s] you know just the Cherry picking of data
+[869.72s] and that kind of thing that being said
+[871.44s] you want to be prepared for that and one
+[873.16s] way to do that is to really internalize
+[877.36s] this distinction this uh quote climate
+[880.00s] is what you expect whether is what you
+[881.60s] get is something I think it was the New
+[883.60s] Hampshire State climatologist Mary
+[885.16s] stampone uh would say to me occasionally
+[887.84s] and this is when I'd call her or someone
+[890.44s] like her about um the drought we were
+[893.20s] having in 2020 and 2021 or a storm that
+[896.60s] we had and say what does this have to do
+[899.16s] with climate change and she would say
+[900.68s] well we can't exactly know what this
+[904.04s] individual event how we can't draw a
+[907.20s] hard line from this event to climate
+[909.16s] change without a lot more study that's
+[911.64s] called attribution science uh it's kind
+[913.68s] of an emerging growing field um on the
+[917.08s] right here is a um group called World
+[919.76s] weather attribution that does a lot of
+[921.32s] these studies for Global um climate
+[923.56s] linked events they were the source of
+[926.20s] the study that said um the heat dome in
+[930.00s] the Pacific Northwest a few years ago
+[932.84s] was would have basically been impossible
+[935.16s] without human-caused climate change and
+[937.40s] the way they do this is by taking
+[939.36s] computer models of sort of a
+[941.04s] hypothetical world where human um human
+[943.84s] CA carbon emissions hadn't happened a
+[945.84s] more natural state planet and comparing
+[948.88s] the likelihood of an event like this in
+[950.96s] that world to the real world and they
+[953.44s] can see basically like could this have
+[954.80s] happened without climate change or how
+[956.16s] much more likely did human cause climate
+[958.20s] change make this event there are ways to
+[961.20s] do those studies in sort of a quick hit
+[963.48s] way like increasingly climate Central
+[965.72s] which I'll link to also is another group
+[968.16s] that's starting to um offer more kind of
+[970.68s] quick hit attribution resources which is
+[972.56s] really cool and something that I'm
+[974.40s] really excited to see more journalists
+[976.00s] using some uh a lot of outlets in Maine
+[978.32s] picked that up after um one of our big
+[981.48s] storms and floods in either December or
+[983.44s] January climate Central you know put out
+[985.84s] a blast saying like this was made X more
+[988.44s] likely by um the effects of climate
+[990.72s] change and that was really cool to see
+[992.76s] it really helps people to visualize it
+[995.32s] in real time but it's not always
+[997.16s] possible so what you can say instead is
+[1000.12s] these events or this event is in line
+[1002.48s] with what scientists expect in a warming
+[1004.44s] world or it follows a trend that we've
+[1006.40s] observed the past X years where
+[1008.72s] temperatures have increased on average
+[1010.84s] some number of degrees as you can see on
+[1012.96s] this map from the main uh climate office
+[1016.36s] um which is something that the our state
+[1017.80s] climatologist runs
+[1019.80s] the trend is very clear it's just that
+[1023.20s] weather is and climate are both still
+[1025.28s] very variable and in fact climate change
+[1027.20s] is increasing that variability so it
+[1029.72s] does get confusing and so these kinds of
+[1032.00s] rules of thumb and having some of these
+[1033.88s] data sets on hand that you can point to
+[1035.76s] and say well you know this individual
+[1038.20s] event we don't know exactly how much
+[1040.72s] more or less lik this was made by
+[1042.68s] climate change but what we can say is
+[1044.44s] that it is similar to effect that we see
+[1047.00s] increasing and here's how scientists
+[1048.64s] know that here's what they know here's
+[1050.76s] what they're not so sure about you know
+[1052.40s] that's important to say too admit what
+[1054.08s] we don't know and and explain that
+[1056.28s] science to people it's a really good
+[1057.68s] form of um sort of audience education
+[1060.24s] that you can do as part of this
+[1062.40s] beat so these are just some more
+[1064.36s] resources um Justin's going to send you
+[1066.44s] the slides afterwards but as far as
+[1068.60s] having some go-to data sets and even
+[1071.12s] sources of sort of rule of thumb
+[1073.32s] language um these are some of the tools
+[1075.52s] I really like to use NASA climate change
+[1077.84s] is a great one to link to if you just
+[1079.60s] need something to share with your
+[1081.28s] audience that's like here is you know
+[1084.04s] hard science written in very plain terms
+[1086.60s] that says how we know what we know and
+[1089.48s] what we do know um this is a beat where
+[1092.36s] no matter if you're covering it in one
+[1094.12s] sentence in a tangentially related story
+[1096.60s] or if you're writing a whole climate
+[1098.04s] feature you really have to lean into
+[1100.08s] your explain it to me like I'm five kind
+[1102.28s] of skill as a reporter again kind of a
+[1104.92s] good skill for any beat but it's
+[1106.36s] certainly extra necessary on a beat like
+[1108.44s] this where there's a lot of public
+[1109.60s] education that needs to go on um and so
+[1113.36s] you know if you're educating your
+[1114.56s] audience you can start simple build as
+[1117.20s] the local climate discourse advances or
+[1119.68s] if you live in a state like
+[1120.96s] Massachusetts where the climate
+[1123.20s] discourse is really Advanced politically
+[1126.00s] but maybe you still have audience
+[1127.76s] members um who feel like there's a lot
+[1129.80s] of jargon flying around they don't
+[1131.20s] really understand what's happening or
+[1132.76s] why you can take them back to basics and
+[1135.24s] help them better engage with that really
+[1136.92s] Advanced policy discourse by doing some
+[1138.88s] of this education with these Basics you
+[1141.60s] know basic data explainers are great on
+[1145.00s] this beat you can do explainers in an
+[1147.08s] intersectional way just literally what
+[1148.88s] does climate change have to do with the
+[1150.20s] housing crisis you know that kind of
+[1152.08s] thing and so we'll get into some of
+[1153.44s] those intersections
+[1154.84s] now so these are some stories I've done
+[1157.52s] for um energy News Network in the past
+[1160.08s] year or so uh that I think show examples
+[1163.92s] of um intersectional approaches energy
+[1166.24s] news is you know it's a Beat specific
+[1169.28s] publication but their stories get picked
+[1171.04s] up in local news media and so it's sort
+[1173.60s] of written for kind of like a mid-level
+[1175.52s] audience um a little bit of
+[1177.44s] understanding but also uh not as
+[1180.32s] specific as like a full-on trade
+[1181.72s] publication which is a nice sweet spot
+[1183.40s] for me as a beat reporter um the story
+[1186.20s] on the left was part of a series I did
+[1188.60s] for the MIT Environmental Solutions
+[1191.32s] initiative journalism Fellowship highly
+[1193.68s] recommend they're taking applications
+[1195.24s] right now all of you should apply it was
+[1197.16s] really really great and I'm happy to
+[1198.48s] talk talk to you more about that but I
+[1199.96s] really can't recommend it enough great
+[1201.40s] source of funding especially for a
+[1203.20s] freelancer um but for that series what I
+[1205.96s] looked at was Mains over Reliance on
+[1207.64s] heating oil we're the most heating oil
+[1209.44s] Reliant state in the country uh so I
+[1211.72s] looked at some solutions to that their
+[1213.16s] tradeoffs um and this last story was
+[1215.76s] sort of a bonus that was about um
+[1218.44s] building new housing and how we're
+[1221.12s] trying to uh minimize the use of fossil
+[1223.96s] fuels in that next generation of housing
+[1225.80s] especially as main faces a really
+[1228.20s] serious will documented housing crisis
+[1230.56s] and it has some ties to climate
+[1231.92s] migration but it's not all about climate
+[1233.72s] migration and so this was a complicated
+[1235.68s] little Nuance connection to kind of
+[1237.36s] bring to life um and that's what this
+[1240.20s] story did uh there is also a story here
+[1243.16s] about electric vehicles you know that's
+[1245.12s] a pretty straightforward topic but we um
+[1249.12s] in in this case we had uh two examples
+[1252.40s] of states that decided not to adopt the
+[1255.84s] next generation of California's clean
+[1257.84s] car standards which which are um targets
+[1260.20s] for how many the percentage of EVS that
+[1262.56s] um dealers have to sell in the State uh
+[1265.16s] by certain years and in Connecticut this
+[1267.56s] is really it's an urban issue it's an
+[1269.40s] environmental justice issue it's about
+[1271.96s] Highway emissions that go through black
+[1273.80s] and brown neighborhoods in places like
+[1275.24s] Hartford and lack of access to public
+[1277.80s] transit and trying to Electrify all of
+[1280.16s] the cars on those highways kind of while
+[1282.24s] they work on those uh more uh Transit
+[1286.60s] oriented Solutions in Maine it's a moral
+[1288.96s] issue and this was a really interesting
+[1290.40s] comparison cuz this is the EV story no
+[1293.28s] matter where you are it's going to have
+[1294.68s] kind of one of these tie-ins or
+[1296.04s] somewhere in between um so this story
+[1298.32s] was intersectional in that way and then
+[1300.08s] this Vermont story um I really liked
+[1302.96s] working on this one because like I'm
+[1305.04s] really into the home energy transition
+[1306.72s] right now it's sort of my been my pet
+[1308.20s] topic the past couple of years and um
+[1311.96s] how do you take a disaster as an
+[1313.68s] opportunity to like help a lot of people
+[1316.00s] at once when their homes are damaged or
+[1317.88s] destroyed by floods and get them to not
+[1320.56s] rebuild in the exact same way if we're
+[1322.72s] trying to decrease our home emissions
+[1324.84s] and Vermont has found that this is way
+[1327.08s] easier said than done this was sort of a
+[1328.80s] social service story um and that's a
+[1332.44s] really interesting theme that I've been
+[1333.80s] finding in a lot of my work is like what
+[1335.64s] does the climate transition say about
+[1337.72s] our the health of our social safety net
+[1340.32s] um because a lot of those existing
+[1342.64s] structures for helping um low-income
+[1345.32s] people you know disadvantaged
+[1347.00s] communities are sort of being applied to
+[1349.48s] help make uh the benefits of the energy
+[1352.24s] transition accessible to lower income
+[1354.52s] people um and there's just challenges
+[1357.16s] there and sort of New Opportunities and
+[1359.56s] issues that uh local groups are dealing
+[1361.88s] with as they try to sort of carry that
+[1363.48s] work out so there's a lot of really
+[1365.16s] interesting stories to do there with
+[1367.44s] your county social service agencies
+[1369.40s] Community Action agencies that kind of
+[1371.76s] thing these are just again some
+[1373.64s] resources which we'll share with you
+[1375.04s] after about uh places to look for these
+[1377.28s] intersections um
+[1379.04s] energy data public opinion data um
+[1383.72s] policy information about what's going on
+[1386.24s] in the climate planning space in your
+[1388.24s] local uh government um if you're getting
+[1391.92s] a lot of questions about the inflation
+[1393.32s] reduction act I highly recommend
+[1395.08s] requiring America as a resource on that
+[1397.76s] topic um and then this one at the top
+[1400.08s] the climate vulnerability index is a
+[1402.16s] really cool relatively new tool that you
+[1404.48s] should really check out it's basically
+[1406.52s] overlays sort of exist
+[1409.08s] inequalities um in a hyper local I think
+[1411.92s] down to the census tract level so
+[1414.60s] housing access disease rates you know um
+[1418.72s] all kinds of things like that with
+[1420.72s] climate hazards so it basically shows
+[1422.84s] how the risks compound each other or how
+[1425.44s] they don't you know you'll notice if you
+[1427.24s] go to that map that uh Vermont and New
+[1429.56s] Hampshire look pretty good for the most
+[1431.92s] part and that's why we hear them often
+[1433.32s] talked about as climate potential
+[1434.84s] climate Havens for climate migrants so
+[1437.44s] there's stories regarding regardless of
+[1438.88s] the level of risk um and that's a great
+[1441.44s] one because it really does bring in a
+[1442.68s] lot of those intersections in a pretty
+[1444.44s] Visual and databased way and that's a
+[1446.80s] great source of potential stories if
+[1448.64s] you're if you're looking for ways to to
+[1450.96s] practice this um intersectional
+[1454.12s] approach so I'll just finish on this
+[1457.16s] note before I take a couple questions um
+[1460.00s] I'm having a little phase where I'm
+[1461.68s] really obsessed with systems thinking we
+[1463.36s] did a practice of this tool which is um
+[1465.88s] from the new school's journalism and
+[1467.44s] Design Lab back at nhpr in 2019 and it
+[1470.40s] was really fun it's one of those things
+[1471.64s] we like put posted notes on the wall and
+[1473.52s] draw lines between them but if you're
+[1475.80s] struggling to kind of break out of the
+[1477.32s] mold in your beat I really encourage you
+[1478.96s] to try this and use Frameworks like this
+[1481.12s] Iceberg model to just zoom out you know
+[1484.52s] think about that next sentence after you
+[1487.72s] say the sort of really basic sentence
+[1490.08s] that you've learned about something like
+[1491.44s] climate change how do you approach
+[1493.04s] issues like systemic racism on your beat
+[1495.04s] you can approach climate change the same
+[1496.64s] way and in fact the best stories are
+[1498.80s] going to be where those two different
+[1500.52s] kinds of structural things intersect so
+[1503.64s] how do climate change and systemic
+[1505.20s] racism affect the housing beat or the
+[1507.80s] education beat together you know like
+[1510.76s] poor kids and and kids in black and
+[1513.24s] brown communities may have less access
+[1514.88s] to air conditioning in their schools and
+[1516.40s] as it gets hotter that's going to become
+[1518.60s] an increasing problem for test scorers
+[1520.40s] like there are stories like this
+[1522.08s] everywhere and there's so much better
+[1523.80s] than just doing one little piece of that
+[1526.16s] story in a vacuum and in fact I would
+[1527.88s] argue that it's our responsibility as
+[1529.76s] you know truth tellers to tell the most
+[1531.68s] robust versions of those stories and
+[1534.00s] climate change is certainly one of those
+[1536.44s] topics that it's our responsibility to
+[1538.52s] learn how to tie in even if it's just in
+[1540.64s] a sentence or two um so I hope these
+[1543.12s] tools are helpful to you um I am always
+[1546.72s] happy to chat uh if you ever Mid Coast
+[1549.60s] main stop by and um yeah thanks for
+[1552.64s] listening and I'll I and take a couple
+[1554.04s] questions in our last couple minutes we
+[1555.68s] only have a few minutes but I've got uh
+[1557.36s] some questions I'd like to to sneak in
+[1559.16s] before we wrap up for today uh the first
+[1561.60s] question comes from David he writes more
+[1564.24s] people are talking to us about climate
+[1565.96s] change that they're seeing in their own
+[1567.48s] backyards in everyday life can you talk
+[1570.72s] about the pitfalls and caution about
+[1573.08s] linking those changes to climate change
+[1575.56s] in our reporting I.E climate versus
+[1579.12s] weather yeah exactly so that's where you
+[1581.44s] have to really get those rules of thumb
+[1583.08s] for that climate is not weather but you
+[1585.76s] also need to understand what the trend
+[1588.44s] are the broader Trends so that you can
+[1590.16s] tell someone who asks a question like
+[1591.92s] that you know well it reflects this sort
+[1595.04s] of change that scientist generally say
+[1597.08s] is happening in our area another
+[1598.64s] resource on just the very hyperlocal
+[1600.72s] things like that I'd recommend would be
+[1602.16s] your local extension office that your
+[1604.36s] University those Forks are great they're
+[1606.36s] really on the ground with stuff like
+[1607.80s] gardening or you know are changing um uh
+[1610.96s] the hardiness zones that just came out
+[1612.56s] from the USDA that's a great climate
+[1614.12s] story and I would recommend the
+[1615.44s] extensions as another resource on that
+[1618.48s] thank you um Kate writes that uh she has
+[1622.16s] a a concern in that um her editors want
+[1625.32s] climate stories to be as short as
+[1627.00s] possible um especially for example
+[1629.76s] sewage consent decrees um but she often
+[1632.84s] finds herself covering multiple sides
+[1635.04s] that are lawyered up uh especially in as
+[1637.80s] another example like solar power uh not
+[1640.04s] in my backyard stories um how do you
+[1642.28s] manage this how do you how do you
+[1643.60s] balance you know the demands of uh you
+[1646.08s] know what your editors are looking for
+[1647.24s] on a particular given day and what the
+[1649.24s] story might
+[1650.88s] warrant yeah that's a great and
+[1653.04s] important question energy stuff and
+[1654.96s] anything legal and Regulatory is really
+[1656.88s] hard this is where you need really good
+[1658.60s] sources who can help you um get those
+[1661.28s] short hands so that you can say the
+[1662.84s] complicated stuff in as short sentence
+[1664.64s] as possible and really use that repeated
+[1666.52s] shorthand for yourself um and I think
+[1669.32s] just you have to look at your reporting
+[1670.60s] as a body of work you know not every
+[1672.16s] story is going to be able to answer
+[1673.60s] every question and if people are writing
+[1675.44s] in and saying like well you didn't
+[1676.56s] address this or that then that's a good
+[1678.56s] thing that's an idea for your next story
+[1681.32s] um but I think this one makes me think
+[1683.52s] the most about Source relationships and
+[1685.60s] and that is really hard to find people
+[1686.76s] you can trust in those spaces because
+[1688.16s] there's a lot of misinformation that
+[1689.36s] flies around so it's a good question
+[1691.60s] it's the right question to be asking and
+[1693.56s] I wish I had a better answer for you but
+[1695.16s] always happy to chat one-on one if you
+[1696.88s] have um you know stuff you need help
+[1699.84s] workshopping thanks Eddie uh two more
+[1702.52s] here um Michaela writes do you have any
+[1704.88s] go-to strategies that you use to unpack
+[1707.68s] stories that are more dry and
+[1709.44s] complicated like energy and she's asking
+[1712.60s] uh specifically for radio because she
+[1714.76s] finds that most challenging yeah I
+[1717.36s] thought um writing about or reporting on
+[1719.56s] energy for radio was like so fun because
+[1721.76s] it really forces you to be so simplistic
+[1724.72s] and that's a big challenge you can't
+[1726.84s] oversimplify because then it becomes
+[1728.72s] wrong right so um it's that explain it
+[1731.52s] to me like I'm five thing I mean I use
+[1733.64s] that radio rule of thumb about and
+[1735.20s] imagine you're talking to your mom or
+[1736.56s] something like that a lot to write those
+[1738.36s] stories and and talking to others in
+[1740.24s] your Newsroom who don't know this stuff
+[1742.12s] even as well as you do that helped me a
+[1744.44s] lot I mean we did at nhpr a lot of group
+[1746.64s] edits and um that really helped me sort
+[1750.12s] of Dej jargony my work because I would
+[1751.96s] have to kind of get it past the other
+[1753.40s] reporters who are like what are you
+[1754.88s] talking about just say what do you mean
+[1756.92s] say what you mean in a sentence and that
+[1758.56s] really helped um and again with good
+[1761.28s] sources like if you find someone who can
+[1763.00s] communicate with you about energy in a
+[1764.80s] way that's engaging you know marry that
+[1766.96s] person like they are your for
+[1769.32s] life thank you all right and last
+[1771.68s] question for today though I I I should
+[1773.36s] just remind everybody if you have any
+[1774.76s] additional questions or any thoughts you
+[1776.32s] want to reach out to Annie uh please do
+[1778.48s] so she provided her contact information
+[1780.44s] in the last slide which I'll again uh
+[1782.44s] make sure everybody has access to um
+[1784.88s] last question for today comes from Amy
+[1786.72s] and she asks what are some climate
+[1788.44s] stories you're really interested in
+[1790.24s] right now and what's your dream
+[1792.32s] investigative climate change story to
+[1795.20s] report thank you so much for that
+[1797.16s] question um right now I'm really
+[1799.00s] interested in Maine's relationship with
+[1800.68s] natural gas uh we just did uh they sort
+[1803.96s] of watered down a bill that was going to
+[1805.44s] begin a gas phase out for main which
+[1807.56s] uses almost less gas than almost any
+[1809.56s] other state in the country which is
+[1810.84s] really interesting and yet it's got this
+[1813.08s] like grip on our industrial sector and
+[1815.20s] that's a lot of weird politics around
+[1816.80s] that it's definitely a culture War issue
+[1819.16s] so I think coming at that from a state
+[1821.12s] that has so little gas use is
+[1823.28s] Illuminating and I'm interested in that
+[1824.96s] and then I'm just always trying to do
+[1827.00s] more explainers on home energy stuff I
+[1829.00s] mean I think for renters and and people
+[1831.88s] who can't afford to put The Upfront cash
+[1834.64s] in to get even some of these tax credits
+[1836.64s] and rebates those are the people who
+[1838.48s] really need good info about how to
+[1840.48s] reduce their energy costs in New England
+[1842.64s] and by the way it helps lower your
+[1844.36s] emissions like these don't have to be
+[1845.72s] climate Centric stories to be useful for
+[1848.68s] people so that's definitely a uh an
+[1851.72s] ongoing project for me and um yeah I
+[1854.36s] appreciate the question thank you so
+[1856.48s] much Annie and really appreciate you
+[1858.84s] being here today we learned a lot thank
+[1861.52s] you and uh really want to thank
+[1863.80s] everybody else too for joining us uh we
+[1866.60s] provide these lessons as a public
+[1867.96s] service to you so I'm asking you to
+[1870.52s] return the favor encourage your
+[1871.56s] colleagues and friends to join us every
+[1873.16s] month for these lessons we certainly
+[1875.00s] have a lot to learn from each other and
+[1876.68s] I look forward to seeing you all again
+[1878.48s] soon on behalf of neac thank you for all
+[1881.48s] you do and we'll see you next month for
+[1883.60s] our next 30 minute skills bye everyone
