@@ -36,8 +36,12 @@ def create_env_file():
             f.write("# Copy this file and add your actual values\n\n")
             f.write("# Faust Secret Key for authenticated GraphQL access\n")
             f.write("# This enables enhanced content extraction and access to private content\n")
-            f.write("FAUST_SECRET_KEY=your_faust_secret_key_here\n")
-        print("Created .env file. Please edit it with your Faust secret key.")
+            f.write("FAUST_SECRET_KEY=your_faust_secret_key_here\n\n")
+            f.write("# Webshare.io Residential Proxy Credentials (for YouTube crawling)\n")
+            f.write("# See: https://www.webshare.io/\n")
+            f.write("WEBSHARE_USERNAME=your_webshare_username\n")
+            f.write("WEBSHARE_PASSWORD=your_webshare_password\n")
+        print("Created .env file. Please edit it with your Faust secret key and optional Webshare credentials.")
 
 def main():
     """Main setup function."""
