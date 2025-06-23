@@ -1019,38 +1019,37 @@ class NEFACDocumentCrawler:
         self.stats["mime_types"][mime_type] = self.stats["mime_types"].get(mime_type, 0) + 1
     
     def save_metadata(self, documents: List[Dict]):
-        """Save document metadata to JSON file."""
-        metadata_file = self.metadata_dir / "documents_metadata.json"
-        
-        # Load existing metadata if file exists
-        if metadata_file.exists():
-            with open(metadata_file, 'r', encoding='utf-8') as f:
-                try:
-                    existing_data = json.load(f)
-                    # Ensure it's a list
-                    if not isinstance(existing_data, list):
-                        existing_data = []
-                except json.JSONDecodeError:
-                    existing_data = []
+        """
+        Save validated document metadata to JSON file. Only valid entries are written.
+        """
+        valid_documents = []
+        for entry in documents:
+            # Determine type by mime_type or file extension
+            mime_type = entry.get('mime_type', '')
+            ext = entry.get('file_extension', '')
+            try:
+                if mime_type == 'application/pdf' or ext == '.pdf':
+                    validated = PDFMetadata(**entry)
+                elif mime_type == 'text/html' or ext == '.html':
+                    validated = ContentMetadata(**entry)
+                else:
+                    # Default to PDFMetadata for unknown types (or raise error)
+                    validated = PDFMetadata(**entry)
+                valid_documents.append(validated.dict())
+            except Exception as e:
+                logger.error(f"Schema validation failed for metadata entry: {e}. Skipping entry: {entry}")
+        if not valid_documents:
+            logger.warning("No valid metadata entries to save.")
+            return
+        # Save to JSON file (determine file by type)
+        if valid_documents and 'mime_type' in valid_documents[0] and valid_documents[0]['mime_type'] == 'text/html':
+            out_path = self.metadata_dir / 'content_metadata.json'
         else:
-            existing_data = []
-            
-        # Create a set of existing IDs for faster lookup
-        existing_ids = {doc['id'] for doc in existing_data if 'id' in doc}
-        
-        # Add new documents, avoiding duplicates
-        new_docs_added = 0
-        for doc in documents:
-            if doc['id'] not in existing_ids:
-                existing_data.append(doc)
-                existing_ids.add(doc['id'])
-                new_docs_added += 1
-                
-        logger.info(f"Added {new_docs_added} new documents to metadata file.")
-        
-        with open(metadata_file, 'w', encoding='utf-8') as f:
-            json.dump(existing_data, f, indent=2, default=str)
-            
+            out_path = self.metadata_dir / 'documents_metadata.json'
+        with open(out_path, 'w', encoding='utf-8') as f:
+            json.dump(valid_documents, f, ensure_ascii=False, indent=2)
+        logger.info(f"Saved {len(valid_documents)} metadata entries to {out_path}")
+
     def save_summary(self):
         """Save crawl statistics to a summary file."""
         summary_file = self.output_dir / "crawl_summary.json"
@@ -2016,56 +2015,23 @@ class NEFACDocumentCrawler:
             return []
     
     def save_youtube_metadata(self, youtube_documents: List[Dict]):
-        """Save YouTube metadata to JSON file"""
-        if not youtube_documents:
+        """
+        Save validated YouTube metadata to JSON file. Only valid entries are written.
+        """
+        valid_documents = []
+        for entry in youtube_documents:
+            try:
+                validated = YouTubeMetadata(**entry)
+                valid_documents.append(validated.dict())
+            except Exception as e:
+                logger.error(f"Schema validation failed for YouTube metadata entry: {e}. Skipping entry: {entry}")
+        if not valid_documents:
+            logger.warning("No valid YouTube metadata entries to save.")
             return
-            
-        metadata_file = self.output_dir / "metadata" / "youtube_metadata.json"
-        metadata_file.parent.mkdir(parents=True, exist_ok=True)
-        
-        # Format metadata to match existing schema
-        formatted_metadata = []
-        for doc in youtube_documents:
-            formatted_doc = {
-                "id": doc.get("id", ""),
-                "title": doc.get("title", ""),
-                "video_id": doc.get("video_id", ""),
-                "source_url": doc.get("source_url", ""),
-                "date": doc.get("date", ""),
-                "modified": doc.get("modified", ""),
-                "description": doc.get("description", ""),
-                "duration": doc.get("duration", 0),
-                "view_count": doc.get("view_count", 0),
-                "like_count": doc.get("like_count", 0),
-                "comment_count": doc.get("comment_count", 0),
-                "uploader": doc.get("uploader", ""),
-                "channel": doc.get("channel", ""),
-                "channel_id": doc.get("channel_id", ""),
-                "tags": doc.get("tags", []),
-                "categories": doc.get("categories", []),
-                "thumbnail": doc.get("thumbnail", ""),
-                "uploader_url": doc.get("uploader_url", ""),
-                "availability": doc.get("availability", ""),
-                "live_status": doc.get("live_status", ""),
-                "release_timestamp": doc.get("release_timestamp", ""),
-                "chapters": doc.get("chapters", []),
-                "heatmap": doc.get("heatmap", {}),
-                "transcript_available": doc.get("transcript_available", False),
-                "transcript_file": doc.get("transcript_file", ""),
-                "transcript_length": doc.get("transcript_length", 0),
-                "transcript_word_count": doc.get("transcript_word_count", 0),
-                "mime_type": doc.get("mime_type", "text/plain"),
-                "source": doc.get("source", "youtube_channel"),
-                "download_date": datetime.now().isoformat(),
-                "crawler_version": "2.0",
-                "file_size": doc.get("file_size", 0)
-            }
-            formatted_metadata.append(formatted_doc)
-        
-        with open(metadata_file, 'w', encoding='utf-8') as f:
-            json.dump(formatted_metadata, f, indent=2, ensure_ascii=False)
-        
-        logger.info(f"Saved YouTube metadata: {len(formatted_metadata)} videos")
+        out_path = self.metadata_dir / 'youtube_metadata.json'
+        with open(out_path, 'w', encoding='utf-8') as f:
+            json.dump(valid_documents, f, ensure_ascii=False, indent=2)
+        logger.info(f"Saved {len(valid_documents)} YouTube metadata entries to {out_path}")
 
     def crawl(self):
         """Main crawling method that fetches from all sources."""

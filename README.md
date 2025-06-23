@@ -110,3 +110,36 @@ This project is inspired by and migrated from the following repositories:
 - [DorianAtSchool/nefac](https://github.com/DorianAtSchool/nefac)
 
 We have adapted, refactored, and extended the codebase to fit our current needs. Please refer to those repositories for earlier history and context.
+
+## 🛠️ Environment Setup
+
+This project is organized into three main services, each with its own Python environment:
+
+### 1. Crawler
+
+```bash
+conda create -n nefac-crawler python=3.11
+conda activate nefac-crawler
+pip install -r crawler/requirements.txt
+```
+
+### 2. Backend (Chatbot API)
+
+```bash
+conda create -n nefac-backend python=3.11
+conda activate nefac-backend
+pip install poetry
+cd backend
+poetry install
+```
+
+### 3. Ingestion Service
+
+```bash
+conda create -n nefac-ingestion python=3.11
+conda activate nefac-ingestion
+pip install -r ingestion_service/requirements.txt
+```
+
+> **Note:**  
+> Each service should be run in its own terminal with the corresponding environment activated.
