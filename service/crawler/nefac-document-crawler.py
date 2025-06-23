@@ -70,7 +70,7 @@ YouTubeTranscriptApi = None
 WebshareProxyConfig = None
 try:
     import yt_dlp
-    from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
+    from youtube_transcript_api import YouTubeTranscriptApi  # type: ignore
     from youtube_transcript_api.proxies import WebshareProxyConfig
     import json
     import tempfile
@@ -87,6 +87,8 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
+
+from service.schemas.metadata import PDFMetadata, ContentMetadata, YouTubeMetadata
 
 class NEFACDocumentCrawler:
     def __init__(self, output_dir: str = "nefac_documents", download_files: bool = True, faust_key: Optional[str] = None, youtube_delay: float = 10.0, webshare_username: Optional[str] = None, webshare_password: Optional[str] = None):
@@ -1396,8 +1398,8 @@ class NEFACDocumentCrawler:
         if self.webshare_username and self.webshare_password:
             logger.info("Using Webshare proxy for YouTube requests.")
             try:
-                ytt_api = YouTubeTranscriptApi(
-                    proxy_config=WebshareProxyConfig(
+                ytt_api = YouTubeTranscriptApi(  # type: ignore
+                    proxy_config=WebshareProxyConfig(  # type: ignore
                         proxy_username=self.webshare_username,
                         proxy_password=self.webshare_password,
                     )
@@ -1405,9 +1407,9 @@ class NEFACDocumentCrawler:
             except Exception as e:
                 logger.error(f"Failed to initialize Webshare proxy: {e}")
                 # Fallback to a direct client
-                ytt_api = YouTubeTranscriptApi()
+                ytt_api = YouTubeTranscriptApi()  # type: ignore
         else:
-            ytt_api = YouTubeTranscriptApi()
+            ytt_api = YouTubeTranscriptApi()  # type: ignore
         
         # Language preferences in order of preference
         language_preferences = ["en", "en-US", "en-GB", "en-orig"]
@@ -1428,7 +1430,7 @@ class NEFACDocumentCrawler:
                     try:
                         transcript = transcript_list.find_transcript([lang])
                         transcript_data = transcript.fetch()
-                        return transcript_data
+                        return list(transcript_data)  # type: ignore
                     except Exception as e:
                         if "no element found" not in str(e).lower():
                             continue  # Try next language
@@ -1440,7 +1442,7 @@ class NEFACDocumentCrawler:
                     for transcript in transcript_list:
                         if not transcript.is_generated:  # Manual transcripts
                             transcript_data = transcript.fetch()
-                            return transcript_data
+                            return list(transcript_data)  # type: ignore
                 except Exception as e:
                     if "no element found" not in str(e).lower():
                         pass  # Continue to auto-generated
@@ -1452,7 +1454,7 @@ class NEFACDocumentCrawler:
                     for transcript in transcript_list:
                         if transcript.is_generated:  # Auto-generated transcripts
                             transcript_data = transcript.fetch()
-                            return transcript_data
+                            return list(transcript_data)  # type: ignore
                 except Exception as e:
                     if "no element found" not in str(e).lower():
                         pass
@@ -2071,7 +2073,7 @@ class NEFACDocumentCrawler:
                     'date': datetime.now().isoformat(),
                     'modified': datetime.now().isoformat(),
                     'alt_text': '',
-                    'description': f'Found via link-scraper tool',
+                    'description': 'Found via link-scraper tool',
                     'caption': '',
                     'source': 'link_discovery',
                     'file_size': 0
@@ -2100,7 +2102,7 @@ class NEFACDocumentCrawler:
                     'date': doc.get('extracted_at', datetime.now().isoformat()),
                     'modified': doc.get('extracted_at', datetime.now().isoformat()),
                     'alt_text': '',
-                    'description': f'Found via Selenium scraper',
+                    'description': 'Found via Selenium scraper',
                     'caption': '',
                     'source': 'selenium_scraper',
                     'file_size': doc.get('file_size', 0),

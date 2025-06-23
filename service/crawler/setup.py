@@ -7,7 +7,6 @@ This script sets up the complete NEFAC document crawler environment.
 
 import subprocess
 import sys
-import os
 from pathlib import Path
 
 def install_requirements():
