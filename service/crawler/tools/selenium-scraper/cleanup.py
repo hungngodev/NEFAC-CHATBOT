@@ -1,14 +1,15 @@
 import os
 import glob
 
+
 def file_requires_deletion(file_path):
     """Check if a file contains error page text or policy content."""
     try:
-        with open(file_path, 'r', encoding='utf-8') as file:
+        with open(file_path, "r", encoding="utf-8") as file:
             content = file.read()
             error_indicators = [
-                'Page not found – New England First Amendment Coalition Skip to the content Search New England First Amendment Coalition Menu',
-                'The page you were looking for could not be found. It might have been removed, renamed, or did not exist in the first place.',
+                "Page not found – New England First Amendment Coalition Skip to the content Search New England First Amendment Coalition Menu",
+                "The page you were looking for could not be found. It might have been removed, renamed, or did not exist in the first place.",
             ]
             return any(indicator in content for indicator in error_indicators)
     except Exception as e:
@@ -20,10 +21,7 @@ def remove_unwanted_files():
     """Delete unwanted text files from the 'output' directory."""
     output_dir = "output"
 
-    sharing_patterns = [
-        "*__share_facebook_nb_1.txt",
-        "*__share_twitter_nb_1.txt"
-    ]
+    sharing_patterns = ["*__share_facebook_nb_1.txt", "*__share_twitter_nb_1.txt"]
 
     removed_count = 0
 

@@ -38,6 +38,7 @@ command_exists() {
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BACKEND_DIR="$PROJECT_ROOT/backend"
 FRONTEND_DIR="$PROJECT_ROOT/frontend"
+SERVICE_DIR="$PROJECT_ROOT/service"
 
 print_status "Starting code quality checks for NEFAC project"
 print_status "Project root: $PROJECT_ROOT"
@@ -162,6 +163,53 @@ run_frontend_checks() {
     print_success "Frontend checks completed!"
 }
 
+# Function to run service checks
+run_service_checks() {
+    print_status "Running service code quality checks..."
+    cd "$SERVICE_DIR"
+    
+    # Check if requirements.txt exists
+    if [ ! -f "requirements.txt" ]; then
+        print_warning "requirements.txt not found in service. Skipping dependency check."
+    fi
+    
+    # Run Black formatting check
+    print_status "Running Black formatter (checking for issues) on service..."
+    if black . --check --diff; then
+        print_success "Black formatting is correct in service."
+    else
+        print_warning "Black found formatting issues in service. Running Black to fix..."
+        black .
+        print_success "Black has fixed the formatting issues in service."
+    fi
+    
+    # Run Ruff linting and import sorting
+    print_status "Running Ruff linter and import sorter on service..."
+    if ! ruff --version >/dev/null 2>&1; then
+        print_error "Ruff is not available. Please ensure it's installed: pip install ruff"
+        return 1
+    fi
+    print_status "Running Ruff with auto-fix on service..."
+    if ruff check --fix .; then
+        print_success "Ruff completed successfully with no issues in service."
+    else
+        print_warning "Ruff found and fixed some issues in service. Checking for remaining problems..."
+        if ruff check .; then
+            print_success "All Ruff issues have been resolved in service."
+        else
+            print_error "Ruff found issues in service that could not be auto-fixed. Please see the output above."
+            return 1
+        fi
+    fi
+    
+    # Run autoflake to remove unused imports
+    print_status "Running autoflake to remove unused imports in service..."
+    autoflake --remove-all-unused-imports --remove-unused-variables --in-place --recursive . --exclude "docs,faiss_store,*.pkl,*.pdf,*.txt" || {
+        print_warning "Autoflake encountered issues in service"
+    }
+    print_success "Service checks completed!"
+}
+
 # Function to run all checks
 run_all_checks() {
     print_status "Running all code quality checks..."
@@ -172,6 +220,14 @@ run_all_checks() {
     else
         print_error "Backend checks failed!"
         BACKEND_FAILED=true
+    fi
+    
+    # Run service checks
+    if run_service_checks; then
+        print_success "Service checks passed!"
+    else
+        print_error "Service checks failed!"
+        SERVICE_FAILED=true
     fi
     
     # Run frontend checks
@@ -192,13 +248,19 @@ run_all_checks() {
         print_success "Backend: PASSED"
     fi
     
+    if [ "$SERVICE_FAILED" = true ]; then
+        print_error "Service: FAILED"
+    else
+        print_success "Service: PASSED"
+    fi
+    
     if [ "$FRONTEND_FAILED" = true ]; then
         print_error "Frontend: FAILED"
     else
         print_success "Frontend: PASSED"
     fi
     
-    if [ "$BACKEND_FAILED" = true ] || [ "$FRONTEND_FAILED" = true ]; then
+    if [ "$BACKEND_FAILED" = true ] || [ "$SERVICE_FAILED" = true ] || [ "$FRONTEND_FAILED" = true ]; then
         print_error "Some checks failed. Please fix the issues and run again."
         exit 1
     else
@@ -212,6 +274,9 @@ main() {
         "backend")
             run_backend_checks
             ;;
+        "service")
+            run_service_checks
+            ;;
         "frontend")
             run_frontend_checks
             ;;
@@ -219,16 +284,18 @@ main() {
             run_all_checks
             ;;
         "help"|"-h"|"--help")
-            echo "Usage: $0 [backend|frontend|all|help]"
+            echo "Usage: $0 [backend|service|frontend|all|help]"
             echo ""
             echo "Options:"
             echo "  backend   - Run checks only on backend"
+            echo "  service   - Run checks only on service folder"
             echo "  frontend  - Run checks only on frontend"
-            echo "  all       - Run checks on both backend and frontend (default)"
+            echo "  all       - Run checks on backend, service, and frontend (default)"
             echo "  help      - Show this help message"
             echo ""
             echo "This script runs:"
             echo "  Backend:  Black, Ruff, Autoflake, pre-commit hooks"
+            echo "  Service:  Black, Ruff, Autoflake"
             echo "  Frontend: Prettier, ESLint, pre-commit hooks"
             ;;
         *)

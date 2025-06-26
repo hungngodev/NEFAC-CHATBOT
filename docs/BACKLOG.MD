@@ -24,7 +24,7 @@ _Goal: Maximize the relevance and completeness of retrieved context for the LLM.
 
 - [ ] BM25/Hybrid Retrieval: Combine semantic (embedding-based) and BM25 (lexical) retrieval for better recall and precision.
 - [ ] Hybrid Search: Fuse results from multiple retrieval strategies (semantic, BM25, etc.).
-- [ ] Graph RAG / Graph-based Retrieval: Integrate a graph database (e.g., Neo4j, Memgraph, or Qdrant's graph features) to model relationships, citations, and dependencies between documents, sections, and entities. Enable retrieval over both the vector DB and the graph DB for complex queries requiring reasoning over relationships. ([Graph RAG reference](https://ragaboutit.com/building-a-graph-rag-system-enhancing-llms-with-knowledge-graphs/))
+- [ ] Graph RAG / Graph-based Retrieval: Integrate a graph database (e.g., Neo4j, Memgraph, or Qdrant's graph features) to model relationships, citations, and dependencies between documents, sections, and entities. Enable retrieval over both the vector DB and the graph DB for complex queries requiring reasoning over relationships. [LangChain Graph RAG Blog](https://blog.langchain.com/enhancing-rag-based-applications-accuracy-by-constructing-and-leveraging-knowledge-graphs/)
 - [ ] Hybrid Vector+Graph Retrieval: Combine semantic (vector), sparse (BM25), and graph-based retrieval. Fuse results from all three sources (vector, BM25, graph) for best recall and reasoning, especially for legal/technical domains.
 
   _Need implementation guidance or architecture diagrams for hybrid vector+graph retrieval? Just ask!_
@@ -38,6 +38,7 @@ _Goal: Maximize the relevance and completeness of retrieved context for the LLM.
 - [ ] Max Marginal Relevance (MMR): Enable MMR in retrievers to ensure diversity and reduce redundancy in retrieved context. ([LangChain MMR Retriever](https://blog.langchain.com))
 - [ ] Metadata Filtering & Self-Querying: Use LLMs to extract structured filters from queries (e.g., jurisdiction, date, type) and apply them at retrieval time (SelfQueryRetriever in LangChain).
 - [ ] Domain-Specific Embedding Models: Fine-tune or use legal-domain embedding models to improve semantic retrieval accuracy for legal texts. ([Weaviate guide](https://weaviate.io))
+- [ ] In-text citation and answer provenance: Implement in-text citing and cite-while-you-answer features for QA, ensuring that answers reference their supporting sources directly in the output. [In-text Citing with LangChain QA (Medium)](https://medium.com/@yotamabraham/in-text-citing-with-langchain-question-answering-e19a24d81e39)
 
 ---
 
@@ -95,3 +96,13 @@ _Goal: Make the system robust, efficient, and production-ready._
 ---
 
 _This file is a living document. Add new ideas and revisit after each phase!_
+
+- [ ] Long-term memory and persistent user context: Implement a long-term memory agent using LangGraph and LangChain, enabling the system to store, retrieve, and use memories (both text and structured knowledge triples) across conversations and threads. This supports personalized, context-aware responses and persistent user knowledge. See [A Long-Term Memory Agent (LangChain Docs)](https://python.langchain.com/docs/versions/migrating_memory/long_term_memory_agent/).
+
+- [ ] Advanced RAG retrieval and memory strategies: Explore and integrate advanced retrieval, query augmentation, and hybrid search techniques for RAG pipelines, including metadata filtering, parallel processing, and source traceability. See [RAGs📚 and Langchain- The RAG Power-Up! ⚙️ (Medium)](https://medium.com/@anixlynch/rags-and-langchain-the-rag-power-up-%EF%B8%8F-0bc9c2dbfcf3).
+
+- [ ] Late chunking: Implement late chunking strategies where document splitting is deferred until after initial retrieval or query analysis, allowing for more context-aware and dynamic chunk boundaries. This can improve retrieval relevance and reduce context fragmentation in RAG pipelines.
+
+- [ ] Semantic double-pass merging: Explore a two-stage retrieval process where initial chunks are merged or re-chunked based on semantic similarity or query context, enabling more coherent and contextually rich responses. Useful for reducing redundancy and improving answer quality.
+
+- [ ] Agentic chunking: Develop agent-driven chunking methods where an LLM or agent dynamically determines chunk boundaries or selects relevant spans at retrieval time, rather than relying on static rules. This supports adaptive, task-specific chunking for complex or multi-turn queries.

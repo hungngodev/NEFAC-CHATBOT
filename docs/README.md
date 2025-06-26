@@ -143,3 +143,7 @@ pip install -r ingestion_service/requirements.txt
 
 > **Note:**  
 > Each service should be run in its own terminal with the corresponding environment activated.
+> https://serverlessland.com/patterns/s3-sqs-lambda?ref=search
+> https://github.com/aws-samples/serverless-patterns/tree/main
+> https://medium.com/@mne/how-to-handle-follow-up-questions-in-rag-based-chats-2d8032da207b
+> https://python.langchain.com/api_reference/langchain/chains/langchain.chains.constitutional_ai.base.ConstitutionalChain.html

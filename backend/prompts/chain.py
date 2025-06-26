@@ -34,13 +34,24 @@ For topics related to:
 - Government Transparency: Include accountability, oversight, public participation, barriers, reform, democracy, citizen engagement
 - Data/Research: Include methodology, accuracy, verification, sources, analysis, presentation, ethics
 
-1. multiquery - ambiguous questions
-2. ragfusion - complex questions
-3. stepback - specific questions needing context
-4. decompose - multi-part questions
-5. hyde - technical questions
-6. default - straightforward questions
+1. multiquery - Use for ambiguous or open-ended questions where multiple interpretations or perspectives are possible. Generate several diverse queries to cover different angles.
+2. ragfusion - Use for complex or multifaceted questions that may require combining results from several distinct queries. Useful when a single query is unlikely to retrieve all relevant information.
+3. stepback - Use for specific questions that may benefit from broader context or reframing. Reformulate the question to a more general or foundational one to improve retrieval.
+4. decompose - Use for multi-part or compound questions. Break the main question into several sub-questions to ensure comprehensive coverage.
+5. hyde - Use for technical, hypothetical, or highly specialized questions. Generate a hypothetical answer or document to guide retrieval.
+6. factual - Use for straightforward factual questions where precision and specificity are critical. Reformulate the query to emphasize named entities, dates, legal topics, and relationships, using exact phrases and advanced search operators if appropriate.
+7. contextual - Use when the question is missing important background, historical, regional (New England), or legal/policy context. Infer and add the implied context to the query to improve retrieval accuracy.
+8. default - Use for simple, direct questions that do not require any special handling or transformation.
 
+Examples of when to use each method:
+- "What are the main challenges to public records access in Vermont?" → factual
+- "How has the First Amendment been interpreted in New England courts?" → multiquery
+- "Explain the evolution of press freedom laws in the US." → ragfusion
+- "What is the process for filing a FOIA request and appealing a denial?" → decompose
+- "Can I film police during a protest in Massachusetts?" → stepback
+- "What if a journalist hypothetically faces a subpoena for confidential sources?" → hyde
+- "What are the legal rights around recording public officials in Massachusetts?" (missing context about public spaces, state law, etc.) → contextual
+- "What is NEFAC?" → default
 Question: {question}
 Respond ONLY with the method name."""
 

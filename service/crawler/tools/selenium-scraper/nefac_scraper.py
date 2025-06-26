@@ -11,6 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 
+
 class NEFACScraper:
     def __init__(self, base_url="https://www.nefac.org"):
         self.base_url = base_url
@@ -26,7 +27,7 @@ class NEFACScraper:
         options.add_argument("--disable-gpu")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
-        
+
         service = Service(ChromeDriverManager().install())
         self.driver = webdriver.Chrome(service=service, options=options)
         self.driver.implicitly_wait(10)
@@ -43,13 +44,14 @@ class NEFACScraper:
         return (
             parsed_url.netloc == urlparse(self.base_url).netloc
             and not url.endswith((".pdf", ".jpg", ".png", ".gif"))
-            and "#" not in url and "mailto:" not in url
+            and "#" not in url
+            and "mailto:" not in url
         )
 
     def _clean_text(self, text):
         """Clean and normalize extracted text."""
-        text = re.sub(r'\s+', ' ', text).strip()
-        text = re.sub(r'\n\s*\n', '\n\n', text)
+        text = re.sub(r"\s+", " ", text).strip()
+        text = re.sub(r"\n\s*\n", "\n\n", text)
         return text
 
     def _extract_content(self, url):
@@ -67,16 +69,20 @@ class NEFACScraper:
                 EC.presence_of_element_located((By.TAG_NAME, "body"))
             )
             time.sleep(2)
-            
+
             soup = BeautifulSoup(self.driver.page_source, "html.parser")
             for tag in soup.find_all(["script", "style", "nav", "footer"]):
                 tag.decompose()
-            
+
             content = self._clean_text(soup.get_text(separator=" ", strip=True))
-            
-            links = [urljoin(url, a["href"]) for a in soup.find_all("a", href=True) if self._is_valid_url(urljoin(url, a["href"]))]
+
+            links = [
+                urljoin(url, a["href"])
+                for a in soup.find_all("a", href=True)
+                if self._is_valid_url(urljoin(url, a["href"]))
+            ]
             return content, links
-        
+
         except Exception as e:
             print(f"Error scraping {url}: {e}")
             return None, []
@@ -86,8 +92,8 @@ class NEFACScraper:
         if not content:
             return
 
-        filename = re.sub(r'[^\w\-_]', '_', url.replace(self.base_url, ''))
-        filepath = os.path.join(self.output_dir, filename.strip('_') + ".txt")
+        filename = re.sub(r"[^\w\-_]", "_", url.replace(self.base_url, ""))
+        filepath = os.path.join(self.output_dir, filename.strip("_") + ".txt")
 
         with open(filepath, "w", encoding="utf-8") as file:
             file.write(f"Source URL: {url}\n\n{content}")
@@ -96,14 +102,20 @@ class NEFACScraper:
         """Crawl the website starting from the base URL."""
         urls_to_scrape = [self.base_url]
         max_pages = 50  # Limit to prevent infinite crawling
-        
+
         while urls_to_scrape and len(self.visited_urls) < max_pages:
             url = urls_to_scrape.pop(0)
             content, new_links = self._extract_content(url)
             if content:
                 self._save_content(url, content)
-            urls_to_scrape.extend([link for link in new_links if link not in self.visited_urls and link not in urls_to_scrape])
-        
+            urls_to_scrape.extend(
+                [
+                    link
+                    for link in new_links
+                    if link not in self.visited_urls and link not in urls_to_scrape
+                ]
+            )
+
         print(f"Scraped {len(self.visited_urls)} pages (max: {max_pages})")
 
     def close(self):

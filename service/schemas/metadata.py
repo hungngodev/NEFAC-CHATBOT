@@ -1,6 +1,7 @@
 from typing import Optional, List, Dict, Any, Union
 from pydantic import BaseModel
 
+
 # Base schema for shared/common fields
 class BaseMetadata(BaseModel):
     id: Union[int, str]
@@ -14,6 +15,7 @@ class BaseMetadata(BaseModel):
     download_date: Optional[str] = None
     crawler_version: Optional[str] = None
 
+
 # HTML/Content metadata
 class AuthorMetadata(BaseModel):
     name: str
@@ -21,11 +23,13 @@ class AuthorMetadata(BaseModel):
     uri: str
     description: Optional[str] = None
 
+
 class CategoryMetadata(BaseModel):
     name: str
     slug: str
     description: Optional[str] = None
     count: Optional[int] = None
+
 
 class ContentMetadata(BaseMetadata):
     graphql_id: Optional[str] = None
@@ -45,6 +49,7 @@ class ContentMetadata(BaseMetadata):
     file_size: Optional[int] = None
     mime_type: Optional[str] = None
     # ... add any other fields present in the metadata
+
 
 # PDF/Document metadata
 class PDFMetadata(BaseMetadata):
@@ -73,6 +78,7 @@ class PDFMetadata(BaseMetadata):
     is_archive: Optional[bool] = None
     validation_status: Optional[str] = None
     # ... add any other fields present in the metadata
+
 
 # YouTube metadata
 class YouTubeMetadata(BaseModel):
@@ -108,4 +114,30 @@ class YouTubeMetadata(BaseModel):
     download_date: Optional[str] = None
     crawler_version: Optional[str] = None
     file_size: Optional[int] = None
-    # ... add any other fields present in the metadata 
+    # ... add any other fields present in the metadata
+
+
+class PDFChunkMetadata(PDFMetadata):
+    page_number: int
+    total_pages: int
+    chunk_index: int
+    total_chunks_in_page: int
+    chunking_strategy: str
+    provenance: dict
+    # ... add any other fields present in the metadata
+
+
+class ContentChunkMetadata(ContentMetadata):
+    section_path: list
+    section_index: int
+    chunk_index: int
+    total_chunks_in_section: int
+    chunking_strategy: str
+    provenance: dict
+
+
+class YouTubeChunkMetadata(YouTubeMetadata):
+    chunk_index: int
+    total_chunks_in_video: int
+    chunking_strategy: str
+    provenance: dict

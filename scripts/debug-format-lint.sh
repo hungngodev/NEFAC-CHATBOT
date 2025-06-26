@@ -39,6 +39,7 @@ command_exists() {
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BACKEND_DIR="$PROJECT_ROOT/backend"
 FRONTEND_DIR="$PROJECT_ROOT/frontend"
+SERVICE_DIR="$PROJECT_ROOT/service"
 
 print_status "Starting code quality checks for NEFAC project"
 print_status "Project root: $PROJECT_ROOT"
@@ -113,9 +114,39 @@ run_frontend_checks() {
     print_success "Frontend checks completed!"
 }
 
+# Function to run service checks
+run_service_checks() {
+    print_status "Running service code quality checks..."
+    cd "$SERVICE_DIR"
+    
+    if [ ! -f "requirements.txt" ]; then
+        print_warning "requirements.txt not found in service. Skipping dependency check."
+    fi
+    
+    print_status "Running Black formatter on service..."
+    black . --check > "$LOG_DIR/service-black-check.log" 2>&1 || {
+        print_warning "Black found formatting issues in service. Running Black to fix..."
+        black . > "$LOG_DIR/service-black-fix.log" 2>&1
+    }
+    
+    print_status "Running Ruff linter on service..."
+    ruff check --fix . > "$LOG_DIR/service-ruff-check.log" 2>&1 || {
+        print_error "Ruff found issues in service that couldn't be auto-fixed"
+        return 1
+    }
+    
+    print_status "Running autoflake on service..."
+    autoflake --remove-all-unused-imports --in-place --recursive . > "$LOG_DIR/service-autoflake.log" 2>&1 || {
+        print_warning "Autoflake encountered issues in service"
+    }
+    
+    print_success "Service checks completed!"
+}
+
 # Main execution
 print_status "Running all checks..."
 run_backend_checks
+run_service_checks
 run_frontend_checks
 print_success "All checks finished."
 set +x # Turn off tracing

@@ -3,9 +3,12 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
 from llm.constant import QUERY_TRANSLATION_MODEL_NAME
+from load_env import load_env
 from prompts import HYDE_FINAL_PROMPT, HYDE_GENERATION_PROMPT
 
-model = ChatOpenAI(temperature=0, model_name=QUERY_TRANSLATION_MODEL_NAME)
+load_env()
+
+model = ChatOpenAI(temperature=0, model=QUERY_TRANSLATION_MODEL_NAME)
 
 hyde_prompt = ChatPromptTemplate.from_template(HYDE_GENERATION_PROMPT)
 
