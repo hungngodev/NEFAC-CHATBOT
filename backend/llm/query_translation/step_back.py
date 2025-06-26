@@ -9,7 +9,7 @@ from prompts import STEP_BACK_RESPONSE_PROMPT, STEP_BACK_SYSTEM_PROMPT
 
 load_env()
 
-model = ChatOpenAI(temperature=0, model_name=QUERY_TRANSLATION_MODEL_NAME)
+model = ChatOpenAI(temperature=0, model=QUERY_TRANSLATION_MODEL_NAME)
 
 # Step‑back reformulation examples in a NEFAC/legal context
 examples = [

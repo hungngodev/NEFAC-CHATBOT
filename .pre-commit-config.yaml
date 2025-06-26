@@ -10,7 +10,7 @@ repos:
     hooks:
       - id: black
         # Black will read its configuration from backend/pyproject.toml
-        files: ^backend/
+        files: ^(backend/|service/)
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.4.10
@@ -18,7 +18,7 @@ repos:
       - id: ruff
         args: [--fix]
         # Ruff will read its configuration from backend/pyproject.toml
-        files: ^backend/
+        files: ^(backend/|service/)
 
   - repo: https://github.com/PyCQA/autoflake
     rev: v2.3.1
@@ -31,7 +31,7 @@ repos:
             "--in-place",
             "--exclude=docs,faiss_store,*.pkl,*.pdf,*.txt",
           ]
-        files: ^backend/
+        files: ^(backend/|service/)
 
   # ===================================================================
   # Frontend Hooks (TypeScript/JavaScript)

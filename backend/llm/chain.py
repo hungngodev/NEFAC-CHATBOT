@@ -7,16 +7,15 @@ from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.messages import AIMessageChunk
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.runnables import RunnableBranch, RunnableLambda, RunnablePassthrough
+from langchain_core.runnables import RunnableBranch, RunnablePassthrough
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
 from llm.constant import (
-    LAMBDA_MULT,
     MODEL_NAME,
-    NUMBER_OF_NEAREST_NEIGHBORS,
-    THRESHOLD,
 )
+from llm.query_translation.contextual_strategy import get_contextual_strategy_chain
+from llm.query_translation.factual_strategy import get_factual_strategy_chain
 from load_env import load_env
 from prompts import (
     CONTEXTUALIZE_PROMPT,
@@ -26,7 +25,7 @@ from prompts import (
     RETRIEVAL_PROMPT,
 )
 from schemas import IntentClassification, MethodSelection
-from vector.load import vector_store
+from vector.hybrid_search import get_cohere_rerank_retriever
 
 from .query_translation.decomposition import get_decomposition_chain
 from .query_translation.hyDe import get_hyDe_chain
@@ -67,7 +66,9 @@ def serialize_aimessagechunk(chunk: Any) -> str:
         else:
             return str(content)
     else:
-        raise TypeError(f"Object of type {type(chunk).__name__} is not correctly formatted for serialization")
+        raise TypeError(
+            f"Object of type {type(chunk).__name__} is not correctly formatted for serialization"
+        )
 
 
 async def middleware_qa(
@@ -86,18 +87,7 @@ async def middleware_qa(
     # ============================================================================
     # RETRIEVER SETUP
     # ============================================================================
-    retriever = RunnableLambda(
-        lambda question: vector_store.as_retriever(
-            search_type="similarity",
-            search_kwargs={
-                "k": NUMBER_OF_NEAREST_NEIGHBORS,
-                "lambda_mult": LAMBDA_MULT,
-                "score_threshold": THRESHOLD,
-            },
-        ).invoke(
-            question
-        )  # type: ignore
-    ).with_config(tags=["retriever"])
+    retriever = get_cohere_rerank_retriever().with_config(tags=["retriever"])
 
     # ============================================================================
     # FULL RETRIEVAL PIPELINE
@@ -116,13 +106,24 @@ async def middleware_qa(
                     | model
                     | StrOutputParser()
                 ).with_config(tags=["contextualize_q_chain"])
-                | {"question": RunnablePassthrough(), "method": (ChatPromptTemplate.from_template(METHOD_SELECTION_PROMPT) | model.with_structured_output(MethodSelection, method="function_calling") | StrOutputParser())}
+                | {
+                    "question": RunnablePassthrough(),
+                    "method": (
+                        ChatPromptTemplate.from_template(METHOD_SELECTION_PROMPT)
+                        | model.with_structured_output(
+                            MethodSelection, method="function_calling"
+                        )
+                        | StrOutputParser()
+                    ),
+                }
                 | RunnableBranch(
                     (lambda x: "multiquery" in str(x.get("method", "")) if isinstance(x, dict) else "", get_multi_query_chain(retriever)),  # type: ignore
                     (lambda x: "decompose" in str(x.get("method", "")) if isinstance(x, dict) else "", get_decomposition_chain(retriever)),  # type: ignore
                     (lambda x: "stepback" in str(x.get("method", "")) if isinstance(x, dict) else "", get_step_back_chain(retriever)),  # type: ignore
                     (lambda x: "hyde" in str(x.get("method", "")) if isinstance(x, dict) else "", get_hyDe_chain(retriever)),  # type: ignore
                     (lambda x: "ragfusion" in str(x.get("method", "")) if isinstance(x, dict) else "", get_rag_fusion_chain(retriever)),  # type: ignore
+                    (lambda x: "factual" in str(x.get("method", "")) if isinstance(x, dict) else "", get_factual_strategy_chain(retriever)),  # type: ignore
+                    (lambda x: "contextual" in str(x.get("method", "")) if isinstance(x, dict) else "", get_contextual_strategy_chain(retriever)),  # type: ignore
                     (get_multi_query_chain(retriever)),
                 )
             ).with_config(tags=["full_retrieval_pipeline"])
@@ -166,7 +167,9 @@ async def middleware_qa(
                     ("human", "{question}"),
                 ]
             )
-            | model.with_structured_output(IntentClassification, method="function_calling")
+            | model.with_structured_output(
+                IntentClassification, method="function_calling"
+            )
         ).with_config(tags=["doc_request_classifier"])
     ) | RunnableBranch(
         (
@@ -194,9 +197,14 @@ async def middleware_qa(
 
     try:
         i = 0
-        async for event in conversational_chain.astream_events(input_data, config={"configurable": {"session_id": "abc123"}}, version="v1"):
+        async for event in conversational_chain.astream_events(
+            input_data, config={"configurable": {"session_id": "abc123"}}, version="v1"
+        ):
             # Handle final answer streaming
-            if "final_answer" in event.get("tags", []) and event["event"] == "on_chat_model_stream":
+            if (
+                "final_answer" in event.get("tags", [])
+                and event["event"] == "on_chat_model_stream"
+            ):
                 chunk_content = serialize_aimessagechunk(event["data"]["chunk"])  # type: ignore
                 if len(chunk_content) != 0:
                     data_dict = {"message": chunk_content, "order": i}
@@ -205,7 +213,10 @@ async def middleware_qa(
 
             # Handle reformulated question streaming
             sources_tags = ["seq:step:2", "main_chain", "contextualize_q_chain"]
-            if all(value in event.get("tags", []) for value in sources_tags) and event["event"] == "on_chat_model_stream":
+            if (
+                all(value in event.get("tags", []) for value in sources_tags)
+                and event["event"] == "on_chat_model_stream"
+            ):
                 chunk_content = serialize_aimessagechunk(event["data"]["chunk"])  # type: ignore
                 if len(chunk_content) != 0:
                     data_dict = {"reformulated": chunk_content, "order": i}
@@ -213,7 +224,10 @@ async def middleware_qa(
                     yield f"data: {data_json}\n\n"
 
             # Handle document retrieval
-            if "retriever" in event.get("tags", []) and event["event"] == "on_retriever_end":
+            if (
+                "retriever" in event.get("tags", [])
+                and event["event"] == "on_retriever_end"
+            ):
                 logger.info("WE ENDED UP IN THE DOCUMENT OUTPUT")
                 documents = event["data"].get("output", {}).get("documents", [])  # type: ignore
                 formatted_documents = []
@@ -230,7 +244,11 @@ async def middleware_qa(
                         "link": doc.metadata.get("source", ""),
                         "type": doc.metadata.get("type", ""),
                         "title": doc.metadata.get("title", ""),
-                        "timestamp_seconds": (doc.metadata.get("page", None) if doc.metadata.get("type", "") == "youtube" else None),
+                        "timestamp_seconds": (
+                            doc.metadata.get("page", None)
+                            if doc.metadata.get("type", "") == "youtube"
+                            else None
+                        ),
                     }
                     formatted_documents.append(formatted_doc)
 
