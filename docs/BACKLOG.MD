@@ -106,3 +106,17 @@ _This file is a living document. Add new ideas and revisit after each phase!_
 - [ ] Semantic double-pass merging: Explore a two-stage retrieval process where initial chunks are merged or re-chunked based on semantic similarity or query context, enabling more coherent and contextually rich responses. Useful for reducing redundancy and improving answer quality.
 
 - [ ] Agentic chunking: Develop agent-driven chunking methods where an LLM or agent dynamically determines chunk boundaries or selects relevant spans at retrieval time, rather than relying on static rules. This supports adaptive, task-specific chunking for complex or multi-turn queries.
+
+- [ ] RAPTOR indexing: Integrate RAPTOR (Retrieval-Augmented Passage Transformer) indexing via LangChain to enable hierarchical, tree-based retrieval for improved multi-hop and compositional question answering in RAG pipelines.
+
+- [ ] ColBERT indexing: Add ColBERT (Contextualized Late Interaction over BERT) indexing using LangChain, supporting dense, late-interaction retrieval for high-precision, scalable search over large corpora.
+
+- [ ] Finetune model for RAG: Explore and implement finetuning of LLMs or retrievers specifically for your RAG use case, leveraging domain-specific data to improve retrieval relevance and answer quality.
+
+## Reference Links: GraphRAG & Contextual Retrieval
+
+- [Anthropic: Introducing Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval) — Official announcement and methodology for contextual retrieval.
+- [LlamaIndex Contextual Retrieval Cookbook](https://docs.llamaindex.ai/en/stable/examples/cookbooks/contextual_retrieval/) — Practical guide and code examples for contextual retrieval.
+- [Medium: GraphRAG using LangChain](https://medium.com/data-science-in-your-pocket/graphrag-using-langchain-31b1ef8328b9) — Tutorial and code for building GraphRAG with LangChain.
+- [LangChain Blog: Enhancing RAG-based application accuracy by constructing and leveraging knowledge graphs](https://blog.langchain.com/enhancing-rag-based-applications-accuracy-by-constructing-and-leveraging-knowledge-graphs/) — Best practices for knowledge graph construction in RAG.
+- [RAGAboutIt: Building a GraphRAG System from Scratch with LangChain](https://ragaboutit.com/building-a-graph-rag-system-from-scratch-with-langchain-a-comprehensive-tutorial/) — Comprehensive tutorial for GraphRAG with LangChain.
