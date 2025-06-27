@@ -4,9 +4,9 @@ import json
 import logging
 from dotenv import load_dotenv
 from service.schemas.metadata import ContentMetadata, PDFMetadata, YouTubeMetadata
-from .loader.pdf_loader import pdf_loader
-from .loader.html_loader import html_loader
-from .loader.youtube_loader import youtube_loader
+from service.ingestion_service.loader.pdf_loader import pdf_loader
+from service.ingestion_service.loader.html_loader import html_loader
+from service.ingestion_service.loader.youtube_loader import youtube_loader
 from tqdm import tqdm
 from service.ingestion_service.index.contextual_retrieval import (
     contextualize_and_index_documents,
@@ -15,12 +15,12 @@ from service.ingestion_service.index.graph_rag import graph_rag_ingest
 from service.ingestion_service.loader.semantic_double_pass_splitter import (
     SemanticDoublePassMergingSplitterWithContext,
 )
-from langchain.prompts import ChatPromptTemplate
 from langchain_core.documents import Document
 from langchain_core.runnables import RunnableLambda, RunnableParallel
 from typing import List, TypedDict, Any, cast
 from langchain_ollama import OllamaLLM
 from langchain_ollama import OllamaEmbeddings
+import argparse
 
 # Load environment variables
 load_dotenv()
@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 # --- Ollama Models for Ingestion Pipeline ---
 # LLM for context/summary generation (Llama 70B)
-ollama_llm = OllamaLLM(model="llama3:70b-instruct")
+ollama_llm = OllamaLLM(model="llama3.3:70b")
 # Embedding model for chunk embeddings (Qwen3:8b)
 ollama_embedding_model = OllamaEmbeddings(model="qwen3:8b")
 
@@ -88,26 +88,13 @@ class PipelineInput(TypedDict):
 def main_pipeline(
     metadata_json_path,
     file_type,
-    chunking_strategy=None,
     test_mode=False,
 ):
     logger = logging.getLogger("pipeline")
 
-    # Use the semantic double-pass splitter for chunking and contextualization
-    context_prompt_template = ChatPromptTemplate.from_template(
-        """<document>
-{document}
-</document>
-Here is the chunk we want to situate within the whole document
-<chunk>
-{chunk}
-</chunk>
-Please generate a short succinct context summary to situate this text chunk within the overall document to enhance search retrieval, two or three sentences max. The chunk contains merged content from different document sections, so focus on the main topics and concepts rather than sequential flow. Answer only with the succinct context and nothing else."""
-    )
     splitter = SemanticDoublePassMergingSplitterWithContext(
         embeddings=ollama_embedding_model,
         chat_model=ollama_llm,
-        context_prompt_template=context_prompt_template,
     )
 
     # 3. Graph RAG ingest step
@@ -166,10 +153,11 @@ Please generate a short succinct context summary to situate this text chunk with
 # Batch Pinecone upserts
 
 
-def process_all_metadata(test_mode: bool = False):
+def process_all_metadata(max_per_type: int = 2):
     """
-    Iterates over all metadata files in service/crawler/nefac_documents/metadata/ and processes all document types.
+    Iterates over all metadata files in service/crawler/nefac_documents/metadata/ and processes up to max_per_type document entries per type for testing.
     Enforces Pydantic schema validation for all metadata entries.
+    Prints the chunked documents for each processed file after splitting.
     """
     metadata_dir = "service/crawler/nefac_documents/metadata/"
 
@@ -210,6 +198,25 @@ def process_all_metadata(test_mode: bool = False):
         # Validate entries with Pydantic schema
         valid_entries = []
         for entry in tqdm(entries, desc=f"Validating {doc_type} entries"):
+            # Skip non-PDF files for pdf type and files not in a subfolder
+            if doc_type == "pdf":
+                filename = (
+                    entry.get("filename") or entry.get("file_name") or entry.get("file")
+                )
+                if not (filename and filename.lower().endswith(".pdf")):
+                    continue
+                # Only look for the file in subfolders (not in the root of doc_dir)
+                found_in_subfolder = False
+                if filename:
+                    for subfolder in os.listdir(doc_dir):
+                        subfolder_path = os.path.join(doc_dir, subfolder)
+                        if os.path.isdir(subfolder_path):
+                            file_path = os.path.join(subfolder_path, filename)
+                            if os.path.exists(file_path):
+                                found_in_subfolder = True
+                                break
+                if not found_in_subfolder:
+                    continue
             try:
                 validated_entry = schema(**entry)
                 valid_entries.append(validated_entry.dict())
@@ -222,12 +229,34 @@ def process_all_metadata(test_mode: bool = False):
             logger.warning(f"No valid {doc_type} metadata entries found. Skipping.")
             continue
 
-        # Process the validated entries
-        main_pipeline(meta_path, doc_type, test_mode=test_mode)
+        docs = []
+        if doc_type == "pdf":
+            docs = pdf_loader(meta_path, doc_dir)
+        elif doc_type == "youtube":
+            docs = youtube_loader(meta_path, doc_dir)
+        elif doc_type == "html":
+            docs = html_loader(meta_path, doc_dir)
 
-    logger.info("Completed processing all metadata files")
+        chunked_docs = docs[:max_per_type]
+
+        for idx, d in enumerate(chunked_docs):
+            print(f"\nChunk {idx+1}:")
+            print(f"Content: {d.page_content[:500]}...\nMetadata: {d.metadata}")
+
+    logger.info(
+        f"Completed processing up to {max_per_type} documents per type for testing."
+    )
 
 
 if __name__ == "__main__":
-    # Process all metadata in test mode
-    process_all_metadata(test_mode=True)
+    parser = argparse.ArgumentParser(
+        description="Process and chunk NEFAC documents for testing."
+    )
+    parser.add_argument(
+        "--test-mode", action="store_true", help="Run in test mode (no indexing)"
+    )
+    parser.add_argument(
+        "--max-per-type", type=int, default=2, help="Max documents to process per type"
+    )
+    args = parser.parse_args()
+    process_all_metadata(max_per_type=args.max_per_type)

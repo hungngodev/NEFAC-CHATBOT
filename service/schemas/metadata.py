@@ -43,7 +43,7 @@ class ContentMetadata(BaseMetadata):
     author: Optional[AuthorMetadata] = None
     categories: Optional[List[CategoryMetadata]] = None
     tags: Optional[List[str]] = None
-    featured_image: Optional[str] = None
+    featured_image: Optional[Any] = None
     comment_count: Optional[int] = None
     source: Optional[str] = None
     file_size: Optional[int] = None
@@ -118,12 +118,14 @@ class YouTubeMetadata(BaseModel):
 
 
 class PDFChunkMetadata(PDFMetadata):
-    page_number: int
+    page_number: int = 0  # Optional, for compatibility
     total_pages: int
     chunk_index: int
-    total_chunks_in_page: int
+    total_chunks_in_page: int = 0  # Optional, for compatibility
+    total_chunks_in_document: int = 0  # For document-level chunking
     chunking_strategy: str
-    provenance: dict
+    pages: list = []  # List of page numbers this chunk covers
+    pages_info: list = []  # List of page info dicts for each page covered by the chunk
     # ... add any other fields present in the metadata
 
 
@@ -140,4 +142,5 @@ class YouTubeChunkMetadata(YouTubeMetadata):
     chunk_index: int
     total_chunks_in_video: int
     chunking_strategy: str
-    provenance: dict
+    start_time: float = 0.0
+    end_time: float = 0.0

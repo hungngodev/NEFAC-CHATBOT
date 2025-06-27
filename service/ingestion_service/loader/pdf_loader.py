@@ -3,170 +3,173 @@ import json
 from tqdm import tqdm
 from langchain.docstore.document import Document
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitters import (
-    RecursiveCharacterTextSplitter,
-    SpacyTextSplitter,
-)
-from langchain_experimental.text_splitter import SemanticChunker
 from service.schemas.metadata import PDFChunkMetadata
-from service.ingestion_service.settings import CHUNK_SIZE, CHUNK_OVERLAP
+from service.ingestion_service.settings import CHUNK_SIZE, CONTEXT_FORMAT
+from service.ingestion_service.loader.semantic_double_pass_splitter import (
+    SemanticDoublePassMergingSplitterWithContext,
+)
+import logging
 
-# Free embedding fallback
-try:
-    from langchain_community.embeddings import HuggingFaceEmbeddings
-
-    embedding_model = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
-    )
-    print("✓ HuggingFace embeddings model ready")
-except ImportError as e:
-    embedding_model = None
-    print(f"Warning: HuggingFace embeddings unavailable: {e}")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
-def analyze_document_type(title: str, sample_text: str) -> str:
-    title_lower = title.lower()
-    content_lower = sample_text.lower()
-    legal_kws = [
-        "brief",
-        "amicus",
-        "testimony",
-        "complaint",
-        "motion",
-        "order",
-        "ruling",
-        "statute",
-        "regulation",
-        "court",
-        "legal",
-        "attorney",
-        "judge",
-        "defendant",
-    ]
-    report_kws = [
-        "report",
-        "study",
-        "analysis",
-        "investigation",
-        "audit",
-        "review",
-        "assessment",
-        "evaluation",
-        "findings",
-        "recommendations",
-    ]
-    academic_kws = [
-        "research",
-        "paper",
-        "thesis",
-        "dissertation",
-        "journal",
-        "article",
-        "academic",
-        "scholarly",
-        "peer-reviewed",
-        "methodology",
-        "literature",
-    ]
-    scores = {
-        "legal": sum(k in content_lower or k in title_lower for k in legal_kws),
-        "report": sum(k in content_lower or k in title_lower for k in report_kws),
-        "academic": sum(k in content_lower or k in title_lower for k in academic_kws),
-    }
-    best = max(scores.items(), key=lambda x: x[1])[0]
-    return best if scores[best] > 0 else "general"
+def find_valid_pdf_path(documents_dir: str, entry: dict) -> str:
+    """
+    Check if the entry has a valid PDF filename and if the file exists in a subfolder.
+    Returns the full path if valid, else an empty string.
+    """
+    filename = entry.get("filename") or entry.get("file_name") or entry.get("file")
+    if not (filename and filename.lower().endswith(".pdf")):
+        return ""
+    for subfolder in os.listdir(documents_dir):
+        subfolder_path = os.path.join(documents_dir, subfolder)
+        if os.path.isdir(subfolder_path):
+            file_path = os.path.join(subfolder_path, filename)
+            if os.path.exists(file_path):
+                return file_path
+    return ""
 
 
-def analyze_text_features(text: str) -> dict:
-    num_sentences = text.count(".") + text.count("!") + text.count("?")
-    avg_len = len(text.split()) / (num_sentences or 1)
-    has_bullets = any(b in text for b in ["•", "-", "*"])
-    num_headings = sum(
-        1
-        for line in text.split("\n")
-        if line.strip().isupper() and len(line.strip()) > 5
-    )
-    num_words = len(text.split())
-    repetitiveness = max((text.count(w) for w in set(text.split())), default=0) / (
-        num_words or 1
-    )
-    has_tables = "|" in text or "\t" in text
-    return {
-        "avg_sentence_length": avg_len,
-        "has_bullets": has_bullets,
-        "num_headings": num_headings,
-        "num_words": num_words,
-        "repetitiveness": repetitiveness,
-        "has_tables": has_tables,
-    }
+def get_page_offsets(pages):
+    """
+    Given a list of page objects with .page_content, return a list of (start, end) offsets for each page in the concatenated document.
+    """
+    offsets = []
+    curr = 0
+    for page in pages:
+        start = curr
+        end = curr + len(page.page_content)
+        offsets.append((start, end))
+        curr = end
+    return offsets
 
 
-def choose_chunker(text: str, doc_type: str, embedding_model=None):
-    features = analyze_text_features(text)
-    # Highly structured
-    if (
-        features["has_tables"]
-        or features["has_bullets"]
-        or features["num_headings"] > 3
-    ):
-        return SpacyTextSplitter(chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP)
-    # Dense academic/legal and embeddings available
-    if (
-        embedding_model
-        and features["avg_sentence_length"] > 22
-        and not features["has_bullets"]
-        and doc_type in ("academic", "legal")
-    ):
-        return SemanticChunker(embedding_model)
-    # Very long docs
-    if features["num_words"] > 2000 and features["repetitiveness"] < 0.05:
-        return RecursiveCharacterTextSplitter(
-            chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP
-        )
-    # Default
-    return RecursiveCharacterTextSplitter(
-        chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP
-    )
+def find_pages_for_chunk(chunk_start, chunk_end, page_offsets):
+    """
+    Given chunk start/end offsets and a list of (start, end) for each page, return the list of page numbers (1-based) the chunk overlaps with.
+    """
+    pages = []
+    for i, (p_start, p_end) in enumerate(page_offsets):
+        # If chunk overlaps with this page
+        if chunk_start < p_end and chunk_end > p_start:
+            pages.append(i + 1)
+    return pages
+
+
+def get_chunk_page_positions(chunk_start, chunk_end, page_offsets):
+    """
+    For each page overlapped by the chunk, return a dict with page number, start_pct, end_pct, and a qualitative label.
+    """
+    positions = []
+    for i, (p_start, p_end) in enumerate(page_offsets):
+        overlap_start = max(chunk_start, p_start)
+        overlap_end = min(chunk_end, p_end)
+        if overlap_start < overlap_end:
+            page_len = p_end - p_start
+            rel_start = (overlap_start - p_start) / page_len
+            rel_end = (overlap_end - p_start) / page_len
+            # Clamp to [0, 1]
+            rel_start = max(0.0, min(1.0, rel_start))
+            rel_end = max(0.0, min(1.0, rel_end))
+            # Assign qualitative label
+            span = rel_end - rel_start
+            if span >= 0.95:
+                label = "full"
+            elif rel_start <= 0.15 and rel_end <= 0.5:
+                label = "top"
+            elif rel_start >= 0.5 and rel_end >= 0.85:
+                label = "bottom"
+            elif rel_start > 0.15 and rel_end < 0.85:
+                label = "middle"
+            else:
+                label = "partial"
+            positions.append(
+                {
+                    "page": i + 1,
+                    "start_pct": round(rel_start, 3),
+                    "end_pct": round(rel_end, 3),
+                    "position": label,
+                }
+            )
+    return positions
 
 
 def pdf_loader(metadata_json_path: str, documents_dir: str) -> list[Document]:
     with open(metadata_json_path, "r", encoding="utf-8") as f:
         entries = json.load(f)
     all_docs: list[Document] = []
-    for entry in tqdm(entries, desc="Loading PDFs"):
+    chunking_strategy = "SemanticDoublePassMergingSplitterWithContext"
+    splitter = SemanticDoublePassMergingSplitterWithContext(
+        max_chunk_size=CHUNK_SIZE,
+        min_chunk_size=100,
+    )
+    tqdm.write("Starting PDF loading...")
+    for entry in tqdm(entries, desc="Loading PDFs", dynamic_ncols=True, colour="cyan"):
         fn = entry.get("filename")
         if not fn:
+            tqdm.write(f"Skipping entry with missing filename: {entry}")
             continue
-        path = os.path.join(documents_dir, fn)
-        if not os.path.exists(path):
-            print(f"Missing PDF: {path}")
+        path = find_valid_pdf_path(documents_dir, entry)
+        if not path:
+            tqdm.write(f"Skipping entry, file not found: {fn}")
             continue
+        filename = entry.get("filename") or entry.get("file_name") or entry.get("file")
         loader = PyPDFLoader(path)
-        pages = loader.load_and_split()
-        title = entry.get("title", fn.rsplit(".pdf", 1)[0])
-        sample_text = " ".join(p.page_content for p in pages[:2])
-        doc_type = analyze_document_type(title, sample_text)
-        for i, page in enumerate(pages):
-            splitter = choose_chunker(page.page_content, doc_type, embedding_model)
-            chunks = splitter.split_text(page.page_content)
-            strat = splitter.__class__.__name__
-            for j, chunk in enumerate(chunks):
-                meta = dict(entry)
-                chunk_meta = {
-                    "page_number": i + 1,
-                    "total_pages": len(pages),
+        pages = loader.load()
+        total_pages = len(pages)
+        page_offsets = get_page_offsets(pages)
+        full_text = "".join([p.page_content for p in pages])
+        # Chunk the full document
+        tqdm.write(f"Chunking document: {filename} ({total_pages} pages)")
+        chunks = splitter.split_text(full_text, metadata=entry)
+        curr_offset = 0
+        for j, chunk_doc in enumerate(
+            tqdm(
+                chunks,
+                desc=f"Chunking {filename}",
+                dynamic_ncols=True,
+                colour="magenta",
+            )
+        ):
+            chunk_text = chunk_doc.page_content
+            chunk_len = len(chunk_text)
+            chunk_start = full_text.find(chunk_text, curr_offset)
+            if chunk_start == -1:
+                chunk_start = curr_offset
+            chunk_end = chunk_start + chunk_len
+            curr_offset = chunk_end
+            pages_covered = find_pages_for_chunk(chunk_start, chunk_end, page_offsets)
+            pages_info = get_chunk_page_positions(chunk_start, chunk_end, page_offsets)
+            chunk_meta = dict(chunk_doc.metadata)
+            chunk_meta.update(
+                {
                     "chunk_index": j,
-                    "total_chunks_in_page": len(chunks),
-                    "chunking_strategy": strat,
-                    "provenance": {
-                        "type": "pdf_chunk",
-                        "page": i + 1,
-                        "chunk_index": j,
-                        "chunking_strategy": strat,
-                    },
+                    "total_chunks_in_document": len(chunks),
+                    "pages": pages_covered,
+                    "pages_info": pages_info,
+                    "total_pages": total_pages,
+                    "chunking_strategy": chunking_strategy,
+                    "provenance_type": "pdf_chunk",
+                    "provenance_file": filename,
                 }
-                # Validate chunk metadata
-                PDFChunkMetadata(**{**meta, **chunk_meta})
-                meta.update(chunk_meta)
-                all_docs.append(Document(page_content=chunk, metadata=meta))
+            )
+            context = chunk_meta.pop("context", None)
+            formatted_content = CONTEXT_FORMAT.format(
+                context=context or "", chunk=chunk_text
+            )
+            try:
+                PDFChunkMetadata(**chunk_meta)
+            except Exception as e:
+                tqdm.write(
+                    f"[ERROR] Metadata validation failed for chunk {j} in {filename}: {e}"
+                )
+                continue
+            all_docs.append(
+                Document(page_content=formatted_content, metadata=chunk_meta)
+            )
+            tqdm.write(f"Processed chunk {j+1}/{len(chunks)} for {filename}")
+    tqdm.write("PDF loading complete.")
     return all_docs

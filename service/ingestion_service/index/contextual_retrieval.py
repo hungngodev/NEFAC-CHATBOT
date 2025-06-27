@@ -8,7 +8,7 @@ import os
 from qdrant_client import QdrantClient
 from langchain_qdrant import QdrantVectorStore
 
-llm = OllamaLLM(model="llama3:70b-instruct")
+llm = OllamaLLM(model="llama3.3:70b")
 logger = logging.getLogger(__name__)
 
 # --- Ollama Embedding Model for Qwen3:8b ---
