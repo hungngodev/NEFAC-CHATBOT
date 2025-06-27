@@ -8,3 +8,5 @@ YOUTUBE_TEXT_SPLIT_CHUNK_SIZE = (
     800  # Number of characters per sub-chunk within a YouTube segment (YouTube)
 )
 YOUTUBE_TEXT_SPLIT_CHUNK_OVERLAP = 100  # Overlap for YouTube sub-chunking (YouTube)
+
+CONTEXT_FORMAT = "Context: {context}\n\nChunk: {chunk}"

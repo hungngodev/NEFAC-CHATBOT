@@ -1,29 +1,37 @@
 import os
 import json
 import re
+import logging
 from tqdm import tqdm
 from langchain.docstore.document import Document
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 from service.schemas.metadata import YouTubeChunkMetadata
-from service.ingestion_service.settings import YOUTUBE_SEGMENT_DURATION
+from service.ingestion_service.settings import (
+    YOUTUBE_TEXT_SPLIT_CHUNK_SIZE,
+    CONTEXT_FORMAT,
+)
+from service.ingestion_service.loader.semantic_double_pass_splitter import (
+    SemanticDoublePassMergingSplitterWithContext,
+)
 
-# Configure a recursive splitter for sub-chunking within time segments
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100)
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
-chunk_size = YOUTUBE_SEGMENT_DURATION  # seconds per chunk
+# Helper to parse transcript and strip timestamps
+TRANSCRIPT_TIMESTAMP_PATTERN = re.compile(r"\[(?P<ts>[\d:\.]+)s?\]\s*(?P<txt>.*)")
 
 
-def parse_youtube_transcript(transcript_text: str) -> list[dict]:
+def parse_youtube_transcript_lines(transcript_text: str):
     """
-    Parse raw transcript lines with timestamps into a list of dicts:
-    [{"start_seconds": float, "text": str}, ...]
+    Parse transcript into a list of dicts: [{"start_seconds": float, "text": str}]
     """
     lines = []
     for raw in transcript_text.strip().splitlines():
         raw = raw.strip()
         if not raw:
             continue
-        match = re.match(r"\[(?P<ts>[\d:\.]+)s?\]\s*(?P<txt>.*)", raw)
+        match = TRANSCRIPT_TIMESTAMP_PATTERN.match(raw)
         if match:
             ts = match.group("ts")
             text = match.group("txt").strip()
@@ -39,10 +47,8 @@ def parse_youtube_transcript(transcript_text: str) -> list[dict]:
                     seconds = float(parts[0])
             except ValueError:
                 continue
-            if text:
-                lines.append({"start_seconds": seconds, "text": text})
+            lines.append({"start_seconds": seconds, "text": text})
         else:
-            # append continuation to last line or start new
             if lines:
                 lines[-1]["text"] += " " + raw
             else:
@@ -50,114 +56,154 @@ def parse_youtube_transcript(transcript_text: str) -> list[dict]:
     return lines
 
 
-def youtube_loader(
-    metadata_json_path: str, transcripts_dir: str, segment_duration: int = 60
-) -> list[Document]:
-    """
-    Load YouTube transcripts and produce semantically coherent sub-chunks:
+def strip_timestamps_from_transcript(transcript_text: str) -> str:
+    """Return transcript text with all timestamps removed, just the plain text."""
+    lines = []
+    for raw in transcript_text.strip().splitlines():
+        raw = raw.strip()
+        if not raw:
+            continue
+        match = TRANSCRIPT_TIMESTAMP_PATTERN.match(raw)
+        if match:
+            text = match.group("txt").strip()
+            if text:
+                lines.append(text)
+        else:
+            lines.append(raw)
+    return " ".join(lines)
 
-    1. Parse into timestamped lines
-    2. Group lines into fixed-duration segments (segment_duration seconds)
-    3. Within each segment, apply RecursiveCharacterTextSplitter for natural boundaries
-    4. Preserve full provenance at both segment and sub-chunk level
+
+def parse_transcript_segments(raw_lines):
+    segments = []
+    for i in range(len(raw_lines) - 1):
+        t0 = float(re.findall(r"\[(\d+\.\d+)s\]", raw_lines[i])[0])
+        t1 = float(re.findall(r"\[(\d+\.\d+)s\]", raw_lines[i + 1])[0])
+        text = re.sub(r"\[\d+\.\d+s\]", "", raw_lines[i]).strip()
+        segments.append({"text": text, "start": t0, "end": t1})
+    # Last line: use previous end or None
+    if raw_lines:
+        last_line = raw_lines[-1]
+        t0 = float(re.findall(r"\[(\d+\.\d+)s\]", last_line)[0])
+        text = re.sub(r"\[\d+\.\d+s\]", "", last_line).strip()
+        segments.append({"text": text, "start": t0, "end": None})
+    return segments
+
+
+def build_offset_map(segments):
+    full_text = ""
+    offset_map = []
+    for seg in segments:
+        start_char = len(full_text)
+        full_text += seg["text"] + " "
+        end_char = len(full_text)
+        offset_map.append(
+            {
+                "start_char": start_char,
+                "end_char": end_char,
+                "start_time": seg["start"],
+                "end_time": seg["end"],
+            }
+        )
+    return full_text.strip(), offset_map
+
+
+def get_time_bounds(chunk_start, chunk_end, offset_map):
+    start_time = end_time = None
+    for entry in offset_map:
+        if entry["end_char"] < chunk_start:
+            continue
+        if entry["start_char"] > chunk_end:
+            break
+        if start_time is None:
+            start_time = entry["start_time"]
+        end_time = entry["end_time"]
+    return start_time, end_time
+
+
+def youtube_loader(metadata_json_path: str, transcripts_dir: str) -> list[Document]:
     """
-    # Read metadata entries
+    Load YouTube transcripts and produce semantically coherent chunks using SemanticDoublePassMergingSplitterWithContext.
+    - Strips timestamps from transcript before chunking.
+    - Each chunk gets provenance metadata similar to pdf_loader.
+    - Each chunk is contextualized using contextualize_chunk.
+    """
+
     with open(metadata_json_path, "r", encoding="utf-8") as f:
         entries = json.load(f)
-
-    documents: list[Document] = []
-    for entry in tqdm(entries, desc="Loading YouTube transcripts"):
+    all_docs: list[Document] = []
+    chunking_strategy = "SemanticDoublePassMergingSplitterWithContext"
+    splitter = SemanticDoublePassMergingSplitterWithContext(
+        max_chunk_size=YOUTUBE_TEXT_SPLIT_CHUNK_SIZE,
+        min_chunk_size=100,
+    )
+    tqdm.write("Starting YouTube transcript loading...")
+    for entry in tqdm(
+        entries, desc="Loading YouTube transcripts", dynamic_ncols=True, colour="cyan"
+    ):
         transcript_file = entry.get("transcript_file")
         if not transcript_file:
+            tqdm.write(f"Skipping entry with missing transcript_file: {entry}")
             continue
         path = os.path.join(transcripts_dir, os.path.basename(transcript_file))
         if not os.path.exists(path):
-            print(f"Missing transcript: {path}")
+            tqdm.write(f"Skipping entry, transcript not found: {transcript_file}")
             continue
-
-        raw_text = open(path, "r", encoding="utf-8").read()
-        lines = parse_youtube_transcript(raw_text)
-        # fallback full transcript if no timestamps
-        if not lines:
-            meta = dict(entry)
-            meta.update(
+        with open(path, "r", encoding="utf-8") as f:
+            raw_lines = f.readlines()
+        segments = parse_transcript_segments(raw_lines)
+        if not segments:
+            tqdm.write(f"No segments found in transcript: {transcript_file}")
+            continue
+        full_text, offset_map = build_offset_map(segments)
+        # Chunk the full transcript
+        tqdm.write(
+            f"Chunking transcript: {entry.get('title', 'video')} ({len(segments)} segments)"
+        )
+        chunks = splitter.split_text(full_text, metadata=entry)
+        curr_offset = 0
+        for j, chunk_doc in enumerate(
+            tqdm(
+                chunks,
+                desc=f"Chunking {entry.get('title', 'video')}",
+                dynamic_ncols=True,
+                colour="magenta",
+            )
+        ):
+            chunk_text = chunk_doc.page_content
+            chunk_len = len(chunk_text)
+            chunk_start = full_text.find(chunk_text, curr_offset)
+            if chunk_start == -1:
+                chunk_start = curr_offset
+            chunk_end = chunk_start + chunk_len
+            curr_offset = chunk_end
+            start_time, end_time = get_time_bounds(chunk_start, chunk_end, offset_map)
+            chunk_meta = dict(entry)
+            chunk_meta.update(
                 {
-                    "type": "youtube",
-                    "provenance": {
-                        "type": "youtube_full",
-                        "video_id": entry.get("video_id"),
-                        "start_seconds": 0,
-                        "end_seconds": entry.get("duration"),
-                        "url": entry.get("source_url"),
-                    },
+                    "chunk_index": j,
+                    "total_chunks_in_video": len(chunks),
+                    "chunking_strategy": chunking_strategy,
+                    "start_time": start_time,
+                    "end_time": end_time,
                 }
             )
-            documents.append(Document(page_content=raw_text, metadata=meta))
-            continue
-
-        # 1. form time segments
-        segments = []
-        current_lines = []
-        seg_start = lines[0]["start_seconds"]
-        seg_end = seg_start + segment_duration
-        for line in lines:
-            if line["start_seconds"] >= seg_end and current_lines:
-                segments.append(
-                    {
-                        "start": seg_start,
-                        "end": current_lines[-1]["start_seconds"],
-                        "lines": current_lines,
-                    }
-                )
-                current_lines = []
-                seg_start = line["start_seconds"]
-                seg_end = seg_start + segment_duration
-            current_lines.append(line)
-        if current_lines:
-            segments.append(
-                {
-                    "start": seg_start,
-                    "end": current_lines[-1]["start_seconds"],
-                    "lines": current_lines,
-                }
+            context = chunk_meta.pop("context", None)
+            formatted_content = CONTEXT_FORMAT.format(
+                context=context or "", chunk=chunk_text
             )
-
-        # 2. within each segment, apply text splitter
-        for seg in segments:
-            seg_text = " ".join([ln["text"] for ln in seg["lines"]])
-            subchunks = text_splitter.split_text(seg_text)
-            total_sub = len(subchunks)
-            for idx, chunk in enumerate(subchunks):
-                meta = dict(entry)
-                meta.update(
-                    {
-                        "type": "youtube",
-                        "provenance": {
-                            "type": "youtube_subsegment",
-                            "video_id": entry.get("video_id"),
-                            "segment_start": seg["start"],
-                            "segment_end": seg["end"],
-                            "subsegment_index": idx,
-                            "total_subsegments": total_sub,
-                            "chunking_strategy": text_splitter.__class__.__name__,
-                            "url": f"{entry.get('source_url')}?t={int(seg['start'])}",
-                        },
-                    }
+            YouTubeChunkMetadata.model_config = {"extra": "ignore"}
+            try:
+                YouTubeChunkMetadata(**chunk_meta)
+            except Exception as e:
+                tqdm.write(
+                    f"[ERROR] Metadata validation failed for chunk {j} in {entry.get('title', 'video')}: {e}"
                 )
-                chunk_meta = {
-                    "chunk_index": len(documents),
-                    "total_chunks_in_video": 0,  # Will set after all chunks are created
-                    "chunking_strategy": "timestamp_based",
-                    "provenance": meta["provenance"],
-                }
-                # Validate chunk metadata (will update total_chunks_in_video after loop)
-                YouTubeChunkMetadata.model_config = {"extra": "ignore"}
-                YouTubeChunkMetadata(**{**meta, **chunk_meta})
-                meta.update(chunk_meta)
-                documents.append(Document(page_content=chunk, metadata=meta))
-            # After all chunks, update total_chunks_in_video
-            total_chunks = len(documents)
-            for doc in documents[-total_chunks:]:
-                doc.metadata["total_chunks_in_video"] = total_chunks
-
-    return documents
+                continue
+            all_docs.append(
+                Document(page_content=formatted_content, metadata=chunk_meta)
+            )
+            tqdm.write(
+                f"Processed chunk {j+1}/{len(chunks)} for {entry.get('title', 'video')}"
+            )
+    tqdm.write("YouTube transcript loading complete.")
+    return all_docs
