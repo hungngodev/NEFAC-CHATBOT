@@ -12,6 +12,15 @@ from service.ingestion_service.index.contextual_retrieval import (
     contextualize_and_index_documents,
 )
 from service.ingestion_service.index.graph_rag import graph_rag_ingest
+from service.ingestion_service.loader.semantic_double_pass_splitter import (
+    SemanticDoublePassMergingSplitterWithContext,
+)
+from langchain.prompts import ChatPromptTemplate
+from langchain_core.documents import Document
+from langchain_core.runnables import RunnableLambda, RunnableParallel
+from typing import List, TypedDict, Any, cast
+from langchain_ollama import OllamaLLM
+from langchain_ollama import OllamaEmbeddings
 
 # Load environment variables
 load_dotenv()
@@ -20,8 +29,11 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# --- Contextualization Setup ---
-# (Removed: contextual_prompt_template, OllamaLLM, and all local contextualization functions)
+# --- Ollama Models for Ingestion Pipeline ---
+# LLM for context/summary generation (Llama 70B)
+ollama_llm = OllamaLLM(model="llama3:70b-instruct")
+# Embedding model for chunk embeddings (Qwen3:8b)
+ollama_embedding_model = OllamaEmbeddings(model="qwen3:8b")
 
 
 class LoaderService:
@@ -54,39 +66,101 @@ class ChunkerService:
         return documents
 
 
+def loader_runnable(file_type: str, metadata_json_path: str) -> List[Document]:
+    loader = LoaderService(logging.getLogger("pipeline"))
+    docs = loader.load(file_type, metadata_json_path)
+    # Convert to Document objects if needed
+    return [
+        (
+            Document(page_content=doc["text"], metadata=doc.get("metadata", {}))
+            if not isinstance(doc, Document)
+            else doc
+        )
+        for doc in docs
+    ]
+
+
+class PipelineInput(TypedDict):
+    file_type: str
+    metadata_json_path: str
+
+
 def main_pipeline(
     metadata_json_path,
     file_type,
     chunking_strategy=None,
     test_mode=False,
-    embedding_model=None,
 ):
     logger = logging.getLogger("pipeline")
-    loader = LoaderService(logger)
-    chunker = ChunkerService(logger)
 
-    logger.info(f"Starting processing for {metadata_json_path} of type {file_type}")
-    documents = loader.load(file_type, metadata_json_path)
-    if not documents:
-        logger.warning(f"No documents loaded from {metadata_json_path}. Skipping.")
-        return
-    logger.info(f"Loaded {len(documents)} document chunks from {metadata_json_path}")
-    chunked_documents = chunker.chunk(documents, file_type, chunking_strategy)
-    logger.info(
-        f"Created {len(chunked_documents)} chunks using {chunked_documents[0].metadata.get('chunking_strategy', 'unknown')} strategy"
+    # Use the semantic double-pass splitter for chunking and contextualization
+    context_prompt_template = ChatPromptTemplate.from_template(
+        """<document>
+{document}
+</document>
+Here is the chunk we want to situate within the whole document
+<chunk>
+{chunk}
+</chunk>
+Please generate a short succinct context summary to situate this text chunk within the overall document to enhance search retrieval, two or three sentences max. The chunk contains merged content from different document sections, so focus on the main topics and concepts rather than sequential flow. Answer only with the succinct context and nothing else."""
+    )
+    splitter = SemanticDoublePassMergingSplitterWithContext(
+        embeddings=ollama_embedding_model,
+        chat_model=ollama_llm,
+        context_prompt_template=context_prompt_template,
     )
 
-    # Graph RAG ingestion step
-    logger.info("Starting Graph RAG ingestion into Neo4j knowledge graph...")
-    graph_rag_ingest(chunked_documents)
-    logger.info("Completed Graph RAG ingestion.")
+    # 3. Graph RAG ingest step
+    def graph_rag_runnable(docs: List[Document]) -> List[Document]:
+        graph_rag_ingest(docs)
+        return docs  # Pass through for next step
 
-    # Contextualize and index
-    contextualized_documents = contextualize_and_index_documents(
-        chunked_documents, embedding_model=embedding_model, test_mode=test_mode
+    # 4. Indexing step
+    def index_runnable(docs: List[Document]) -> List[Document]:
+        contextualize_and_index_documents(
+            docs, embedding_model=ollama_embedding_model, test_mode=test_mode
+        )
+        return docs
+
+    # 5. Compose the pipeline with parallel execution for graph RAG and indexing
+    pipeline = (
+        RunnableLambda(
+            lambda args: loader_runnable(
+                cast(PipelineInput, args)["file_type"],
+                cast(PipelineInput, args)["metadata_json_path"],
+            )
+        )
+        | RunnableLambda(
+            lambda docs: (
+                splitter.split_documents(cast(List[Document], docs)) if docs else []
+            )
+        )
+        | RunnableParallel(
+            {
+                "graph_rag": RunnableLambda(graph_rag_runnable),
+                "index": RunnableLambda(index_runnable),
+            }
+        )
     )
+
+    # Execute the pipeline
+    results: Any = pipeline.invoke(
+        {"file_type": file_type, "metadata_json_path": metadata_json_path}
+    )
+    results = cast(dict, results)
+    # Ensure results is a dict with 'index' and 'graph_rag' keys
+    if (
+        not isinstance(results, dict)
+        or "index" not in results
+        or "graph_rag" not in results
+    ):
+        logger.error(f"Pipeline did not return expected result dict: {results}")
+        return 0
+    if not results["index"]:  # type: ignore
+        logger.warning(f"No documents processed for {metadata_json_path}. Skipping.")
+        return 0
     logger.info(f"Completed ingestion and indexing for {metadata_json_path}")
-    return len(contextualized_documents)
+    return len(results["index"])  # type: ignore
 
 
 # Batch Pinecone upserts
