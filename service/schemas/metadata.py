@@ -135,7 +135,10 @@ class ContentChunkMetadata(ContentMetadata):
     chunk_index: int
     total_chunks_in_section: int
     chunking_strategy: str
-    provenance: dict
+    anchor: Optional[str] = None
+    html_url: Optional[str] = None
+    chunk_start: Optional[int] = None
+    chunk_end: Optional[int] = None
 
 
 class YouTubeChunkMetadata(YouTubeMetadata):
