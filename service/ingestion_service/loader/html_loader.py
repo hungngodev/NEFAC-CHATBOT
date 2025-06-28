@@ -1,5 +1,7 @@
 import os
 import json
+import time
+import logging
 from tqdm import tqdm
 from bs4 import BeautifulSoup, Tag
 from langchain.docstore.document import Document
@@ -8,6 +10,16 @@ from service.ingestion_service.settings import CHUNK_SIZE, CONTEXT_FORMAT
 from service.ingestion_service.loader.semantic_double_pass_splitter import (
     SemanticDoublePassMergingSplitterWithContext,
 )
+from langchain_core.runnables import RunnableLambda
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("html_loader_pipeline")
+
+
+def load_html_entries(metadata_json_path):
+    with open(metadata_json_path, "r", encoding="utf-8") as f:
+        entries = json.load(f)
+    return entries
 
 
 def extract_html_sections(html: str):
@@ -77,109 +89,147 @@ def find_chunk_offsets(section_text: str, chunk_text: str, start_search: int = 0
     return chunk_start, chunk_end
 
 
-def html_loader(metadata_json_path: str, content_dir: str) -> list[Document]:
-    """
-    HTML loader using semantic chunking and detailed provenance:
-      - Strips boilerplate (scripts/styles/nav/footer/header/aside)
-      - Converts <img> tags to their alt text
-      - Builds a hierarchy using all headings (h1–h6)
-      - Groups consecutive elements under each heading into sections
-      - Chunks each section using semantic splitter
-      - Records provenance (section path, chunk indices, anchors, html_url)
-    """
-    with open(metadata_json_path, "r", encoding="utf-8") as f:
-        entries = json.load(f)
+def parse_html(entry, content_dir):
+    filename = entry.get("filename")
+    if not filename:
+        return None
+    html_path = os.path.join(content_dir, filename)
+    if not os.path.exists(html_path):
+        return None
+    with open(html_path, "r", encoding="utf-8") as fh:
+        html = fh.read()
+    title = entry.get("title", os.path.splitext(filename)[0])
+    sections = extract_html_sections(html)
+    return {
+        "entry": entry,
+        "sections": sections,
+        "title": title,
+        "filename": filename,
+    }
 
-    all_docs: list[Document] = []
-    chunking_strategy = "SemanticDoublePassMergingSplitterWithContext"
+
+def chunk_and_contextualize_html(html_data, splitter):
+    entry = html_data["entry"]
+    sections = html_data["sections"]
+    title = html_data["title"]
+    filename = html_data["filename"]
+    chunked_docs = []
+    for sec_idx, sec in enumerate(sections):
+        section_text = "\n\n".join(sec["texts"])
+        if not section_text.strip():
+            continue
+        chunks = splitter.split_text(section_text, metadata=entry)
+        curr_offset = 0
+        for chunk_idx, chunk_doc in enumerate(
+            tqdm(
+                chunks,
+                desc=f"Chunking section {sec_idx+1} in {filename}",
+                dynamic_ncols=True,
+                colour="magenta",
+            )
+        ):
+            chunk_text = chunk_doc.page_content
+            chunk_start, chunk_end = find_chunk_offsets(
+                section_text, chunk_text, curr_offset
+            )
+            curr_offset = chunk_end
+            anchor = sec["anchors"][0] if sec["anchors"] else None
+            meta = dict(chunk_doc.metadata)
+            meta.update(
+                {
+                    "source": title,
+                    "type": "html",
+                    "section_path": sec["path"],
+                    "section_index": sec_idx,
+                    "chunk_index": chunk_idx,
+                    "total_chunks_in_section": len(chunks),
+                    "chunking_strategy": splitter.__class__.__name__,
+                    "anchor": anchor,
+                    "html_url": (
+                        f"{entry.get('link','')}#{anchor}"
+                        if anchor
+                        else entry.get("link", "")
+                    ),
+                    "chunk_start": chunk_start,
+                    "chunk_end": chunk_end,
+                }
+            )
+            if "featured_image" in meta:
+                fi = meta["featured_image"]
+                if isinstance(fi, dict):
+                    meta["featured_image"] = fi.get("title") or fi.get("url") or str(fi)
+                elif not (isinstance(fi, str) or fi is None):
+                    meta["featured_image"] = None
+            if "provenance" in meta:
+                del meta["provenance"]
+            ContentChunkMetadata.model_config = {"extra": "ignore"}
+            try:
+                ContentChunkMetadata(**meta)
+            except Exception as e:
+                tqdm.write(
+                    f"[ERROR] Metadata validation failed for chunk {chunk_idx} in {filename}: {e}"
+                )
+                continue
+            context = meta.pop("context", None)
+            formatted_content = CONTEXT_FORMAT.format(
+                context=context or "", chunk=chunk_text
+            )
+            chunked_docs.append(Document(page_content=formatted_content, metadata=meta))
+    return chunked_docs
+
+
+def count_tokens_in_docs(docs):
+    return sum(len(doc.page_content.split()) for doc in docs)
+
+
+def ensure_list_of_documents(docs) -> list[Document]:
+    if isinstance(docs, list):
+        return [d for d in docs if isinstance(d, Document)]
+    elif isinstance(docs, Document):
+        return [docs]
+    else:
+        return []
+
+
+def html_loader(metadata_json_path, content_dir) -> list[Document]:
     splitter = SemanticDoublePassMergingSplitterWithContext(
         max_chunk_size=CHUNK_SIZE,
         min_chunk_size=100,
     )
-    tqdm.write("Starting HTML loading...")
-    for entry in tqdm(
-        entries, desc="Loading HTML content", dynamic_ncols=True, colour="cyan"
-    ):
-        filename = entry.get("filename")
-        if not filename:
-            tqdm.write(f"Skipping entry with missing filename: {entry}")
-            continue
-        html_path = os.path.join(content_dir, filename)
-        if not os.path.exists(html_path):
-            tqdm.write(f"Missing HTML: {html_path}")
-            continue
-        with open(html_path, "r", encoding="utf-8") as fh:
-            html = fh.read()
-        title = entry.get("title", os.path.splitext(filename)[0])
-        sections = extract_html_sections(html)
-        for sec_idx, sec in enumerate(sections):
-            section_text = "\n\n".join(sec["texts"])
-            if not section_text.strip():
-                continue
-            tqdm.write(f"Chunking section {sec_idx+1}/{len(sections)} in {filename}")
-            chunks = splitter.split_text(section_text, metadata=entry)
-            curr_offset = 0
-            for chunk_idx, chunk_doc in enumerate(
-                tqdm(
-                    chunks,
-                    desc=f"Chunking section {sec_idx+1}",
-                    dynamic_ncols=True,
-                    colour="magenta",
+    start_time = time.time()
+    logger.info(f"[HTML Loader] Loading entries from {metadata_json_path}")
+
+    def parse_all(entries):
+        parsed = []
+        for e in tqdm(entries, desc="Parsing HTML entries"):
+            result = parse_html(e, content_dir)
+            if result is not None:
+                parsed.append(result)
+        return parsed
+
+    pipeline = (
+        RunnableLambda(lambda _: load_html_entries(metadata_json_path))
+        | RunnableLambda(parse_all)
+        | RunnableLambda(
+            lambda html_datas: [
+                doc
+                for html_data in (
+                    html_datas
+                    if isinstance(html_datas, list)
+                    else ([html_datas] if isinstance(html_datas, dict) else [])
                 )
-            ):
-                chunk_text = chunk_doc.page_content
-                chunk_start, chunk_end = find_chunk_offsets(
-                    section_text, chunk_text, curr_offset
-                )
-                curr_offset = chunk_end
-                anchor = sec["anchors"][0] if sec["anchors"] else None
-                meta = dict(chunk_doc.metadata)
-                meta.update(
-                    {
-                        "source": title,
-                        "type": "html",
-                        "section_path": sec["path"],
-                        "section_index": sec_idx,
-                        "chunk_index": chunk_idx,
-                        "total_chunks_in_section": len(chunks),
-                        "chunking_strategy": chunking_strategy,
-                        "anchor": anchor,
-                        "html_url": (
-                            f"{entry.get('link','')}#{anchor}"
-                            if anchor
-                            else entry.get("link", "")
-                        ),
-                        "chunk_start": chunk_start,
-                        "chunk_end": chunk_end,
-                    }
-                )
-                # Coerce featured_image to string if needed
-                if "featured_image" in meta:
-                    fi = meta["featured_image"]
-                    if isinstance(fi, dict):
-                        meta["featured_image"] = (
-                            fi.get("title") or fi.get("url") or str(fi)
-                        )
-                    elif not (isinstance(fi, str) or fi is None):
-                        meta["featured_image"] = None
-                # Remove unused fields if present
-                if "provenance" in meta:
-                    del meta["provenance"]
-                ContentChunkMetadata.model_config = {"extra": "ignore"}
-                try:
-                    ContentChunkMetadata(**meta)
-                except Exception as e:
-                    tqdm.write(
-                        f"[ERROR] Metadata validation failed for chunk {chunk_idx} in {filename}: {e}"
-                    )
-                    continue
-                context = meta.pop("context", None)
-                formatted_content = CONTEXT_FORMAT.format(
-                    context=context or "", chunk=chunk_text
-                )
-                all_docs.append(Document(page_content=formatted_content, metadata=meta))
-                tqdm.write(
-                    f"Processed chunk {chunk_idx+1}/{len(chunks)} for section {sec_idx+1} in {filename}"
-                )
-    tqdm.write("HTML loading complete.")
-    return all_docs
+                for doc in chunk_and_contextualize_html(html_data, splitter)
+            ]
+        )
+    )
+    docs = pipeline.invoke({})
+    docs = ensure_list_of_documents(docs)
+    total_tokens = count_tokens_in_docs(docs)
+    elapsed = time.time() - start_time
+    logger.info(
+        f"[HTML Loader] Processed {len(docs)} chunks, {total_tokens} tokens in {elapsed:.2f} seconds."
+    )
+    tqdm.write(
+        f"[HTML Loader] Processed {len(docs)} chunks, {total_tokens} tokens in {elapsed:.2f} seconds."
+    )
+    return docs
