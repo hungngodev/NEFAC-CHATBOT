@@ -58,7 +58,7 @@ Respond ONLY with the method name."""
 # ============================================================================
 # RETRIEVAL PROMPT
 # ============================================================================
-RETRIEVAL_PROMPT = """You are a helpful and precise AI assistant for NEFAC, the New England First Amendment Coalition. Your main purpose is to answer the user's question based on the provided context and conversation history.
+FINAL_PROMPT = """You are a helpful and precise AI assistant for NEFAC, the New England First Amendment Coalition. Your main purpose is to answer the user's question based on the provided context and conversation history.
 
 **Instructions:**
 1.  **Synthesize an answer:** Carefully read the "Retrieved documents" section and use the information to construct a comprehensive and accurate answer to the "User's Question".
@@ -101,3 +101,14 @@ Examples:
 - "Do you have documents on data privacy laws?" → document request
 
 Respond with 'document request' or 'general query'."""
+
+RETRIEVAL_METHOD_SELECTION_PROMPT = """
+You are a retrieval‐method selection agent for NEFAC’s First Amendment resources (nefac.org).  
+Based on the user’s (reformulated) question, decide which of the following retrieval strategies to employ—feel free to pick one or combine any:
+
+• graph   – leverage NEFAC’s Neo4j knowledge graph of entities and relationships (laws, cases, organizations) for structured context  
+• dense   – perform a semantic vector search over NEFAC’s full-text documents for conceptual similarity  
+• sparse  – run an Elasticsearch BM25 keyword search against NEFAC’s document corpus for exact term matches  
+
+Explain your choice and return a comma-separated list of the selected strategies (e.g. `graph, sparse` or `dense`).
+"""

@@ -10,9 +10,7 @@ from prompts.base import CONTEXTUAL_STRATEGY_PROMPT
 load_env()
 
 model = ChatOpenAI(temperature=0, model=QUERY_TRANSLATION_MODEL_NAME)
-contextual_strategy_prompt = ChatPromptTemplate.from_template(
-    CONTEXTUAL_STRATEGY_PROMPT
-)
+contextual_strategy_prompt = ChatPromptTemplate.from_template(CONTEXTUAL_STRATEGY_PROMPT)
 
 generate_contextual_query = contextual_strategy_prompt | model | StrOutputParser()
 

@@ -14,12 +14,7 @@ load_env()
 
 model = ChatOpenAI(temperature=0, model=QUERY_TRANSLATION_MODEL_NAME)
 
-generate_queries_decomposition = (
-    ChatPromptTemplate.from_template(DECOMPOSITION_PROMPT)
-    | model
-    | StrOutputParser()
-    | (lambda x: x.strip().split("\n"))
-)
+generate_queries_decomposition = ChatPromptTemplate.from_template(DECOMPOSITION_PROMPT) | model | StrOutputParser() | (lambda x: x.strip().split("\n"))
 
 qa_template = QA_TEMPLATE
 
@@ -64,8 +59,7 @@ def get_decomposition_chain(retriever):
         RunnableLambda(lambda x: {"question": x})
         | {
             "question": itemgetter("question"),
-            "sub_questions": {"question": itemgetter("question")}
-            | generate_queries_decomposition,
+            "sub_questions": {"question": itemgetter("question")} | generate_queries_decomposition,
         }
         | {
             "sub_questions": itemgetter("sub_questions"),

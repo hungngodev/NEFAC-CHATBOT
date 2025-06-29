@@ -13,9 +13,7 @@ load_env()
 model = ChatOpenAI(temperature=0, model=QUERY_TRANSLATION_MODEL_NAME)
 prompt_rag_fusion = ChatPromptTemplate.from_template(RAG_FUSION_PROMPT)
 
-generate_queries = (
-    prompt_rag_fusion | model | StrOutputParser() | (lambda x: x.split("\n"))
-)
+generate_queries = prompt_rag_fusion | model | StrOutputParser() | (lambda x: x.split("\n"))
 
 
 def reciprocal_rank_fusion(results: list[list], k=60):
@@ -40,10 +38,7 @@ def reciprocal_rank_fusion(results: list[list], k=60):
             fused_scores[doc_str] += 1 / (rank + k)
 
     # Sort the documents based on their fused scores in descending order to get the final reranked results
-    reranked_results = [
-        loads(doc)
-        for doc, score in sorted(fused_scores.items(), key=lambda x: x[1], reverse=True)
-    ]
+    reranked_results = [loads(doc) for doc, score in sorted(fused_scores.items(), key=lambda x: x[1], reverse=True)]
 
     # Return the reranked results as a list of tuples, each containing the document and its fused score
     return reranked_results

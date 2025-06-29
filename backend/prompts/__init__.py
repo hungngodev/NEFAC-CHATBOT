@@ -8,10 +8,11 @@ All prompts are organized by their source file for easy maintenance and referenc
 from .base import BASE_PROMPT
 from .chain import (
     CONTEXTUALIZE_PROMPT,
+    FINAL_PROMPT,
     GENERAL_PROMPT,
     INTENT_CLASSIFICATION_PROMPT,
     METHOD_SELECTION_PROMPT,
-    RETRIEVAL_PROMPT,
+    RETRIEVAL_METHOD_SELECTION_PROMPT,
 )
 
 # Import prompts from decomposition.py
@@ -43,16 +44,14 @@ from .step_back import (
     STEP_BACK_SYSTEM_PROMPT,
 )
 
-# Import prompts from youtube_loader.py
-from .youtube_loader import TRANSCRIPT_CLEANING_PROMPT
-
 __all__ = [
     # Chain prompts
     "CONTEXTUALIZE_PROMPT",
     "METHOD_SELECTION_PROMPT",
-    "RETRIEVAL_PROMPT",
+    "FINAL_PROMPT",
     "GENERAL_PROMPT",
     "INTENT_CLASSIFICATION_PROMPT",
+    "RETRIEVAL_METHOD_SELECTION_PROMPT",
     # YouTube loader prompts
     "TRANSCRIPT_CLEANING_PROMPT",
     # Query translation prompts
