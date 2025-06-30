@@ -1,7 +1,7 @@
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
-from prompts import FINAL_PROMPT, GENERAL_PROMPT
 
+from src.config.prompts import FINAL_PROMPT, GENERAL_PROMPT
 from src.core.agents.state import AgentState
 
 
@@ -10,11 +10,17 @@ def generator_agent(state: AgentState, model: ChatOpenAI):
     Generates the final answer.
     """
     try:
+        # Prepare context: combine summary and session memory
+        history_context = state.history_summary or ""
+        if state.session_memory:
+            memory_text = "\n".join([str(item) for item in state.session_memory])
+            history_context = f"{history_context}\nSession Memory:\n{memory_text}"
+
         if state.intent == "document request":
             prompt = ChatPromptTemplate.from_messages(
                 [
                     ("system", FINAL_PROMPT),
-                    MessagesPlaceholder(variable_name="chat_history"),
+                    MessagesPlaceholder(variable_name="history_context"),
                     ("human", "{question}"),
                 ]
             )
@@ -23,7 +29,7 @@ def generator_agent(state: AgentState, model: ChatOpenAI):
                 {
                     "question": state.contextualized_query,
                     "context": state.documents,
-                    "chat_history": state.chat_history,
+                    "history_context": history_context,
                     "extracted_info": state.extracted_info,
                     "summarized_content": state.summarized_content,
                     "citations": state.citations,
@@ -33,7 +39,7 @@ def generator_agent(state: AgentState, model: ChatOpenAI):
             prompt = ChatPromptTemplate.from_messages(
                 [
                     ("system", GENERAL_PROMPT),
-                    MessagesPlaceholder(variable_name="chat_history"),
+                    MessagesPlaceholder(variable_name="history_context"),
                     ("human", "{question}"),
                 ]
             )
@@ -41,7 +47,7 @@ def generator_agent(state: AgentState, model: ChatOpenAI):
             answer = chain.invoke(
                 {
                     "question": state.contextualized_query,
-                    "chat_history": state.chat_history,
+                    "history_context": history_context,
                     "extracted_info": state.extracted_info,
                     "summarized_content": state.summarized_content,
                     "citations": state.citations,

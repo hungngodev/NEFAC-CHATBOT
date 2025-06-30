@@ -7,6 +7,7 @@ from langchain_openai import ChatOpenAI
 
 from src.config.constant import MODEL_NAME
 from src.core.agents.state import AgentState
+from src.core.database.memory_search import add_memory_to_pinecone, retrieve_memory_from_pinecone
 
 # --- LLM Setup ---
 llm = ChatOpenAI(temperature=0, model=MODEL_NAME)
@@ -25,7 +26,14 @@ def information_extraction_tool(state: AgentState) -> Dict[str, Any]:
         # Example: Extracting titles and sources from documents
         extracted_data = []
         for doc in documents:
-            extracted_data.append({"title": doc.metadata.get("title"), "source_url": doc.metadata.get("source_url"), "page_content_snippet": doc.page_content[:200] + "..." if len(doc.page_content) > 200 else doc.page_content})
+            if isinstance(doc, Document):
+                snippet = doc.page_content[:200] + "..." if len(doc.page_content) > 200 else doc.page_content
+                fact = f"Title: {doc.metadata.get('title')} | Source: {doc.metadata.get('source_url')} | Snippet: {snippet}"
+                extracted_data.append({"title": doc.metadata.get("title"), "source_url": doc.metadata.get("source_url"), "page_content_snippet": snippet})
+                if state.session_id:
+                    add_memory_to_pinecone(state.session_id, fact, metadata={"type": "fact", "title": doc.metadata.get("title"), "source_url": doc.metadata.get("source_url")})
+            else:
+                extracted_data.append({"text": str(doc)})
 
         # In a more advanced scenario, an LLM would be used here to extract structured info
         # based on a predefined schema or user's intent.
@@ -129,5 +137,10 @@ def context_processor_agent(state: AgentState) -> Dict[str, Any]:
     if citation_result.get("error"):
         return citation_result
     state.citations = citation_result.get("citations")
+
+    # Retrieve top relevant session memory from Pinecone and add to state
+    if state.session_id:
+        session_memory = retrieve_memory_from_pinecone(state.session_id, state.query, top_k=5)
+        state.session_memory = session_memory
 
     return {"documents": state.documents, "extracted_info": state.extracted_info, "summarized_content": state.summarized_content, "citations": state.citations}
