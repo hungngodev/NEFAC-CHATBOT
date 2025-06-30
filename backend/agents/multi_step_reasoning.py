@@ -35,9 +35,7 @@ SYNTHESIS_PROMPT = ChatPromptTemplate.from_messages(
 )
 
 
-def multi_step_reasoning_agent(
-    state: AgentState, model: ChatOpenAI, max_steps: int = 3
-):
+def multi_step_reasoning_agent(state: AgentState, model: ChatOpenAI, max_steps: int = 3):
     """
     Performs multi-step reasoning by iteratively generating sub-questions, retrieving information,
     and synthesizing context.
@@ -75,9 +73,7 @@ def multi_step_reasoning_agent(
 
             # 3. Synthesize Context
             doc_contents = "\n\n".join([doc.page_content for doc in retrieved_docs])
-            current_context += (
-                f"\n\n--- Retrieved for '{sub_question}' ---\n{doc_contents}"
-            )
+            current_context += f"\n\n--- Retrieved for '{sub_question}' ---\n{doc_contents}"
 
         # 4. Final Synthesis
         final_synthesis_chain = SYNTHESIS_PROMPT | model | (lambda x: x.content)

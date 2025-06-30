@@ -1,16 +1,18 @@
-import os
 import json
-import time
 import logging
-from tqdm import tqdm
+import os
+import time
+
 from langchain.docstore.document import Document
 from langchain_community.document_loaders import PyPDFLoader
-from service.schemas.metadata import PDFChunkMetadata
-from service.ingestion_service.settings import CHUNK_SIZE, CONTEXT_FORMAT
+from langchain_core.runnables import RunnableLambda
+from tqdm import tqdm
+
 from service.ingestion_service.loader.semantic_double_pass_splitter import (
     SemanticDoublePassMergingSplitterWithContext,
 )
-from langchain_core.runnables import RunnableLambda
+from service.ingestion_service.settings import CHUNK_SIZE, CONTEXT_FORMAT
+from service.schemas.metadata import PDFChunkMetadata
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("pdf_loader_pipeline")
@@ -122,14 +124,7 @@ def parse_pdf(entry, documents_dir):
     tqdm.write(f"[PDF Loader] Loaded {len(pages)} pages for {filename}")
     total_pages = len(pages)
     page_offsets = get_page_offsets(pages)
-    full_text = "".join(
-        [
-            p.page_content
-            for p in tqdm(
-                pages, desc=f"Concatenating pages for {filename}", dynamic_ncols=True
-            )
-        ]
-    )
+    full_text = "".join([p.page_content for p in tqdm(pages, desc=f"Concatenating pages for {filename}", dynamic_ncols=True)])
     return {
         "entry": entry,
         "pages": pages,
@@ -151,9 +146,7 @@ def chunk_and_contextualize_pdf(pdf_data, splitter):
     chunks = splitter.split_text(full_text, metadata=entry)
     curr_offset = 0
     chunked_docs = []
-    for j, chunk_doc in enumerate(
-        tqdm(chunks, desc=f"Chunking {filename}", dynamic_ncols=True, colour="magenta")
-    ):
+    for j, chunk_doc in enumerate(tqdm(chunks, desc=f"Chunking {filename}", dynamic_ncols=True, colour="magenta")):
         chunk_text = chunk_doc.page_content
         chunk_len = len(chunk_text)
         chunk_start = full_text.find(chunk_text, curr_offset)
@@ -176,34 +169,18 @@ def chunk_and_contextualize_pdf(pdf_data, splitter):
             }
         )
         context = chunk_meta.pop("context", None)
-        formatted_content = CONTEXT_FORMAT.format(
-            context=context or "", chunk=chunk_text
-        )
+        formatted_content = CONTEXT_FORMAT.format(context=context or "", chunk=chunk_text)
         try:
             PDFChunkMetadata(**chunk_meta)
-            logger.info(
-                f"[PDF Loader] Validated chunk {j+1}/{len(chunks)} for {filename}"
-            )
-            tqdm.write(
-                f"[PDF Loader] Validated chunk {j+1}/{len(chunks)} for {filename}"
-            )
+            logger.info(f"[PDF Loader] Validated chunk {j+1}/{len(chunks)} for {filename}")
+            tqdm.write(f"[PDF Loader] Validated chunk {j+1}/{len(chunks)} for {filename}")
         except Exception as e:
-            logger.error(
-                f"[PDF Loader] Metadata validation failed for chunk {j} in {filename}: {e}"
-            )
-            tqdm.write(
-                f"[ERROR] Metadata validation failed for chunk {j} in {filename}: {e}"
-            )
+            logger.error(f"[PDF Loader] Metadata validation failed for chunk {j} in {filename}: {e}")
+            tqdm.write(f"[ERROR] Metadata validation failed for chunk {j} in {filename}: {e}")
             continue
-        chunked_docs.append(
-            Document(page_content=formatted_content, metadata=chunk_meta)
-        )
-    logger.info(
-        f"[PDF Loader] Finished chunking {filename}. Total chunks: {len(chunked_docs)}"
-    )
-    tqdm.write(
-        f"[PDF Loader] Finished chunking {filename}. Total chunks: {len(chunked_docs)}"
-    )
+        chunked_docs.append(Document(page_content=formatted_content, metadata=chunk_meta))
+    logger.info(f"[PDF Loader] Finished chunking {filename}. Total chunks: {len(chunked_docs)}")
+    tqdm.write(f"[PDF Loader] Finished chunking {filename}. Total chunks: {len(chunked_docs)}")
     return chunked_docs
 
 
@@ -242,26 +219,12 @@ def pdf_loader(metadata_json_path, documents_dir) -> list[Document]:
     pipeline = (
         RunnableLambda(lambda _: load_pdf_entries(metadata_json_path))
         | RunnableLambda(parse_all)
-        | RunnableLambda(
-            lambda pdf_datas: [
-                doc
-                for pdf_data in (
-                    pdf_datas
-                    if isinstance(pdf_datas, list)
-                    else ([pdf_datas] if isinstance(pdf_datas, dict) else [])
-                )
-                for doc in chunk_and_contextualize_pdf(pdf_data, splitter)
-            ]
-        )
+        | RunnableLambda(lambda pdf_datas: [doc for pdf_data in (pdf_datas if isinstance(pdf_datas, list) else ([pdf_datas] if isinstance(pdf_datas, dict) else [])) for doc in chunk_and_contextualize_pdf(pdf_data, splitter)])
     )
     docs = pipeline.invoke({})
     docs = ensure_list_of_documents(docs)
     total_tokens = count_tokens_in_docs(docs)
     elapsed = time.time() - start_time
-    logger.info(
-        f"[PDF Loader] Processed {len(docs)} chunks, {total_tokens} tokens in {elapsed:.2f} seconds."
-    )
-    tqdm.write(
-        f"[PDF Loader] Processed {len(docs)} chunks, {total_tokens} tokens in {elapsed:.2f} seconds."
-    )
+    logger.info(f"[PDF Loader] Processed {len(docs)} chunks, {total_tokens} tokens in {elapsed:.2f} seconds.")
+    tqdm.write(f"[PDF Loader] Processed {len(docs)} chunks, {total_tokens} tokens in {elapsed:.2f} seconds.")
     return docs

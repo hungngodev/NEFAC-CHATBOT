@@ -26,12 +26,8 @@ llm = ChatOpenAI(temperature=0, model="gpt-4-turbo")
 
 # --- Entity Extraction Schema ---
 class Entities(BaseModel):
-    names: List[str] = Field(
-        ..., description="Canonical entity names (person, org, etc.) in the text."
-    )
-    types: Optional[List[str]] = Field(
-        None, description="Entity types (Person, Organization, etc.)"
-    )
+    names: List[str] = Field(..., description="Canonical entity names (person, org, etc.) in the text.")
+    types: Optional[List[str]] = Field(None, description="Entity types (Person, Organization, etc.)")
 
 
 # --- Entity Extraction Chain ---
@@ -56,17 +52,13 @@ def canonicalize_entities(entities: Entities) -> List[Dict[str, str]]:
 
 
 # --- Disambiguation Stub ---
-def disambiguate_entities(
-    entities: List[Dict[str, str]], context: str = ""
-) -> List[Dict[str, str]]:
+def disambiguate_entities(entities: List[Dict[str, str]], context: str = "") -> List[Dict[str, str]]:
     # TODO: Use LLM or rules to disambiguate entities if needed
     return entities
 
 
 # --- Graph Schema Fetching (Static, Dynamic, or Extended) ---
-def get_graph_schema(
-    use_dynamic_schema: bool = False, extend_with_dynamic: bool = False
-) -> str:
+def get_graph_schema(use_dynamic_schema: bool = False, extend_with_dynamic: bool = False) -> str:
     """
     Returns the graph schema as a string.
     - If use_dynamic_schema is True, fetch from Neo4j.
@@ -91,11 +83,7 @@ Relationships:
         try:
             dynamic_schema = str(graph.get_schema)
             if extend_with_dynamic:
-                return (
-                    static_schema
-                    + "\n\n--- Dynamic Schema Extension ---\n"
-                    + dynamic_schema
-                )
+                return static_schema + "\n\n--- Dynamic Schema Extension ---\n" + dynamic_schema
             return dynamic_schema
         except Exception as e:
             logger.warning(f"Could not fetch dynamic schema: {e}")
@@ -147,9 +135,7 @@ def expand_query_with_graph(question: str, entities: List[Dict[str, str]]) -> Li
             for record in results:
                 expanded_terms.append(record["related_entity"])
         except Exception as e:
-            logger.warning(
-                f"Graph query for expansion failed for {entity['name']}: {e}"
-            )
+            logger.warning(f"Graph query for expansion failed for {entity['name']}: {e}")
 
     # Add the original question as a term as well
     expanded_terms.append(question)
@@ -219,9 +205,7 @@ RETURN p.name AS StaffMemberName, p.title AS Title
 
 def generate_cypher(question: str, entities: List[Dict[str, str]], schema: str) -> str:
     cypher_chain = cypher_prompt | llm
-    cypher_result = cypher_chain.invoke(
-        {"question": question, "entities": entities, "schema": schema}
-    )
+    cypher_result = cypher_chain.invoke({"question": question, "entities": entities, "schema": schema})
     # cypher_result may be a BaseMessage, a string, or a list
     if hasattr(cypher_result, "content"):
         content = cypher_result.content
@@ -234,9 +218,7 @@ def generate_cypher(question: str, entities: List[Dict[str, str]], schema: str) 
 
 
 # --- Path/Subgraph Extraction (manual fallback) ---
-def extract_paths_between_entities(
-    entities: List[Dict[str, str]], max_hops: int = 3
-) -> List[str]:
+def extract_paths_between_entities(entities: List[Dict[str, str]], max_hops: int = 3) -> List[str]:
     """
     Build Cypher shortestPath queries between each pair of entities.
     """
@@ -244,10 +226,7 @@ def extract_paths_between_entities(
     for i, e1 in enumerate(entities):
         for j, e2 in enumerate(entities):
             if i < j:
-                cyphers.append(
-                    f"MATCH path = shortestPath((a:__Entity__ {{name: '{e1['name']}'}})-[*..{max_hops}]-(b:__Entity__ {{name: '{e2['name']}'}})) "
-                    "RETURN path LIMIT 3"
-                )
+                cyphers.append(f"MATCH path = shortestPath((a:__Entity__ {{name: '{e1['name']}'}})-[*..{max_hops}]-(b:__Entity__ {{name: '{e2['name']}'}})) " "RETURN path LIMIT 3")
     return cyphers
 
 
@@ -302,9 +281,7 @@ def get_detailed_entity_info(entity_name: str) -> Optional[Document]:
         if result and result[0]:
             info = result[0]
             content_parts = []
-            content_parts.append(
-                f"Entity: {info['entityName']} ({', '.join(info['entityLabels'])})"
-            )
+            content_parts.append(f"Entity: {info['entityName']} ({', '.join(info['entityLabels'])})")
 
             if info["entityProperties"]:
                 content_parts.append("Properties:")
@@ -315,25 +292,17 @@ def get_detailed_entity_info(entity_name: str) -> Optional[Document]:
                 content_parts.append("Outgoing Relationships:")
                 for rel in info["outgoingRelationships"]:
                     if rel["relationshipType"]:  # Ensure relationship exists
-                        content_parts.append(
-                            f"  - {rel['relationshipType']} -> {rel['targetNodeName']} ({', '.join(rel['targetNodeLabels'])})"
-                        )
+                        content_parts.append(f"  - {rel['relationshipType']} -> {rel['targetNodeName']} ({', '.join(rel['targetNodeLabels'])})")
                         if rel["relationshipProperties"]:
-                            content_parts.append(
-                                f"    Rel Properties: {rel['relationshipProperties']}"
-                            )
+                            content_parts.append(f"    Rel Properties: {rel['relationshipProperties']}")
 
             if info["incomingRelationships"]:
                 content_parts.append("Incoming Relationships:")
                 for rel in info["incomingRelationships"]:
                     if rel["relationshipType"]:  # Ensure relationship exists
-                        content_parts.append(
-                            f"  - {rel['sourceNodeName']} ({', '.join(rel['sourceNodeLabels'])}) - {rel['relationshipType']} ->"
-                        )
+                        content_parts.append(f"  - {rel['sourceNodeName']} ({', '.join(rel['sourceNodeLabels'])}) - {rel['relationshipType']} ->")
                         if rel["relationshipProperties"]:
-                            content_parts.append(
-                                f"    Rel Properties: {rel['relationshipProperties']}"
-                            )
+                            content_parts.append(f"    Rel Properties: {rel['relationshipProperties']}")
 
             return Document(
                 page_content="\n".join(content_parts),
@@ -347,9 +316,7 @@ def get_detailed_entity_info(entity_name: str) -> Optional[Document]:
             )
         return None
     except Exception as e:
-        logger.warning(
-            f"Failed to retrieve detailed entity info for {entity_name}: {e}"
-        )
+        logger.warning(f"Failed to retrieve detailed entity info for {entity_name}: {e}")
         return None
 
 
@@ -381,14 +348,10 @@ def graph_rag_retrieve(
         raise ValueError("Entity extraction returned unexpected type")
     entities = canonicalize_entities(entities_obj)
     entities = disambiguate_entities(entities, question)
-    schema = get_graph_schema(
-        use_dynamic_schema=use_dynamic_schema, extend_with_dynamic=extend_with_dynamic
-    )
+    schema = get_graph_schema(use_dynamic_schema=use_dynamic_schema, extend_with_dynamic=extend_with_dynamic)
 
     # --- New: Prioritize detailed entity info if a single entity is clearly identified ---
-    if (
-        len(entities) == 1 and entities[0]["type"] != "Unknown"
-    ):  # Check for a single, identified entity
+    if len(entities) == 1 and entities[0]["type"] != "Unknown":  # Check for a single, identified entity
         entity_name = entities[0]["name"]
         detailed_info_doc = get_detailed_entity_info(entity_name)
         if detailed_info_doc:
@@ -405,22 +368,12 @@ def graph_rag_retrieve(
                 if isinstance(step, list):
                     for record in step:
                         if isinstance(record, dict):
-                            content = (
-                                record.get("content")
-                                or record.get("text")
-                                or str(record)
-                            )
-                            meta = {
-                                k: v
-                                for k, v in record.items()
-                                if k not in ["content", "text"]
-                            }
+                            content = record.get("content") or record.get("text") or str(record)
+                            meta = {k: v for k, v in record.items() if k not in ["content", "text"]}
                             docs.append(Document(page_content=content, metadata=meta))
                 elif isinstance(step, dict):
                     content = step.get("content") or step.get("text") or str(step)
-                    meta = {
-                        k: v for k, v in step.items() if k not in ["content", "text"]
-                    }
+                    meta = {k: v for k, v in step.items() if k not in ["content", "text"]}
                     docs.append(Document(page_content=content, metadata=meta))
                 # skip string steps (Cypher, LLM answer, etc.)
             if docs:
@@ -489,15 +442,7 @@ def graph_rag_retrieve(
 
 # --- LangChain Runnable Retriever ---
 def get_graph_retriever():
-    return RunnableLambda(
-        lambda inputs: {
-            "documents": (
-                graph_rag_retrieve(inputs["question"])
-                if isinstance(inputs, dict) and "question" in inputs
-                else graph_rag_retrieve(str(inputs))
-            )
-        }
-    )
+    return RunnableLambda(lambda inputs: {"documents": (graph_rag_retrieve(inputs["question"]) if isinstance(inputs, dict) and "question" in inputs else graph_rag_retrieve(str(inputs)))})
 
 
 # Example usage:

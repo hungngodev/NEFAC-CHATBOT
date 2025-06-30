@@ -1,13 +1,15 @@
 # Requires: pip install tokenizers
 import re
+from typing import List, Literal, Optional
+
 import numpy as np
-from typing import List, Optional, Literal
-from langchain_core.documents import Document
 from langchain.text_splitter import TextSplitter
+from langchain_core.documents import Document
 from langchain_experimental.text_splitter import SemanticChunker
-from .contextualize import contextualize_chunk
-from langchain_ollama import OllamaLLM, OllamaEmbeddings
+from langchain_ollama import OllamaEmbeddings, OllamaLLM
 from tqdm import tqdm
+
+from .contextualize import contextualize_chunk
 
 # Global models (match processing.py)
 ollama_llm = OllamaLLM(model="llama3.3:70b")
@@ -23,9 +25,7 @@ class SemanticDoublePassMergingSplitterWithContext(TextSplitter):
     def __init__(
         self,
         buffer_size: int = 1,
-        breakpoint_threshold_type: Literal[
-            "percentile", "standard_deviation", "interquartile", "gradient"
-        ] = "percentile",
+        breakpoint_threshold_type: Literal["percentile", "standard_deviation", "interquartile", "gradient"] = "percentile",
         breakpoint_threshold_amount: Optional[float] = None,
         number_of_chunks: Optional[int] = None,
         min_chunk_size: Optional[int] = 100,
@@ -125,10 +125,7 @@ class SemanticDoublePassMergingSplitterWithContext(TextSplitter):
                     self.embeddings.embed_documents([chunks[i + 1]])[0],
                 )
                 combined_next = chunks[i] + " " + chunks[i + 1]
-                if (
-                    sim_next >= self.second_pass_threshold
-                    and count_tokens(combined_next) <= self.max_chunk_size
-                ):
+                if sim_next >= self.second_pass_threshold and count_tokens(combined_next) <= self.max_chunk_size:
                     # Look ahead to chunk[i+2] for triple merge
                     if i < len(chunks) - 2:
                         triple = combined_next + " " + chunks[i + 2]
@@ -137,10 +134,7 @@ class SemanticDoublePassMergingSplitterWithContext(TextSplitter):
                             self.embeddings.embed_documents([combined_next])[0],
                             self.embeddings.embed_documents([chunks[i + 2]])[0],
                         )
-                        if (
-                            sim_next2 >= self.second_pass_threshold
-                            and count_tokens(triple) <= self.max_chunk_size
-                        ):
+                        if sim_next2 >= self.second_pass_threshold and count_tokens(triple) <= self.max_chunk_size:
                             merged_chunks.append(triple)
                             i += 3
                             continue

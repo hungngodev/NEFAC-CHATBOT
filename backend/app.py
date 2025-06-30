@@ -3,11 +3,11 @@ import logging
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+from vector.load import get_loading_status, is_loading
 
 from llm.main import ask_llm_stream_agentic as ask_llm_stream
 from load_env import load_env
 from schemas import LoadingStatusResponse
-from vector.load import get_loading_status, is_loading
 
 load_env()
 

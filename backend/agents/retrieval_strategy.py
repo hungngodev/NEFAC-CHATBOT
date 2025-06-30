@@ -13,18 +13,12 @@ def retrieval_strategy_agent(state: AgentState, model: ChatOpenAI):
     """
     try:
         # Choose query method
-        method_chain = ChatPromptTemplate.from_template(
-            METHOD_SELECTION_PROMPT
-        ) | model.with_structured_output(MethodSelection, method="function_calling")
+        method_chain = ChatPromptTemplate.from_template(METHOD_SELECTION_PROMPT) | model.with_structured_output(MethodSelection, method="function_calling")
         method_selection = method_chain.invoke({"question": state.contextualized_query})
 
         # Choose retriever method(s)
-        retrieval_selection_chain = ChatPromptTemplate.from_template(
-            RETRIEVAL_METHOD_SELECTION_PROMPT
-        ) | model.with_structured_output(RetrievalSelection, method="function_calling")
-        retrieval_selection = retrieval_selection_chain.invoke(
-            {"question": state.contextualized_query}
-        )
+        retrieval_selection_chain = ChatPromptTemplate.from_template(RETRIEVAL_METHOD_SELECTION_PROMPT) | model.with_structured_output(RetrievalSelection, method="function_calling")
+        retrieval_selection = retrieval_selection_chain.invoke({"question": state.contextualized_query})
 
         return {
             "retrieval_method": method_selection.method,

@@ -1,12 +1,13 @@
-from typing import List
-from langchain_ollama import OllamaLLM
-from langchain_core.documents import Document
-from langchain_community.retrievers import ElasticSearchBM25Retriever
-from langchain_community.embeddings import OllamaEmbeddings
 import logging
 import os
-from qdrant_client import QdrantClient
+from typing import List
+
+from langchain_community.embeddings import OllamaEmbeddings
+from langchain_community.retrievers import ElasticSearchBM25Retriever
+from langchain_core.documents import Document
+from langchain_ollama import OllamaLLM
 from langchain_qdrant import QdrantVectorStore
+from qdrant_client import QdrantClient
 
 llm = OllamaLLM(model="llama3.3:70b")
 logger = logging.getLogger(__name__)
@@ -28,9 +29,7 @@ def upload_to_qdrant(documents: List[Document], embedding_model):
             client=client,
             collection_name=collection_name,
         )
-        logger.info(
-            f"✓ Uploaded {len(documents)} vectors to Qdrant collection '{collection_name}' at {qdrant_url, vectorstore}"
-        )
+        logger.info(f"✓ Uploaded {len(documents)} vectors to Qdrant collection '{collection_name}' at {qdrant_url, vectorstore}")
     except Exception as e:
         logger.exception(f"Error uploading to Qdrant: {e}")
 
@@ -43,9 +42,7 @@ def save_contextual_elasticsearch_bm25_for_backend(
     retriever = ElasticSearchBM25Retriever.create(elasticsearch_url, index_name)
     texts = [doc.page_content for doc in contextualized_documents]
     retriever.add_texts(texts)
-    print(
-        f"Contextualized documents uploaded to Elasticsearch index '{index_name}' at {elasticsearch_url}"
-    )
+    print(f"Contextualized documents uploaded to Elasticsearch index '{index_name}' at {elasticsearch_url}")
 
 
 # --- Contextualize and Index Function ---

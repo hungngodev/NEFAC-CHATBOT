@@ -184,3 +184,12 @@ _This file is a living document. Add new ideas and revisit after each phase!_
 
 - Tool-calling APIs and agentic frameworks are under evaluation for integration.
 - Need to define tool interfaces, security, and orchestration logic for production use.
+
+---
+### Additional Resources
+
+- [Anthropic: Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval)
+- [LangChain: RAG from Scratch Notebooks](https://github.com/langchain-ai/rag-from-scratch/blob/main/rag_from_scratch_15_to_18.ipynb)
+- [RAGAboutIt: Building a Graph RAG System](https://ragaboutit.com/building-a-graph-rag-system-enhancing-llms-with-knowledge-graphs/)
+- [Medium: Introduction to RAG and Simple/Complex RAG](https://medium.com/enterprise-rag/an-introduction-to-rag-and-simple-complex-rag-9c3aa9bd017b)
+- [Medium: The Ultimate Guide to Agentic RAG](https://pawan-kumar94.medium.com/the-ultimate-guide-to-agentic-rag-e3cc1e94804e)

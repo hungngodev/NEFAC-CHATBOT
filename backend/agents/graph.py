@@ -22,15 +22,11 @@ def create_graph():
     model = ChatOpenAI(model=MODEL_NAME, streaming=True)
 
     # Create partial functions with the model
-    query_understanding_agent_with_model = partial(
-        query_understanding_agent, model=model
-    )
+    query_understanding_agent_with_model = partial(query_understanding_agent, model=model)
     retrieval_strategy_agent_with_model = partial(retrieval_strategy_agent, model=model)
     generator_agent_with_model = partial(generator_agent, model=model)
     validation_agent_with_model = partial(validation_agent, model=model)
-    multi_step_reasoning_agent_with_model = partial(
-        multi_step_reasoning_agent, model=model
-    )
+    multi_step_reasoning_agent_with_model = partial(multi_step_reasoning_agent, model=model)
 
     workflow = StateGraph(AgentState)
 
@@ -44,9 +40,7 @@ def create_graph():
     workflow.add_node("multi_step_reasoning", multi_step_reasoning_agent_with_model)
     workflow.add_node(
         "error",
-        lambda state: {
-            "answer": "I'm sorry, but I encountered an error. Please try again."
-        },
+        lambda state: {"answer": "I'm sorry, but I encountered an error. Please try again."},
     )
 
     # Add edges

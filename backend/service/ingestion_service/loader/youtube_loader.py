@@ -1,19 +1,21 @@
-import os
 import json
+import logging
+import os
 import re
 import time
-import logging
-from tqdm import tqdm
+
 from langchain.docstore.document import Document
-from service.schemas.metadata import YouTubeChunkMetadata
-from service.ingestion_service.settings import (
-    YOUTUBE_TEXT_SPLIT_CHUNK_SIZE,
-    CONTEXT_FORMAT,
-)
+from langchain_core.runnables import RunnableLambda
+from tqdm import tqdm
+
 from service.ingestion_service.loader.semantic_double_pass_splitter import (
     SemanticDoublePassMergingSplitterWithContext,
 )
-from langchain_core.runnables import RunnableLambda
+from service.ingestion_service.settings import (
+    CONTEXT_FORMAT,
+    YOUTUBE_TEXT_SPLIT_CHUNK_SIZE,
+)
+from service.schemas.metadata import YouTubeChunkMetadata
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("youtube_loader_pipeline")
@@ -44,9 +46,7 @@ def parse_youtube_transcript_lines(transcript_text: str):
             parts = ts.split(":")
             try:
                 if len(parts) == 3:
-                    seconds = (
-                        int(parts[0]) * 3600 + int(parts[1]) * 60 + float(parts[2])
-                    )
+                    seconds = int(parts[0]) * 3600 + int(parts[1]) * 60 + float(parts[2])
                 elif len(parts) == 2:
                     seconds = int(parts[0]) * 60 + float(parts[1])
                 else:
@@ -181,20 +181,14 @@ def chunk_and_contextualize_youtube(youtube_data, splitter):
             }
         )
         context = chunk_meta.pop("context", None)
-        formatted_content = CONTEXT_FORMAT.format(
-            context=context or "", chunk=chunk_text
-        )
+        formatted_content = CONTEXT_FORMAT.format(context=context or "", chunk=chunk_text)
         YouTubeChunkMetadata.model_config = {"extra": "ignore"}
         try:
             YouTubeChunkMetadata(**chunk_meta)
         except Exception as e:
-            tqdm.write(
-                f"[ERROR] Metadata validation failed for chunk {j} in {entry.get('title', 'video')}: {e}"
-            )
+            tqdm.write(f"[ERROR] Metadata validation failed for chunk {j} in {entry.get('title', 'video')}: {e}")
             continue
-        chunked_docs.append(
-            Document(page_content=formatted_content, metadata=chunk_meta)
-        )
+        chunked_docs.append(Document(page_content=formatted_content, metadata=chunk_meta))
     return chunked_docs
 
 
@@ -230,26 +224,12 @@ def youtube_loader(metadata_json_path, transcripts_dir) -> list[Document]:
     pipeline = (
         RunnableLambda(lambda _: load_youtube_entries(metadata_json_path))
         | RunnableLambda(parse_all)
-        | RunnableLambda(
-            lambda youtube_datas: [
-                doc
-                for youtube_data in (
-                    youtube_datas
-                    if isinstance(youtube_datas, list)
-                    else ([youtube_datas] if isinstance(youtube_datas, dict) else [])
-                )
-                for doc in chunk_and_contextualize_youtube(youtube_data, splitter)
-            ]
-        )
+        | RunnableLambda(lambda youtube_datas: [doc for youtube_data in (youtube_datas if isinstance(youtube_datas, list) else ([youtube_datas] if isinstance(youtube_datas, dict) else [])) for doc in chunk_and_contextualize_youtube(youtube_data, splitter)])
     )
     docs = pipeline.invoke({})
     docs = ensure_list_of_documents(docs)
     total_tokens = count_tokens_in_docs(docs)
     elapsed = time.time() - start_time
-    logger.info(
-        f"[YouTube Loader] Processed {len(docs)} chunks, {total_tokens} tokens in {elapsed:.2f} seconds."
-    )
-    tqdm.write(
-        f"[YouTube Loader] Processed {len(docs)} chunks, {total_tokens} tokens in {elapsed:.2f} seconds."
-    )
+    logger.info(f"[YouTube Loader] Processed {len(docs)} chunks, {total_tokens} tokens in {elapsed:.2f} seconds.")
+    tqdm.write(f"[YouTube Loader] Processed {len(docs)} chunks, {total_tokens} tokens in {elapsed:.2f} seconds.")
     return docs

@@ -1,16 +1,18 @@
-import os
 import json
-import time
 import logging
-from tqdm import tqdm
+import os
+import time
+
 from bs4 import BeautifulSoup, Tag
 from langchain.docstore.document import Document
-from service.schemas.metadata import ContentChunkMetadata
-from service.ingestion_service.settings import CHUNK_SIZE, CONTEXT_FORMAT
+from langchain_core.runnables import RunnableLambda
+from tqdm import tqdm
+
 from service.ingestion_service.loader.semantic_double_pass_splitter import (
     SemanticDoublePassMergingSplitterWithContext,
 )
-from langchain_core.runnables import RunnableLambda
+from service.ingestion_service.settings import CHUNK_SIZE, CONTEXT_FORMAT
+from service.schemas.metadata import ContentChunkMetadata
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("html_loader_pipeline")
@@ -129,9 +131,7 @@ def chunk_and_contextualize_html(html_data, splitter):
             )
         ):
             chunk_text = chunk_doc.page_content
-            chunk_start, chunk_end = find_chunk_offsets(
-                section_text, chunk_text, curr_offset
-            )
+            chunk_start, chunk_end = find_chunk_offsets(section_text, chunk_text, curr_offset)
             curr_offset = chunk_end
             anchor = sec["anchors"][0] if sec["anchors"] else None
             meta = dict(chunk_doc.metadata)
@@ -145,11 +145,7 @@ def chunk_and_contextualize_html(html_data, splitter):
                     "total_chunks_in_section": len(chunks),
                     "chunking_strategy": splitter.__class__.__name__,
                     "anchor": anchor,
-                    "html_url": (
-                        f"{entry.get('link','')}#{anchor}"
-                        if anchor
-                        else entry.get("link", "")
-                    ),
+                    "html_url": (f"{entry.get('link','')}#{anchor}" if anchor else entry.get("link", "")),
                     "chunk_start": chunk_start,
                     "chunk_end": chunk_end,
                 }
@@ -166,14 +162,10 @@ def chunk_and_contextualize_html(html_data, splitter):
             try:
                 ContentChunkMetadata(**meta)
             except Exception as e:
-                tqdm.write(
-                    f"[ERROR] Metadata validation failed for chunk {chunk_idx} in {filename}: {e}"
-                )
+                tqdm.write(f"[ERROR] Metadata validation failed for chunk {chunk_idx} in {filename}: {e}")
                 continue
             context = meta.pop("context", None)
-            formatted_content = CONTEXT_FORMAT.format(
-                context=context or "", chunk=chunk_text
-            )
+            formatted_content = CONTEXT_FORMAT.format(context=context or "", chunk=chunk_text)
             chunked_docs.append(Document(page_content=formatted_content, metadata=meta))
     return chunked_docs
 
@@ -210,26 +202,12 @@ def html_loader(metadata_json_path, content_dir) -> list[Document]:
     pipeline = (
         RunnableLambda(lambda _: load_html_entries(metadata_json_path))
         | RunnableLambda(parse_all)
-        | RunnableLambda(
-            lambda html_datas: [
-                doc
-                for html_data in (
-                    html_datas
-                    if isinstance(html_datas, list)
-                    else ([html_datas] if isinstance(html_datas, dict) else [])
-                )
-                for doc in chunk_and_contextualize_html(html_data, splitter)
-            ]
-        )
+        | RunnableLambda(lambda html_datas: [doc for html_data in (html_datas if isinstance(html_datas, list) else ([html_datas] if isinstance(html_datas, dict) else [])) for doc in chunk_and_contextualize_html(html_data, splitter)])
     )
     docs = pipeline.invoke({})
     docs = ensure_list_of_documents(docs)
     total_tokens = count_tokens_in_docs(docs)
     elapsed = time.time() - start_time
-    logger.info(
-        f"[HTML Loader] Processed {len(docs)} chunks, {total_tokens} tokens in {elapsed:.2f} seconds."
-    )
-    tqdm.write(
-        f"[HTML Loader] Processed {len(docs)} chunks, {total_tokens} tokens in {elapsed:.2f} seconds."
-    )
+    logger.info(f"[HTML Loader] Processed {len(docs)} chunks, {total_tokens} tokens in {elapsed:.2f} seconds.")
+    tqdm.write(f"[HTML Loader] Processed {len(docs)} chunks, {total_tokens} tokens in {elapsed:.2f} seconds.")
     return docs

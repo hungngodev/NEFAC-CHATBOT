@@ -16,23 +16,15 @@ def install_requirements():
 
     requirements_file = Path("requirements.txt")
     if requirements_file.exists():
-        subprocess.check_call(
-            [sys.executable, "-m", "pip", "install", "-r", str(requirements_file)]
-        )
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", str(requirements_file)])
         print("\n✅ Dependencies installed successfully!")
     else:
         print("❌ ERROR: requirements.txt not found. Cannot install dependencies.")
         sys.exit(1)
 
-    print(
-        "\n📝 Note: The crawler includes Selenium-based scraping which requires Chrome/Chromium."
-    )
-    print(
-        "   If you don't have Chrome installed, the webdriver-manager will attempt to download it automatically."
-    )
-    print(
-        "   For headless environments, you may need to install Chrome/Chromium manually."
-    )
+    print("\n📝 Note: The crawler includes Selenium-based scraping which requires Chrome/Chromium.")
+    print("   If you don't have Chrome installed, the webdriver-manager will attempt to download it automatically.")
+    print("   For headless environments, you may need to install Chrome/Chromium manually.")
 
 
 def create_env_file():
@@ -44,19 +36,13 @@ def create_env_file():
             f.write("# NEFAC Document Crawler Configuration\n")
             f.write("# Copy this file and add your actual values\n\n")
             f.write("# Faust Secret Key for authenticated GraphQL access\n")
-            f.write(
-                "# This enables enhanced content extraction and access to private content\n"
-            )
+            f.write("# This enables enhanced content extraction and access to private content\n")
             f.write("FAUST_SECRET_KEY=your_faust_secret_key_here\n\n")
-            f.write(
-                "# Webshare.io Residential Proxy Credentials (for YouTube crawling)\n"
-            )
+            f.write("# Webshare.io Residential Proxy Credentials (for YouTube crawling)\n")
             f.write("# See: https://www.webshare.io/\n")
             f.write("WEBSHARE_USERNAME=your_webshare_username\n")
             f.write("WEBSHARE_PASSWORD=your_webshare_password\n")
-        print(
-            "Created .env file. Please edit it with your Faust secret key and optional Webshare credentials."
-        )
+        print("Created .env file. Please edit it with your Faust secret key and optional Webshare credentials.")
 
 
 def main():
