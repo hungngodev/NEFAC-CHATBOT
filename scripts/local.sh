@@ -54,7 +54,7 @@ fi
 # Function to cleanup on exit
 cleanup() {
     echo "🛑 Stopping local development environment..."
-    docker-compose -f docker-compose.local.yml down
+    docker-compose -f docker/docker-compose.local.yml down
     exit 0
 }
 
@@ -63,7 +63,7 @@ trap cleanup SIGINT SIGTERM
 
 # Start the local development environment
 echo "🐳 Starting Docker containers (without LocalStack)..."
-docker-compose -f docker-compose.local.yml up --build -d
+docker-compose -f docker/docker-compose.local.yml up --build -d
 
 # If we get here, containers have stopped
 echo "✅ Local development environment stopped." 

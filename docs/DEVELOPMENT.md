@@ -84,7 +84,7 @@ cp backend/.env.example backend/.env
 cp nginx.conf frontend/
 
 # Start services
-docker-compose -f docker-compose.local.yml up --build
+docker-compose -f docker/docker-compose.local.yml up --build
 ```
 
 ### Full Development (with LocalStack)
@@ -204,19 +204,19 @@ docker-compose up --build
 ./scripts/test-env.sh
 
 # View logs (local development)
-docker-compose -f docker-compose.local.yml logs -f [service-name]
+docker-compose -f docker/docker-compose.local.yml logs -f [service-name]
 
 # View logs (full development)
 docker-compose logs -f [service-name]
 
 # Rebuild specific service
-docker-compose -f docker-compose.local.yml build [service-name]
+docker-compose -f docker/docker-compose.local.yml build [service-name]
 
 # Stop all services
-docker-compose -f docker-compose.local.yml down
+docker-compose -f docker/docker-compose.local.yml down
 
 # Clean up volumes
-docker-compose -f docker-compose.local.yml down -v
+docker-compose -f docker/docker-compose.local.yml down -v
 ```
 
 ## Production Deployment

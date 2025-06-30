@@ -1,6 +1,6 @@
 {
   "graphs": {
-    "main": "app.server:app"
+    "main": "src.app.server:app"
   },
   "dependencies": [
     "aiohappyeyeballs",

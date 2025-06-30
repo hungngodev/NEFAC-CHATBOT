@@ -38,7 +38,7 @@ command_exists() {
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BACKEND_DIR="$PROJECT_ROOT/backend"
 FRONTEND_DIR="$PROJECT_ROOT/frontend"
-SERVICE_DIR="$PROJECT_ROOT/service"
+SERVICE_DIR="$PROJECT_ROOT/backend/src/service"
 
 print_status "Starting code quality checks for NEFAC project"
 print_status "Project root: $PROJECT_ROOT"
