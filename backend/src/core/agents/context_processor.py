@@ -72,12 +72,15 @@ def context_summarization_tool(state: AgentState) -> Dict[str, Any]:
 
         summarized_docs = []
         for doc in documents:
-            # Only summarize if the document content is long
-            if len(doc.page_content) > 500:  # Arbitrary length for summarization
-                summary = summarization_chain.invoke({"document_content": doc.page_content})
-                summarized_docs.append(Document(page_content=summary, metadata=doc.metadata))
+            if isinstance(doc, Document):
+                # Only summarize if the document content is long
+                if len(doc.page_content) > 500:  # Arbitrary length for summarization
+                    summary = summarization_chain.invoke({"document_content": doc.page_content})
+                    summarized_docs.append(Document(page_content=summary, metadata=doc.metadata))
+                else:
+                    summarized_docs.append(doc)  # Keep original if short
             else:
-                summarized_docs.append(doc)  # Keep original if short
+                summarized_docs.append(doc)  # If doc is a string, just append as-is
 
         return {"summarized_content": summarized_docs, "documents": summarized_docs}
     except Exception as e:
@@ -97,12 +100,15 @@ def citation_attribution_tool(state: AgentState) -> Dict[str, Any]:
 
         citations = []
         for doc in documents:
-            citation_info = {
-                "title": doc.metadata.get("title", "N/A"),
-                "source_url": doc.metadata.get("source_url", "N/A"),
-                "page_number": doc.metadata.get("page_number", "N/A"),
-                "document_id": doc.metadata.get("id", "N/A"),
-            }
+            if isinstance(doc, Document):
+                citation_info = {
+                    "title": doc.metadata.get("title", "N/A"),
+                    "source_url": doc.metadata.get("source_url", "N/A"),
+                    "page_number": doc.metadata.get("page_number", "N/A"),
+                    "document_id": doc.metadata.get("id", "N/A"),
+                }
+            else:
+                citation_info = {"title": str(doc), "source_url": "N/A", "page_number": "N/A", "document_id": "N/A"}
             citations.append(citation_info)
 
         return {"citations": citations, "documents": documents}
