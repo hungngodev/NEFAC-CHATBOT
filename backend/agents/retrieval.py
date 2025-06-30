@@ -3,14 +3,16 @@ from langchain.retrievers.ensemble import EnsembleRetriever
 from langchain.runnables import RunnableLambda
 from langchain_cohere import CohereRerank
 
+from agents.graph_retrieval import expand_query_with_graph, graph_retrieval_agent
+from agents.keyword_retrieval import keyword_retrieval_agent
 from agents.state import AgentState
-from llm.vector.graph_search import expand_query_with_graph, graph_rag_retrieve
-from llm.vector.hybrid_search import get_bm25_retriever, get_qdrant_retriever
+from agents.vector_retrieval import vector_retrieval_agent
 
 
 def retrieval_agent(state: AgentState):
     """
-    Retrieves documents from the vector stores.
+    Retrieves documents from the various data stores (Qdrant, ElasticSearch, Neo4j)
+    and applies metadata filters.
     """
     try:
         retrieval_selection = state.retrieval_selection
@@ -25,19 +27,32 @@ def retrieval_agent(state: AgentState):
             expanded_queries.extend(expand_query_with_graph(state.transformed_query, state.entities))
             expanded_queries = list(set(expanded_queries))  # Remove duplicates
 
+        # Create a temporary state for each sub-agent to pass relevant fields
+        temp_state = AgentState(
+            query=state.query,
+            chat_history=state.chat_history,
+            transformed_query=state.transformed_query,
+            metadata_filters=state.metadata_filters,
+            priorities=state.priorities,
+            entities=state.entities,
+            structured_query=state.structured_query,
+            statistical_query=state.statistical_query,
+        )
+
         for part in methods:
             part = part.lower().strip()
             if part == "graph":
-                retrievers.append(RunnableLambda(lambda inputs: ({"documents": graph_rag_retrieve(inputs["question"])} if isinstance(inputs, dict) and "question" in inputs else {"documents": graph_rag_retrieve(str(inputs))})))
+                retrievers.append(RunnableLambda(lambda x: graph_retrieval_agent(temp_state)))
             elif part == "dense":
                 # Use expanded queries for dense retrieval
-                retrievers.append(get_qdrant_retriever())
+                retrievers.append(RunnableLambda(lambda x: vector_retrieval_agent(temp_state)))
             elif part == "sparse":
                 # Use expanded queries for sparse retrieval
-                retrievers.append(get_bm25_retriever())
+                retrievers.append(RunnableLambda(lambda x: keyword_retrieval_agent(temp_state)))
 
         if not retrievers:
-            retrievers.append(get_qdrant_retriever())
+            # Default to dense retrieval if no methods are specified
+            retrievers.append(RunnableLambda(lambda x: vector_retrieval_agent(temp_state)))
             weights = [1.0]
 
         if len(weights) != len(retrievers):
@@ -51,7 +66,14 @@ def retrieval_agent(state: AgentState):
         for query_term in expanded_queries:
             # The EnsembleRetriever expects a single query, so we'll invoke it once per expanded query
             # and then combine the results.
-            all_docs.extend(ensemble_retriever.invoke(query_term))
+            # Note: The new agents expect AgentState, so we need to adjust how ensemble_retriever is invoked
+            # For now, we'll pass the query_term as the 'question' in a dummy dict for the RunnableLambda
+            # This might need further refinement depending on how EnsembleRetriever handles RunnableLambda inputs
+            result = ensemble_retriever.invoke({"question": query_term})
+            if isinstance(result, dict) and "documents" in result:
+                all_docs.extend(result["documents"])
+            elif isinstance(result, list):  # If the RunnableLambda directly returns a list of documents
+                all_docs.extend(result)
 
         # Deduplicate documents based on page_content and metadata (source, title)
         unique_docs = {}

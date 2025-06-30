@@ -25,6 +25,9 @@ def generator_agent(state: AgentState, model: ChatOpenAI):
                     "question": state.contextualized_query,
                     "context": state.documents,
                     "chat_history": state.chat_history,
+                    "extracted_info": state.extracted_info,
+                    "summarized_content": state.summarized_content,
+                    "citations": state.citations,
                 }
             )
         else:
@@ -40,6 +43,9 @@ def generator_agent(state: AgentState, model: ChatOpenAI):
                 {
                     "question": state.contextualized_query,
                     "chat_history": state.chat_history,
+                    "extracted_info": state.extracted_info,
+                    "summarized_content": state.summarized_content,
+                    "citations": state.citations,
                 }
             )
 

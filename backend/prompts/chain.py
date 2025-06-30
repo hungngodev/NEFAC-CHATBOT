@@ -78,13 +78,44 @@ FINAL_PROMPT = """You are a helpful and precise AI assistant for NEFAC, the New 
 {context}
 ---
 
+**Extracted Information:**
+---
+{extracted_info}
+---
+
+**Summarized Content:**
+---
+{summarized_content}
+---
+
+**Citations:**
+---
+{citations}
+---
+
 **User's Question:** {question}
 """
 
 # ============================================================================
 # GENERAL CHAIN PROMPT
 # ============================================================================
-GENERAL_PROMPT = """You are an AI chatbot for NEFAC, the New England First Amendment Coalition. NEFAC is dedicated to protecting press freedoms and the public's right to know in New England. Provide a helpful response to the user's query based on your knowledge of NEFAC's mission and activities. Do not retrieve documents."""
+GENERAL_PROMPT = """You are an AI chatbot for NEFAC, the New England First Amendment Coalition. NEFAC is dedicated to protecting press freedoms and the public's right to know in New England. Provide a helpful response to the user's query based on your knowledge of NEFAC's mission and activities. Do not retrieve documents.
+
+**Extracted Information:**
+---
+{extracted_info}
+---
+
+**Summarized Content:**
+---
+{summarized_content}
+---
+
+**Citations:**
+---
+{citations}
+---
+"""
 
 # ============================================================================
 # INTENT CLASSIFICATION PROMPT
@@ -92,17 +123,23 @@ GENERAL_PROMPT = """You are an AI chatbot for NEFAC, the New England First Amend
 INTENT_CLASSIFICATION_PROMPT = """Based on the conversation history and the latest user query, determine the user's intent:
 - If the user is requesting specific information, documents, resources, or media on any particular topic, classify it as 'document request'.
 - If the user is asking a general question, making a statement, or seeking broad explanations, classify it as 'general query'.
+- If the user is asking for specific facts or relationships that can be directly queried from a structured knowledge graph (e.g., "Who is the author of case X?", "What organizations are related to NEFAC?"), classify it as 'structured_graph_query'.
+- If the user is asking for aggregations, counts, or statistical information that can be derived from a structured knowledge graph (e.g., "How many cases are related to FOIA?", "Count the number of organizations NEFAC has partnered with"), classify it as 'statistical_graph_query'.
 Ignore whether the topic is related to NEFAC's focus areas; focus solely on the structure and intent of the query.
 
 Examples:
-- "Do you have any information about Excel?" → document request
-- "What is the First Amendment?" → general query
-- "Tell me about NEFAC's mission." → general query
-- "Are there any resources on freedom of speech?" → document request
-- "Can you explain freedom of the press?" → general query
-- "Do you have documents on data privacy laws?" → document request
+- "Do you have any information about Excel?" -> document request
+- "What is the First Amendment?" -> general query
+- "Tell me about NEFAC's mission." -> general query
+- "Are there any resources on freedom of speech?" -> document request
+- "Can you explain freedom of the press?" -> general query
+- "Do you have documents on data privacy laws?" -> document request
+- "Who is the author of the case 'Smith v. Jones'?" -> structured_graph_query
+- "What are the relationships between NEFAC and ACLU?" -> structured_graph_query
+- "How many cases mention the First Amendment?" -> statistical_graph_query
+- "Count the number of organizations involved in free speech litigation." -> statistical_graph_query
 
-Respond with 'document request' or 'general query'."""
+Respond with 'document request', 'general query', 'structured_graph_query', or 'statistical_graph_query'."""
 
 RETRIEVAL_METHOD_SELECTION_PROMPT = """
 You are a retrieval‐method selection agent for NEFAC’s First Amendment resources (nefac.org).  

@@ -1,8 +1,8 @@
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
+from backend.schemas import MethodSelection, RetrievalSelection
 from prompts import METHOD_SELECTION_PROMPT, RETRIEVAL_METHOD_SELECTION_PROMPT
-from schemas import MethodSelection, RetrievalSelection
 
 from .state import AgentState
 

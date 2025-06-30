@@ -4,6 +4,7 @@ from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
 
+from .context_processor import context_processor_agent
 from .retrieval import retrieval_agent  # Import the retrieval agent
 from .state import AgentState
 
@@ -30,7 +31,7 @@ SYNTHESIS_PROMPT = ChatPromptTemplate.from_messages(
             "You are an expert at synthesizing information. Combine the following pieces of context to form a comprehensive answer to the main question. If the context is insufficient, state that.",
         ),
         MessagesPlaceholder(variable_name="chat_history"),
-        ("human", "Main Question: {question}\nContext: {context}\nAnswer:"),
+        ("human", "Main Question: {question}\nContext: {context}\nExtracted Information: {extracted_info}\nSummarized Content: {summarized_content}\nCitations: {citations}\nAnswer:"),
     ]
 )
 
@@ -69,10 +70,22 @@ def multi_step_reasoning_agent(state: AgentState, model: ChatOpenAI, max_steps: 
             )
             retrieval_output = retrieval_agent(retrieval_state_for_sub_q)
             retrieved_docs = retrieval_output.get("documents", [])
-            all_documents.extend(retrieved_docs)
+
+            # Process retrieved documents through context_processor_agent
+            context_processor_state = AgentState(
+                query=state.query,
+                chat_history=state.chat_history,
+                documents=retrieved_docs,
+            )
+            processed_context = context_processor_agent(context_processor_state)
+
+            all_documents.extend(processed_context.get("documents", []))
+            state.extracted_info = processed_context.get("extracted_info")
+            state.summarized_content = processed_context.get("summarized_content")
+            state.citations = processed_context.get("citations")
 
             # 3. Synthesize Context
-            doc_contents = "\n\n".join([doc.page_content for doc in retrieved_docs])
+            doc_contents = "\n\n".join([doc.page_content for doc in processed_context.get("documents", [])])
             current_context += f"\n\n--- Retrieved for '{sub_question}' ---\n{doc_contents}"
 
         # 4. Final Synthesis
@@ -82,6 +95,9 @@ def multi_step_reasoning_agent(state: AgentState, model: ChatOpenAI, max_steps: 
                 "question": state.query,
                 "context": current_context,
                 "chat_history": state.chat_history,
+                "extracted_info": state.extracted_info,
+                "summarized_content": state.summarized_content,
+                "citations": state.citations,
             }
         )
 

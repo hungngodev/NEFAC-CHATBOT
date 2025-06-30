@@ -2,11 +2,14 @@ import logging
 import os
 from typing import Any, Dict, List, Optional
 
+from langchain.chains import GraphCypherQAChain
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.documents import Document
 from langchain_neo4j import Neo4jGraph  # Modern import
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
+
+from agents.state import AgentState
 
 # --- Logging ---
 logging.basicConfig(level=logging.INFO)
@@ -113,6 +116,31 @@ def generate_full_text_query(input: str) -> str:
     if len(words) == 1:
         return f"{words[0]}~2"
     return " AND ".join([f"{w}~2" for w in words])
+
+
+def expand_query_with_graph(question: str, entities: List[Dict[str, str]]) -> List[str]:
+    """
+    Expands the query by finding related entities in the graph.
+    """
+    expanded_terms = []
+    for entity in entities:
+        # Find entities directly connected to the current entity
+        cypher = """
+        MATCH (e)-[r]-(n)
+        WHERE e.name = $entity_name
+        RETURN DISTINCT n.name AS related_entity
+        LIMIT 5
+        """
+        try:
+            results = graph.query(cypher, {"entity_name": entity["name"]})
+            for record in results:
+                expanded_terms.append(record["related_entity"])
+        except Exception as e:
+            logger.warning(f"Graph query for expansion failed for {entity['name']}: {e}")
+
+    # Add the original question as a term as well
+    expanded_terms.append(question)
+    return list(set(expanded_terms))  # Return unique terms
 
 
 # --- Cypher Generation Chain (for fallback/manual use) ---
@@ -293,7 +321,167 @@ def get_detailed_entity_info(entity_name: str) -> Optional[Document]:
         return None
 
 
-# Example usage:
-# docs = graph_rag_retrieve("Who is Elizabeth I?")
-# for doc in docs:
-#     print(doc.page_content, doc.metadata)
+# --- Main Graph RAG Retriever ---
+def graph_rag_retrieve(state: AgentState) -> Dict[str, Any]:
+    """
+    Advanced graph retriever: LLM-powered Cypher, entity canonicalization, path/subgraph, fallback to 1-hop.
+    Returns a list of Document objects with human-readable content and source metadata for UI and answer citation.
+    Now supports static, dynamic, or extended schema.
+    """
+    question = state.transformed_query
+    entities = state.entities
+
+    ensure_fulltext_index()
+    # Refresh schema before querying (best practice if schema changes)
+    try:
+        graph.refresh_schema()
+    except Exception as e:
+        logger.warning(f"Could not refresh schema: {e}")
+
+    # --- New: Prioritize detailed entity info if a single entity is clearly identified ---
+    if len(entities) == 1 and entities[0]["type"] != "Unknown":  # Check for a single, identified entity
+        entity_name = entities[0]["name"]
+        detailed_info_doc = get_detailed_entity_info(entity_name)
+        if detailed_info_doc:
+            logger.info(f"Retrieved detailed info for entity: {entity_name}")
+            return {"documents": [detailed_info_doc]}
+
+    # --- Modern: Use GraphCypherQAChain for LLM-driven Cypher and answer ---
+    try:
+        graph_qa_chain = GraphCypherQAChain.from_llm(llm, graph=graph)
+        result = graph_qa_chain.invoke(question, return_intermediate_steps=True)
+        docs = []
+        if isinstance(result, dict) and "intermediate_steps" in result:
+            for step in result["intermediate_steps"]:
+                if isinstance(step, list):
+                    for record in step:
+                        if isinstance(record, dict):
+                            content = record.get("content") or record.get("text") or str(record)
+                            meta = {k: v for k, v in record.items() if k not in ["content", "text"]}
+                            docs.append(Document(page_content=content, metadata=meta))
+                elif isinstance(step, dict):
+                    content = step.get("content") or step.get("text") or str(step)
+                    meta = {k: v for k, v in step.items() if k not in ["content", "text"]}
+                    docs.append(Document(page_content=content, metadata=meta))
+                # skip string steps (Cypher, LLM answer, etc.)
+            if docs:
+                return {"documents": docs}
+        # If no docs found, continue to next fallback (do not return anything here)
+    except Exception as e:
+        logger.warning(f"GraphCypherQAChain failed: {e}")
+
+    # --- Fallback: LLM Cypher generation and manual execution ---
+    try:
+        cypher = generate_cypher(question, entities, get_graph_schema())
+        logger.info(f"Generated Cypher: {cypher}")
+        results = graph.query(cypher)
+        docs = format_results_as_documents(results)
+        if docs:
+            return {"documents": docs}
+    except Exception as e:
+        logger.warning(f"LLM Cypher generation/execution failed: {e}")
+
+    # --- Fallback: path/subgraph between entities ---
+    if len(entities) > 1:
+        cyphers = extract_paths_between_entities(entities, max_hops=3)
+        all_rows: List[Dict[str, Any]] = []
+        for c in cyphers:
+            try:
+                rows = graph.query(c)
+                all_rows.extend(rows)
+            except Exception:
+                continue
+        if all_rows:
+            return {"documents": format_results_as_documents(all_rows)}
+
+    # --- Fallback: 1-hop neighborhood for each entity (with relationship filtering) ---
+    docs = []
+    for entity in entities:
+        fulltext_query = generate_full_text_query(entity["name"])
+        cypher = """
+        CALL db.index.fulltext.queryNodes('entity', $query, {limit:2})
+        YIELD node,score
+        CALL {
+          MATCH (node)-[r]->(neighbor)
+          WHERE type(r) <> 'MENTIONS'  // Filter out non-informative relations
+          RETURN node.name + ' - ' + type(r) + ' -> ' + neighbor.name + coalesce(' (source: ' + neighbor.source + ')', '') AS output
+          UNION
+          MATCH (node)<-[r]-(neighbor)
+          WHERE type(r) <> 'MENTIONS'
+          RETURN neighbor.name + ' - ' + type(r) + ' -> ' +  node.name + coalesce(' (source: ' + node.source + ')', '') AS output
+        }
+        RETURN output LIMIT 50
+        """
+        response = graph.query(cypher, {"query": fulltext_query})
+        for el in response:
+            docs.append(
+                Document(
+                    page_content=el.get("output", str(el)),
+                    metadata={
+                        "entity": entity["name"],
+                        "source": "neo4j_graph",
+                        "type": "1hop_fallback",
+                    },
+                )
+            )
+    return {"documents": docs}
+
+
+# --- Structured Data Query Tool (New) ---
+def structured_data_query_tool(state: AgentState) -> Dict[str, Any]:
+    """
+    Executes a structured Cypher query against the Neo4j graph based on the user's intent.
+    This tool is for specific, factual queries that can be directly translated to Cypher.
+    The query should be provided in state.structured_query.
+    """
+    try:
+        cypher_query = state.structured_query
+        if not cypher_query:
+            return {"error": "No structured query provided in AgentState.", "documents": []}
+
+        logger.info(f"Executing structured Cypher query: {cypher_query}")
+        results = graph.query(cypher_query)
+        docs = format_results_as_documents(results)
+        for doc in docs:
+            doc.metadata["stream_tag"] = "structured_graph_data"
+        return {"documents": docs}
+    except Exception as e:
+        return {"error": f"Error executing structured graph query: {e}", "documents": []}
+
+
+# --- Statistical Query Tool (New) ---
+def statistical_query_tool(state: AgentState) -> Dict[str, Any]:
+    """
+    Performs statistical aggregations on the Neo4j graph based on the user's intent.
+    The query should be provided in state.statistical_query.
+    """
+    try:
+        cypher_query = state.statistical_query
+        if not cypher_query:
+            return {"error": "No statistical query provided in AgentState.", "documents": []}
+
+        logger.info(f"Executing statistical Cypher query: {cypher_query}")
+        results = graph.query(cypher_query)
+        docs = format_results_as_documents(results)
+        for doc in docs:
+            doc.metadata["stream_tag"] = "statistical_graph_data"
+        return {"documents": docs}
+    except Exception as e:
+        return {"error": f"Error executing statistical graph query: {e}", "documents": []}
+
+
+# --- Main Graph Retrieval Agent ---
+def graph_retrieval_agent(state: AgentState) -> Dict[str, Any]:
+    """
+    Main agent for retrieving information from the Neo4j graph database.
+    Delegates to specific graph tools based on the query type or intent.
+    """
+    # This is a simplified delegation. In a real scenario, an LLM or a more complex
+    # logic would determine which specific graph tool to use (e.g., structured, statistical, or RAG).
+    if state.structured_query:
+        return structured_data_query_tool(state)
+    elif state.statistical_query:
+        return statistical_query_tool(state)
+    else:
+        # Fallback to the general graph RAG retrieval
+        return graph_rag_retrieve(state)

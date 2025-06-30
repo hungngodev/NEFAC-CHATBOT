@@ -2,16 +2,16 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
 
-from llm.vector.graph_search import entity_chain
+from backend.agents.graph_retrieval import Entities, canonicalize_entities, disambiguate_entities, entity_chain, generate_cypher, get_graph_schema
+from backend.schemas import IntentClassification
 from prompts import CONTEXTUALIZE_PROMPT, INTENT_CLASSIFICATION_PROMPT
-from schemas import Entities, IntentClassification
 
 from .state import AgentState
 
 
 def query_understanding_agent(state: AgentState, model: ChatOpenAI):
     """
-    Contextualizes the query and classifies the user's intent.
+    Contextualizes the query, classifies the user's intent, and generates graph queries if applicable.
     """
     try:
         # Contextualize the query
@@ -46,11 +46,28 @@ def query_understanding_agent(state: AgentState, model: ChatOpenAI):
             entities_obj = entities_raw
         else:
             entities_obj = Entities(names=[])  # Fallback
+        entities = canonicalize_entities(entities_obj)
+        entities = disambiguate_entities(entities, contextualized_query)
+
+        # Initialize structured_query and statistical_query to None
+        structured_query = None
+        statistical_query = None
+
+        # Generate Cypher query if intent is for structured or statistical graph query
+        if intent_classification.intent == "structured_graph_query" or intent_classification.intent == "statistical_graph_query":
+            schema = get_graph_schema()  # Get the graph schema
+            generated_cypher = generate_cypher(contextualized_query, entities, schema)
+            if intent_classification.intent == "structured_graph_query":
+                structured_query = generated_cypher
+            else:  # statistical_graph_query
+                statistical_query = generated_cypher
 
         return {
             "contextualized_query": contextualized_query,
             "intent": intent_classification.intent,
             "entities": entities_obj.names,
+            "structured_query": structured_query,
+            "statistical_query": statistical_query,
         }
     except Exception as e:
         return {"error": str(e)}
