@@ -13,9 +13,7 @@ try:
 except ImportError:
     QdrantVectorStore = None
     QdrantClient = None
-    print(
-        "Warning: langchain_qdrant or qdrant_client not installed. Qdrant vector DB retrieval will be skipped."
-    )
+    print("Warning: langchain_qdrant or qdrant_client not installed. Qdrant vector DB retrieval will be skipped.")
 
 from load_env import load_env
 
@@ -72,7 +70,5 @@ def get_cohere_rerank_retriever():
         raise EnvironmentError("COHERE_API_KEY must be set in the environment.")
     base_retriever = get_hybrid_retriever()
     compressor = CohereRerank(model="rerank-english-v3.0")
-    compression_retriever = ContextualCompressionRetriever(
-        base_compressor=compressor, base_retriever=base_retriever
-    )
+    compression_retriever = ContextualCompressionRetriever(base_compressor=compressor, base_retriever=base_retriever)
     return compression_retriever

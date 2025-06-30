@@ -12,7 +12,7 @@ Contains prompts from the main LangChain pipeline:
 
 - `CONTEXTUALIZE_PROMPT` - For reformulating questions with chat history
 - `METHOD_SELECTION_PROMPT` - For choosing query transformation strategy
-- `RETRIEVAL_PROMPT` - For document retrieval responses
+- `FINAL_PROMPT` - For document retrieval responses
 - `GENERAL_PROMPT` - For general conversation responses
 - `INTENT_CLASSIFICATION_PROMPT` - For classifying user intent
 
@@ -63,7 +63,7 @@ Import prompts from the package:
 ```python
 from prompts import (
     CONTEXTUALIZE_PROMPT,
-    RETRIEVAL_PROMPT,
+    FINAL_PROMPT,
     TRANSCRIPT_CLEANING_PROMPT,
     # ... etc
 )
