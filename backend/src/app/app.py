@@ -1,0 +1,43 @@
+import logging
+
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
+
+from src.core.agents.main import ask_llm_stream_agentic as ask_llm_stream
+from src.load_env import load_env
+
+load_env()
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for load balancers and monitoring"""
+    return {"status": "healthy", "service": "nefac-backend"}
+
+
+@app.get("/ask-llm")
+async def ask_llm(
+    query: str,
+    convoHistory: str = "",
+):
+    try:
+        return StreamingResponse(
+            ask_llm_stream(None, query, convoHistory),
+            media_type="text/event-stream",
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

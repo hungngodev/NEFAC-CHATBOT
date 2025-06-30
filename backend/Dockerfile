@@ -3,7 +3,7 @@ FROM python:3.10
 WORKDIR /app
 
 # Set PYTHONPATH for backend
-ENV PYTHONPATH="/app"
+ENV PYTHONPATH="/app/src"
 
 # Install system dependencies including build tools and BLAS libraries
 RUN apt-get update && apt-get install -y \
@@ -28,7 +28,7 @@ COPY pyproject.toml poetry.lock ./
 RUN /root/.local/bin/poetry install --no-interaction --no-ansi --only=main --no-root
 
 # Copy backend code
-COPY . .
+COPY src /app/src
 
 # Create non-root user for security
 RUN useradd --create-home --shell /bin/bash app && \
@@ -47,4 +47,4 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
 # Run the application
-CMD ["gunicorn", "app:app", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "--log-level", "info", "--access-logfile", "-", "--error-logfile", "-"] 
+CMD ["gunicorn", "src.app.app:app", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "--log-level", "info", "--access-logfile", "-", "--error-logfile", "-"] 

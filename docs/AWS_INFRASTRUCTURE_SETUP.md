@@ -81,7 +81,7 @@ nefac/
 │       ├── sqs/               # SQS queues
 │       ├── iam/               # IAM roles and policies
 │       └── s3/                # S3 buckets
-└── docker-compose.yml         # LocalStack configuration
+└── docker/docker-compose.yml         # LocalStack configuration
 ```
 
 ## 🔧 LocalStack Setup
@@ -103,7 +103,7 @@ LocalStack provides a local AWS environment for development and testing without 
 ### Configuration
 
 ```yaml
-# docker-compose.yml
+# docker/docker-compose.yml
 localstack:
   image: localstack/localstack:latest
   ports:
