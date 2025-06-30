@@ -12,6 +12,7 @@ from src.core.agents.query_understanding import query_understanding_agent
 from src.core.agents.retrieval import retrieval_agent
 from src.core.agents.retrieval_strategy import retrieval_strategy_agent
 from src.core.agents.state import AgentState
+from src.core.agents.summarizer import summarizer_agent  # Import the new summarizer agent
 from src.core.agents.validation import validation_agent
 
 
@@ -27,6 +28,7 @@ def create_graph():
     generator_agent_with_model = partial(generator_agent, model=model)
     validation_agent_with_model = partial(validation_agent, model=model)
     multi_step_reasoning_agent_with_model = partial(multi_step_reasoning_agent, model=model)
+    summarizer_agent_with_model = partial(summarizer_agent, model=model)  # New summarizer partial
 
     workflow = StateGraph(AgentState)
 
@@ -39,6 +41,7 @@ def create_graph():
     workflow.add_node("generator", generator_agent_with_model)
     workflow.add_node("validation", validation_agent_with_model)
     workflow.add_node("multi_step_reasoning", multi_step_reasoning_agent_with_model)
+    workflow.add_node("summarizer", summarizer_agent_with_model)  # New summarizer node
     workflow.add_node(
         "error",
         lambda state: {"answer": "I'm sorry, but I encountered an error. Please try again."},
@@ -55,6 +58,53 @@ def create_graph():
     def route_from_query_understanding(state: AgentState):
         if state.error:
             return "error"
+        # Always route to check_history_length first
+        return "check_history_length"
+
+    workflow.add_conditional_edges(
+        "query_understanding",
+        route_from_query_understanding,
+        {
+            "check_history_length": "check_history_length",
+            "error": "error",
+        },
+    )
+
+    # New node to check history length and route to summarizer or next step
+    def check_history_length(state: AgentState):
+        # Define a threshold for summarization (e.g., 10 messages)
+        # Each user query and agent response counts as one message.
+        # So, 10 messages means 5 user turns and 5 agent turns.
+        SUMMARY_THRESHOLD = 10
+        if len(state.chat_history) >= SUMMARY_THRESHOLD:
+            return "summarize"
+        else:
+            # Route to the original next step based on intent
+            if state.intent == "document request":
+                return "retrieval_strategy"
+            elif state.intent in ["structured_graph_query", "statistical_graph_query"]:
+                return "retrieval"
+            else:
+                return "generator"
+
+    workflow.add_node("check_history_length", check_history_length)
+    workflow.add_conditional_edges(
+        "check_history_length",
+        check_history_length,
+        {
+            "summarize": "summarizer",
+            "retrieval_strategy": "retrieval_strategy",
+            "retrieval": "retrieval",
+            "generator": "generator",
+            "error": "error",
+        },
+    )
+
+    # Add conditional edges from summarizer
+    def route_from_summarizer(state: AgentState):
+        if state.error:
+            return "error"
+        # After summarization, route to the original next step based on intent
         if state.intent == "document request":
             return "retrieval_strategy"
         elif state.intent in ["structured_graph_query", "statistical_graph_query"]:
@@ -63,8 +113,8 @@ def create_graph():
             return "generator"
 
     workflow.add_conditional_edges(
-        "query_understanding",
-        route_from_query_understanding,
+        "summarizer",
+        route_from_summarizer,
         {
             "retrieval_strategy": "retrieval_strategy",
             "retrieval": "retrieval",

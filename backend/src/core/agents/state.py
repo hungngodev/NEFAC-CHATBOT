@@ -9,8 +9,10 @@ class AgentState(BaseModel):
     Represents the shared state of the agentic workflow.
     """
 
+    session_id: Optional[str] = Field(default=None, description="Unique identifier for the current session (used for session memory in Pinecone)")
     query: str = Field(description="The user's original query")
     chat_history: List[BaseMessage] = Field(description="The conversation history")
+    history_summary: Optional[str] = Field(description="A summary of the conversation history")
 
     contextualized_query: Optional[str] = Field(description="The query after contextualization")
     intent: Optional[str] = Field(description="The user's classified intent")
@@ -30,6 +32,7 @@ class AgentState(BaseModel):
     extracted_info: Optional[Any] = Field(description="Extracted information from documents")
     summarized_content: Optional[Any] = Field(description="Summarized content of documents")
     citations: Optional[Any] = Field(description="Citations and source attribution for documents")
+    session_memory: Optional[List[Dict[str, Any]]] = Field(default=None, description="Relevant session memory items retrieved from Pinecone for the current query")
     structured_query: Optional[str] = Field(description="Cypher query for structured data retrieval from graph database")
     statistical_query: Optional[str] = Field(description="Cypher query for statistical data retrieval from graph database")
     error: Optional[str] = Field(description="Any error that occurred during the workflow")
