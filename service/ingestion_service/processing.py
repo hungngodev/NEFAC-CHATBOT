@@ -63,14 +63,7 @@ def loader_runnable(file_type: str, metadata_json_path: str) -> List[Document]:
     loader = LoaderService(logging.getLogger("pipeline"))
     docs = loader.load(file_type, metadata_json_path)
     # Convert to Document objects if needed
-    return [
-        (
-            Document(page_content=doc["text"], metadata=doc.get("metadata", {}))
-            if not isinstance(doc, Document)
-            else doc
-        )
-        for doc in docs
-    ]
+    return docs
 
 
 class PipelineInput(TypedDict):

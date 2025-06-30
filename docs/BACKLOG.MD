@@ -120,3 +120,67 @@ _This file is a living document. Add new ideas and revisit after each phase!_
 - [Medium: GraphRAG using LangChain](https://medium.com/data-science-in-your-pocket/graphrag-using-langchain-31b1ef8328b9) — Tutorial and code for building GraphRAG with LangChain.
 - [LangChain Blog: Enhancing RAG-based application accuracy by constructing and leveraging knowledge graphs](https://blog.langchain.com/enhancing-rag-based-applications-accuracy-by-constructing-and-leveraging-knowledge-graphs/) — Best practices for knowledge graph construction in RAG.
 - [RAGAboutIt: Building a GraphRAG System from Scratch with LangChain](https://ragaboutit.com/building-a-graph-rag-system-from-scratch-with-langchain-a-comprehensive-tutorial/) — Comprehensive tutorial for GraphRAG with LangChain.
+
+## Multi-Hop Reasoning & Advanced Retrieval (Planned)
+
+### Motivation
+
+- Many NEFAC use cases require reasoning over multiple hops in the knowledge graph (e.g., "Which organizations advocated for statutes cited in cases involving a specific person?").
+- Simple 1-hop retrieval is insufficient for questions that require traversing several relationships or aggregating information across entities.
+
+### Planned Features
+
+- **Multi-hop Cypher Generation:**
+  - Enhance LLM prompt engineering and few-shot examples to support multi-hop Cypher queries (e.g., 2-3 hops, aggregation, filtering).
+  - Example: "Find all statutes cited in cases where Rob Bertsche was involved and the outcome was 'favorable'."
+- **Path/Subgraph Extraction:**
+  - Implement routines to extract shortest paths or relevant subgraphs between multiple entities (e.g., Person → Case → Statute).
+  - Use fallback logic to generate and execute multiple Cypher queries for all entity pairs.
+- **Graph Algorithms:**
+  - Integrate Neo4j Graph Data Science algorithms (e.g., shortestPath, Personalized PageRank, node similarity) for recommendations and influence queries.
+- **Hybrid Retrieval Integration:**
+  - Combine graph-based multi-hop retrieval with vector and keyword retrievers.
+  - Use rerankers (e.g., CohereRerank) to select the most relevant context for the LLM.
+- **Explainability:**
+  - Return not just answers, but also the supporting paths/subgraphs and their provenance (metadata).
+
+### Example Multi-Hop Query
+
+- "Which organizations advocated for reforms in statutes that were cited in cases involving NEFAC mentors?"
+  - (Person:Mentor)-[:INVOLVED_IN]->(Case)-[:CITES]->(Statute)<-[:ADVOCATES_FOR]-(Organization)
+
+### Status
+
+- Initial support for path extraction and fallback logic is present.
+- Need to expand prompt examples, Cypher generation, and retrieval orchestration for robust multi-hop reasoning.
+
+## Tool Calling (Planned)
+
+### Motivation
+
+- Enable the LLM to call external tools and APIs as part of the retrieval and reasoning process, increasing flexibility and automation.
+- Tools may include: dynamic Cypher query generation, on-demand graph analytics (e.g., PageRank, node similarity), document summarization, hybrid retriever orchestration, and document preview/viewer utilities.
+
+### Planned Features
+
+- **Dynamic Tool Invocation:**
+  - Allow the LLM to select and invoke tools (functions, APIs) for sub-tasks during a user query session.
+  - Example: LLM generates a Cypher query, then calls a graph analytics tool to run Personalized PageRank, then calls a summarizer on the results.
+- **Hybrid Retrieval Orchestration:**
+  - Use tool-calling to combine graph, vector, and keyword retrieval, and to rerank or filter results dynamically.
+- **Explainable Document Previews:**
+  - Enable the LLM to call a document preview or metadata tool to show users the provenance and context of retrieved results.
+- **Agentic Workflows:**
+  - Support multi-step, agent-like reasoning where the LLM chains together tool calls to answer complex queries.
+- **LangChain Tool-Calling Integration:**
+  - Leverage LangChain's tool-calling APIs and agent frameworks for seamless integration.
+
+### Example Use Case
+
+- User asks: "Show me the most influential organizations in NEFAC's advocacy network and summarize their recent activities."
+  - LLM calls: (1) Cypher generator → (2) PageRank tool → (3) Document retriever → (4) Summarizer tool.
+
+### Status
+
+- Tool-calling APIs and agentic frameworks are under evaluation for integration.
+- Need to define tool interfaces, security, and orchestration logic for production use.

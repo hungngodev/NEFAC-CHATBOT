@@ -41,7 +41,8 @@ For topics related to:
 5. hyde - Use for technical, hypothetical, or highly specialized questions. Generate a hypothetical answer or document to guide retrieval.
 6. factual - Use for straightforward factual questions where precision and specificity are critical. Reformulate the query to emphasize named entities, dates, legal topics, and relationships, using exact phrases and advanced search operators if appropriate.
 7. contextual - Use when the question is missing important background, historical, regional (New England), or legal/policy context. Infer and add the implied context to the query to improve retrieval accuracy.
-8. default - Use for simple, direct questions that do not require any special handling or transformation.
+8. multi-step - Use for complex analytical questions requiring step-by-step reasoning. Breaks down complex queries into sequential reasoning steps, each building on previous context and findings.
+9. default - Use for simple, direct questions that do not require any special handling or transformation.
 
 Examples of when to use each method:
 - "What are the main challenges to public records access in Vermont?" → factual
@@ -51,6 +52,7 @@ Examples of when to use each method:
 - "Can I film police during a protest in Massachusetts?" → stepback
 - "What if a journalist hypothetically faces a subpoena for confidential sources?" → hyde
 - "What are the legal rights around recording public officials in Massachusetts?" (missing context about public spaces, state law, etc.) → contextual
+- "Analyze the impact of recent Supreme Court decisions on student free speech rights in public schools." → multi-step
 - "What is NEFAC?" → default
 Question: {question}
 Respond ONLY with the method name."""
