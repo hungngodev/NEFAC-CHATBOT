@@ -21,7 +21,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-
+*.pkl
 
 /resource
 # Virtual Environment
@@ -143,3 +143,4 @@ dist/
 
 # Frontend
 frontend/package-lock.json
+backend/.langgraph_api/
