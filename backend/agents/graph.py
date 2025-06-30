@@ -5,6 +5,7 @@ from langgraph.graph import END, StateGraph
 
 from llm.constant import MODEL_NAME
 
+from .context_processor import context_processor_agent
 from .generator import generator_agent
 from .multi_step_reasoning import multi_step_reasoning_agent
 from .query_transformer import query_transformer_agent
@@ -22,15 +23,11 @@ def create_graph():
     model = ChatOpenAI(model=MODEL_NAME, streaming=True)
 
     # Create partial functions with the model
-    query_understanding_agent_with_model = partial(
-        query_understanding_agent, model=model
-    )
+    query_understanding_agent_with_model = partial(query_understanding_agent, model=model)
     retrieval_strategy_agent_with_model = partial(retrieval_strategy_agent, model=model)
     generator_agent_with_model = partial(generator_agent, model=model)
     validation_agent_with_model = partial(validation_agent, model=model)
-    multi_step_reasoning_agent_with_model = partial(
-        multi_step_reasoning_agent, model=model
-    )
+    multi_step_reasoning_agent_with_model = partial(multi_step_reasoning_agent, model=model)
 
     workflow = StateGraph(AgentState)
 
@@ -39,20 +36,20 @@ def create_graph():
     workflow.add_node("retrieval_strategy", retrieval_strategy_agent_with_model)
     workflow.add_node("query_transformer", query_transformer_agent)
     workflow.add_node("retrieval", retrieval_agent)
+    workflow.add_node("context_processor", context_processor_agent)
     workflow.add_node("generator", generator_agent_with_model)
     workflow.add_node("validation", validation_agent_with_model)
     workflow.add_node("multi_step_reasoning", multi_step_reasoning_agent_with_model)
     workflow.add_node(
         "error",
-        lambda state: {
-            "answer": "I'm sorry, but I encountered an error. Please try again."
-        },
+        lambda state: {"answer": "I'm sorry, but I encountered an error. Please try again."},
     )
 
     # Add edges
     workflow.set_entry_point("query_understanding")
     workflow.add_edge("query_transformer", "retrieval")
-    workflow.add_edge("retrieval", "generator")
+    workflow.add_edge("retrieval", "context_processor")
+    workflow.add_edge("context_processor", "generator")
     workflow.add_edge("generator", "validation")
 
     # Add conditional edges from query_understanding
@@ -61,6 +58,8 @@ def create_graph():
             return "error"
         if state.intent == "document request":
             return "retrieval_strategy"
+        elif state.intent in ["structured_graph_query", "statistical_graph_query"]:
+            return "retrieval"
         else:
             return "generator"
 
@@ -69,6 +68,7 @@ def create_graph():
         route_from_query_understanding,
         {
             "retrieval_strategy": "retrieval_strategy",
+            "retrieval": "retrieval",
             "generator": "generator",
             "error": "error",
         },

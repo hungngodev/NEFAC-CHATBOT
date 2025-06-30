@@ -1,5 +1,5 @@
-import os
 import glob
+import os
 
 
 def file_requires_deletion(file_path):

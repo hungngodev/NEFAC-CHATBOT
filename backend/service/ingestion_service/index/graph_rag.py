@@ -1,10 +1,11 @@
-import os
 import logging
-from typing import List, Any
+import os
+from typing import Any, List
+
+from langchain.prompts import ChatPromptTemplate
 from langchain_community.graphs import Neo4jGraph
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 from langchain_openai import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
 
 # -----------------------------------------------------------------------------
 # --- Logging and Env Vars
@@ -109,9 +110,7 @@ for canon, aliases in ENTITY_ALIASES.items():
 
 def resolve_entity(name: str) -> str:
     """Return canonical entity name, or original if not found in alias map."""
-    name_clean = (
-        name.strip().lower().replace("-", " ").replace(".", "").replace("_", " ")
-    )
+    name_clean = name.strip().lower().replace("-", " ").replace(".", "").replace("_", " ")
     return CANONICAL_ENTITY_LOOKUP.get(name_clean, name)
 
 

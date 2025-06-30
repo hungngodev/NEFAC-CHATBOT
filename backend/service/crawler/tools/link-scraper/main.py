@@ -1,9 +1,10 @@
 import argparse
+import json
+from collections import deque
+from urllib.parse import urldefrag, urljoin, urlparse
+
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse, urldefrag
-from collections import deque
-import json
 from tqdm import tqdm
 
 
@@ -89,9 +90,7 @@ class WebsiteCrawler:
                 defragged_url = urldefrag(absolute_url).url
                 normalized_url = self._normalize_protocol(defragged_url)
                 if self._is_valid_link(normalized_url):
-                    if self.include_attachments or not self.is_attachment(
-                        normalized_url
-                    ):
+                    if self.include_attachments or not self.is_attachment(normalized_url):
                         links.add(normalized_url)
                     elif self.verbose:
                         print(f"Ignoring attachment: {normalized_url}")
@@ -135,14 +134,10 @@ class WebsiteCrawler:
                             defragged_url = urldefrag(absolute_url).url
                             normalized_url = self._normalize_protocol(defragged_url)
                             if self._is_valid_link(normalized_url):
-                                if self.include_attachments or not self.is_attachment(
-                                    normalized_url
-                                ):
+                                if self.include_attachments or not self.is_attachment(normalized_url):
                                     links.add(normalized_url)
                                     if self.verbose:
-                                        print(
-                                            f"Found NEFAC nav link: {normalized_url} (selector: {selector})"
-                                        )
+                                        print(f"Found NEFAC nav link: {normalized_url} (selector: {selector})")
                 except Exception as e:
                     if self.verbose:
                         print(f"Error with selector {selector}: {e}")
@@ -173,14 +168,10 @@ class WebsiteCrawler:
                             defragged_url = urldefrag(absolute_url).url
                             normalized_url = self._normalize_protocol(defragged_url)
                             if self._is_valid_link(normalized_url):
-                                if self.include_attachments or not self.is_attachment(
-                                    normalized_url
-                                ):
+                                if self.include_attachments or not self.is_attachment(normalized_url):
                                     links.add(normalized_url)
                                     if self.verbose:
-                                        print(
-                                            f"Found navigation container link: {normalized_url} (container: {container_selector})"
-                                        )
+                                        print(f"Found navigation container link: {normalized_url} (container: {container_selector})")
                 except Exception as e:
                     if self.verbose:
                         print(f"Error with container {container_selector}: {e}")
@@ -201,23 +192,17 @@ class WebsiteCrawler:
                     classes = []
 
                 # Check if any navigation-related class is present
-                is_nav_link = any(
-                    nav_class in " ".join(classes).lower() for nav_class in nav_classes
-                )
+                is_nav_link = any(nav_class in " ".join(classes).lower() for nav_class in nav_classes)
 
                 if is_nav_link:
                     absolute_url = urljoin(url, str(tag["href"]))
                     defragged_url = urldefrag(absolute_url).url
                     normalized_url = self._normalize_protocol(defragged_url)
                     if self._is_valid_link(normalized_url):
-                        if self.include_attachments or not self.is_attachment(
-                            normalized_url
-                        ):
+                        if self.include_attachments or not self.is_attachment(normalized_url):
                             links.add(normalized_url)
                             if self.verbose:
-                                print(
-                                    f"Found navigation class link: {normalized_url} (classes: {classes})"
-                                )
+                                print(f"Found navigation class link: {normalized_url} (classes: {classes})")
 
             if self.verbose:
                 print(f"Total unique links found: {len(links)}")
@@ -234,9 +219,7 @@ class WebsiteCrawler:
         if self.verbose:
             print(f"Found {len(initial_links)} initial links from homepage")
 
-        pbar = tqdm(
-            total=len(initial_links), desc="Exploring links", disable=not self.verbose
-        )
+        pbar = tqdm(total=len(initial_links), desc="Exploring links", disable=not self.verbose)
         explored_initial = set()
 
         while self.queue:
@@ -250,10 +233,7 @@ class WebsiteCrawler:
                 continue
 
             for link in self._extract_links(current_url):
-                if (
-                    link not in self.visited
-                    or current_depth + 1 < self.visited[link]["depth"]
-                ):
+                if link not in self.visited or current_depth + 1 < self.visited[link]["depth"]:
                     self.visited[link] = {
                         "path": self.visited[current_url]["path"] + [link],
                         "depth": current_depth + 1,

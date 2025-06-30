@@ -8,9 +8,7 @@ from .state import AgentState
 class Validation(BaseModel):
     """Validation of the answer against the context."""
 
-    is_valid: bool = Field(
-        description="Whether the answer is valid and supported by the context."
-    )
+    is_valid: bool = Field(description="Whether the answer is valid and supported by the context.")
     reason: str = Field(description="The reason for the validation result.")
 
 

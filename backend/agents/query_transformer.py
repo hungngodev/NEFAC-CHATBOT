@@ -34,9 +34,7 @@ def query_transformer_agent(state: AgentState):
         else:
             transformer_chain = get_multi_query_chain(retriever)
 
-        transformed_query = transformer_chain.invoke(
-            {"question": state.contextualized_query}
-        )
+        transformed_query = transformer_chain.invoke({"question": state.contextualized_query})
 
         return {"transformed_query": transformed_query}
     except Exception as e:

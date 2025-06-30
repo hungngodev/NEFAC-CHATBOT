@@ -1,25 +1,27 @@
-import os
-import json
-import requests
-import time
-from datetime import datetime
-from urllib.parse import urlparse, urljoin, parse_qs
-from pathlib import Path
 import argparse
-from typing import List, Dict, Any, Optional
+import json
 import logging
+import mimetypes
+import os
+import random
 import re
 import subprocess
 import sys
-import mimetypes
-from dotenv import load_dotenv
-import random
+import tempfile
+import time
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+from urllib.parse import parse_qs, urljoin, urlparse
+
+import PyPDF2
+import requests
 import yt_dlp
+from dotenv import load_dotenv
 from youtube_transcript_api import YouTubeTranscriptApi  # type: ignore
 from youtube_transcript_api.proxies import WebshareProxyConfig
-import PyPDF2
-import tempfile
-from service.schemas.metadata import PDFMetadata, ContentMetadata, YouTubeMetadata
+
+from service.schemas.metadata import ContentMetadata, PDFMetadata, YouTubeMetadata
 
 # Configure logging
 logging.basicConfig(
@@ -162,9 +164,7 @@ class NEFACDocumentCrawler:
 
         return headers
 
-    def fetch_with_pagination(
-        self, endpoint: str, params: Optional[Dict] = None
-    ) -> List[Dict]:
+    def fetch_with_pagination(self, endpoint: str, params: Optional[Dict] = None) -> List[Dict]:
         """Fetch all items from a paginated endpoint."""
         if params is None:
             params = {}
@@ -207,9 +207,7 @@ class NEFACDocumentCrawler:
         all_media = []
 
         # Fetch all media items -
-        media_items = self.fetch_with_pagination(
-            self.endpoints["media"], params={"per_page": 100}
-        )
+        media_items = self.fetch_with_pagination(self.endpoints["media"], params={"per_page": 100})
 
         for item in media_items:
             mime_type = item.get("mime_type", "")
@@ -290,9 +288,7 @@ class NEFACDocumentCrawler:
                     mime_type = item.get("mimeType", "")
 
                     # Check if it's a document type we're interested in
-                    if any(
-                        doc_type in mime_type for doc_type in self.document_types.keys()
-                    ):
+                    if any(doc_type in mime_type for doc_type in self.document_types.keys()):
                         document_info = {
                             "id": item["id"],
                             "title": item["title"],
@@ -303,11 +299,7 @@ class NEFACDocumentCrawler:
                             "alt_text": item.get("altText", ""),
                             "description": item.get("description", ""),
                             "caption": item.get("caption", ""),
-                            "source": (
-                                "graphql_authenticated"
-                                if self.faust_key
-                                else "graphql_api"
-                            ),
+                            "source": ("graphql_authenticated" if self.faust_key else "graphql_api"),
                             "file_size": 0,  # GraphQL doesn't provide file size
                         }
 
@@ -330,9 +322,7 @@ class NEFACDocumentCrawler:
         logger.info(f"Found {len(all_media)} documents via GraphQL API")
         return all_media
 
-    def graphql_request(
-        self, query: str, variables: Optional[Dict] = None
-    ) -> Optional[Dict]:
+    def graphql_request(self, query: str, variables: Optional[Dict] = None) -> Optional[Dict]:
         """Make a GraphQL request with proper headers."""
         try:
             response = requests.post(
@@ -428,14 +418,8 @@ class NEFACDocumentCrawler:
 
             try:
                 response = self.graphql_request(query, variables)
-                if (
-                    not response
-                    or "data" not in response
-                    or not response["data"].get("posts")
-                ):
-                    logger.error(
-                        f"Invalid or empty GraphQL response for posts: {response}"
-                    )
+                if not response or "data" not in response or not response["data"].get("posts"):
+                    logger.error(f"Invalid or empty GraphQL response for posts: {response}")
                     break
 
                 data = response["data"]["posts"]
@@ -451,9 +435,7 @@ class NEFACDocumentCrawler:
                 has_next_page = page_info.get("hasNextPage", False)
                 after_cursor = page_info.get("endCursor")
 
-                logger.info(
-                    f"Fetched {len(posts)} posts (total: {len(all_posts)}), hasNextPage: {has_next_page}"
-                )
+                logger.info(f"Fetched {len(posts)} posts (total: {len(all_posts)}), hasNextPage: {has_next_page}")
 
             except Exception as e:
                 logger.error(f"Error fetching posts: {e}")
@@ -468,9 +450,7 @@ class NEFACDocumentCrawler:
             try:
                 post_id = post.get("databaseId")
                 if not post_id:
-                    logger.warning(
-                        f"Skipping post with no databaseId: {post.get('title')}"
-                    )
+                    logger.warning(f"Skipping post with no databaseId: {post.get('title')}")
                     continue
 
                 title = post.get("title", "Untitled")
@@ -517,11 +497,7 @@ class NEFACDocumentCrawler:
                     "modified": post.get("modified"),
                     "uri": post.get("uri"),
                     "link": post.get("link"),
-                    "source_url": (
-                        f"https://nefac.org{post.get('uri')}"
-                        if post.get("uri")
-                        else post.get("link")
-                    ),
+                    "source_url": (f"https://nefac.org{post.get('uri')}" if post.get("uri") else post.get("link")),
                     "excerpt": post.get("excerpt"),
                     "content_length": len(html_content),
                     "author": {
@@ -573,9 +549,7 @@ class NEFACDocumentCrawler:
         try:
             with open(content_metadata_file, "w", encoding="utf-8") as f:
                 json.dump(content_metadata, f, indent=2, default=str)
-            logger.info(
-                f"Saved metadata for {len(content_metadata)} content files to {content_metadata_file}"
-            )
+            logger.info(f"Saved metadata for {len(content_metadata)} content files to {content_metadata_file}")
         except Exception as e:
             logger.error(f"Error saving content metadata: {e}")
 
@@ -593,9 +567,7 @@ class NEFACDocumentCrawler:
             if "_embedded" in post and "wp:featuredmedia" in post["_embedded"]:
                 for media in post["_embedded"]["wp:featuredmedia"]:
                     mime_type = media.get("mime_type", "")
-                    if any(
-                        doc_type in mime_type for doc_type in self.document_types.keys()
-                    ):
+                    if any(doc_type in mime_type for doc_type in self.document_types.keys()):
                         document_info = {
                             "id": media["id"],
                             "title": media["title"]["rendered"],
@@ -604,14 +576,10 @@ class NEFACDocumentCrawler:
                             "date": media["date"],
                             "modified": media["modified"],
                             "alt_text": media.get("alt_text", ""),
-                            "description": media.get("description", {}).get(
-                                "rendered", ""
-                            ),
+                            "description": media.get("description", {}).get("rendered", ""),
                             "caption": media.get("caption", {}).get("rendered", ""),
                             "source": "wordpress_rest_api",
-                            "file_size": media.get("media_details", {}).get(
-                                "filesize", 0
-                            ),
+                            "file_size": media.get("media_details", {}).get("filesize", 0),
                             "related_post": {
                                 "id": post["id"],
                                 "title": post["title"]["rendered"],
@@ -635,9 +603,7 @@ class NEFACDocumentCrawler:
             if "_embedded" in post and "wp:featuredmedia" in post["_embedded"]:
                 for media in post["_embedded"]["wp:featuredmedia"]:
                     mime_type = media.get("mime_type", "")
-                    if any(
-                        doc_type in mime_type for doc_type in self.document_types.keys()
-                    ):
+                    if any(doc_type in mime_type for doc_type in self.document_types.keys()):
                         document_info = {
                             "id": media["id"],
                             "title": media["title"]["rendered"],
@@ -646,14 +612,10 @@ class NEFACDocumentCrawler:
                             "date": media["date"],
                             "modified": media["modified"],
                             "alt_text": media.get("alt_text", ""),
-                            "description": media.get("description", {}).get(
-                                "rendered", ""
-                            ),
+                            "description": media.get("description", {}).get("rendered", ""),
                             "caption": media.get("caption", {}).get("rendered", ""),
                             "source": "wordpress_rest_api",
-                            "file_size": media.get("media_details", {}).get(
-                                "filesize", 0
-                            ),
+                            "file_size": media.get("media_details", {}).get("filesize", 0),
                             "related_news_post": {
                                 "id": post["id"],
                                 "title": post["title"]["rendered"],
@@ -704,9 +666,7 @@ class NEFACDocumentCrawler:
                             if self.is_document_url(url):
                                 document_links.append(url)
 
-                        logger.info(
-                            f"Found {len(document_links)} document links via link-scraper"
-                        )
+                        logger.info(f"Found {len(document_links)} document links via link-scraper")
                         return document_links
                     else:
                         logger.warning("Link-scraper output file not found")
@@ -789,9 +749,7 @@ class NEFACDocumentCrawler:
                         self.stats["sources"]["web_scraping"] += 1
                         self.discovered_documents.add(link)
 
-                logger.info(
-                    f"Scraped {page_url}: found {len(doc_links)} document links"
-                )
+                logger.info(f"Scraped {page_url}: found {len(doc_links)} document links")
                 time.sleep(1)  # Be respectful
 
             except Exception as e:
@@ -849,17 +807,11 @@ class NEFACDocumentCrawler:
                 filepath.rename(quarantine_path)
                 logger.info(f"Moved corrupted file to quarantine: {quarantine_path}")
                 self.stats["quarantined_documents"] += 1
-                self.stats[
-                    "downloaded_documents"
-                ] -= 1  # It was counted as downloaded before validation
+                self.stats["downloaded_documents"] -= 1  # It was counted as downloaded before validation
                 # Log the source for further investigation
-                logger.error(
-                    f"Corrupted file source URL: {document_info.get('source_url', 'Unknown')}"
-                )
+                logger.error(f"Corrupted file source URL: {document_info.get('source_url', 'Unknown')}")
             except OSError as move_error:
-                logger.error(
-                    f"Failed to move corrupted file {filepath} to quarantine: {move_error}"
-                )
+                logger.error(f"Failed to move corrupted file {filepath} to quarantine: {move_error}")
 
     def download_document(self, document_info: Dict) -> bool:
         """Download a document file, validate it, and place it in the correct directory."""
@@ -882,9 +834,7 @@ class NEFACDocumentCrawler:
                 document_info["mime_type"] = content_type
                 extension = mimetypes.guess_extension(content_type)
                 if extension and not base_filename.endswith(extension):
-                    logger.warning(
-                        f"Correcting filename extension for {base_filename} to {extension} based on content type {content_type}"
-                    )
+                    logger.warning(f"Correcting filename extension for {base_filename} to {extension} based on content type {content_type}")
                     base_filename = f"{Path(base_filename).stem}{extension}"
 
             file_extension = Path(base_filename).suffix.lower()
@@ -944,8 +894,7 @@ class NEFACDocumentCrawler:
                         ".csv",
                         ".txt",
                     ],
-                    "is_archive": file_extension
-                    in [".zip", ".rar", ".7z", ".tar", ".gz"],
+                    "is_archive": file_extension in [".zip", ".rar", ".7z", ".tar", ".gz"],
                     "validation_status": "pending",
                 }
             )
@@ -958,9 +907,7 @@ class NEFACDocumentCrawler:
             return True
 
         except Exception as e:
-            logger.error(
-                f"Failed to download {document_info.get('title', 'Unknown')} from {document_info.get('source_url', '')}: {e}"
-            )
+            logger.error(f"Failed to download {document_info.get('title', 'Unknown')} from {document_info.get('source_url', '')}: {e}")
             self.stats["failed_downloads"] += 1
             return False
 
@@ -1074,9 +1021,7 @@ class NEFACDocumentCrawler:
 
         # Update MIME type statistics
         mime_type = document_info.get("mime_type", "unknown")
-        self.stats["mime_types"][mime_type] = (
-            self.stats["mime_types"].get(mime_type, 0) + 1
-        )
+        self.stats["mime_types"][mime_type] = self.stats["mime_types"].get(mime_type, 0) + 1
 
     def save_metadata(self, documents: List[Dict]):
         """
@@ -1097,18 +1042,12 @@ class NEFACDocumentCrawler:
                     validated = PDFMetadata(**entry)
                 valid_documents.append(validated.dict())
             except Exception as e:
-                logger.error(
-                    f"Schema validation failed for metadata entry: {e}. Skipping entry: {entry}"
-                )
+                logger.error(f"Schema validation failed for metadata entry: {e}. Skipping entry: {entry}")
         if not valid_documents:
             logger.warning("No valid metadata entries to save.")
             return
         # Save to JSON file (determine file by type)
-        if (
-            valid_documents
-            and "mime_type" in valid_documents[0]
-            and valid_documents[0]["mime_type"] == "text/html"
-        ):
+        if valid_documents and "mime_type" in valid_documents[0] and valid_documents[0]["mime_type"] == "text/html":
             out_path = self.metadata_dir / "content_metadata.json"
         else:
             out_path = self.metadata_dir / "documents_metadata.json"
@@ -1120,9 +1059,7 @@ class NEFACDocumentCrawler:
         """Save crawl statistics to a summary file."""
         summary_file = self.output_dir / "crawl_summary.json"
         self.stats["end_time"] = datetime.now()
-        self.stats["duration_seconds"] = (
-            self.stats["end_time"] - self.stats["start_time"]
-        ).total_seconds()
+        self.stats["duration_seconds"] = (self.stats["end_time"] - self.stats["start_time"]).total_seconds()
 
         # Convert start_time and end_time to strings for JSON serialization
         summary_data = self.stats.copy()
@@ -1149,9 +1086,7 @@ class NEFACDocumentCrawler:
                     logger.warning("Could not parse documents_metadata.json")
 
         # Create a lookup table from source_url to metadata
-        metadata_lookup = {
-            item["source_url"]: item for item in doc_metadata if "source_url" in item
-        }
+        metadata_lookup = {item["source_url"]: item for item in doc_metadata if "source_url" in item}
 
         # Scan the images directory
         for image_file in self.images_dir.glob("**/*"):
@@ -1162,12 +1097,8 @@ class NEFACDocumentCrawler:
                     "file_path": str(image_file.relative_to(self.output_dir)),
                     "file_size": image_file.stat().st_size,
                     "file_extension": image_file.suffix,
-                    "file_created": datetime.fromtimestamp(
-                        image_file.stat().st_ctime
-                    ).isoformat(),
-                    "file_modified": datetime.fromtimestamp(
-                        image_file.stat().st_mtime
-                    ).isoformat(),
+                    "file_created": datetime.fromtimestamp(image_file.stat().st_ctime).isoformat(),
+                    "file_modified": datetime.fromtimestamp(image_file.stat().st_mtime).isoformat(),
                 }
 
                 # Find a matching record in the downloaded metadata
@@ -1217,15 +1148,11 @@ class NEFACDocumentCrawler:
                 logger.error("Could not parse link_discovery_results.json")
                 return []
 
-        logger.info(
-            f"Found {len(urls_to_scrape)} URLs to scrape from link discovery results."
-        )
+        logger.info(f"Found {len(urls_to_scrape)} URLs to scrape from link discovery results.")
 
         for url in urls_to_scrape:
             try:
-                if self.is_document_url(url) or urlparse(url).path.startswith(
-                    "/wp-content/uploads/"
-                ):
+                if self.is_document_url(url) or urlparse(url).path.startswith("/wp-content/uploads/"):
                     logger.info(f"Skipping document/media URL: {url}")
                     continue
 
@@ -1266,9 +1193,7 @@ class NEFACDocumentCrawler:
             except requests.RequestException as e:
                 logger.error(f"Failed to download HTML from {url}: {e}")
             except Exception as e:
-                logger.error(
-                    f"An unexpected error occurred while processing {url}: {e}"
-                )
+                logger.error(f"An unexpected error occurred while processing {url}: {e}")
 
         # Save metadata
         html_metadata_file = self.metadata_dir / "html_pages_metadata.json"
@@ -1283,9 +1208,7 @@ class NEFACDocumentCrawler:
         """Extract title from HTML content."""
         try:
             # Simple regex to extract title
-            title_match = re.search(
-                r"<title[^>]*>(.*?)</title>", html_content, re.IGNORECASE | re.DOTALL
-            )
+            title_match = re.search(r"<title[^>]*>(.*?)</title>", html_content, re.IGNORECASE | re.DOTALL)
             if title_match:
                 title = title_match.group(1).strip()
                 # Clean up the title
@@ -1321,9 +1244,7 @@ class NEFACDocumentCrawler:
                 cleanup_path = Path("tools/selenium-scraper/cleanup.py")
                 if cleanup_path.exists():
                     logger.info("Running cleanup to remove error pages...")
-                    subprocess.run(
-                        [sys.executable, str(cleanup_path)], cwd=self.output_dir
-                    )
+                    subprocess.run([sys.executable, str(cleanup_path)], cwd=self.output_dir)
 
                 # Process the extracted text files
                 return self.process_selenium_output()
@@ -1372,9 +1293,7 @@ class NEFACDocumentCrawler:
                 }
 
                 # Move file to content directory with better naming
-                safe_name = self.generate_filename(
-                    {"title": url.replace("https://www.nefac.org", "").strip("/")}
-                )
+                safe_name = self.generate_filename({"title": url.replace("https://www.nefac.org", "").strip("/")})
                 if not safe_name or safe_name == "Untitled":
                     safe_name = txt_file.stem
 
@@ -1412,17 +1331,13 @@ class NEFACDocumentCrawler:
                 "files": processed_files,
             }
 
-            metadata_file = (
-                self.output_dir / "metadata" / "selenium_content_metadata.json"
-            )
+            metadata_file = self.output_dir / "metadata" / "selenium_content_metadata.json"
             metadata_file.parent.mkdir(parents=True, exist_ok=True)
 
             with open(metadata_file, "w", encoding="utf-8") as f:
                 json.dump(selenium_metadata, f, indent=2, ensure_ascii=False)
 
-            logger.info(
-                f"Saved Selenium content metadata: {len(processed_files)} files"
-            )
+            logger.info(f"Saved Selenium content metadata: {len(processed_files)} files")
 
         return processed_files
 
@@ -1443,9 +1358,7 @@ class NEFACDocumentCrawler:
         except Exception:
             return None
 
-    def get_youtube_transcript(
-        self, video_id: str, max_retries: int = 3
-    ) -> Optional[List[Dict]]:
+    def get_youtube_transcript(self, video_id: str, max_retries: int = 3) -> Optional[List[Dict]]:
         """Get transcript for a YouTube video using multiple free methods"""
         if not YouTubeTranscriptApi and not yt_dlp:
             logger.warning("YouTube dependencies not available")
@@ -1455,9 +1368,7 @@ class NEFACDocumentCrawler:
         if YouTubeTranscriptApi:
             transcript = self._get_transcript_youtube_api(video_id, max_retries)
             if transcript:
-                logger.info(
-                    f"Transcript found using YouTube Transcript API for {video_id}"
-                )
+                logger.info(f"Transcript found using YouTube Transcript API for {video_id}")
                 return transcript
 
         # Method 2: yt-dlp subtitle extraction (Secondary method)
@@ -1482,9 +1393,7 @@ class NEFACDocumentCrawler:
         logger.warning(f"No transcript found for video {video_id} using any method")
         return None
 
-    def _get_transcript_youtube_api(
-        self, video_id: str, max_retries: int = 3
-    ) -> Optional[List[Dict]]:
+    def _get_transcript_youtube_api(self, video_id: str, max_retries: int = 3) -> Optional[List[Dict]]:
         """Get transcript using YouTube Transcript API (primary method)"""
         # Initialize the API client
         ytt_api = None
@@ -1512,9 +1421,7 @@ class NEFACDocumentCrawler:
                 # Add small delay between attempts to avoid rate limiting
                 if attempt > 0:
                     delay = random.uniform(1, 3) * attempt
-                    logger.info(
-                        f"Retrying transcript fetch after {delay:.1f}s delay (attempt {attempt + 1}/{max_retries})"
-                    )
+                    logger.info(f"Retrying transcript fetch after {delay:.1f}s delay (attempt {attempt + 1}/{max_retries})")
                     time.sleep(delay)
 
                 # Get available transcripts
@@ -1567,14 +1474,10 @@ class NEFACDocumentCrawler:
                 elif "private" in error_msg:
                     return None
                 elif "no element found" in error_msg and attempt < max_retries - 1:
-                    logger.warning(
-                        f"XML parsing error (attempt {attempt + 1}/{max_retries}): {str(e)}"
-                    )
+                    logger.warning(f"XML parsing error (attempt {attempt + 1}/{max_retries}): {str(e)}")
                     continue  # Retry for XML parsing errors
                 elif attempt == max_retries - 1:
-                    logger.error(
-                        f"Transcript error after {max_retries} attempts: {str(e)}"
-                    )
+                    logger.error(f"Transcript error after {max_retries} attempts: {str(e)}")
                     return None
 
         return None
@@ -1616,9 +1519,7 @@ class NEFACDocumentCrawler:
                         ydl.download([video_url])
 
                         # Look for subtitle files
-                        subtitle_files = list(
-                            Path(temp_dir).glob(f"{video_id}.*.json3")
-                        )
+                        subtitle_files = list(Path(temp_dir).glob(f"{video_id}.*.json3"))
                         if not subtitle_files:
                             continue  # Try next language preference
 
@@ -1631,35 +1532,25 @@ class NEFACDocumentCrawler:
                         for event in subtitle_data.get("events", []):
                             if "segs" in event:
                                 # Combine all segments in this event
-                                text = "".join(
-                                    seg.get("utf8", "") for seg in event["segs"]
-                                )
+                                text = "".join(seg.get("utf8", "") for seg in event["segs"])
                                 if text.strip():
                                     transcript_entries.append(
                                         {
                                             "text": text.strip(),
-                                            "start": event.get("tStartMs", 0)
-                                            / 1000.0,  # Convert to seconds
-                                            "duration": event.get("dDurationMs", 0)
-                                            / 1000.0,
+                                            "start": event.get("tStartMs", 0) / 1000.0,  # Convert to seconds
+                                            "duration": event.get("dDurationMs", 0) / 1000.0,
                                         }
                                     )
 
                         if transcript_entries:
-                            logger.info(
-                                f"Successfully extracted transcript using yt-dlp for {video_id} with lang {lang_pref}"
-                            )
+                            logger.info(f"Successfully extracted transcript using yt-dlp for {video_id} with lang {lang_pref}")
                             return self.normalize_transcript(transcript_entries)
 
             except Exception as e:
-                logger.debug(
-                    f"yt-dlp extraction with lang {lang_pref} failed: {str(e)}"
-                )
+                logger.debug(f"yt-dlp extraction with lang {lang_pref} failed: {str(e)}")
                 continue  # Try next language preference
 
-        logger.warning(
-            f"yt-dlp could not extract transcript for {video_id} with any language preference."
-        )
+        logger.warning(f"yt-dlp could not extract transcript for {video_id} with any language preference.")
         return None
 
     def _get_transcript_online_services(self, video_id: str) -> Optional[List[Dict]]:
@@ -1760,18 +1651,14 @@ class NEFACDocumentCrawler:
                 text = text_element.text or ""
 
                 if text.strip():
-                    transcript_entries.append(
-                        {"text": text.strip(), "start": start, "duration": duration}
-                    )
+                    transcript_entries.append({"text": text.strip(), "start": start, "duration": duration})
 
             return transcript_entries if transcript_entries else None
         except Exception as e:
             logger.debug(f"XML parsing failed: {str(e)}")
             return None
 
-    def _parse_html_transcript(
-        self, html_content: str, video_id: str
-    ) -> Optional[List[Dict]]:
+    def _parse_html_transcript(self, html_content: str, video_id: str) -> Optional[List[Dict]]:
         """Parse transcript data from HTML content"""
         try:
             # Look for common transcript patterns in HTML
@@ -1794,16 +1681,10 @@ class NEFACDocumentCrawler:
                     for match in matches:
                         # Remove HTML tags
                         clean_text = re.sub(r"<[^>]+>", "", match)
-                        clean_text = re.sub(
-                            r"&[^;]+;", " ", clean_text
-                        )  # Remove HTML entities
-                        clean_text = re.sub(
-                            r"\s+", " ", clean_text
-                        ).strip()  # Normalize whitespace
+                        clean_text = re.sub(r"&[^;]+;", " ", clean_text)  # Remove HTML entities
+                        clean_text = re.sub(r"\s+", " ", clean_text).strip()  # Normalize whitespace
 
-                        if (
-                            clean_text and len(clean_text) > 10
-                        ):  # Minimum meaningful text
+                        if clean_text and len(clean_text) > 10:  # Minimum meaningful text
                             cleaned_text.append(clean_text)
 
                     if cleaned_text:
@@ -1856,16 +1737,8 @@ class NEFACDocumentCrawler:
 
             for item in data:
                 if isinstance(item, dict):
-                    text = (
-                        item.get("text", "")
-                        or item.get("content", "")
-                        or item.get("caption", "")
-                    )
-                    start = (
-                        item.get("start", 0)
-                        or item.get("time", 0)
-                        or item.get("timestamp", 0)
-                    )
+                    text = item.get("text", "") or item.get("content", "") or item.get("caption", "")
+                    start = item.get("start", 0) or item.get("time", 0) or item.get("timestamp", 0)
                     duration = item.get("duration", 0) or item.get("dur", 0)
 
                     if text and isinstance(text, str) and text.strip():
@@ -1917,16 +1790,12 @@ class NEFACDocumentCrawler:
             logger.debug(f"JSON search failed: {str(e)}")
             return None
 
-    def _get_transcript_alternative_methods(
-        self, video_id: str
-    ) -> Optional[List[Dict]]:
+    def _get_transcript_alternative_methods(self, video_id: str) -> Optional[List[Dict]]:
         """Additional alternative methods for transcript extraction"""
         # Method: Try using YouTube's internal API endpoints
         try:
             # YouTube's internal transcript endpoint (may not always work)
-            transcript_url = (
-                f"https://www.youtube.com/api/timedtext?v={video_id}&lang=en"
-            )
+            transcript_url = f"https://www.youtube.com/api/timedtext?v={video_id}&lang=en"
             response = requests.get(transcript_url, timeout=10)
 
             if response.status_code == 200 and response.text.strip():
@@ -2010,9 +1879,7 @@ class NEFACDocumentCrawler:
             logger.error(f"Error fetching metadata for {url}: {str(e)}")
             return {"title": "Title not found"}
 
-    def save_youtube_transcript(
-        self, video_id: str, transcript_data: List[Dict], metadata: Dict[str, Any]
-    ) -> str:
+    def save_youtube_transcript(self, video_id: str, transcript_data: List[Dict], metadata: Dict[str, Any]) -> str:
         """Save transcript data to file and return file path"""
         # Create filename from title
         title = metadata.get("title", "Unknown")
@@ -2052,9 +1919,7 @@ class NEFACDocumentCrawler:
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 # Extract channel info
-                channel_info = ydl.extract_info(
-                    self.youtube_channel_url, download=False
-                )
+                channel_info = ydl.extract_info(self.youtube_channel_url, download=False)
 
                 if not channel_info or "entries" not in channel_info:
                     logger.error("Could not extract channel videos")
@@ -2073,9 +1938,7 @@ class NEFACDocumentCrawler:
                     if not video_url:
                         continue
 
-                    logger.info(
-                        f"Processing video {i}/{len(videos)}: {video.get('title', 'Unknown')}"
-                    )
+                    logger.info(f"Processing video {i}/{len(videos)}: {video.get('title', 'Unknown')}")
 
                     try:
                         # Get full metadata
@@ -2122,26 +1985,19 @@ class NEFACDocumentCrawler:
                             "uploader_url": full_metadata.get("uploader_url", ""),
                             "availability": full_metadata.get("availability", ""),
                             "live_status": full_metadata.get("live_status", ""),
-                            "release_timestamp": full_metadata.get(
-                                "release_timestamp", ""
-                            ),
+                            "release_timestamp": full_metadata.get("release_timestamp", ""),
                             "chapters": full_metadata.get("chapters", []),
                             "heatmap": full_metadata.get("heatmap", {}),
                         }
 
                         # Save transcript if available
                         if transcript_data:
-                            transcript_file = self.save_youtube_transcript(
-                                video_id, transcript_data, full_metadata
-                            )
+                            transcript_file = self.save_youtube_transcript(video_id, transcript_data, full_metadata)
                             document_info["transcript_file"] = transcript_file
                             document_info["transcript_length"] = len(transcript_data)
 
                             # Calculate transcript word count
-                            total_words = sum(
-                                len(entry.get("text", "").split())
-                                for entry in transcript_data
-                            )
+                            total_words = sum(len(entry.get("text", "").split()) for entry in transcript_data)
                             document_info["transcript_word_count"] = total_words
 
                         youtube_documents.append(document_info)
@@ -2149,12 +2005,8 @@ class NEFACDocumentCrawler:
 
                         # Be respectful to YouTube servers
                         # Use a randomized delay to appear more human
-                        delay = random.uniform(
-                            self.youtube_delay, self.youtube_delay + 5.0
-                        )
-                        logger.info(
-                            f"Waiting for {delay:.2f} seconds before next video..."
-                        )
+                        delay = random.uniform(self.youtube_delay, self.youtube_delay + 5.0)
+                        logger.info(f"Waiting for {delay:.2f} seconds before next video...")
                         time.sleep(delay)
 
                     except Exception as e:
@@ -2163,9 +2015,7 @@ class NEFACDocumentCrawler:
                         time.sleep(self.youtube_delay * 2)
                         continue
 
-                logger.info(
-                    f"Successfully processed {len(youtube_documents)} YouTube videos"
-                )
+                logger.info(f"Successfully processed {len(youtube_documents)} YouTube videos")
                 return youtube_documents
 
         except Exception as e:
@@ -2182,18 +2032,14 @@ class NEFACDocumentCrawler:
                 validated = YouTubeMetadata(**entry)
                 valid_documents.append(validated.dict())
             except Exception as e:
-                logger.error(
-                    f"Schema validation failed for YouTube metadata entry: {e}. Skipping entry: {entry}"
-                )
+                logger.error(f"Schema validation failed for YouTube metadata entry: {e}. Skipping entry: {entry}")
         if not valid_documents:
             logger.warning("No valid YouTube metadata entries to save.")
             return
         out_path = self.metadata_dir / "youtube_metadata.json"
         with open(out_path, "w", encoding="utf-8") as f:
             json.dump(valid_documents, f, ensure_ascii=False, indent=2)
-        logger.info(
-            f"Saved {len(valid_documents)} YouTube metadata entries to {out_path}"
-        )
+        logger.info(f"Saved {len(valid_documents)} YouTube metadata entries to {out_path}")
 
     def crawl(self):
         """Main crawling method that fetches from all sources."""
@@ -2309,9 +2155,7 @@ class NEFACDocumentCrawler:
         logger.info(f"Total documents found: {self.stats['total_documents']}")
         logger.info(f"Successfully downloaded: {self.stats['downloaded_documents']}")
         logger.info(f"Failed downloads: {self.stats['failed_downloads']}")
-        logger.info(
-            f"Quarantined (corrupted) documents: {self.stats['quarantined_documents']}"
-        )
+        logger.info(f"Quarantined (corrupted) documents: {self.stats['quarantined_documents']}")
 
         return unique_documents
 
@@ -2319,26 +2163,16 @@ class NEFACDocumentCrawler:
 def main():
     load_dotenv()  # Load environment variables from .env file
 
-    parser = argparse.ArgumentParser(
-        description="Comprehensive NEFAC document crawler with Faust authentication"
-    )
-    parser.add_argument(
-        "--output-dir", default="nefac_documents", help="Output directory"
-    )
+    parser = argparse.ArgumentParser(description="Comprehensive NEFAC document crawler with Faust authentication")
+    parser.add_argument("--output-dir", default="nefac_documents", help="Output directory")
     parser.add_argument(
         "--metadata-only",
         action="store_true",
         help="Only fetch metadata, don't download files",
     )
-    parser.add_argument(
-        "--document-types", nargs="+", help="Specific document types to fetch"
-    )
-    parser.add_argument(
-        "--skip-web-scraping", action="store_true", help="Skip web scraping (API only)"
-    )
-    parser.add_argument(
-        "--faust-key", help="Faust secret key for authenticated GraphQL access"
-    )
+    parser.add_argument("--document-types", nargs="+", help="Specific document types to fetch")
+    parser.add_argument("--skip-web-scraping", action="store_true", help="Skip web scraping (API only)")
+    parser.add_argument("--faust-key", help="Faust secret key for authenticated GraphQL access")
     parser.add_argument(
         "--youtube-only",
         action="store_true",
@@ -2375,11 +2209,7 @@ def main():
     )
 
     if args.document_types:
-        crawler.document_types = {
-            k: v
-            for k, v in crawler.document_types.items()
-            if any(dt in k for dt in args.document_types)
-        }
+        crawler.document_types = {k: v for k, v in crawler.document_types.items() if any(dt in k for dt in args.document_types)}
 
     if args.youtube_only:
         crawler = NEFACDocumentCrawler(
@@ -2395,9 +2225,7 @@ def main():
         youtube_documents = crawler.crawl_youtube_channel()
         crawler.save_youtube_metadata(youtube_documents)
         print(f"\nYouTube crawl completed! Found {len(youtube_documents)} videos.")
-        print(
-            f"Check the '{args.output_dir}/youtube' and '{args.output_dir}/metadata/youtube_metadata.json' for results."
-        )
+        print(f"Check the '{args.output_dir}/youtube' and '{args.output_dir}/metadata/youtube_metadata.json' for results.")
         return
 
     documents = crawler.crawl()

@@ -1,17 +1,18 @@
+from langchain.retrievers.contextual_compression import ContextualCompressionRetriever
+from langchain.retrievers.ensemble import EnsembleRetriever
 from langchain.runnables import RunnableLambda
-from langchain_community.compression import ContextualCompressionRetriever
-from langchain_community.compression.cohere import CohereRerank
+from langchain_cohere import CohereRerank
 
-from vector.bm25 import get_bm25_retriever
-from vector.graph_search import expand_query_with_graph, graph_rag_retrieve
-from vector.qdrant import get_qdrant_retriever
-
-from .state import AgentState
+from agents.graph_retrieval import expand_query_with_graph, graph_retrieval_agent
+from agents.keyword_retrieval import keyword_retrieval_agent
+from agents.state import AgentState
+from agents.vector_retrieval import vector_retrieval_agent
 
 
 def retrieval_agent(state: AgentState):
     """
-    Retrieves documents from the vector stores.
+    Retrieves documents from the various data stores (Qdrant, ElasticSearch, Neo4j)
+    and applies metadata filters.
     """
     try:
         retrieval_selection = state.retrieval_selection
@@ -23,46 +24,56 @@ def retrieval_agent(state: AgentState):
         # Perform query expansion if graph search is not the primary method
         expanded_queries = [state.transformed_query]
         if "graph" not in methods and state.entities:
-            expanded_queries.extend(
-                expand_query_with_graph(state.transformed_query, state.entities)
-            )
+            expanded_queries.extend(expand_query_with_graph(state.transformed_query, state.entities))
             expanded_queries = list(set(expanded_queries))  # Remove duplicates
+
+        # Create a temporary state for each sub-agent to pass relevant fields
+        temp_state = AgentState(
+            query=state.query,
+            chat_history=state.chat_history,
+            transformed_query=state.transformed_query,
+            metadata_filters=state.metadata_filters,
+            priorities=state.priorities,
+            entities=state.entities,
+            structured_query=state.structured_query,
+            statistical_query=state.statistical_query,
+        )
 
         for part in methods:
             part = part.lower().strip()
             if part == "graph":
-                retrievers.append(
-                    RunnableLambda(
-                        lambda inputs: (
-                            {"documents": graph_rag_retrieve(inputs["question"])}
-                            if isinstance(inputs, dict) and "question" in inputs
-                            else {"documents": graph_rag_retrieve(str(inputs))}
-                        )
-                    )
-                )
+                retrievers.append(RunnableLambda(lambda x: graph_retrieval_agent(temp_state)))
             elif part == "dense":
                 # Use expanded queries for dense retrieval
-                retrievers.append(get_qdrant_retriever())
+                retrievers.append(RunnableLambda(lambda x: vector_retrieval_agent(temp_state)))
             elif part == "sparse":
                 # Use expanded queries for sparse retrieval
-                retrievers.append(get_bm25_retriever())
+                retrievers.append(RunnableLambda(lambda x: keyword_retrieval_agent(temp_state)))
 
         if not retrievers:
-            retrievers.append(get_qdrant_retriever())
+            # Default to dense retrieval if no methods are specified
+            retrievers.append(RunnableLambda(lambda x: vector_retrieval_agent(temp_state)))
             weights = [1.0]
 
         if len(weights) != len(retrievers):
             weights = [1.0 / len(retrievers)] * len(retrievers)
 
+        # Create the EnsembleRetriever
+        ensemble_retriever = EnsembleRetriever(retrievers=retrievers, weights=weights)
+
         # Combine results from all retrievers using expanded queries
         all_docs = []
         for query_term in expanded_queries:
-            for r in retrievers:
-                # For graph retriever, pass the original transformed_query
-                if "graph_rag_retrieve" in str(r):
-                    all_docs.extend(r.invoke({"question": state.transformed_query}))
-                else:
-                    all_docs.extend(r.invoke(query_term))
+            # The EnsembleRetriever expects a single query, so we'll invoke it once per expanded query
+            # and then combine the results.
+            # Note: The new agents expect AgentState, so we need to adjust how ensemble_retriever is invoked
+            # For now, we'll pass the query_term as the 'question' in a dummy dict for the RunnableLambda
+            # This might need further refinement depending on how EnsembleRetriever handles RunnableLambda inputs
+            result = ensemble_retriever.invoke({"question": query_term})
+            if isinstance(result, dict) and "documents" in result:
+                all_docs.extend(result["documents"])
+            elif isinstance(result, list):  # If the RunnableLambda directly returns a list of documents
+                all_docs.extend(result)
 
         # Deduplicate documents based on page_content and metadata (source, title)
         unique_docs = {}
@@ -77,10 +88,12 @@ def retrieval_agent(state: AgentState):
 
         # Apply re-ranking after combining all docs
         compressor = CohereRerank(model="rerank-english-v3.0")
-        compression_retriever = ContextualCompressionRetriever(
-            base_compressor=compressor, base_retriever=RunnableLambda(lambda x: x)
-        )
-        documents = compression_retriever.invoke(all_docs)
+        compression_retriever = ContextualCompressionRetriever(base_compressor=compressor, base_retriever=RunnableLambda(lambda x: x))
+        documents = compression_retriever.invoke(documents)
+
+        # Add a specific tag to the documents for easier identification in streaming
+        for doc in documents:
+            doc.metadata["stream_tag"] = "final_retrieved_docs"
 
         return {"documents": documents}
     except Exception as e:
