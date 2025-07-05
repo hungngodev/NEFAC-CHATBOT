@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import List
+from typing import Any, List
 
 from langchain_community.embeddings import OllamaEmbeddings
 from langchain_community.retrievers import ElasticSearchBM25Retriever
@@ -19,7 +19,7 @@ ollama_embedding_model = OllamaEmbeddings(model=QUERY_TRANSLATION_MODEL_NAME)
 
 
 # --- Qdrant Upload Logic ---
-def upload_to_qdrant(documents: List[Document], embedding_model):
+def upload_to_qdrant(documents: List[Document], embedding_model) -> Any:
     try:
         qdrant_url = os.environ["QDRANT_ENDPOINT"]
         collection_name = os.environ["QDRANT_CLUSTER_ID"]
@@ -48,7 +48,7 @@ def save_contextual_elasticsearch_bm25_for_backend(
 
 
 # --- Contextualize and Index Function ---
-def contextualize_and_index_documents(documents, embedding_model=None, test_mode=False):
+def contextualize_and_index_documents(documents, embedding_model=None, test_mode=False) -> Any:
     """
     Indexes already-contextualized documents into Qdrant and Elasticsearch.
     Assumes input documents are already contextualized (context + chunk).
