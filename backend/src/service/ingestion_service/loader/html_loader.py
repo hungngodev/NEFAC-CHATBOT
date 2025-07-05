@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import time
+from typing import Any, List
 
 from bs4 import BeautifulSoup, Tag
 from langchain.docstore.document import Document
@@ -18,13 +19,13 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("html_loader_pipeline")
 
 
-def load_html_entries(metadata_json_path):
+def load_html_entries(metadata_json_path) -> List[Document]:
     with open(metadata_json_path, "r", encoding="utf-8") as f:
         entries = json.load(f)
     return entries
 
 
-def extract_html_sections(html: str):
+def extract_html_sections(html: str) -> Any:
     """
     Extracts structured sections from HTML, returning a list of dicts with:
     - path: heading hierarchy
@@ -79,7 +80,7 @@ def extract_html_sections(html: str):
     return sections
 
 
-def find_chunk_offsets(section_text: str, chunk_text: str, start_search: int = 0):
+def find_chunk_offsets(section_text: str, chunk_text: str, start_search: int = 0) -> Any:
     """
     Find the start and end character offsets of chunk_text within section_text, starting from start_search.
     Returns (chunk_start, chunk_end).
@@ -91,7 +92,7 @@ def find_chunk_offsets(section_text: str, chunk_text: str, start_search: int = 0
     return chunk_start, chunk_end
 
 
-def parse_html(entry, content_dir):
+def parse_html(entry, content_dir) -> Any:
     filename = entry.get("filename")
     if not filename:
         return None
@@ -110,7 +111,7 @@ def parse_html(entry, content_dir):
     }
 
 
-def chunk_and_contextualize_html(html_data, splitter):
+def chunk_and_contextualize_html(html_data, splitter) -> Any:
     entry = html_data["entry"]
     sections = html_data["sections"]
     title = html_data["title"]
@@ -170,7 +171,7 @@ def chunk_and_contextualize_html(html_data, splitter):
     return chunked_docs
 
 
-def count_tokens_in_docs(docs):
+def count_tokens_in_docs(docs) -> Any:
     return sum(len(doc.page_content.split()) for doc in docs)
 
 

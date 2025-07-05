@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import time
+from typing import Any, List
 
 from langchain.docstore.document import Document
 from langchain_community.document_loaders import PyPDFLoader
@@ -18,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("pdf_loader_pipeline")
 
 
-def load_pdf_entries(metadata_json_path):
+def load_pdf_entries(metadata_json_path) -> List[Document]:
     logger.info(f"[PDF Loader] Loading metadata entries from {metadata_json_path}")
     tqdm.write(f"[PDF Loader] Loading metadata entries from {metadata_json_path}")
     with open(metadata_json_path, "r", encoding="utf-8") as f:
@@ -45,7 +46,7 @@ def find_valid_pdf_path(documents_dir: str, entry: dict) -> str:
     return ""
 
 
-def get_page_offsets(pages):
+def get_page_offsets(pages) -> Any:
     """
     Given a list of page objects with .page_content, return a list of (start, end) offsets for each page in the concatenated document.
     """
@@ -59,7 +60,7 @@ def get_page_offsets(pages):
     return offsets
 
 
-def find_pages_for_chunk(chunk_start, chunk_end, page_offsets):
+def find_pages_for_chunk(chunk_start, chunk_end, page_offsets) -> Any:
     """
     Given chunk start/end offsets and a list of (start, end) for each page, return the list of page numbers (1-based) the chunk overlaps with.
     """
@@ -71,7 +72,7 @@ def find_pages_for_chunk(chunk_start, chunk_end, page_offsets):
     return pages
 
 
-def get_chunk_page_positions(chunk_start, chunk_end, page_offsets):
+def get_chunk_page_positions(chunk_start, chunk_end, page_offsets) -> Any:
     """
     For each page overlapped by the chunk, return a dict with page number, start_pct, end_pct, and a qualitative label.
     """
@@ -109,7 +110,7 @@ def get_chunk_page_positions(chunk_start, chunk_end, page_offsets):
     return positions
 
 
-def parse_pdf(entry, documents_dir):
+def parse_pdf(entry, documents_dir) -> Any:
     filename = entry.get("filename") or entry.get("file_name") or entry.get("file")
     logger.info(f"[PDF Loader] Parsing entry: {filename}")
     tqdm.write(f"[PDF Loader] Parsing entry: {filename}")
@@ -135,7 +136,7 @@ def parse_pdf(entry, documents_dir):
     }
 
 
-def chunk_and_contextualize_pdf(pdf_data, splitter):
+def chunk_and_contextualize_pdf(pdf_data, splitter) -> Any:
     entry = pdf_data["entry"]
     full_text = pdf_data["full_text"]
     page_offsets = pdf_data["page_offsets"]
@@ -184,7 +185,7 @@ def chunk_and_contextualize_pdf(pdf_data, splitter):
     return chunked_docs
 
 
-def count_tokens_in_docs(docs):
+def count_tokens_in_docs(docs) -> Any:
     return sum(len(doc.page_content.split()) for doc in docs)
 
 
