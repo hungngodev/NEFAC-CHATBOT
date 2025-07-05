@@ -44,10 +44,14 @@ This document summarizes the comprehensive backend architecture revision complet
 - **Adaptive Thresholds**: Dynamic routing based on complexity (< 0.7 → Retriever, ≥ 0.7 → ReAct)
 - **Fallback Mechanisms**: Graceful degradation on failures
 
-### Processing Pipeline
+### Advanced Retrieval Pipeline
+- **State-of-the-Art Ensemble Retrieval**: Dense (Qdrant) + Sparse (BM25) + Graph (Neo4j)
+- **8 Query Translation Strategies**: RAG Fusion, HyDE, Step-back, Multi-Query, etc.
+- **LLM-Powered Strategy Selection**: Intelligent method optimization
+- **Cohere Re-ranking**: Advanced relevance scoring
 - **Context Processor**: Enhanced with memory integration and summarization
-- **Multi-Step Reasoning**: ReAct worker for complex queries
-- **Validation Loop**: Quality assurance with retry mechanisms
+- **Multi-Step Reasoning**: ReAct worker with ensemble retrieval integration
+- **Validation Loop**: Quality assurance with comprehensive retry mechanisms
 
 ## Data Flow Architecture
 

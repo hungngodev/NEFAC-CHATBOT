@@ -105,7 +105,7 @@ graph TD
 - **Memory Retrieval Node**: Retrieves relevant past interactions using MemoryManager
 - **History Length Check**: Determines if chat history needs summarization (threshold: 10 messages)
 - **Summarizer Agent**: Automatically summarizes long conversations to maintain context window efficiency
-- **Session Memory Store**: Pinecone-based persistent memory for long-term context
+- **Session Memory Store**: Pinecone-based persistent memory with semantic search capabilities
 
 ### 2. Understanding Layer
 - **Query Understanding Agent**: Enhanced with intent classification and entity extraction
@@ -122,15 +122,16 @@ graph TD
 - **Strategic Decision Making**: Routes to appropriate workers based on complexity score
 
 ### 4. Execution Layer
-- **Retriever Worker**: Handles straightforward document retrieval queries
-  - Vector similarity search
-  - Keyword-based retrieval
-  - Metadata filtering
-  - Graph-based retrieval
-- **ReAct Worker**: Manages complex multi-step reasoning queries
-  - Sub-question generation
-  - Iterative information gathering
-  - Multi-step synthesis
+- **Advanced Retriever Worker**: State-of-the-art ensemble retrieval system
+  - **Multi-Strategy Ensemble**: Dense (Qdrant), Sparse (BM25), Graph (Neo4j)
+  - **8 Query Translation Techniques**: RAG Fusion, HyDE, Step-back, Multi-Query, etc.
+  - **Intelligent Method Selection**: LLM-powered strategy optimization
+  - **Cohere Re-ranking**: Advanced relevance optimization
+  - **Graph-Enhanced Retrieval**: Entity extraction, Cypher generation, path finding
+- **ReAct Worker**: Complex multi-step reasoning with advanced query processing
+  - Sub-question generation with contextual awareness
+  - Iterative information gathering with ensemble retrieval
+  - Multi-step synthesis with memory integration
 
 ### 5. Processing Layer
 - **Context Processor**: Enhanced with memory integration

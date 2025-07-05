@@ -28,13 +28,13 @@ backend/src/
 │       │   ├── document_formatter.py # Document formatting utilities
 │       │   ├── memory/            # Memory management system
 │       │   │   └── memory.py      # MemoryManager for conversation history
-│       │   ├── retrieval/         # Retrieval tools and strategies
-│       │   │   ├── graph_retrieval.py # Knowledge graph retrieval
-│       │   │   ├── keyword_retrieval.py # Keyword-based search
-│       │   │   ├── memory_search.py # Pinecone session memory (NEW)
-│       │   │   ├── metadata_filter.py # Metadata filtering
-│       │   │   ├── retrieval_tools.py # General retrieval utilities
-│       │   │   └── vector_retrieval.py # Vector similarity search
+│       │   ├── retrieval/         # Advanced retrieval ecosystem
+│       │   │   ├── graph_retrieval.py # Sophisticated Neo4j integration with Cypher generation
+│       │   │   ├── keyword_retrieval.py # BM25 sparse retrieval optimization
+│       │   │   ├── memory_search.py # Pinecone session memory with semantic search
+│       │   │   ├── metadata_filter.py # Intelligent document filtering and prioritization
+│       │   │   ├── retrieval_tools.py # Enterprise-grade ensemble coordination
+│       │   │   └── vector_retrieval.py # Qdrant dense retrieval with embeddings
 │       │   └── summarizer.py      # Document summarization tools
 │       ├── workers/               # Specialized worker agents
 │       │   ├── react/             # ReAct reasoning workers
@@ -128,10 +128,13 @@ backend/src/
 - **Type safety** with Pydantic models
 - **Error handling** and retry mechanisms
 
-### 4. Modular Tool System
-- **Pluggable retrieval strategies** (vector, keyword, graph, memory)
-- **Context processing pipeline** with memory integration
-- **Document summarization** for large contexts
+### 4. Advanced Retrieval Ecosystem
+- **State-of-the-art ensemble retrieval** combining dense, sparse, and graph methods
+- **8 sophisticated query translation strategies** (RAG Fusion, HyDE, Step-back, etc.)
+- **LLM-powered strategy selection** with intelligent method weighting
+- **Cohere re-ranking** for optimal relevance scoring
+- **Knowledge graph integration** with Cypher generation and entity extraction
+- **Context processing pipeline** with memory integration and summarization
 
 ### 5. Advanced Query Processing
 - **Multi-step reasoning** for complex queries
