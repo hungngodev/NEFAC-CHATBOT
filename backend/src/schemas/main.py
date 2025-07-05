@@ -17,13 +17,23 @@ class LoadingStatusResponse(BaseModel):
 # Schemas for the /ask-llm streaming response events
 
 
+class Citation(BaseModel):
+    id: str = Field(description="Unique identifier for the citation")
+    context: str = Field(description="The citation used to generate the search result")
+
+
 class SearchResult(BaseModel):
-    title: str
-    link: str
-    type: str
+    title: str = Field(description="The title of the search result")
+    link: str = Field(description="The link to the source of search result")
+    summary: str = Field(description="A brief summary of the search result and relvance to prompt")
+    citations: List[Citation] = Field(description="A list of citations used to generate the search result")
+    type: Optional[str] = None
     timestamp_seconds: Optional[int] = None
-    summary: Optional[str] = None
     content: Optional[str] = None
+
+
+class SearchResponse(BaseModel):
+    results: List[SearchResult] = Field(description="A list of search results")
 
 
 class ContextEvent(BaseModel):
@@ -74,4 +84,30 @@ class RetrievalSelection(BaseModel):
     weights: List[float] = Field(
         ...,
         description=("A parallel list of weights for each method, summing to 1.0 if possible.\n" "If lengths mismatch or sum != 1, weights will be normalized equally."),
+    )
+
+
+class MultiStepReasoning(BaseModel):
+    """
+    Schema for multi-step reasoning.
+    """
+
+    reasoning_steps: List[str] = Field(
+        ...,
+        description="A list of reasoning steps to answer the user's query.",
+    )
+
+
+class Validation(BaseModel):
+    """
+    Schema for validating the generated answer.
+    """
+
+    is_valid: bool = Field(
+        ...,
+        description="Whether the generated answer is valid or not.",
+    )
+    reasoning: str = Field(
+        ...,
+        description="The reasoning behind the validation.",
     )
