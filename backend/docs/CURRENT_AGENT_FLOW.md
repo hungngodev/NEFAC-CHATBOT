@@ -25,10 +25,16 @@ graph TD
     F --> G[Supervisor Node]
     G --> H[Complexity Analyzer]
     H --> I{Query Complexity Score}
-    I -->|< 0.7| J[Retriever Worker]
+    I -->|< 0.7| J[Advanced Retriever Worker]
     I -->|>= 0.7| K[ReAct Worker]
-    J --> L[Context Processor]
-    K --> L
+    J --> J1[Strategy Selection]
+    J1 --> J2[Ensemble Retrieval]
+    J2 --> J3[Cohere Re-ranking]
+    J3 --> L[Context Processor]
+    K --> K1[Multi-Step Reasoning]
+    K1 --> K2[Sub-Query Generation]
+    K2 --> K3[Ensemble Retrieval]
+    K3 --> L
     L --> M[Generator Agent]
     M --> N[Validation Agent]
     N --> O{Validation Result}
@@ -39,7 +45,7 @@ graph TD
     subgraph "Memory Layer"
         B
         E
-        R[Session Memory Store]
+        R[Pinecone Session Memory]
         B -.-> R
         L -.-> R
     end
@@ -49,8 +55,10 @@ graph TD
         F
         S[Intent Classification]
         T[Entity Extraction]
+        U1[Cypher Generation]
         F --> S
         F --> T
+        F --> U1
     end
 
     subgraph "Supervision Layer"
@@ -60,13 +68,40 @@ graph TD
         H --> U
     end
 
-    subgraph "Execution Layer"
+    subgraph "Advanced Retrieval Layer"
         J
+        J1
+        J2
+        J3
+        V1[Query Translation Strategies]
+        V2[RAG Fusion]
+        V3[HyDE]
+        V4[Step-back]
+        V5[Multi-Query]
+        V6[Dense: Qdrant]
+        V7[Sparse: BM25]
+        V8[Graph: Neo4j]
+        J1 --> V1
+        V1 --> V2
+        V1 --> V3
+        V1 --> V4
+        V1 --> V5
+        J2 --> V6
+        J2 --> V7
+        J2 --> V8
+    end
+
+    subgraph "ReAct Reasoning Layer"
         K
-        V[Multi-Step Reasoning]
-        W[Document Retrieval]
-        K --> V
-        J --> W
+        K1
+        K2
+        K3
+        W1[Contextual Sub-Queries]
+        W2[Iterative Retrieval]
+        W3[Multi-Step Synthesis]
+        K1 --> W1
+        K2 --> W2
+        K3 --> W3
     end
 
     subgraph "Processing Layer"
@@ -74,9 +109,11 @@ graph TD
         X[Information Extraction]
         Y[Document Summarization]
         Z[Citation Attribution]
+        Z1[Memory Updates]
         L --> X
         L --> Y
         L --> Z
+        L --> Z1
     end
 
     subgraph "Generation Layer"
@@ -84,7 +121,9 @@ graph TD
         N
         AA[Response Synthesis]
         BB[Quality Validation]
+        CC[Source Attribution]
         M --> AA
+        M --> CC
         N --> BB
     end
 
@@ -92,11 +131,13 @@ graph TD
     style E fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
     style F fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
     style H fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    style J fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    style J fill:#fce4ec,stroke:#880e4f,stroke-width:3px
     style K fill:#f1f8e9,stroke:#33691e,stroke-width:2px
     style L fill:#e0f2f1,stroke:#004d40,stroke-width:2px
     style M fill:#e8eaf6,stroke:#1a237e,stroke-width:2px
     style N fill:#fff8e1,stroke:#ff6f00,stroke-width:2px
+    style J2 fill:#ffebee,stroke:#c62828,stroke-width:2px
+    style V1 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
 ```
 
 ## Detailed Flow Breakdown
@@ -122,12 +163,15 @@ graph TD
 - **Strategic Decision Making**: Routes to appropriate workers based on complexity score
 
 ### 4. Execution Layer
-- **Advanced Retriever Worker**: State-of-the-art ensemble retrieval system
-  - **Multi-Strategy Ensemble**: Dense (Qdrant), Sparse (BM25), Graph (Neo4j)
+- **Advanced Retriever Worker**: True ensemble retrieval with three-method coordination
+  - **LangChain EnsembleRetriever**: Weighted combination of Dense + Sparse + Graph
+  - **Method 1 - Dense (Qdrant)**: Semantic similarity with text-embedding-3-large
+  - **Method 2 - Sparse (BM25)**: Exact term matching for legal terminology
+  - **Method 3 - Graph (Neo4j)**: Entity relationships with 522-line implementation
   - **8 Query Translation Techniques**: RAG Fusion, HyDE, Step-back, Multi-Query, etc.
-  - **Intelligent Method Selection**: LLM-powered strategy optimization
-  - **Cohere Re-ranking**: Advanced relevance optimization
-  - **Graph-Enhanced Retrieval**: Entity extraction, Cypher generation, path finding
+  - **Multi-Query Processing**: Expanded queries across all three methods
+  - **Cohere Re-ranking**: Advanced relevance optimization post-ensemble
+  - **Intelligent Deduplication**: Content and metadata-based across all methods
 - **ReAct Worker**: Complex multi-step reasoning with advanced query processing
   - Sub-question generation with contextual awareness
   - Iterative information gathering with ensemble retrieval

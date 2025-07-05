@@ -45,10 +45,14 @@ This document summarizes the comprehensive backend architecture revision complet
 - **Fallback Mechanisms**: Graceful degradation on failures
 
 ### Advanced Retrieval Pipeline
-- **State-of-the-Art Ensemble Retrieval**: Dense (Qdrant) + Sparse (BM25) + Graph (Neo4j)
+- **True Ensemble Architecture**: LangChain EnsembleRetriever coordinating three methods
+- **Method 1 - Dense (Qdrant)**: Semantic similarity with text-embedding-3-large
+- **Method 2 - Sparse (BM25)**: Exact term matching for legal terminology
+- **Method 3 - Graph (Neo4j)**: Entity relationships with 522-line implementation
 - **8 Query Translation Strategies**: RAG Fusion, HyDE, Step-back, Multi-Query, etc.
-- **LLM-Powered Strategy Selection**: Intelligent method optimization
-- **Cohere Re-ranking**: Advanced relevance scoring
+- **Multi-Query Processing**: Expanded queries across all three methods
+- **Cohere Re-ranking**: Advanced relevance optimization post-ensemble
+- **Intelligent Deduplication**: Content and metadata-based across all methods
 - **Context Processor**: Enhanced with memory integration and summarization
 - **Multi-Step Reasoning**: ReAct worker with ensemble retrieval integration
 - **Validation Loop**: Quality assurance with comprehensive retry mechanisms
