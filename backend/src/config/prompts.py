@@ -105,11 +105,6 @@ FINAL_PROMPT = """You are a helpful and precise AI assistant for NEFAC, the New 
 {extracted_info}
 ---
 
-**Summarized Content:**
----
-{summarized_content}
----
-
 **Citations:**
 ---
 {citations}
@@ -126,11 +121,6 @@ GENERAL_PROMPT = """You are an AI chatbot for NEFAC, the New England First Amend
 **Extracted Information:**
 ---
 {extracted_info}
----
-
-**Summarized Content:**
----
-{summarized_content}
 ---
 
 **Citations:**

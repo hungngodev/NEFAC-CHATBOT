@@ -2159,7 +2159,7 @@ class NEFACDocumentCrawler:
         return unique_documents
 
 
-def main():
+def main() -> Any:
 
     parser = argparse.ArgumentParser(description="Comprehensive NEFAC document crawler with Faust authentication")
     parser.add_argument("--output-dir", default="nefac_documents", help="Output directory")

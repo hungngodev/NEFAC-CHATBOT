@@ -3,6 +3,7 @@ import logging
 import os
 import re
 import time
+from typing import Any, List
 
 from langchain.docstore.document import Document
 from langchain_core.runnables import RunnableLambda
@@ -24,13 +25,13 @@ logger = logging.getLogger("youtube_loader_pipeline")
 TRANSCRIPT_TIMESTAMP_PATTERN = re.compile(r"\[(?P<ts>[\d:\.]+)s?\]\s*(?P<txt>.*)")
 
 
-def load_youtube_entries(metadata_json_path):
+def load_youtube_entries(metadata_json_path) -> List[Document]:
     with open(metadata_json_path, "r", encoding="utf-8") as f:
         entries = json.load(f)
     return entries
 
 
-def parse_youtube_transcript_lines(transcript_text: str):
+def parse_youtube_transcript_lines(transcript_text: str) -> Any:
     """
     Parse transcript into a list of dicts: [{"start_seconds": float, "text": str}]
     """
@@ -79,7 +80,7 @@ def strip_timestamps_from_transcript(transcript_text: str) -> str:
     return " ".join(lines)
 
 
-def parse_transcript_segments(raw_lines):
+def parse_transcript_segments(raw_lines) -> Any:
     segments = []
     for i in range(len(raw_lines) - 1):
         t0 = float(re.findall(r"\[(\d+\.\d+)s\]", raw_lines[i])[0])
@@ -95,7 +96,7 @@ def parse_transcript_segments(raw_lines):
     return segments
 
 
-def build_offset_map(segments):
+def build_offset_map(segments) -> Any:
     full_text = ""
     offset_map = []
     for seg in segments:
@@ -113,7 +114,7 @@ def build_offset_map(segments):
     return full_text.strip(), offset_map
 
 
-def get_time_bounds(chunk_start, chunk_end, offset_map):
+def get_time_bounds(chunk_start, chunk_end, offset_map) -> Any:
     start_time = end_time = None
     for entry in offset_map:
         if entry["end_char"] < chunk_start:
@@ -126,7 +127,7 @@ def get_time_bounds(chunk_start, chunk_end, offset_map):
     return start_time, end_time
 
 
-def parse_youtube(entry, transcripts_dir):
+def parse_youtube(entry, transcripts_dir) -> Any:
     transcript_file = entry.get("transcript_file")
     if not transcript_file:
         return None
@@ -147,7 +148,7 @@ def parse_youtube(entry, transcripts_dir):
     }
 
 
-def chunk_and_contextualize_youtube(youtube_data, splitter):
+def chunk_and_contextualize_youtube(youtube_data, splitter) -> Any:
     entry = youtube_data["entry"]
     full_text = youtube_data["full_text"]
     offset_map = youtube_data["offset_map"]
@@ -192,7 +193,7 @@ def chunk_and_contextualize_youtube(youtube_data, splitter):
     return chunked_docs
 
 
-def count_tokens_in_docs(docs):
+def count_tokens_in_docs(docs) -> Any:
     return sum(len(doc.page_content.split()) for doc in docs)
 
 
