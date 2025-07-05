@@ -8,9 +8,10 @@ This script sets up the complete NEFAC document crawler environment.
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 
-def install_requirements():
+def install_requirements() -> None:
     """Install all required dependencies from the central requirements.txt file."""
     print("Installing all Python dependencies from central requirements.txt...")
 
@@ -27,7 +28,7 @@ def install_requirements():
     print("   For headless environments, you may need to install Chrome/Chromium manually.")
 
 
-def create_env_file():
+def create_env_file() -> Any:
     """Create .env file if it doesn't exist."""
     env_file = Path(".env")
     if not env_file.exists():
@@ -45,7 +46,7 @@ def create_env_file():
         print("Created .env file. Please edit it with your Faust secret key and optional Webshare credentials.")
 
 
-def main():
+def main() -> Any:
     """Main setup function."""
     print("Setting up NEFAC Document Crawler...")
 
