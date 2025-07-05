@@ -1,6 +1,7 @@
 import os
 import re
 import time
+from typing import Any
 from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup
@@ -107,7 +108,7 @@ class NEFACScraper:
         self.driver.quit()
 
 
-def main():
+def main() -> Any:
     scraper = NEFACScraper()
     try:
         scraper.scrape_site()

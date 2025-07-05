@@ -1,8 +1,9 @@
 import glob
 import os
+from typing import Any
 
 
-def file_requires_deletion(file_path):
+def file_requires_deletion(file_path) -> Any:
     """Check if a file contains error page text or policy content."""
     try:
         with open(file_path, "r", encoding="utf-8") as file:
@@ -17,7 +18,7 @@ def file_requires_deletion(file_path):
         return False
 
 
-def remove_unwanted_files():
+def remove_unwanted_files() -> None:
     """Delete unwanted text files from the 'output' directory."""
     output_dir = "output"
 
