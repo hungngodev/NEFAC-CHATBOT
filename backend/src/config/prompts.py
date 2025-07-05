@@ -306,3 +306,15 @@ Using both the original question and the stepped-back legal context, produce a c
 Original Question: {question}
 Answer:
 """
+
+# ============================================================================
+# CONVERSATION SUMMARY PROMPT
+# ============================================================================
+CONVERSATION_SUMMARY_PROMPT = """
+You are an expert at summarizing conversations. Condense the following chat history into a concise summary, retaining the key facts, entities, and user intents.
+
+Chat History:
+{chat_history}
+
+New, Condensed Summary:
+"""

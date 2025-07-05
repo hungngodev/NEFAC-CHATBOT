@@ -15,7 +15,7 @@ SUB_QUESTION_PROMPT = ChatPromptTemplate.from_messages(
             "system",
             "You are an expert at breaking down complex questions into smaller, actionable sub-questions. Given the main question and the current context, generate the next logical sub-question to help gather more information. If enough information has been gathered to answer the main question, respond with 'FINAL_ANSWER'.",
         ),
-        MessagesPlaceholder(variable_name="chat_history"),
+        MessagesPlaceholder(variable_name="history_context"),
         (
             "human",
             "Main Question: {question}\nCurrent Context: {context}\nNext Sub-question:",
@@ -30,8 +30,8 @@ SYNTHESIS_PROMPT = ChatPromptTemplate.from_messages(
             "system",
             "You are an expert at synthesizing information. Combine the following pieces of context to form a comprehensive answer to the main question. If the context is insufficient, state that.",
         ),
-        MessagesPlaceholder(variable_name="chat_history"),
-        ("human", "Main Question: {question}\nContext: {context}\nExtracted Information: {extracted_info}\nCitations: {citations}\nAnswer:"),
+        MessagesPlaceholder(variable_name="history_context"),
+        ("human", "Main Question: {question}\nContext: {context}\nExtracted Information: {extracted_info}\nSummarized Content: {summarized_content}\nCitations: {citations}\nAnswer:"),
     ]
 )
 
@@ -52,7 +52,7 @@ def multi_step_reasoning_agent(state: AgentState, model: ChatOpenAI, max_steps: 
                 {
                     "question": state.query,
                     "context": current_context,
-                    "chat_history": state.chat_history,
+                    "history_context": state.history_summary or state.chat_history,
                 }
             )
 
@@ -63,52 +63,21 @@ def multi_step_reasoning_agent(state: AgentState, model: ChatOpenAI, max_steps: 
             # Temporarily create a state for the retrieval agent
             retrieval_state_for_sub_q = AgentState(
                 query=sub_question,
-                chat_history=state.chat_history,
-                contextualized_query=None,
-                intent=None,
-                retrieval_method=None,
-                retrieval_selection=state.retrieval_selection,
+                chat_history=state.chat_history,  # Keep full chat_history for now, as it's used by other agents
+                history_summary=state.history_summary,  # Pass summary
                 transformed_query=sub_question,
-                documents=[],
-                answer=None,
-                validation=None,
+                retrieval_selection=state.retrieval_selection,
                 entities=state.entities,
-                metadata_filters={},
-                priorities=[],
-                extracted_info=None,
-                citations=[],
-                structured_query=None,
-                statistical_query=None,
-                error=None,
             )
             retrieval_output = retrieval_agent(retrieval_state_for_sub_q)
             retrieved_docs = retrieval_output.get("documents", [])
 
             # Process retrieved documents through context_processor_agent
-            # Ensure documents is a list of strings (page_content) or None
-            if isinstance(retrieved_docs, list) and len(retrieved_docs) > 0 and hasattr(retrieved_docs[0], "page_content"):
-                doc_contents_list = [doc.page_content for doc in retrieved_docs]
-            else:
-                doc_contents_list = []
             context_processor_state = AgentState(
                 query=state.query,
                 chat_history=state.chat_history,
-                contextualized_query=None,
-                intent=None,
-                retrieval_method=None,
-                retrieval_selection=None,
-                transformed_query=None,
-                documents=doc_contents_list,
-                answer=None,
-                validation=None,
-                entities=[],
-                metadata_filters={},
-                priorities=[],
-                extracted_info=None,
-                citations=[],
-                structured_query=None,
-                statistical_query=None,
-                error=None,
+                history_summary=state.history_summary,
+                documents=retrieved_docs,
             )
             processed_context = context_processor_agent(context_processor_state)
 
@@ -127,12 +96,14 @@ def multi_step_reasoning_agent(state: AgentState, model: ChatOpenAI, max_steps: 
             {
                 "question": state.query,
                 "context": current_context,
-                "chat_history": state.chat_history,
+                "history_context": state.history_summary or state.chat_history,
                 "extracted_info": state.extracted_info,
+                "summarized_content": getattr(state, "summarized_content", None),
                 "citations": state.citations,
             }
         )
 
         return {"answer": final_answer, "documents": all_documents}
+
     except Exception as e:
         return {"error": str(e)}

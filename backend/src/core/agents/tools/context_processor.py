@@ -1,9 +1,12 @@
 from typing import Any, Dict
 
 from langchain_core.documents import Document
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
 from src.config.constant import MODEL_NAME
+from src.core.agents.tools.retrieval.memory_search import add_memory_to_pinecone, retrieve_memory_from_pinecone
 from src.schemas.state import AgentState
 
 # --- LLM Setup ---
@@ -24,9 +27,13 @@ def information_extraction_tool(state: AgentState) -> Dict[str, Any]:
         extracted_data = []
         for doc in documents:
             if isinstance(doc, Document):
-                extracted_data.append({"title": doc.metadata.get("title"), "source_url": doc.metadata.get("source_url"), "page_content_snippet": doc.page_content[:200] + "..." if len(doc.page_content) > 200 else doc.page_content})
+                snippet = doc.page_content[:200] + "..." if len(doc.page_content) > 200 else doc.page_content
+                fact = f"Title: {doc.metadata.get('title')} | Source: {doc.metadata.get('source_url')} | Snippet: {snippet}"
+                extracted_data.append({"title": doc.metadata.get("title"), "source_url": doc.metadata.get("source_url"), "page_content_snippet": snippet})
+                if hasattr(state, "session_id") and state.session_id:
+                    add_memory_to_pinecone(state.session_id, fact, metadata={"type": "fact", "title": doc.metadata.get("title"), "source_url": doc.metadata.get("source_url")})
             else:
-                extracted_data.append({"title": None, "source_url": None, "page_content_snippet": str(doc)[:200] + "..." if len(str(doc)) > 200 else str(doc)})
+                extracted_data.append({"text": str(doc)})
 
         # In a more advanced scenario, an LLM would be used here to extract structured info
         # based on a predefined schema or user's intent.
@@ -38,6 +45,46 @@ def information_extraction_tool(state: AgentState) -> Dict[str, Any]:
 
 
 # --- Context Summarization Tool ---
+summarization_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", "You are a helpful assistant that summarizes documents."),
+        (
+            "human",
+            """Please summarize the following document:
+
+{document_content}
+
+Summary:""",
+        ),
+    ]
+)
+summarization_chain = summarization_prompt | llm | StrOutputParser()
+
+
+def context_summarization_tool(state: AgentState) -> Dict[str, Any]:
+    """
+    Summarizes lengthy retrieved documents or passages to fit within the LLM's context window.
+    """
+    try:
+        documents = state.documents
+        if not documents:
+            return {"summarized_content": "No documents to summarize.", "documents": []}
+
+        summarized_docs = []
+        for doc in documents:
+            if isinstance(doc, Document):
+                # Only summarize if the document content is long
+                if len(doc.page_content) > 500:  # Arbitrary length for summarization
+                    summary = summarization_chain.invoke({"document_content": doc.page_content})
+                    summarized_docs.append(Document(page_content=summary, metadata=doc.metadata))
+                else:
+                    summarized_docs.append(doc)  # Keep original if short
+            else:
+                summarized_docs.append(doc)  # If doc is a string, just append as-is
+
+        return {"summarized_content": summarized_docs, "documents": summarized_docs}
+    except Exception as e:
+        return {"error": f"Error during context summarization: {e}", "documents": state.documents}
 
 
 # --- Citation/Source Attribution Tool ---
@@ -61,12 +108,7 @@ def citation_attribution_tool(state: AgentState) -> Dict[str, Any]:
                     "document_id": doc.metadata.get("id", "N/A"),
                 }
             else:
-                citation_info = {
-                    "title": "N/A",
-                    "source_url": "N/A",
-                    "page_number": "N/A",
-                    "document_id": "N/A",
-                }
+                citation_info = {"title": str(doc), "source_url": "N/A", "page_number": "N/A", "document_id": "N/A"}
             citations.append(citation_info)
 
         return {"citations": citations, "documents": documents}
@@ -90,10 +132,21 @@ def context_processor_agent(state: AgentState) -> Dict[str, Any]:
         return extracted_result
     state.extracted_info = extracted_result.get("extracted_info")
 
-    # Step 2: Citation/Source Attribution
+    # Step 2: Context Summarization
+    summarization_result = context_summarization_tool(state)
+    if summarization_result.get("error"):
+        return summarization_result
+    state.summarized_content = summarization_result.get("summarized_content")
+
+    # Step 3: Citation/Source Attribution
     citation_result = citation_attribution_tool(state)
     if citation_result.get("error"):
         return citation_result
     state.citations = citation_result.get("citations")
 
-    return {"documents": state.documents, "extracted_info": state.extracted_info, "citations": state.citations}
+    # Retrieve top relevant session memory from Pinecone and add to state
+    if hasattr(state, "session_id") and state.session_id:
+        session_memory = retrieve_memory_from_pinecone(state.session_id, state.query, top_k=5)
+        state.session_memory = session_memory
+
+    return {"documents": state.documents, "extracted_info": state.extracted_info, "summarized_content": state.summarized_content, "citations": state.citations}

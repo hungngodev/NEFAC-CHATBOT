@@ -2,29 +2,38 @@
 Hierarchical Multi-Agent System
 Properly orchestrates existing agents following the documented architecture.
 Uses enhanced agents with proper typing and dependency injection.
+Integrates memory management and summarization features from main branch.
 """
 
 import logging
 import os
-from typing import Any, Dict, Literal
+from functools import partial
+from typing import Any, Dict
 
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
-from langgraph.graph import END, START, CompiledGraph, StateGraph
+from langgraph.graph import END, CompiledGraph, StateGraph
 
 # Configuration
 from src.config.constant import MODEL_NAME
-from src.core.agents.contextualizer.query_understanding import QueryUnderstandingAgent
 
-# Import agents with proper typing
+# Import enhanced agents with proper typing (from current branch)
+from src.core.agents.contextualizer.query_understanding import QueryUnderstandingAgent
+from src.core.agents.summarizer import summarizer_agent
 from src.core.agents.supervisor.complexity_analyzer import ComplexityAnalyzer
 from src.core.agents.supervisor.generator import GeneratorAgent
+
+# Import validation and other agents
+from src.core.agents.supervisor.validation import validation_agent
+
+# Import memory and summarization features (from main branch)
+from src.core.agents.tools.context_processor import context_processor_agent
 from src.core.agents.tools.memory.memory import MemoryManager
 from src.core.agents.workers.react.react_worker import multi_step_reasoning_agent
 from src.core.agents.workers.retriever.retrieval import RetrievalAgent
-from src.schemas.agent_types import GenerationResult, QueryComplexityResult, QueryUnderstandingResult, RetrievalResult
 
-# Import the unified state and types
+# Import schemas and types
+from src.schemas.agent_types import GenerationResult, QueryComplexityResult, QueryUnderstandingResult, RetrievalResult
 from src.schemas.state import AgentState
 
 # Setup logging
@@ -97,173 +106,239 @@ def memory_retrieval_node(state: AgentState) -> Dict[str, Any]:
         # Create memory summary
         memory_summary = ""
         if memories:
-            memory_summary = "\n".join([f"Previous interaction: {mem.get('query', '')} -> {mem.get('response', '')[:100]}..." for mem in memories[:3]])
+            memory_texts = [mem.content for mem in memories if hasattr(mem, "content")]
+            memory_summary = "\n".join(memory_texts[:3])  # Use top 3 most relevant
 
-        return {"memory_summary": memory_summary, "relevant_memories": memories}
+        logger.info(f"Memory retrieval: Found {len(memories)} relevant memories")
+        return {"memory_context": memory_summary, "retrieved_memories": memories}
+
     except Exception as e:
-        return {"memory_summary": "", "relevant_memories": [], "error": f"Memory retrieval error: {str(e)}"}
+        logger.error(f"Memory retrieval error: {e}")
+        return {"memory_context": "", "retrieved_memories": [], "error": f"Memory error: {str(e)}"}
 
 
-def contextualizer_node(state: AgentState) -> Dict[str, Any]:
+def check_history_length_node(state: AgentState) -> Dict[str, Any]:
     """
-    Contextualizer node that processes queries for better understanding.
-    Uses the QueryUnderstandingAgent with proper typing.
+    Check if chat history needs summarization based on length threshold.
+    Integrates the summarization logic from main branch.
     """
     try:
-        # Use direct LLM model
-        model = llm
+        SUMMARY_THRESHOLD = 10
 
-        # Use contextualizer
-        result: QueryUnderstandingResult = query_understanding_agent_instance.process_query(state, model)
+        if len(state.chat_history) >= SUMMARY_THRESHOLD:
+            # Use the summarizer agent from main branch
+            summarizer_with_model = partial(summarizer_agent, model=llm)
+            summary_result = summarizer_with_model(state)
 
-        if result.is_success:
-            return {"contextualized_query": result.data.contextualized_query, "intent": result.data.intent.value, "entities": result.data.entities, "structured_query": result.data.structured_query, "statistical_query": result.data.statistical_query}
+            if summary_result.get("error"):
+                logger.error(f"Summarization failed: {summary_result['error']}")
+                return {"needs_summarization": False, "error": summary_result["error"]}
+
+            # Update state with summary
+            return {"needs_summarization": True, "history_summary": summary_result.get("history_summary", ""), "chat_history": summary_result.get("chat_history", state.chat_history)}
         else:
-            logger.error(f"Query understanding failed: {result.error}")
-            return {"contextualized_query": state.user_query, "error": f"Contextualizer error: {result.error}"}  # Fallback
+            return {"needs_summarization": False}
 
     except Exception as e:
-        logger.error(f"Contextualizer node error: {e}")
-        return {"contextualized_query": state.user_query, "error": f"Contextualizer error: {str(e)}"}  # Fallback
+        logger.error(f"History length check error: {e}")
+        return {"needs_summarization": False, "error": f"History check error: {str(e)}"}
+
+
+def query_understanding_node(state: AgentState) -> Dict[str, Any]:
+    """
+    Query understanding node using the enhanced QueryUnderstandingAgent.
+    """
+    try:
+        # Use the enhanced query understanding agent
+        understanding_result: QueryUnderstandingResult = query_understanding_agent_instance.understand_query(query=state.user_query, chat_history=state.chat_history, memory_context=getattr(state, "memory_context", ""))
+
+        if understanding_result.is_success:
+            logger.info(f"Query understanding: Intent='{understanding_result.data.intent}', Entities={understanding_result.data.entities}")
+            return {
+                "contextualized_query": understanding_result.data.contextualized_query,
+                "intent": understanding_result.data.intent,
+                "entities": understanding_result.data.entities,
+                "structured_query": understanding_result.data.structured_query,
+                "statistical_query": understanding_result.data.statistical_query,
+            }
+        else:
+            logger.error(f"Query understanding failed: {understanding_result.error}")
+            return {"error": f"Query understanding error: {understanding_result.error}"}
+
+    except Exception as e:
+        logger.error(f"Query understanding node error: {e}")
+        return {"error": f"Query understanding error: {str(e)}"}
 
 
 def retriever_worker_node(state: AgentState) -> Dict[str, Any]:
     """
-    Retriever worker node for document retrieval.
-    Uses the RetrievalAgent with proper typing.
+    Retriever worker node using the enhanced RetrievalAgent.
     """
     try:
-        # Use retrieval agent
-        result: RetrievalResult = retrieval_agent_instance.retrieve_documents(state)
+        # Use the enhanced retrieval agent
+        retrieval_result: RetrievalResult = retrieval_agent_instance.retrieve_documents(query=state.contextualized_query or state.user_query, intent=state.intent, entities=state.entities, structured_query=state.structured_query, statistical_query=state.statistical_query)
 
-        if result.is_success:
-            documents = result.data.documents
+        if retrieval_result.is_success:
+            # Process documents through context processor (from main branch)
+            context_state = AgentState(query=state.user_query, chat_history=state.chat_history, history_summary=getattr(state, "history_summary", ""), documents=retrieval_result.data.documents, session_id=getattr(state, "session_id", None))
+
+            processed_context = context_processor_agent(context_state)
+
+            logger.info(f"Retrieval: Found {len(retrieval_result.data.documents)} documents")
             return {
-                "all_retrieved_docs": documents,
-                "retrieved_docs": "\n\n".join([doc.page_content if hasattr(doc, "page_content") else str(doc) for doc in documents[:5]]),  # Limit for context
-                "retrieval_methods_used": [method.value for method in result.data.retrieval_methods_used],
-                "total_documents_found": result.data.total_documents_found,
-                "deduplication_applied": result.data.deduplication_applied,
+                "documents": retrieval_result.data.documents,
+                "retrieval_metadata": retrieval_result.data.metadata,
+                "extracted_info": processed_context.get("extracted_info"),
+                "summarized_content": processed_context.get("summarized_content"),
+                "citations": processed_context.get("citations"),
+                "session_memory": processed_context.get("session_memory"),
             }
         else:
-            logger.error(f"Document retrieval failed: {result.error}")
-            return {"all_retrieved_docs": [], "retrieved_docs": "", "error": f"Retriever error: {result.error}"}
+            logger.error(f"Retrieval failed: {retrieval_result.error}")
+            return {"error": f"Retrieval error: {retrieval_result.error}"}
 
     except Exception as e:
-        logger.error(f"Retriever node error: {e}")
-        return {"all_retrieved_docs": [], "retrieved_docs": "", "error": f"Retriever error: {str(e)}"}
+        logger.error(f"Retriever worker node error: {e}")
+        return {"error": f"Retriever worker error: {str(e)}"}
 
 
 def react_worker_node(state: AgentState) -> Dict[str, Any]:
     """
     ReAct worker node for complex multi-step reasoning.
-    Uses the existing multi_step_reasoning_agent.
     """
     try:
-        # Convert messages to chat history format
-        chat_history = []
-        for msg in state.messages:
-            if hasattr(msg, "content"):
-                chat_history.append(msg.content)
+        # Use the multi-step reasoning agent
+        reasoning_result = multi_step_reasoning_agent(state, llm, max_steps=3)
 
-        # Create temporary state for existing agent
-        temp_state = type("TempState", (), {"query": state.contextualized_query or state.user_query, "chat_history": chat_history, "retrieval_selection": state.retrieval_selection, "entities": []})()
+        if reasoning_result.get("error"):
+            logger.error(f"ReAct reasoning failed: {reasoning_result['error']}")
+            return {"error": f"ReAct reasoning error: {reasoning_result['error']}"}
 
-        # Use existing ReAct agent
-        result = multi_step_reasoning_agent(temp_state, llm, max_steps=3)
+        logger.info("ReAct reasoning completed successfully")
+        return {"answer": reasoning_result.get("answer"), "documents": reasoning_result.get("documents", [])}
 
-        return {"all_retrieved_docs": result.get("documents", []), "retrieved_docs": "\n\n".join([doc.page_content if hasattr(doc, "page_content") else str(doc) for doc in result.get("documents", [])[:5]]), "react_iterations": 3}  # Track iterations
     except Exception as e:
-        return {"all_retrieved_docs": [], "retrieved_docs": "", "react_iterations": 0, "error": f"ReAct error: {str(e)}"}
+        logger.error(f"ReAct worker node error: {e}")
+        return {"error": f"ReAct worker error: {str(e)}"}
 
 
-def final_answer_node(state: AgentState) -> Dict[str, Any]:
+def generator_node(state: AgentState) -> Dict[str, Any]:
     """
-    Final answer generation node.
-    Uses the GeneratorAgent with proper typing.
+    Generator node using the enhanced GeneratorAgent.
     """
     try:
-        # Use direct LLM model
-        model = llm
+        # Use the enhanced generator agent
+        generation_result: GenerationResult = generator_agent_instance.generate_response(
+            query=state.contextualized_query or state.user_query,
+            documents=state.documents,
+            intent=state.intent,
+            extracted_info=getattr(state, "extracted_info", None),
+            citations=getattr(state, "citations", None),
+            memory_context=getattr(state, "memory_context", ""),
+            history_summary=getattr(state, "history_summary", ""),
+        )
 
-        # Use generator
-        result: GenerationResult = generator_agent_instance.generate_answer(state, model)
-
-        if result.is_success:
-            return {"final_answer": result.data.answer, "confidence_score": result.data.confidence_score, "sources_cited": result.data.sources_cited, "word_count": result.data.word_count, "generation_time_ms": result.data.generation_time_ms}
+        if generation_result.is_success:
+            logger.info("Response generation completed successfully")
+            return {"answer": generation_result.data.answer, "confidence_score": generation_result.data.confidence_score, "sources": generation_result.data.sources}
         else:
-            logger.error(f"Answer generation failed: {result.error}")
-            return {"final_answer": "I apologize, but I couldn't generate an answer due to a processing error.", "error": f"Generator error: {result.error}"}
+            logger.error(f"Generation failed: {generation_result.error}")
+            return {"error": f"Generation error: {generation_result.error}"}
 
     except Exception as e:
-        logger.error(f"Final answer node error: {e}")
-        return {"final_answer": f"I apologize, but I encountered an error: {str(e)}", "error": f"Generator error: {str(e)}"}
+        logger.error(f"Generator node error: {e}")
+        return {"error": f"Generator error: {str(e)}"}
 
 
-def memory_storage_node(state: AgentState) -> Dict[str, Any]:
+def validation_node(state: AgentState) -> Dict[str, Any]:
     """
-    Memory storage node that saves the interaction.
-    Uses the existing MemoryManager.
+    Validation node to check response quality.
     """
     try:
-        # Store the interaction in memory
-        memory_manager.store_interaction(user_id=state.user_id, query=state.user_query, response=state.final_answer, session_id=state.session_id, thread_id=state.thread_id)
+        # Use validation agent with model
+        validation_with_model = partial(validation_agent, model=llm)
+        validation_result = validation_with_model(state)
 
-        return {"memory_stored": True}
+        if validation_result.get("error"):
+            logger.error(f"Validation failed: {validation_result['error']}")
+            return {"validation": {"is_valid": True}, "error": validation_result["error"]}  # Default to valid on error
+
+        logger.info(f"Validation completed: {validation_result.get('validation', {})}")
+        return {"validation": validation_result.get("validation", {"is_valid": True})}
+
     except Exception as e:
-        return {"memory_stored": False, "error": f"Memory storage error: {str(e)}"}
+        logger.error(f"Validation node error: {e}")
+        return {"validation": {"is_valid": True}, "error": f"Validation error: {str(e)}"}  # Default to valid on error
 
 
-def route_after_supervisor(state: AgentState) -> Literal["retriever_worker", "react_worker"]:
-    """Route based on supervisor decision."""
-    return state.supervisor_decision or "retriever_worker"
-
-
-def create_multi_agent_graph() -> CompiledGraph:
+def create_enhanced_graph() -> CompiledGraph:
     """
-    Creates the hierarchical multi-agent graph following the documented architecture.
-    This function ONLY handles orchestration - agents are imported, not redefined.
+    Creates the enhanced LangGraph workflow that combines hierarchical architecture
+    with memory management and summarization features.
     """
-    # Create the state graph
+    # Create the workflow
     workflow = StateGraph(AgentState)
 
-    # Add nodes (using existing agents)
+    # Add all nodes
     workflow.add_node("supervisor", supervisor_node)
     workflow.add_node("memory_retrieval", memory_retrieval_node)
-    workflow.add_node("contextualizer", contextualizer_node)
+    workflow.add_node("check_history_length", check_history_length_node)
+    workflow.add_node("query_understanding", query_understanding_node)
     workflow.add_node("retriever_worker", retriever_worker_node)
     workflow.add_node("react_worker", react_worker_node)
-    workflow.add_node("final_answer", final_answer_node)
-    workflow.add_node("memory_storage", memory_storage_node)
+    workflow.add_node("generator", generator_node)
+    workflow.add_node("validation", validation_node)
+    workflow.add_node("error", lambda state: {"answer": "I'm sorry, but I encountered an error. Please try again."})
 
-    # Define the flow following the hierarchical architecture
-    workflow.add_edge(START, "supervisor")
-    workflow.add_edge("supervisor", "memory_retrieval")
-    workflow.add_edge("memory_retrieval", "contextualizer")
+    # Set entry point
+    workflow.set_entry_point("memory_retrieval")
 
-    # Conditional routing based on supervisor decision
-    workflow.add_conditional_edges("contextualizer", route_after_supervisor, {"retriever_worker": "retriever_worker", "react_worker": "react_worker"})
+    # Add edges
+    workflow.add_edge("memory_retrieval", "check_history_length")
 
-    # Both workers go to final answer
-    workflow.add_edge("retriever_worker", "final_answer")
-    workflow.add_edge("react_worker", "final_answer")
+    # Conditional routing from check_history_length
+    def route_from_history_check(state: AgentState):
+        if state.error:
+            return "error"
+        return "query_understanding"
 
-    # Final answer goes to memory storage, then end
-    workflow.add_edge("final_answer", "memory_storage")
-    workflow.add_edge("memory_storage", END)
+    workflow.add_conditional_edges("check_history_length", route_from_history_check, {"query_understanding": "query_understanding", "error": "error"})
+
+    workflow.add_edge("query_understanding", "supervisor")
+
+    # Conditional routing from supervisor
+    def route_from_supervisor(state: AgentState):
+        if state.error:
+            return "error"
+        decision = getattr(state, "supervisor_decision", "retriever_worker")
+        return decision
+
+    workflow.add_conditional_edges("supervisor", route_from_supervisor, {"retriever_worker": "retriever_worker", "react_worker": "react_worker", "error": "error"})
+
+    # Both workers route to generator
+    workflow.add_edge("retriever_worker", "generator")
+    workflow.add_edge("react_worker", "generator")
+    workflow.add_edge("generator", "validation")
+
+    # Conditional routing from validation
+    def route_from_validation(state: AgentState):
+        if state.error:
+            return "error"
+        validation_result = getattr(state, "validation", {})
+        if validation_result.get("is_valid", True):
+            return END
+        else:
+            # Loop back for refinement if validation fails
+            return "retriever_worker"
+
+    workflow.add_conditional_edges("validation", route_from_validation, {END: END, "retriever_worker": "retriever_worker", "error": "error"})
+
+    workflow.add_edge("error", END)
 
     # Compile with memory
     memory = MemorySaver()
     return workflow.compile(checkpointer=memory)
 
 
-# Export the main function
-def get_multi_agent_graph() -> CompiledGraph:
-    """Get the compiled multi-agent graph."""
-    return create_multi_agent_graph()
-
-
-# For backward compatibility
-def create_enhanced_multi_agent_graph() -> CompiledGraph:
-    """Alias for backward compatibility."""
-    return create_multi_agent_graph()
+# Create the enhanced application
+app = create_enhanced_graph()
