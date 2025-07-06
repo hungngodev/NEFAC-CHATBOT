@@ -3,17 +3,17 @@ Retriever Worker - Enhanced with Unified Retrieval System
 Provides a worker interface for the unified retrieval system with comprehensive metadata.
 """
 
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import List, Optional, TypedDict
 
 from langchain_core.documents import Document
 
 from src.core.agents.tools.retrieval.retrieval_tools import RetrievalAgent
-from src.schemas.state import AgentState
+from src.schemas.core_types import AgentState, RetrievalMetadata
 
 
 class RetrieverWorkerOutput(TypedDict):
     documents: List[Document]
-    retrieval_metadata: Dict[str, Any]
+    retrieval_metadata: RetrievalMetadata
     success: bool
     error: Optional[str]
 

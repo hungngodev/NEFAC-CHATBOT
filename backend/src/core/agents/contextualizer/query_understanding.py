@@ -8,9 +8,7 @@ from langchain_openai import ChatOpenAI
 from src.config.prompts import CONTEXTUALIZE_PROMPT, INTENT_CLASSIFICATION_PROMPT
 from src.core.agents.tools.retrieval.graph_retrieval import Entities, canonicalize_entities, disambiguate_entities, entity_chain, generate_cypher, get_graph_schema
 from src.exceptions.agent_exceptions import QueryUnderstandingError, handle_agent_exception
-from src.schemas.agent_types import QueryIntent, QueryUnderstandingData, QueryUnderstandingResult, create_error_result, create_success_result
-from src.schemas.main import IntentClassification
-from src.schemas.state import AgentState
+from src.schemas.core_types import AgentState, IntentClassification, QueryIntent, QueryUnderstandingData, QueryUnderstandingResult, create_error_result, create_success_result
 from src.utils.validation import validate_complexity_input
 
 

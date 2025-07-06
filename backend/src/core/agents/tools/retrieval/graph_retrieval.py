@@ -9,8 +9,7 @@ from langchain_core.retrievers import BaseRetriever
 from langchain_neo4j import Neo4jGraph  # Modern import
 from langchain_openai import ChatOpenAI
 
-from src.schemas.retrieval import Entities
-from src.schemas.state import AgentState
+from src.schemas.core_types import AgentState, Entities
 
 # --- Logging ---
 logging.basicConfig(level=logging.INFO)

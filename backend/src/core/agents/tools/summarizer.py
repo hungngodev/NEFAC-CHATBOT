@@ -6,7 +6,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
 from src.config.constant import MODEL_NAME
-from src.schemas.state import AgentState
+from src.schemas.core_types import AgentState
 
 # --- LLM Setup ---
 llm = ChatOpenAI(temperature=0, model=MODEL_NAME)

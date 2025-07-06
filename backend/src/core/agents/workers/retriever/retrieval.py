@@ -10,7 +10,7 @@ from typing import List
 from langchain_core.documents import Document
 
 from src.core.agents.tools.retrieval.retrieval_tools import RetrievalAgent as EnhancedRetrievalAgent
-from src.schemas.state import AgentState
+from src.schemas.core_types import AgentState
 
 logger = logging.getLogger(__name__)
 

@@ -1,2 +1,0 @@
-# Required for modern Neo4j graph RAG retriever
-langchain-neo4j 

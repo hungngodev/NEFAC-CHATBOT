@@ -4,15 +4,15 @@ Provides strongly typed interfaces for all agents using Protocol classes.
 Enhanced with LangChain/LangGraph native types.
 """
 
-from typing import List, Optional, Protocol, runtime_checkable
+from typing import Any, List, Optional, Protocol, runtime_checkable
 
 from langchain_core.messages import BaseMessage
 from langchain_core.retrievers import BaseRetriever
 from langchain_core.runnables import Runnable, RunnableConfig
 from langchain_openai import ChatOpenAI
-from langgraph.graph import CompiledGraph
 
-from .agent_types import GenerationResult, MemoryResult, QueryComplexityResult, QueryUnderstandingResult, ReActResult, RetrievalResult, ValidationResult
+# from langgraph.graph import CompiledGraph  # Removed to avoid import issues
+from .core_types import GenerationResult, MemoryResult, QueryComplexityResult, QueryUnderstandingResult, ReActResult, RetrievalResult, ValidationResult
 from .langgraph_types import AgentRunnable, GraphState, RetrieverRunnable
 from .state import AgentState
 
@@ -224,7 +224,7 @@ class MultiAgentSystemProtocol(Protocol):
 class LangGraphSystemProtocol(Protocol):
     """Protocol for LangGraph-based multi-agent system."""
 
-    def get_graph(self) -> CompiledGraph:
+    def get_graph(self) -> Any:  # CompiledGraph
         """Get the compiled LangGraph."""
         ...
 

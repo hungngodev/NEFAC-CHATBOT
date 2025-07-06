@@ -35,9 +35,7 @@ from src.core.agents.workers.react.react_worker import multi_step_reasoning_agen
 from src.core.agents.workers.retriever.retrieval import RetrievalAgent
 
 # Import schemas and types
-from src.schemas.agent_types import GenerationResult, QueryComplexityResult, QueryUnderstandingResult, RetrievalResult
-from src.schemas.enhanced_context_types import DocumentCitation, ExtractedInformation, SessionMemoryEntry
-from src.schemas.state import AgentState
+from src.schemas.core_types import AgentState, DocumentCitation, ExtractedInformation, GenerationResult, QueryComplexityResult, QueryUnderstandingResult, RetrievalResult, SessionMemoryEntry
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)

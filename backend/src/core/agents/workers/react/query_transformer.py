@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Dict, Union
 
 from src.core.agents.workers.react.query_translation.contextual_strategy import get_contextual_strategy_chain
 from src.core.agents.workers.react.query_translation.decomposition import get_decomposition_chain
@@ -7,10 +7,10 @@ from src.core.agents.workers.react.query_translation.hyDe import get_hyDe_chain
 from src.core.agents.workers.react.query_translation.multi_query import get_multi_query_chain
 from src.core.agents.workers.react.query_translation.rag_fusion import get_rag_fusion_chain
 from src.core.agents.workers.react.query_translation.step_back import get_step_back_chain
-from src.schemas.state import AgentState
+from src.schemas.core_types import AgentState
 
 
-def query_transformer_agent(state: AgentState) -> Dict[str, Any]:
+def query_transformer_agent(state: AgentState) -> Dict[str, Union[str, int, float, bool, None]]:
     """
     Applies the chosen query transformation using ensemble retriever.
     All strategies now use the sophisticated ensemble retriever instead of basic retrievers.

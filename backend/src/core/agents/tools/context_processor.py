@@ -8,38 +8,28 @@ from langchain_openai import ChatOpenAI
 
 from src.config.constant import MODEL_NAME
 from src.core.agents.tools.retrieval.memory_search import add_memory_to_pinecone, retrieve_memory_from_pinecone
-from src.schemas.enhanced_context_types import (
+from src.schemas.core_types import (
+    AgentState,
+    CitationAttributionOutput,
+    ContextSummarizationOutput,
     DocumentCitation,
     ExtractedInformation,
+    InformationExtractionOutput,
     SessionMemoryEntry,
     create_citation,
     create_extracted_info,
     create_memory_entry,
 )
-from src.schemas.state import AgentState
+from src.schemas.core_types import (
+    ContextProcessorOutput as CentralizedContextProcessorOutput,
+)
 
 # --- LLM Setup ---
 llm = ChatOpenAI(temperature=0, model=MODEL_NAME)
 
 
-# Legacy TypedDict definitions - replaced with enhanced versions
-# Keeping for backward compatibility during migration
-class InformationExtractionOutput(TypedDict):
-    extracted_info: Optional[List[ExtractedInformation]]
-    documents: List[Document]
-    error: Optional[str]
-
-
-class ContextSummarizationOutput(TypedDict):
-    summarized_content: List[Document]
-    documents: List[Document]
-    error: Optional[str]
-
-
-class CitationAttributionOutput(TypedDict):
-    citations: List[DocumentCitation]
-    documents: List[Document]
-    error: Optional[str]
+# Legacy compatibility
+ContextProcessorOutput = CentralizedContextProcessorOutput
 
 
 class ContextProcessorOutput(TypedDict):

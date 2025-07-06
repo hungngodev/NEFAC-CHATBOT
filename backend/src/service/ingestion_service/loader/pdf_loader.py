@@ -9,7 +9,7 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.runnables import RunnableLambda
 from tqdm import tqdm
 
-from src.schemas.metadata import PDFChunkMetadata
+from src.schemas.core_types import PDFChunkMetadata
 from src.service.ingestion_service.loader.semantic_double_pass_splitter import (
     SemanticDoublePassMergingSplitterWithContext,
 )

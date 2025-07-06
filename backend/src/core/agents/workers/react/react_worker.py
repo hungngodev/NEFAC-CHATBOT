@@ -6,7 +6,7 @@ from langchain_openai import ChatOpenAI
 
 from src.core.agents.tools.context_processor import context_processor_agent
 from src.core.agents.tools.retrieval.retrieval_tools import ensemble_retriever_tool
-from src.schemas.state import AgentState
+from src.schemas.core_types import AgentState
 
 # Prompt for generating sub-questions
 SUB_QUESTION_PROMPT = ChatPromptTemplate.from_messages(

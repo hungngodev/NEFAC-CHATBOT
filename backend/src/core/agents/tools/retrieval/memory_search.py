@@ -1,15 +1,9 @@
 import os
 from typing import Dict, List, Optional, Union
 
-try:
-    import pinecone  # type: ignore
-    from langchain_pinecone import PineconeVectorStore  # type: ignore
-except ImportError:
-    PineconeVectorStore = None
-    pinecone = None
-    print("Warning: langchain_pinecone or pinecone not installed. Pinecone vector DB retrieval will be skipped.")
-
+import pinecone  # type: ignore
 from langchain_openai import OpenAIEmbeddings
+from langchain_pinecone import PineconeVectorStore  # type: ignore
 
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-large")
 

@@ -3,8 +3,7 @@ from typing import Dict, List, Optional, TypedDict, Union
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
-from src.schemas.state import AgentState
-from src.schemas.supervisor import Validation
+from src.schemas.core_types import AgentState, Validation
 
 VALIDATION_PROMPT = ChatPromptTemplate.from_template(
     """You are a validator. Given the user's question, the retrieved text, and the answer, 

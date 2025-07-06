@@ -7,9 +7,8 @@ import asyncio
 import logging
 import os
 import uuid
-from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Union
 
 from dotenv import load_dotenv
 from langchain_core.documents import Document
@@ -19,6 +18,8 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_qdrant import Qdrant
 from qdrant_client import QdrantClient
 
+from src.schemas.core_types import MemoryEntry, MemorySearchResult
+
 # Load environment variables
 load_dotenv()
 
@@ -26,27 +27,11 @@ logger = logging.getLogger(__name__)
 
 # === Memory Models ===
 
+# Import from centralized types
 
-@dataclass
-class MemoryEntry:
-    """Structured memory entry with metadata."""
 
-    id: str
-    user_id: str
-    session_id: str
-    query: str
-    response: str
-    timestamp: datetime
-    metadata: Dict[str, Union[str, int, float, bool]]
-    embedding: Optional[List[float]] = None
-    relevance_score: Optional[float] = None
-
-    def to_dict(self) -> Dict[str, Union[str, int, float, bool, List[float], None]]:
-        """Convert to dictionary for storage."""
-        data = asdict(self)
-        data["timestamp"] = self.timestamp.isoformat()
-        return data
-
+# Legacy compatibility for existing methods
+class MemoryEntryCompat(MemoryEntry):
     @classmethod
     def from_dict(cls, data: Dict[str, Union[str, int, float, bool, List[float], None]]) -> "MemoryEntry":
         """Create from dictionary."""
@@ -67,14 +52,7 @@ class MemoryEntry:
         return Document(page_content=content, metadata=metadata)
 
 
-@dataclass
-class MemorySearchResult:
-    """Result from memory search."""
-
-    entries: List[MemoryEntry]
-    total_found: int
-    search_time_ms: float
-    query_embedding: Optional[List[float]] = None
+# MemorySearchResult is now imported from types.py
 
 
 # === Memory Storage Backend ===

@@ -3,28 +3,10 @@ Typed Exception Hierarchy for Multi-Agent System
 Provides specific error types for better error handling and debugging.
 """
 
-from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Dict, Optional, Union
 
-
-class ErrorSeverity(str, Enum):
-    """Error severity levels."""
-
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
-    CRITICAL = "critical"
-
-
-class ErrorCategory(str, Enum):
-    """Error categories for classification."""
-
-    VALIDATION = "validation"
-    PROCESSING = "processing"
-    EXTERNAL_SERVICE = "external_service"
-    CONFIGURATION = "configuration"
-    TIMEOUT = "timeout"
-    RESOURCE = "resource"
+# Import centralized enums (absolute import, core_types is the single source of truth)
+from src.schemas.core_types import ErrorCategory, ErrorSeverity
 
 
 class AgentException(Exception):
@@ -33,7 +15,7 @@ class AgentException(Exception):
     Provides structured error information for better debugging and monitoring.
     """
 
-    def __init__(self, message: str, agent_name: str, error_category: ErrorCategory = ErrorCategory.PROCESSING, severity: ErrorSeverity = ErrorSeverity.MEDIUM, context: Optional[Dict[str, Any]] = None, original_exception: Optional[Exception] = None):
+    def __init__(self, message: str, agent_name: str, error_category: ErrorCategory = ErrorCategory.PROCESSING, severity: ErrorSeverity = ErrorSeverity.MEDIUM, context: Optional[Dict[str, Union[str, int, float, bool]]] = None, original_exception: Optional[Exception] = None):
         super().__init__(message)
         self.agent_name = agent_name
         self.error_category = error_category
@@ -41,9 +23,17 @@ class AgentException(Exception):
         self.context = context or {}
         self.original_exception = original_exception
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> Dict[str, Union[str, int, float, bool, None]]:
         """Convert exception to dictionary for logging/monitoring."""
-        return {"error_type": self.__class__.__name__, "message": str(self), "agent_name": self.agent_name, "error_category": self.error_category.value, "severity": self.severity.value, "context": self.context, "original_exception": str(self.original_exception) if self.original_exception else None}
+        return {
+            "error_type": self.__class__.__name__,
+            "message": str(self),
+            "agent_name": self.agent_name,
+            "error_category": self.error_category.value,
+            "severity": self.severity.value,
+            "context": self.context,
+            "original_exception": str(self.original_exception) if self.original_exception else None,
+        }
 
 
 # Specific agent exceptions
@@ -178,15 +168,16 @@ class TimeoutError(AgentException):
 
 
 # Helper functions for exception handling
-def handle_agent_exception(exception: Exception, agent_name: str, context: Optional[Dict[str, Any]] = None) -> AgentException:
+
+
+def handle_agent_exception(exception: Exception, agent_name: str, context: Optional[Dict[str, Union[str, int, float, bool]]] = None) -> AgentException:
     """Convert generic exceptions to AgentException."""
     if isinstance(exception, AgentException):
         return exception
-
     return AgentException(message=str(exception), agent_name=agent_name, context=context, original_exception=exception)
 
 
-def create_error_context(query: Optional[str] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, **additional_context) -> Dict[str, Any]:
+def create_error_context(query: Optional[str] = None, user_id: Optional[str] = None, session_id: Optional[str] = None, **additional_context) -> Dict[str, Union[str, int, float, bool, None]]:
     """Create standardized error context."""
     context = {"query": query, "user_id": user_id, "session_id": session_id}
     context.update(additional_context)

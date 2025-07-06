@@ -6,7 +6,7 @@ Merged best practices from retrieval_tools.py, retrieval.py, and ensemble_retrie
 
 import logging
 import time
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import List, Optional
 
 from langchain.retrievers.contextual_compression import ContextualCompressionRetriever
 from langchain.retrievers.ensemble import EnsembleRetriever
@@ -19,9 +19,7 @@ from src.core.agents.tools.retrieval.graph_retrieval import expand_query_with_gr
 from src.core.agents.tools.retrieval.keyword_retrieval import get_bm25_retriever
 from src.core.agents.tools.retrieval.vector_retrieval import get_qdrant_retriever
 from src.exceptions.agent_exceptions import RetrievalError, handle_agent_exception
-from src.schemas.agent_types import RetrievalData, RetrievalMethod, RetrievalResult, create_error_result, create_success_result
-from src.schemas.retrieval import RetrievalStrategy
-from src.schemas.state import AgentState
+from src.schemas.core_types import AgentState, ReactAgentRetrievalOutput, RetrievalData, RetrievalMethod, RetrievalResult, RetrievalStrategy, RetrieverWorkerOutput, create_error_result, create_success_result
 
 logger = logging.getLogger(__name__)
 
@@ -402,12 +400,7 @@ def create_retrieval_tool(llm=None):
     return retrieval_tool
 
 
-class RetrieverWorkerOutput(TypedDict):
-    retrieved_docs: str
-    retriever_query: str
-    all_retrieved_docs: List[Document]
-    retrieval_metadata: Dict[str, Any]
-    error: Optional[str]
+# Types now imported above
 
 
 def create_retriever_worker_function(llm=None):
@@ -464,10 +457,7 @@ def create_retriever_worker_function(llm=None):
     return retriever_worker
 
 
-class ReactAgentRetrievalOutput(TypedDict):
-    documents: List[Document]
-    retrieval_metadata: Dict[str, Any]
-    error: Optional[str]
+# ReactAgentRetrievalOutput now imported from types.py
 
 
 # Universal Ensemble Retriever Tool - Integrated from ensemble_retriever_tool.py

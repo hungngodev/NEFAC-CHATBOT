@@ -6,8 +6,7 @@ from langchain_openai import ChatOpenAI
 
 from src.config.prompts import FINAL_PROMPT, GENERAL_PROMPT
 from src.exceptions.agent_exceptions import GenerationError, handle_agent_exception
-from src.schemas.agent_types import GenerationData, GenerationResult, QueryIntent, create_error_result, create_success_result
-from src.schemas.state import AgentState
+from src.schemas.core_types import AgentState, GenerationData, GenerationResult, QueryIntent, create_error_result, create_success_result
 from src.utils.validation import validate_generation_input
 
 

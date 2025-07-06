@@ -3,7 +3,7 @@ Enhanced Runnable Agent Implementations
 Demonstrates how to implement agents using LangChain Runnable interface for better composability.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from langchain_core.documents import Document
 from langchain_core.messages import BaseMessage
@@ -12,9 +12,8 @@ from langchain_core.runnables import Runnable, RunnableLambda
 from langchain_openai import ChatOpenAI
 
 from src.schemas.agent_protocols import RunnableComplexityAnalyzerProtocol, RunnableContextualizerProtocol, RunnableGeneratorProtocol, RunnableRetrieverProtocol
-from src.schemas.agent_types import GenerationResult, QueryComplexityResult, QueryUnderstandingResult, RetrievalResult
+from src.schemas.core_types import AgentState, GenerationResult, QueryComplexityResult, QueryUnderstandingResult, RetrievalResult
 from src.schemas.langgraph_types import AgentRunnable, GraphState, RetrieverRunnable
-from src.schemas.state import AgentState
 
 
 class RunnableComplexityAnalyzer:
@@ -31,7 +30,7 @@ class RunnableComplexityAnalyzer:
         complexity_score = len(query.split()) / 50.0  # Simple heuristic
         complexity_score = min(complexity_score, 1.0)
 
-        from src.schemas.agent_types import ComplexityCategory, QueryComplexityData, RecommendedRoute, create_success_result
+        from src.schemas.core_types import ComplexityCategory, QueryComplexityData, RecommendedRoute, create_success_result
 
         data = QueryComplexityData(
             complexity_score=complexity_score,
@@ -50,16 +49,16 @@ class RunnableComplexityAnalyzer:
 
         return create_success_result(data)
 
-    def as_runnable(self) -> Runnable[Dict[str, Any], Dict[str, Any]]:
+    def as_runnable(self) -> Runnable[Dict[str, str], Dict[str, str]]:
         """Return as LangChain Runnable for chain composition."""
 
-        def _analyze(input_dict: Dict[str, Any]) -> Dict[str, Any]:
+        def _analyze(input_dict: Dict[str, str]) -> Dict[str, str]:
             query = input_dict.get("query", "")
             chat_history = input_dict.get("chat_history", [])
 
             result = self.analyze_complexity(query, chat_history)
 
-            return {"complexity_result": result, "complexity_score": result.data.complexity_score if result.is_success else 0.5, "recommended_route": result.data.recommended_route if result.is_success else "retriever_worker"}
+            return {"complexity_result": str(result.data) if result.is_success else "error", "complexity_score": str(result.data.complexity_score) if result.is_success else "0.5", "recommended_route": str(result.data.recommended_route) if result.is_success else "retriever_worker"}
 
         return RunnableLambda(_analyze)
 
@@ -75,7 +74,7 @@ class RunnableContextualizer:
     def process_query(self, state: AgentState, model: ChatOpenAI) -> QueryUnderstandingResult:
         """Process and contextualize user query."""
         # Implementation would go here - simplified for demo
-        from src.schemas.agent_types import QueryIntent, QueryUnderstandingData, create_success_result
+        from src.schemas.core_types import QueryIntent, QueryUnderstandingData, create_success_result
 
         data = QueryUnderstandingData(contextualized_query=state.user_query, intent=QueryIntent.GENERAL_QUERY, entities=[], confidence=0.8)  # Simplified
 
@@ -116,14 +115,14 @@ class RunnableRetriever:
             query = state.contextualized_query or state.user_query
             documents = self._base_retriever.get_relevant_documents(query)
 
-            from src.schemas.agent_types import RetrievalData, RetrievalMethod, create_success_result
+            from src.schemas.core_types import RetrievalData, RetrievalMethod, create_success_result
 
             data = RetrievalData(documents=documents, retrieval_methods_used=[RetrievalMethod.DENSE], total_documents_found=len(documents), documents_after_deduplication=len(documents), deduplication_applied=False, reranking_applied=False, query_expansion_applied=False)
 
             return create_success_result(data)
 
         except Exception as e:
-            from src.schemas.agent_types import create_error_result
+            from src.schemas.core_types import create_error_result
 
             return create_error_result(str(e))
 
@@ -161,14 +160,14 @@ class RunnableGenerator:
             else:
                 answer = f"I can help with your question: {query}"
 
-            from src.schemas.agent_types import GenerationData, create_success_result
+            from src.schemas.core_types import GenerationData, create_success_result
 
             data = GenerationData(answer=answer, confidence_score=0.8, sources=[doc.metadata.get("source", "Unknown") for doc in documents[:3]], reasoning="Generated based on retrieved context")
 
             return create_success_result(data)
 
         except Exception as e:
-            from src.schemas.agent_types import create_error_result
+            from src.schemas.core_types import create_error_result
 
             return create_error_result(str(e))
 
@@ -211,7 +210,7 @@ def create_runnable_generator(llm: ChatOpenAI) -> RunnableGeneratorProtocol:
 
 
 # Example of creating a complete runnable chain
-def create_agent_chain(complexity_analyzer: RunnableComplexityAnalyzerProtocol, contextualizer: RunnableContextualizerProtocol, retriever: RunnableRetrieverProtocol, generator: RunnableGeneratorProtocol) -> Runnable[Dict[str, Any], str]:
+def create_agent_chain(complexity_analyzer: RunnableComplexityAnalyzerProtocol, contextualizer: RunnableContextualizerProtocol, retriever: RunnableRetrieverProtocol, generator: RunnableGeneratorProtocol) -> Runnable[Dict[str, str], str]:
     """
     Create a complete agent processing chain using Runnable composition.
     """

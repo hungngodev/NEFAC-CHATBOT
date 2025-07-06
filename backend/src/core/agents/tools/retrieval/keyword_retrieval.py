@@ -9,7 +9,7 @@ from src.core.agents.tools.retrieval.metadata_filter import (
     prioritize_documents_by_metadata,
 )
 from src.load_env import load_env
-from src.schemas.state import AgentState
+from src.schemas.core_types import AgentState
 
 load_env()
 

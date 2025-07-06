@@ -2,7 +2,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
 from src.config.prompts import CONVERSATION_SUMMARY_PROMPT
-from src.core.agents.state import AgentState
+from src.schemas.core_types import AgentState
 
 
 def summarizer_agent(state: AgentState, model: ChatOpenAI):
