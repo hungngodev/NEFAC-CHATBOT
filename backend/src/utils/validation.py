@@ -9,8 +9,8 @@ from typing import Dict, List, Optional
 from langchain_core.messages import BaseMessage
 from pydantic import BaseModel, Field, validator
 
-from ..exceptions.agent_exceptions import InputValidationError
-from ..schemas.core_types import QueryIntent, RetrievalMethod
+from backend.src.exceptions.agent_exceptions import InputValidationError
+from backend.src.schemas.core_types import QueryIntent, RetrievalMethod
 
 
 class QueryValidation(BaseModel):

@@ -10,7 +10,7 @@ from typing import Dict, List, Optional, TypedDict, Union
 from langchain_core.documents import Document
 from pydantic import BaseModel, Field
 
-from .langgraph_types import LangChainDocument
+from backend.src.schemas.langgraph_types import LangChainDocument
 
 # === Structured Data Models ===
 
