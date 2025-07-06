@@ -1,6 +1,6 @@
 # NOTE: Llama models are now managed via Ollama, not Hugging Face transformers. All Hugging Face Llama imports and code have been removed.
 import logging
-from typing import Any, List, TypedDict, cast
+from typing import List, TypedDict, cast
 
 from dotenv import load_dotenv
 from langchain_core.documents import Document
@@ -106,7 +106,7 @@ def main_pipeline(
     logger.info("[Pipeline] Invoking pipeline...")
     tqdm.write("[Pipeline] Invoking pipeline...")
     # Execute the pipeline
-    results: Any = pipeline.invoke({"file_type": file_type, "metadata_json_path": metadata_json_path})
+    results = pipeline.invoke({"file_type": file_type, "metadata_json_path": metadata_json_path})
     results = cast(dict, results)
     # Ensure results is a dict with 'index' and 'graph_rag' keys
     if not isinstance(results, dict) or "index" not in results or "graph_rag" not in results:

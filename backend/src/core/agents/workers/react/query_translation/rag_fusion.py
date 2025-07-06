@@ -1,14 +1,16 @@
-from typing import Any
+from typing import Any, List
 
 from langchain_core.documents import Document
 from langchain_core.load import dumps, loads
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import Runnable
 from langchain_openai import ChatOpenAI
 
 from src.config.constant import QUERY_TRANSLATION_MODEL_NAME
 from src.config.prompts import RAG_FUSION_PROMPT
 from src.core.agents.tools.document_formatter import format_docs
+from src.core.agents.tools.retrieval.retrieval_tools import ensemble_retriever_tool
 from src.load_env import load_env
 
 load_env()
@@ -53,5 +55,16 @@ def handle_empty_results(results) -> Any:
     return reciprocal_rank_fusion(results)  # Otherwise, apply RRF
 
 
-def get_rag_fusion_chain(retriever) -> Any:
-    return generate_queries | retriever.map() | handle_empty_results | format_docs
+def get_rag_fusion_chain(retriever=None) -> Runnable:
+    """RAG Fusion chain using ensemble retriever with reciprocal rank fusion."""
+
+    def rag_fusion_retrieval(queries: List[str]) -> List[Document]:
+        """Retrieve documents for multiple queries and apply RRF."""
+        results = []
+        for query in queries:
+            if query.strip():  # Skip empty queries
+                docs = ensemble_retriever_tool.retrieve(query=query.strip(), methods=["dense", "sparse", "graph"], weights=[0.4, 0.3, 0.3], max_documents=10)  # Use all methods for comprehensive coverage  # Balanced weights for RAG Fusion
+                results.append(docs)
+        return handle_empty_results(results)
+
+    return generate_queries | rag_fusion_retrieval | format_docs

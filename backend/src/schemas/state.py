@@ -1,10 +1,11 @@
 """
 Unified State Management for Hierarchical Multi-Agent System
-Clean state definition without legacy compatibility layers.
+Clean state definition for the current system with enhanced LangGraph typing.
 """
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
+from langchain_core.documents import Document
 from langchain_core.messages import BaseMessage
 from langgraph.graph import add_messages
 from pydantic import BaseModel, Field
@@ -35,12 +36,12 @@ class AgentState(BaseModel):
 
     # Memory integration
     memory_summary: Optional[str] = Field(default=None, description="Relevant past interactions")
-    relevant_memories: Optional[List[Dict[str, Any]]] = Field(default=None, description="Retrieved memories")
+    relevant_memories: Optional[List[Dict[str, Union[str, int, float, bool]]]] = Field(default=None, description="Retrieved memories")
 
     # Retrieval
     retrieval_selection: Optional[Dict[str, Union[List[str], List[float]]]] = Field(default=None, description="Selected retrieval methods and weights")
     retrieved_docs: Optional[str] = Field(default=None, description="Retrieved documents as string")
-    all_retrieved_docs: Optional[List[Any]] = Field(default=None, description="All retrieved documents")
+    all_retrieved_docs: Optional[List[Document]] = Field(default=None, description="All retrieved documents")
 
     # ReAct worker
     react_steps: Optional[List[BaseMessage]] = Field(default=None, description="ReAct reasoning steps")
@@ -59,7 +60,7 @@ class AgentState(BaseModel):
         arbitrary_types_allowed = True
 
 
-# Type alias for backward compatibility during transition
+# Main state class for the system
 EnhancedAgentState = AgentState
 
 

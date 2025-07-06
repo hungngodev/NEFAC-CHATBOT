@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Any, Dict, List
+from typing import Dict, List, Union
 
 from langchain_core.documents import Document
 from langchain_openai import OpenAIEmbeddings
@@ -53,8 +53,8 @@ def vector_retrieval_agent(state: AgentState) -> List[Document]:
     """
     try:
         question: str = state.transformed_query or ""
-        filters: Dict[str, Any] = state.metadata_filters or {}
-        priorities: List[Any] = state.priorities or []
+        filters: Dict[str, Union[str, int, float, bool, List[str]]] = state.metadata_filters or {}
+        priorities: List[Dict[str, Union[str, int, float]]] = state.priorities or []
 
         qdrant_retriever = get_qdrant_retriever()
 

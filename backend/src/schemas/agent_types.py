@@ -224,6 +224,5 @@ def create_error_result(error: str, execution_time_ms: Optional[float] = None, *
     return AgentResult(data=None, success=False, error=error, execution_time_ms=execution_time_ms, metadata={k: str(v) for k, v in metadata.items()})
 
 
-# Type aliases for backward compatibility during transition
-LegacyAgentReturn = Dict[str, Union[str, List, bool, float, None]]  # What agents currently return
-ModernAgentReturn = AnyAgentResult  # What agents should return
+# Type aliases for the current system
+ModernAgentReturn = AnyAgentResult  # Standard agent return type

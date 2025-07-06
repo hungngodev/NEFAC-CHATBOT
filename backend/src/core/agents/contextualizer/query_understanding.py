@@ -1,5 +1,5 @@
 import time
-from typing import List, Optional
+from typing import List, Optional, TypedDict
 
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -203,7 +203,16 @@ class QueryUnderstandingAgent:
 _query_understanding_agent = QueryUnderstandingAgent()
 
 
-def query_understanding_agent(state: AgentState, model: ChatOpenAI) -> QueryUnderstandingResult:
+class QueryUnderstandingAgentOutput(TypedDict):
+    contextualized_query: Optional[str]
+    intent: Optional[str]
+    entities: Optional[List[str]]
+    structured_query: Optional[str]
+    statistical_query: Optional[str]
+    error: Optional[str]
+
+
+def query_understanding_agent(state: AgentState, model: ChatOpenAI) -> QueryUnderstandingAgentOutput:
     """
     Main interface function - uses the improved agent implementation.
     """

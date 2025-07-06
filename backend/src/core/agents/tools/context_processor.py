@@ -1,4 +1,5 @@
-from typing import Any, Dict
+from datetime import datetime
+from typing import List, Optional, TypedDict
 
 from langchain_core.documents import Document
 from langchain_core.output_parsers import StrOutputParser
@@ -7,41 +8,83 @@ from langchain_openai import ChatOpenAI
 
 from src.config.constant import MODEL_NAME
 from src.core.agents.tools.retrieval.memory_search import add_memory_to_pinecone, retrieve_memory_from_pinecone
+from src.schemas.enhanced_context_types import (
+    DocumentCitation,
+    ExtractedInformation,
+    SessionMemoryEntry,
+    create_citation,
+    create_extracted_info,
+    create_memory_entry,
+)
 from src.schemas.state import AgentState
 
 # --- LLM Setup ---
 llm = ChatOpenAI(temperature=0, model=MODEL_NAME)
 
 
+# Legacy TypedDict definitions - replaced with enhanced versions
+# Keeping for backward compatibility during migration
+class InformationExtractionOutput(TypedDict):
+    extracted_info: Optional[List[ExtractedInformation]]
+    documents: List[Document]
+    error: Optional[str]
+
+
+class ContextSummarizationOutput(TypedDict):
+    summarized_content: List[Document]
+    documents: List[Document]
+    error: Optional[str]
+
+
+class CitationAttributionOutput(TypedDict):
+    citations: List[DocumentCitation]
+    documents: List[Document]
+    error: Optional[str]
+
+
+class ContextProcessorOutput(TypedDict):
+    documents: List[Document]
+    extracted_info: Optional[List[ExtractedInformation]]
+    summarized_content: Optional[List[Document]]
+    citations: Optional[List[DocumentCitation]]
+    session_memory: Optional[List[SessionMemoryEntry]]
+    error: Optional[str]
+
+
 # --- Information Extraction Tool ---
-def information_extraction_tool(state: AgentState) -> Dict[str, Any]:
+def information_extraction_tool(state: AgentState) -> InformationExtractionOutput:
     """
     Extracts specific entities, facts, or relationships from retrieved documents.
     """
     try:
         documents = state.documents
         if not documents:
-            return {"extracted_info": "No documents to extract information from.", "documents": []}
+            return {"extracted_info": None, "documents": []}
 
-        # Example: Extracting titles and sources from documents
+        # Extract structured information using the new types
         extracted_data = []
         for doc in documents:
             if isinstance(doc, Document):
                 snippet = doc.page_content[:200] + "..." if len(doc.page_content) > 200 else doc.page_content
-                fact = f"Title: {doc.metadata.get('title')} | Source: {doc.metadata.get('source_url')} | Snippet: {snippet}"
-                extracted_data.append({"title": doc.metadata.get("title"), "source_url": doc.metadata.get("source_url"), "page_content_snippet": snippet})
+
+                # Create structured extracted information
+                extracted_info = create_extracted_info(
+                    title=doc.metadata.get("title"), source_url=doc.metadata.get("source_url"), content_snippet=snippet, entities=[], key_facts=[snippet], confidence_score=0.8, extraction_method="basic_metadata"  # Could be enhanced with NER  # Basic fact extraction  # Default confidence
+                )
+                extracted_data.append(extracted_info)
+
+                # Store in memory if session exists
                 if hasattr(state, "session_id") and state.session_id:
+                    fact = f"Title: {doc.metadata.get('title')} | Source: {doc.metadata.get('source_url')} | Snippet: {snippet}"
                     add_memory_to_pinecone(state.session_id, fact, metadata={"type": "fact", "title": doc.metadata.get("title"), "source_url": doc.metadata.get("source_url")})
             else:
-                extracted_data.append({"text": str(doc)})
-
-        # In a more advanced scenario, an LLM would be used here to extract structured info
-        # based on a predefined schema or user's intent.
-        # For now, this is a basic example.
+                # Handle non-Document objects
+                extracted_info = create_extracted_info(content_snippet=str(doc), extraction_method="string_conversion")
+                extracted_data.append(extracted_info)
 
         return {"extracted_info": extracted_data, "documents": documents}
     except Exception as e:
-        return {"error": f"Error during information extraction: {e}", "documents": state.documents}
+        return {"error": f"Error during information extraction: {e}", "documents": getattr(state, "documents", [])}
 
 
 # --- Context Summarization Tool ---
@@ -61,7 +104,7 @@ Summary:""",
 summarization_chain = summarization_prompt | llm | StrOutputParser()
 
 
-def context_summarization_tool(state: AgentState) -> Dict[str, Any]:
+def context_summarization_tool(state: AgentState) -> ContextSummarizationOutput:
     """
     Summarizes lengthy retrieved documents or passages to fit within the LLM's context window.
     """
@@ -88,7 +131,7 @@ def context_summarization_tool(state: AgentState) -> Dict[str, Any]:
 
 
 # --- Citation/Source Attribution Tool ---
-def citation_attribution_tool(state: AgentState) -> Dict[str, Any]:
+def citation_attribution_tool(state: AgentState) -> CitationAttributionOutput:
     """
     Identifies and provides the source (document title, URL, page number) for generated answers.
     This tool primarily processes the documents to make source information readily available.
@@ -96,28 +139,34 @@ def citation_attribution_tool(state: AgentState) -> Dict[str, Any]:
     try:
         documents = state.documents
         if not documents:
-            return {"citations": "No documents to generate citations from.", "documents": []}
+            return {"citations": [], "documents": []}
 
         citations = []
         for doc in documents:
             if isinstance(doc, Document):
-                citation_info = {
-                    "title": doc.metadata.get("title", "N/A"),
-                    "source_url": doc.metadata.get("source_url", "N/A"),
-                    "page_number": doc.metadata.get("page_number", "N/A"),
-                    "document_id": doc.metadata.get("id", "N/A"),
-                }
+                # Create structured citation using the new types
+                citation = create_citation(
+                    title=doc.metadata.get("title", "Unknown Document"),
+                    source_url=doc.metadata.get("source_url", ""),
+                    page_number=doc.metadata.get("page_number"),
+                    document_id=doc.metadata.get("id", ""),
+                    citation_type="document",
+                    access_date=datetime.now(),
+                    authors=doc.metadata.get("authors", []),
+                    relevance_score=doc.metadata.get("relevance_score"),
+                )
             else:
-                citation_info = {"title": str(doc), "source_url": "N/A", "page_number": "N/A", "document_id": "N/A"}
-            citations.append(citation_info)
+                # Handle non-Document objects
+                citation = create_citation(title=str(doc)[:50] + "..." if len(str(doc)) > 50 else str(doc), source_url="", citation_type="text_snippet")
+            citations.append(citation)
 
         return {"citations": citations, "documents": documents}
     except Exception as e:
-        return {"error": f"Error during citation attribution: {e}", "documents": state.documents}
+        return {"error": f"Error during citation attribution: {e}", "documents": getattr(state, "documents", [])}
 
 
 # --- Main Context Processor Agent ---
-def context_processor_agent(state: AgentState) -> Dict[str, Any]:
+def context_processor_agent(state: AgentState) -> ContextProcessorOutput:
     """
     Main agent for processing and augmenting retrieved context.
     Delegates to specific tools based on the workflow needs.
@@ -145,8 +194,23 @@ def context_processor_agent(state: AgentState) -> Dict[str, Any]:
     state.citations = citation_result.get("citations")
 
     # Retrieve top relevant session memory from Pinecone and add to state
+    session_memory_entries = []
     if hasattr(state, "session_id") and state.session_id:
-        session_memory = retrieve_memory_from_pinecone(state.session_id, state.query, top_k=5)
-        state.session_memory = session_memory
+        raw_memory = retrieve_memory_from_pinecone(state.session_id, state.query, top_k=5)
 
-    return {"documents": state.documents, "extracted_info": state.extracted_info, "summarized_content": state.summarized_content, "citations": state.citations}
+        # Convert raw memory to structured SessionMemoryEntry objects
+        for i, memory_item in enumerate(raw_memory):
+            if isinstance(memory_item, dict):
+                memory_entry = create_memory_entry(
+                    memory_id=memory_item.get("id", f"mem_{i}"),
+                    content=memory_item.get("content", str(memory_item)),
+                    user_id=state.user_id if hasattr(state, "user_id") else "unknown",
+                    session_id=state.session_id,
+                    memory_type=memory_item.get("type", "interaction"),
+                    relevance_score=memory_item.get("score", 0.5),
+                )
+                session_memory_entries.append(memory_entry)
+
+        state.session_memory = session_memory_entries
+
+    return {"documents": state.documents, "extracted_info": state.extracted_info, "summarized_content": state.summarized_content, "citations": state.citations, "session_memory": session_memory_entries}

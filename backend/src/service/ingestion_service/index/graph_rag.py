@@ -1,9 +1,10 @@
 import logging
 import os
-from typing import Any, List
+from typing import List
 
 from langchain.prompts import ChatPromptTemplate
 from langchain_community.graphs import Neo4jGraph
+from langchain_core.documents import Document
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 from langchain_openai import ChatOpenAI
 
@@ -114,7 +115,7 @@ def resolve_entity(name: str) -> str:
     return CANONICAL_ENTITY_LOOKUP.get(name_clean, name)
 
 
-def pre_disambiguate_entities(docs: List[Any]) -> List[Any]:
+def pre_disambiguate_entities(docs: List[Document]) -> List[Document]:
     """
     For each Document, replace any known alias (NEFAC, partners, awards, etc.) with its canonical name.
     Attach original mention(s) as property if different.
@@ -620,7 +621,7 @@ custom_prompt = ChatPromptTemplate.from_template(custom_prompt_template)
 # -----------------------------------------------------------------------------
 # --- Ingest Function: Full Disambiguation Pipeline
 # -----------------------------------------------------------------------------
-def graph_rag_ingest(documents: List[Any]) -> None:
+def graph_rag_ingest(documents: List[Document]) -> None:
     graph = Neo4jGraph(
         url=os.environ["NEO4J_URI"],
         username=os.environ["NEO4J_USERNAME"],

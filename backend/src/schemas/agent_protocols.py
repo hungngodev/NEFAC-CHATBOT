@@ -1,14 +1,19 @@
 """
 Agent Protocol Definitions
 Provides strongly typed interfaces for all agents using Protocol classes.
+Enhanced with LangChain/LangGraph native types.
 """
 
 from typing import List, Optional, Protocol, runtime_checkable
 
 from langchain_core.messages import BaseMessage
+from langchain_core.retrievers import BaseRetriever
+from langchain_core.runnables import Runnable, RunnableConfig
 from langchain_openai import ChatOpenAI
+from langgraph.graph import CompiledGraph
 
 from .agent_types import GenerationResult, MemoryResult, QueryComplexityResult, QueryUnderstandingResult, ReActResult, RetrievalResult, ValidationResult
+from .langgraph_types import AgentRunnable, GraphState, RetrieverRunnable
 from .state import AgentState
 
 
@@ -140,6 +145,63 @@ class LLMServiceProtocol(Protocol):
         ...
 
 
+# Enhanced protocols using LangChain/LangGraph types
+@runtime_checkable
+class RunnableComplexityAnalyzerProtocol(Protocol):
+    """Protocol for complexity analysis agents using LangChain Runnable interface."""
+
+    def analyze_complexity(self, query: str, chat_history: Optional[List[BaseMessage]] = None) -> QueryComplexityResult:
+        """Analyze query complexity and return routing decision."""
+        ...
+
+    def as_runnable(self) -> Runnable[dict, dict]:
+        """Return as LangChain Runnable for chain composition."""
+        ...
+
+
+@runtime_checkable
+class RunnableContextualizerProtocol(Protocol):
+    """Protocol for contextualizer agents using LangChain Runnable interface."""
+
+    def process_query(self, state: AgentState, model: ChatOpenAI) -> QueryUnderstandingResult:
+        """Process and contextualize user query."""
+        ...
+
+    def as_runnable(self) -> AgentRunnable:
+        """Return as LangChain Runnable for chain composition."""
+        ...
+
+
+@runtime_checkable
+class RunnableRetrieverProtocol(Protocol):
+    """Protocol for retriever agents using LangChain Runnable interface."""
+
+    def retrieve_documents(self, state: AgentState) -> RetrievalResult:
+        """Retrieve relevant documents based on query."""
+        ...
+
+    def get_base_retriever(self) -> BaseRetriever:
+        """Get the underlying LangChain retriever."""
+        ...
+
+    def as_runnable(self) -> RetrieverRunnable:
+        """Return as LangChain Runnable for chain composition."""
+        ...
+
+
+@runtime_checkable
+class RunnableGeneratorProtocol(Protocol):
+    """Protocol for generator agents using LangChain Runnable interface."""
+
+    def generate_answer(self, state: AgentState, model: ChatOpenAI) -> GenerationResult:
+        """Generate final answer from retrieved context."""
+        ...
+
+    def as_runnable(self) -> Runnable[GraphState, str]:
+        """Return as LangChain Runnable for chain composition."""
+        ...
+
+
 # Composite protocol for full agent capabilities
 @runtime_checkable
 class MultiAgentSystemProtocol(Protocol):
@@ -155,4 +217,21 @@ class MultiAgentSystemProtocol(Protocol):
 
     def process_query(self, query: str, user_id: str, session_id: Optional[str] = None, thread_id: Optional[str] = None) -> GenerationResult:
         """Process a complete user query through the system."""
+        ...
+
+
+@runtime_checkable
+class LangGraphSystemProtocol(Protocol):
+    """Protocol for LangGraph-based multi-agent system."""
+
+    def get_graph(self) -> CompiledGraph:
+        """Get the compiled LangGraph."""
+        ...
+
+    def create_runnable_chain(self) -> Runnable[GraphState, GraphState]:
+        """Create a runnable chain from the graph."""
+        ...
+
+    async def aprocess_query(self, query: str, user_id: str, config: Optional[RunnableConfig] = None) -> GenerationResult:
+        """Async process query using LangGraph."""
         ...

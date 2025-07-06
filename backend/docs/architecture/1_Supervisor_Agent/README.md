@@ -108,7 +108,7 @@ The supervisor uses `SupervisorDecision` model with:
 ## Error Handling and Resilience
 
 ### Fallback Mechanisms
-1. **Primary Route Failure:** Automatic fallback to Legacy Pipeline
+1. **Primary Route Failure:** Automatic fallback to basic retrieval
 2. **Complexity Analysis Failure:** Default to medium complexity routing
 3. **Memory System Failure:** Continue with basic routing without memory context
 4. **Complete System Failure:** Graceful degradation with error messaging

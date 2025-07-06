@@ -190,7 +190,7 @@ class QueryComplexity(BaseModel):
 | Complexity Range | Route Destination | Processing Strategy |
 |------------------|-------------------|-------------------|
 | 0.0 - 0.3 | Enhanced Retriever Worker | Single-step retrieval |
-| 0.3 - 0.7 | Legacy Pipeline Agent | Full pipeline processing |
+| 0.3 - 0.7 | Enhanced Retrieval | Advanced retrieval processing |
 | 0.7 - 1.0 | Enhanced ReAct Worker | Multi-step reasoning |
 
 ### Adaptive Thresholds
@@ -312,7 +312,7 @@ MAX_ANALYSIS_TIME_MS=500
 1. **LLM Timeout:** Default to medium complexity (0.5)
 2. **Invalid Response:** Use pattern-based fallback
 3. **System Overload:** Route to least loaded path
-4. **Unknown Error:** Default to Legacy Pipeline
+4. **Unknown Error:** Default to basic retrieval
 
 ### Recovery Mechanisms
 

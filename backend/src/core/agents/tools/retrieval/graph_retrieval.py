@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional, TypedDict, Union
 
 from langchain.chains import GraphCypherQAChain
 from langchain.prompts import ChatPromptTemplate
@@ -198,7 +198,7 @@ def extract_paths_between_entities(entities: List[Dict[str, str]], max_hops: int
     return cyphers
 
 
-def format_results_as_documents(results: Any) -> List[Document]:
+def format_results_as_documents(results: Union[List[Dict[str, Union[str, int, float]]], Dict[str, Union[str, int, float]], List[str], str]) -> List[Document]:
     """Convert Neo4j results to LangChain Documents."""
     docs = []
     if isinstance(results, list):
@@ -310,7 +310,27 @@ def get_detailed_entity_info(entity_name: str) -> Optional[Document]:
         return None
 
 
-def graph_rag_retrieve(state: AgentState) -> Dict[str, Any]:
+class GraphRetrievalOutput(TypedDict):
+    documents: List[Document]
+    error: Optional[str]
+
+
+class StructuredDataQueryOutput(TypedDict):
+    documents: List[Document]
+    error: Optional[str]
+
+
+class StatisticalQueryOutput(TypedDict):
+    documents: List[Document]
+    error: Optional[str]
+
+
+class GraphRetrievalAgentOutput(TypedDict):
+    documents: List[Document]
+    error: Optional[str]
+
+
+def graph_rag_retrieve(state: AgentState) -> GraphRetrievalOutput:
     """
     Advanced graph retriever: LLM-powered Cypher, entity canonicalization, path/subgraph, fallback to 1-hop.
     Returns a list of Document objects with human-readable content and source metadata for UI and answer citation.
@@ -372,7 +392,7 @@ def graph_rag_retrieve(state: AgentState) -> Dict[str, Any]:
     # --- Fallback: path/subgraph between entities ---
     if len(entities) > 1:
         cyphers = extract_paths_between_entities(entities, max_hops=3)
-        all_rows: List[Dict[str, Any]] = []
+        all_rows: List[Dict[str, Union[str, int, float, bool]]] = []
         for c in cyphers:
             try:
                 rows = graph.query(c)
@@ -416,7 +436,7 @@ def graph_rag_retrieve(state: AgentState) -> Dict[str, Any]:
 
 
 # --- Structured Data Query Tool (New) ---
-def structured_data_query_tool(state: AgentState) -> Dict[str, Any]:
+def structured_data_query_tool(state: AgentState) -> StructuredDataQueryOutput:
     """
     Executes a structured Cypher query against the Neo4j graph based on the user's intent.
     This tool is for specific, factual queries that can be directly translated to Cypher.
@@ -438,7 +458,7 @@ def structured_data_query_tool(state: AgentState) -> Dict[str, Any]:
 
 
 # --- Statistical Query Tool (New) ---
-def statistical_query_tool(state: AgentState) -> Dict[str, Any]:
+def statistical_query_tool(state: AgentState) -> StatisticalQueryOutput:
     """
     Performs statistical aggregations on the Neo4j graph based on the user's intent.
     The query should be provided in state.statistical_query.
@@ -459,7 +479,7 @@ def statistical_query_tool(state: AgentState) -> Dict[str, Any]:
 
 
 # --- Main Graph Retrieval Agent ---
-def graph_retrieval_agent(state: AgentState) -> Dict[str, Any]:
+def graph_retrieval_agent(state: AgentState) -> GraphRetrievalAgentOutput:
     """
     Main agent for retrieving information from the Neo4j graph database.
     Delegates to specific graph tools based on the query type or intent.
@@ -484,7 +504,7 @@ class GraphRetrieverInterface(BaseRetriever):
     Maintains all the complex graph retrieval logic while providing a simple interface.
     """
 
-    def __init__(self, state: Dict[str, Any] = None):
+    def __init__(self, state: Optional[Dict[str, Union[str, int, float, bool, List]]] = None):
         """Initialize with state for graph retrieval."""
         super().__init__()
         self.state = state or {}
@@ -493,7 +513,7 @@ class GraphRetrieverInterface(BaseRetriever):
         """Retrieve documents using the full graph retrieval system."""
 
         class MinimalState:
-            def __init__(self, query: str, state: Dict[str, Any]):
+            def __init__(self, query: str, state: Dict[str, Union[str, int, float, bool, List]]):
                 self.transformed_query = query
                 self.entities = state.get("entities", [])
                 self.structured_query = state.get("structured_query")
@@ -517,6 +537,6 @@ class GraphRetrieverInterface(BaseRetriever):
         return self._get_relevant_documents(query, **kwargs)
 
 
-def get_graph_retriever(state: Dict[str, Any] = None) -> GraphRetrieverInterface:
+def get_graph_retriever(state: Optional[Dict[str, Union[str, int, float, bool, List]]] = None) -> GraphRetrieverInterface:
     """Return a graph retriever interface for ensemble use."""
     return GraphRetrieverInterface(state)

@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional, TypedDict
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
@@ -8,7 +8,13 @@ from src.schemas.main import MethodSelection, RetrievalSelection
 from src.schemas.state import AgentState
 
 
-def retrieval_strategy_agent(state: AgentState, model: ChatOpenAI) -> Dict[str, Any]:
+class RetrievalStrategyAgentOutput(TypedDict):
+    retrieval_method: Optional[str]
+    retrieval_selection: Dict[str, Any]  # This is a complex dict, keeping Any for now
+    error: Optional[str]
+
+
+def retrieval_strategy_agent(state: AgentState, model: ChatOpenAI) -> RetrievalStrategyAgentOutput:
     """
     Selects the retrieval method and query transformation strategy.
     """

@@ -1,5 +1,5 @@
 import os
-from typing import Any, Dict, List
+from typing import Dict, List, Union
 
 from langchain_community.retrievers import ElasticSearchBM25Retriever
 from langchain_core.documents import Document
@@ -28,8 +28,8 @@ def keyword_retrieval_agent(state: AgentState) -> List[Document]:
     """
     try:
         question: str = state.transformed_query or ""
-        filters: Dict[str, Any] = state.metadata_filters or {}
-        priorities: List[Any] = state.priorities or []
+        filters: Dict[str, Union[str, int, float, bool, List[str]]] = state.metadata_filters or {}
+        priorities: List[Dict[str, Union[str, int, float]]] = state.priorities or []
 
         bm25_retriever = get_bm25_retriever()
 

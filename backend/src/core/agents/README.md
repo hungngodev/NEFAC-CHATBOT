@@ -34,7 +34,7 @@ agents/
 ├── utils/                      # Common utilities
 │   ├── __init__.py
 │   └── state_manager.py        # State management
-└── legacy/                     # Original pipeline components
+└── utils/                      # Utility functions
     ├── __init__.py
     ├── context_processor.py
     ├── generator.py
@@ -70,8 +70,8 @@ The system follows a top-down import pattern:
 ### Level 5: Utils Layer
 - `utils.state_manager` - State management and compatibility
 
-### Legacy Layer
-- `legacy.*` - Original pipeline components for backward compatibility
+### Utility Layer
+- `utils.*` - Utility functions and helper components
 
 ## Usage
 
@@ -97,5 +97,5 @@ from src.core.agents.tools.retrieval import create_retrieval_tool
 1. **Clear Separation of Concerns**: Each layer has a specific responsibility
 2. **Top-Down Dependencies**: Higher layers depend on lower layers, not vice versa
 3. **Modular Design**: Components can be developed and tested independently
-4. **Legacy Compatibility**: Original components preserved for backward compatibility
+4. **Utility Support**: Helper functions for system operations
 5. **Scalable Structure**: Easy to add new components at appropriate levels
