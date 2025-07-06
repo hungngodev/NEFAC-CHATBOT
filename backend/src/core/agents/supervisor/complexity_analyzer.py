@@ -4,25 +4,12 @@ Implements multi-dimensional complexity assessment as documented in the architec
 """
 
 import re
-from dataclasses import dataclass
 from typing import List, Optional
 
 from langchain_core.messages import BaseMessage
 from langchain_core.prompts import ChatPromptTemplate
 
-from src.schemas.supervisor import QueryComplexity
-
-
-@dataclass
-class ComplexityMetrics:
-    """Detailed complexity metrics for analysis."""
-
-    linguistic_score: float
-    domain_score: float
-    reasoning_score: float
-    temporal_score: float
-    multi_hop_score: float
-    confidence: float
+from src.schemas.core_types import ComplexityMetrics, QueryComplexity
 
 
 class ComplexityAnalyzer:

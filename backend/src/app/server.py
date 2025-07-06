@@ -8,8 +8,10 @@ Integrates memory management and summarization features from main branch.
 import logging
 import os
 from functools import partial
-from typing import Any, Dict
+from typing import Dict, List, Optional, TypedDict, Union
 
+from langchain_core.documents import Document
+from langchain_core.messages import BaseMessage
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, CompiledGraph, StateGraph
@@ -33,8 +35,7 @@ from src.core.agents.workers.react.react_worker import multi_step_reasoning_agen
 from src.core.agents.workers.retriever.retrieval import RetrievalAgent
 
 # Import schemas and types
-from src.schemas.agent_types import GenerationResult, QueryComplexityResult, QueryUnderstandingResult, RetrievalResult
-from src.schemas.state import AgentState
+from src.schemas.core_types import AgentState, DocumentCitation, ExtractedInformation, GenerationResult, QueryComplexityResult, QueryUnderstandingResult, RetrievalResult, SessionMemoryEntry
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -56,7 +57,64 @@ generator_agent_instance = GeneratorAgent()
 memory_manager = MemoryManager()
 
 
-def supervisor_node(state: AgentState) -> Dict[str, Any]:
+# Define TypedDicts for node outputs for enhanced type safety
+class SupervisorNodeOutput(TypedDict):
+    supervisor_decision: str
+    query_complexity: float
+    error: Optional[str]
+
+
+class MemoryRetrievalNodeOutput(TypedDict):
+    memory_context: str
+    retrieved_memories: List[SessionMemoryEntry]
+    error: Optional[str]
+
+
+class HistoryCheckNodeOutput(TypedDict):
+    needs_summarization: bool
+    history_summary: Optional[str]
+    chat_history: Optional[List[BaseMessage]]
+    error: Optional[str]
+
+
+class QueryUnderstandingNodeOutput(TypedDict):
+    contextualized_query: Optional[str]
+    intent: Optional[str]
+    entities: Optional[List[str]]
+    structured_query: Optional[str]
+    statistical_query: Optional[str]
+    error: Optional[str]
+
+
+class RetrieverWorkerNodeOutput(TypedDict):
+    documents: Optional[List[Document]]
+    retrieval_metadata: Optional[Dict[str, Union[str, int, float, bool]]]
+    extracted_info: Optional[List[ExtractedInformation]]
+    summarized_content: Optional[List[Document]]
+    citations: Optional[List[DocumentCitation]]
+    session_memory: Optional[List[SessionMemoryEntry]]
+    error: Optional[str]
+
+
+class ReActWorkerNodeOutput(TypedDict):
+    answer: Optional[str]
+    documents: Optional[List[Document]]
+    error: Optional[str]
+
+
+class GeneratorNodeOutput(TypedDict):
+    answer: Optional[str]
+    confidence_score: Optional[float]
+    sources: Optional[List[str]]
+    error: Optional[str]
+
+
+class ValidationNodeOutput(TypedDict):
+    validation: Dict[str, Union[bool, str, float, List[str]]]
+    error: Optional[str]
+
+
+def supervisor_node(state: AgentState) -> SupervisorNodeOutput:
     """
     Supervisor node that analyzes query complexity and makes routing decisions.
     Uses the ComplexityAnalyzer with proper typing.
@@ -94,30 +152,39 @@ def supervisor_node(state: AgentState) -> Dict[str, Any]:
         return {"supervisor_decision": "retriever_worker", "query_complexity": 0.5, "error": f"Supervisor error: {str(e)}"}  # Fallback
 
 
-def memory_retrieval_node(state: AgentState) -> Dict[str, Any]:
+def memory_retrieval_node(state: AgentState) -> MemoryRetrievalNodeOutput:
     """
     Memory retrieval node that gets relevant past interactions.
-    Uses the existing MemoryManager.
+    Uses the existing MemoryManager with enhanced typing.
     """
     try:
         # Retrieve relevant memories
-        memories = memory_manager.retrieve_memories(query=state.user_query, user_id=state.user_id, limit=5)
+        raw_memories = memory_manager.retrieve_memories(query=state.user_query, user_id=state.user_id, limit=5)
+
+        # Convert to structured SessionMemoryEntry objects
+        memory_entries: List[SessionMemoryEntry] = []
+        for i, memory in enumerate(raw_memories):
+            if hasattr(memory, "content"):
+                from src.schemas.enhanced_context_types import create_memory_entry
+
+                memory_entry = create_memory_entry(memory_id=getattr(memory, "id", f"mem_{i}"), content=memory.content, user_id=state.user_id, session_id=getattr(state, "session_id", "default"), memory_type="interaction", relevance_score=getattr(memory, "relevance_score", 0.5))
+                memory_entries.append(memory_entry)
 
         # Create memory summary
         memory_summary = ""
-        if memories:
-            memory_texts = [mem.content for mem in memories if hasattr(mem, "content")]
-            memory_summary = "\n".join(memory_texts[:3])  # Use top 3 most relevant
+        if memory_entries:
+            memory_texts = [entry.content for entry in memory_entries[:3]]
+            memory_summary = "\n".join(memory_texts)
 
-        logger.info(f"Memory retrieval: Found {len(memories)} relevant memories")
-        return {"memory_context": memory_summary, "retrieved_memories": memories}
+        logger.info(f"Memory retrieval: Found {len(memory_entries)} relevant memories")
+        return {"memory_context": memory_summary, "retrieved_memories": memory_entries}
 
     except Exception as e:
         logger.error(f"Memory retrieval error: {e}")
         return {"memory_context": "", "retrieved_memories": [], "error": f"Memory error: {str(e)}"}
 
 
-def check_history_length_node(state: AgentState) -> Dict[str, Any]:
+def check_history_length_node(state: AgentState) -> HistoryCheckNodeOutput:
     """
     Check if chat history needs summarization based on length threshold.
     Integrates the summarization logic from main branch.
@@ -144,7 +211,7 @@ def check_history_length_node(state: AgentState) -> Dict[str, Any]:
         return {"needs_summarization": False, "error": f"History check error: {str(e)}"}
 
 
-def query_understanding_node(state: AgentState) -> Dict[str, Any]:
+def query_understanding_node(state: AgentState) -> QueryUnderstandingNodeOutput:
     """
     Query understanding node using the enhanced QueryUnderstandingAgent.
     """
@@ -170,7 +237,7 @@ def query_understanding_node(state: AgentState) -> Dict[str, Any]:
         return {"error": f"Query understanding error: {str(e)}"}
 
 
-def retriever_worker_node(state: AgentState) -> Dict[str, Any]:
+def retriever_worker_node(state: AgentState) -> RetrieverWorkerNodeOutput:
     """
     Retriever worker node using the enhanced RetrievalAgent.
     """
@@ -202,7 +269,7 @@ def retriever_worker_node(state: AgentState) -> Dict[str, Any]:
         return {"error": f"Retriever worker error: {str(e)}"}
 
 
-def react_worker_node(state: AgentState) -> Dict[str, Any]:
+def react_worker_node(state: AgentState) -> ReActWorkerNodeOutput:
     """
     ReAct worker node for complex multi-step reasoning.
     """
@@ -222,7 +289,7 @@ def react_worker_node(state: AgentState) -> Dict[str, Any]:
         return {"error": f"ReAct worker error: {str(e)}"}
 
 
-def generator_node(state: AgentState) -> Dict[str, Any]:
+def generator_node(state: AgentState) -> GeneratorNodeOutput:
     """
     Generator node using the enhanced GeneratorAgent.
     """
@@ -250,7 +317,7 @@ def generator_node(state: AgentState) -> Dict[str, Any]:
         return {"error": f"Generator error: {str(e)}"}
 
 
-def validation_node(state: AgentState) -> Dict[str, Any]:
+def validation_node(state: AgentState) -> ValidationNodeOutput:
     """
     Validation node to check response quality.
     """

@@ -1,12 +1,12 @@
-from typing import Any, Dict, List
+from typing import List, Optional, TypedDict
 
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
 
-from src.core.agents.context_processor import context_processor_agent
-from src.core.agents.workers.retriever.retrieval import retrieval_agent  # Import the retrieval agent
-from src.schemas.state import AgentState
+from src.core.agents.tools.context_processor import context_processor_agent
+from src.core.agents.tools.retrieval.retrieval_tools import ensemble_retriever_tool
+from src.schemas.core_types import AgentState
 
 # Prompt for generating sub-questions
 SUB_QUESTION_PROMPT = ChatPromptTemplate.from_messages(
@@ -36,7 +36,13 @@ SYNTHESIS_PROMPT = ChatPromptTemplate.from_messages(
 )
 
 
-def multi_step_reasoning_agent(state: AgentState, model: ChatOpenAI, max_steps: int = 3) -> Dict[str, Any]:
+class MultiStepReasoningOutput(TypedDict):
+    answer: Optional[str]
+    documents: Optional[List[Document]]
+    error: Optional[str]
+
+
+def multi_step_reasoning_agent(state: AgentState, model: ChatOpenAI, max_steps: int = 3) -> MultiStepReasoningOutput:
     """
     Performs multi-step reasoning by iteratively generating sub-questions, retrieving information,
     and synthesizing context.
@@ -59,17 +65,19 @@ def multi_step_reasoning_agent(state: AgentState, model: ChatOpenAI, max_steps: 
             if sub_question == "FINAL_ANSWER":
                 break
 
-            # 2. Retrieve Information for Sub-question
-            # Temporarily create a state for the retrieval agent
+            # 2. Retrieve Information for Sub-question using ensemble retriever
+            # Create state for ensemble retrieval
             retrieval_state_for_sub_q = AgentState(
                 query=sub_question,
-                chat_history=state.chat_history,  # Keep full chat_history for now, as it's used by other agents
-                history_summary=state.history_summary,  # Pass summary
+                chat_history=state.chat_history,
+                history_summary=state.history_summary,
                 transformed_query=sub_question,
                 retrieval_selection=state.retrieval_selection,
                 entities=state.entities,
             )
-            retrieval_output = retrieval_agent(retrieval_state_for_sub_q)
+
+            # Use ensemble retriever for ReAct sub-questions
+            retrieval_output = ensemble_retriever_tool.retrieve_for_react_agent(retrieval_state_for_sub_q)
             retrieved_docs = retrieval_output.get("documents", [])
 
             # Process retrieved documents through context_processor_agent

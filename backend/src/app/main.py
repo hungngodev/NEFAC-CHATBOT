@@ -8,7 +8,7 @@ import json
 import logging
 import uuid
 from datetime import datetime
-from typing import Any, AsyncGenerator, Dict, List, Optional
+from typing import AsyncGenerator, Dict, List, Optional, TypedDict, Union
 
 from pydantic import BaseModel, Field
 
@@ -59,7 +59,7 @@ class ChatInput(BaseModel):
 class LLMResponse(BaseModel):
     answer: str = Field(..., description="Final answer from the LLM.")
     context: List[DocumentMetadata] = Field([], description="List of retrieved document metadata.")
-    metadata: Dict[str, Any] = Field({}, description="Additional metadata about the response.")
+    metadata: Dict[str, Union[str, int, float, bool]] = Field({}, description="Additional metadata about the response.")
     error: Optional[str] = Field(None, description="Error message if any.")
 
 
@@ -72,14 +72,14 @@ class HealthCheckResponse(BaseModel):
     status: str = Field(..., description="Overall health status (healthy, degraded, unhealthy).")
     timestamp: str = Field(..., description="Timestamp of the health check.")
     components: Dict[str, ComponentHealth] = Field({}, description="Health status of individual components.")
-    memory_stats: Dict[str, Any] = Field({}, description="Memory usage statistics.")
+    memory_stats: Dict[str, Union[str, int, float]] = Field({}, description="Memory usage statistics.")
     errors: List[str] = Field([], description="List of overall errors.")
 
 
 class RecentMemory(BaseModel):
     query: str = Field(..., description="Query associated with the memory.")
     timestamp: str = Field(..., description="Timestamp of the memory.")
-    metadata: Dict[str, Any] = Field({}, description="Metadata associated with the memory.")
+    metadata: Dict[str, Union[str, int, float, bool]] = Field({}, description="Metadata associated with the memory.")
 
 
 class UserMemorySummary(BaseModel):
@@ -105,7 +105,19 @@ logger = logging.getLogger(__name__)
 # === Enhanced Streaming Interface ===
 
 
-async def ask_llm_stream_enhanced(query: str, convo_id: Optional[str] = None, user_id: str = "default_user", session_id: Optional[str] = None, **kwargs: Any) -> AsyncGenerator[str, None]:
+# Enhanced type definitions for main application
+class LLMRequestConfig(TypedDict, total=False):
+    """Configuration parameters for LLM requests."""
+
+    temperature: float
+    max_tokens: int
+    model: str
+    stream: bool
+    timeout: int
+    include_sources: bool
+
+
+async def ask_llm_stream_enhanced(query: str, convo_id: Optional[str] = None, user_id: str = "default_user", session_id: Optional[str] = None, **kwargs: LLMRequestConfig) -> AsyncGenerator[str, None]:
     """
     Enhanced streaming interface that provides real-time updates.
     Compatible with existing frontend while providing enhanced capabilities.
@@ -201,7 +213,7 @@ async def ask_llm_stream_enhanced(query: str, convo_id: Optional[str] = None, us
 # === Non-Streaming Interface ===
 
 
-def ask_llm_enhanced(query: str, convo_id: Optional[str] = None, user_id: str = "default_user", session_id: Optional[str] = None, **kwargs: Any) -> LLMResponse:
+def ask_llm_enhanced(query: str, convo_id: Optional[str] = None, user_id: str = "default_user", session_id: Optional[str] = None, **kwargs: LLMRequestConfig) -> LLMResponse:
     """
     Enhanced non-streaming interface for direct responses.
     """
@@ -283,7 +295,7 @@ async def health_check() -> HealthCheckResponse:
 # === Memory Management Interface ===
 
 
-async def get_user_memory_summary(user_id: str, session_id: str = None) -> Dict[str, Any]:
+async def get_user_memory_summary(user_id: str, session_id: str = None) -> Dict[str, Union[str, int, List[RecentMemory]]]:
     """Get memory summary for a user/session."""
 
     try:
@@ -300,7 +312,7 @@ async def get_user_memory_summary(user_id: str, session_id: str = None) -> Dict[
         return {"error": str(e), "user_id": user_id, "session_id": session_id}
 
 
-async def cleanup_user_memories(user_id: str, session_id: str = None, retention_days: int = DEFAULT_MEMORY_RETENTION_DAYS) -> Dict[str, Any]:
+async def cleanup_user_memories(user_id: str, session_id: str = None, retention_days: int = DEFAULT_MEMORY_RETENTION_DAYS) -> Dict[str, Union[str, int]]:
     """Clean up memories for a specific user/session."""
 
     try:

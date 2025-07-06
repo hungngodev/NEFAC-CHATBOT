@@ -1,10 +1,9 @@
-from typing import Dict, Union
+from typing import Dict, List, Optional, TypedDict, Union
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
-from src.schemas.state import AgentState
-from src.schemas.supervisor import Validation
+from src.schemas.core_types import AgentState, Validation
 
 VALIDATION_PROMPT = ChatPromptTemplate.from_template(
     """You are a validator. Given the user's question, the retrieved text, and the answer, 
@@ -18,7 +17,12 @@ VALIDATION_PROMPT = ChatPromptTemplate.from_template(
 )
 
 
-def validation_agent(state: AgentState, model: ChatOpenAI) -> Dict[str, Union[str, Dict[str, Union[bool, str]]]]:
+class ValidationAgentOutput(TypedDict):
+    validation: Optional[Dict[str, Union[bool, str, float, List[str]]]]
+    error: Optional[str]
+
+
+def validation_agent(state: AgentState, model: ChatOpenAI) -> ValidationAgentOutput:
     """
     Validates the generated answer.
     """

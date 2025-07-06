@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import List, Optional, TypedDict
 
 from langchain_core.documents import Document
 from langchain_core.output_parsers import StrOutputParser
@@ -6,7 +6,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
 from src.config.constant import MODEL_NAME
-from src.schemas.state import AgentState
+from src.schemas.core_types import AgentState
 
 # --- LLM Setup ---
 llm = ChatOpenAI(temperature=0, model=MODEL_NAME)
@@ -28,7 +28,12 @@ Summary:""",
 summarization_chain = summarization_prompt | llm | StrOutputParser()
 
 
-def summarizer_agent(state: AgentState) -> Dict[str, Any]:
+class SummarizerAgentOutput(TypedDict):
+    documents: List[Document]
+    error: Optional[str]
+
+
+def summarizer_agent(state: AgentState) -> SummarizerAgentOutput:
     """
     Summarizes lengthy retrieved documents or passages to fit within the LLM's context window.
     """

@@ -1,15 +1,9 @@
 import os
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
-try:
-    import pinecone  # type: ignore
-    from langchain_pinecone import PineconeVectorStore  # type: ignore
-except ImportError:
-    PineconeVectorStore = None
-    pinecone = None
-    print("Warning: langchain_pinecone or pinecone not installed. Pinecone vector DB retrieval will be skipped.")
-
+import pinecone  # type: ignore
 from langchain_openai import OpenAIEmbeddings
+from langchain_pinecone import PineconeVectorStore  # type: ignore
 
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-large")
 
@@ -27,19 +21,19 @@ def _get_pinecone_index():
 
 
 # --- Upsert Session Memory ---
-def add_memory_to_pinecone(session_id: str, memory_text: str, metadata: Optional[Dict[str, Any]] = None, namespace: str = "session-memory"):
+def add_memory_to_pinecone(session_id: str, memory_text: str, metadata: Optional[Dict[str, Union[str, int, float, bool]]] = None, namespace: str = "session-memory"):
     """Embed and upsert a memory item for the current session into Pinecone."""
     if PineconeVectorStore is None or pinecone is None:
         raise ImportError("Pinecone dependencies not installed.")
     index = _get_pinecone_index()
     embedding = embedding_model.embed_query(memory_text)
-    meta: Dict[str, Any] = metadata if metadata is not None else {}
+    meta: Dict[str, Union[str, int, float, bool]] = metadata if metadata is not None else {}
     meta["session_id"] = session_id
     index.upsert(vectors=[{"id": f"{session_id}_{hash(memory_text)}", "values": embedding, "metadata": meta}], namespace=namespace)
 
 
 # --- Retrieve Session Memory ---
-def retrieve_memory_from_pinecone(session_id: str, query: str, top_k: int = 5, namespace: str = "session-memory") -> List[Dict[str, Any]]:
+def retrieve_memory_from_pinecone(session_id: str, query: str, top_k: int = 5, namespace: str = "session-memory") -> List[Dict[str, Union[str, int, float, bool]]]:
     """Embed the query and retrieve top-k relevant session memory items from Pinecone."""
     if PineconeVectorStore is None or pinecone is None:
         raise ImportError("Pinecone dependencies not installed.")

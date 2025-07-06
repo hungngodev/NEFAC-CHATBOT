@@ -1,14 +1,15 @@
 from operator import itemgetter
-from typing import Any
+from typing import Dict, List
 
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnableLambda
+from langchain_core.runnables import Runnable, RunnableLambda
 from langchain_openai import ChatOpenAI
 
 from src.config.constant import QUERY_TRANSLATION_MODEL_NAME
 from src.config.prompts import DECOMPOSITION_PROMPT, FINAL_SYNTHESIS_TEMPLATE, QA_TEMPLATE
 from src.core.agents.tools.document_formatter import format_docs
+from src.core.agents.tools.retrieval.retrieval_tools import ensemble_retriever_tool
 from src.load_env import load_env
 
 load_env()
@@ -31,7 +32,20 @@ rag_chain = (
 )
 
 
-def get_decomposition_chain(retriever) -> Any:
+def get_decomposition_chain(retriever=None) -> Runnable[Dict, str]:
+    """Decomposition chain using ensemble retriever with iterative sub-question processing."""
+
+    def retrieve_for_sub_questions(sub_questions: List[str]) -> List[str]:
+        """Retrieve formatted documents for each sub-question."""
+        contexts = []
+        for sub_q in sub_questions:
+            if sub_q.strip():
+                docs = ensemble_retriever_tool.retrieve(query=sub_q.strip(), methods=["dense", "sparse", "graph"], weights=[0.4, 0.3, 0.3], max_documents=6)  # All methods for comprehensive sub-question coverage  # Balanced approach for each sub-question
+                contexts.append(format_docs(docs))
+            else:
+                contexts.append("")
+        return contexts
+
     def process_sub_questions(input_dict):
         sub_questions = input_dict["sub_questions"]
         main_question = input_dict["question"]
@@ -52,7 +66,6 @@ def get_decomposition_chain(retriever) -> Any:
         return {"context": "\n---\n".join(q_a_pairs), "question": main_question}
 
     final_template = FINAL_SYNTHESIS_TEMPLATE
-
     final_prompt = ChatPromptTemplate.from_template(final_template)
     final_rag_chain = final_prompt | model | StrOutputParser()
 
@@ -64,7 +77,7 @@ def get_decomposition_chain(retriever) -> Any:
         }
         | {
             "sub_questions": itemgetter("sub_questions"),
-            "contexts": itemgetter("sub_questions") | (retriever | format_docs).map(),
+            "contexts": itemgetter("sub_questions") | retrieve_for_sub_questions,
             "question": itemgetter("question"),
         }
         | RunnableLambda(process_sub_questions)

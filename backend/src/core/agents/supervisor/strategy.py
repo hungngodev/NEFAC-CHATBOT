@@ -1,14 +1,19 @@
-from typing import Any, Dict
+from typing import Dict, List, Optional, TypedDict, Union
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
 from src.config.prompts import METHOD_SELECTION_PROMPT, RETRIEVAL_METHOD_SELECTION_PROMPT
-from src.schemas.main import MethodSelection, RetrievalSelection
-from src.schemas.state import AgentState
+from src.schemas.core_types import AgentState, MethodSelection, RetrievalSelection
 
 
-def retrieval_strategy_agent(state: AgentState, model: ChatOpenAI) -> Dict[str, Any]:
+class RetrievalStrategyAgentOutput(TypedDict):
+    retrieval_method: Optional[str]
+    retrieval_selection: Dict[str, Union[str, List[str], List[float]]]  # Structured retrieval selection
+    error: Optional[str]
+
+
+def retrieval_strategy_agent(state: AgentState, model: ChatOpenAI) -> RetrievalStrategyAgentOutput:
     """
     Selects the retrieval method and query transformation strategy.
     """

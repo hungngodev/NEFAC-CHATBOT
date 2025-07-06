@@ -1,10 +1,10 @@
 import datetime
-from typing import Any, Callable, Dict, List
+from typing import Callable, Dict, List, Union
 
 from langchain_core.documents import Document
 
 
-def _parse_date_from_metadata(doc_metadata: Dict[str, Any]) -> datetime.date | None:
+def _parse_date_from_metadata(doc_metadata: Dict[str, Union[str, int, float, bool]]) -> datetime.date | None:
     doc_date_str = doc_metadata.get("date")
     if doc_date_str:
         try:
@@ -17,23 +17,23 @@ def _parse_date_from_metadata(doc_metadata: Dict[str, Any]) -> datetime.date | N
 # Assuming these are the Pydantic models for your metadata
 
 
-def _filter_by_author_name(doc_metadata: Dict[str, Any], filter_value: str) -> bool:
+def _filter_by_author_name(doc_metadata: Dict[str, Union[str, int, float, bool]], filter_value: str) -> bool:
     author = doc_metadata.get("author")
     return bool(author and author.get("name") == filter_value)
 
 
-def _filter_by_category_name(doc_metadata: Dict[str, Any], filter_value: str) -> bool:
+def _filter_by_category_name(doc_metadata: Dict[str, Union[str, int, float, bool]], filter_value: str) -> bool:
     categories = doc_metadata.get("categories")
     return bool(categories and any(cat.get("name") == filter_value for cat in categories))
 
 
-def _filter_by_tags(doc_metadata: Dict[str, Any], filter_value: List[str]) -> bool:
+def _filter_by_tags(doc_metadata: Dict[str, Union[str, int, float, bool]], filter_value: List[str]) -> bool:
     # Checks if any of the document's tags are present in the filter_value list
     tags = doc_metadata.get("tags")
     return bool(tags and any(tag in tags for tag in filter_value))
 
 
-def _filter_by_date_range(doc_metadata: Dict[str, Any], filter_value: tuple) -> bool:
+def _filter_by_date_range(doc_metadata: Dict[str, Union[str, int, float, bool]], filter_value: tuple) -> bool:
     doc_date_str = doc_metadata.get("date")
     if not doc_date_str or not isinstance(filter_value, tuple) or len(filter_value) != 2:
         return False
@@ -47,7 +47,7 @@ def _filter_by_date_range(doc_metadata: Dict[str, Any], filter_value: tuple) -> 
 
 
 # Mapping of special filter keys to their handler functions
-_FILTER_HANDLERS: Dict[str, Callable[[Dict[str, Any], Any], bool]] = {
+_FILTER_HANDLERS: Dict[str, Callable[[Dict[str, Union[str, int, float, bool]], Union[str, List[str], tuple]], bool]] = {
     "author_name": _filter_by_author_name,
     "category_name": _filter_by_category_name,
     "tags": _filter_by_tags,
@@ -55,7 +55,7 @@ _FILTER_HANDLERS: Dict[str, Callable[[Dict[str, Any], Any], bool]] = {
 }
 
 
-def filter_documents_by_metadata(documents: List[Document], filters: Dict[str, Any]) -> List[Document]:
+def filter_documents_by_metadata(documents: List[Document], filters: Dict[str, Union[str, int, float, bool, List[str], tuple]]) -> List[Document]:
     """
     Filters a list of LangChain Document objects based on provided metadata filters.
     Filters can be applied to common metadata fields or type-specific metadata fields.
@@ -94,7 +94,7 @@ def filter_documents_by_metadata(documents: List[Document], filters: Dict[str, A
     return filtered_docs
 
 
-def prioritize_documents_by_metadata(documents: List[Document], priorities: List[Dict[str, Any]]) -> List[Document]:
+def prioritize_documents_by_metadata(documents: List[Document], priorities: List[Dict[str, Union[str, int, float]]]) -> List[Document]:
     """
     Prioritizes a list of LangChain Document objects based on provided metadata rules.
     Each rule can specify a field, a value to match, and a boost score.
@@ -329,7 +329,7 @@ if __name__ == "__main__":
     # Expected: doc2 (2024), then doc3, doc4, doc1 (2023)
 
     print("\n--- Test Case 12: Prioritize by category (Open Government) with boost and then by date desc ---")
-    priorities3: List[Dict[str, Any]] = [{"field": "category_name", "value": "Open Government", "boost": 10}, {"field": "date", "order": "desc"}]
+    priorities3: List[Dict[str, Union[str, int]]] = [{"field": "category_name", "value": "Open Government", "boost": 10}, {"field": "date", "order": "desc"}]
     prioritized_docs3 = prioritize_documents_by_metadata(documents, priorities3)
     for doc in prioritized_docs3:
         categories = doc.metadata.get("categories")

@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Dict, List, Union
 
 from langchain_core.messages import BaseMessage, SystemMessage
 from langchain_core.output_parsers import StrOutputParser
@@ -11,7 +11,7 @@ from src.config.constant import (
     MESSAGES_TO_SUMMARIZE,
     MODEL_NAME,
 )
-from src.schemas.state import AgentState
+from src.schemas.core_types import AgentState
 
 # --- LLM Setup for Summarization ---
 llm = ChatOpenAI(temperature=0, model=MODEL_NAME)
@@ -29,7 +29,7 @@ summarization_prompt = ChatPromptTemplate.from_messages(
 summarization_chain = summarization_prompt | llm | StrOutputParser()
 
 
-def history_manager_agent(state: AgentState) -> Dict[str, Any]:
+def history_manager_agent(state: AgentState) -> Dict[str, Union[str, int, float, bool, None]]:
     """
     Manages the chat history to prevent it from growing too long.
     If the history exceeds a threshold, it summarizes the oldest messages.

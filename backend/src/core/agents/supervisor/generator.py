@@ -1,13 +1,12 @@
 import time
-from typing import Dict, List, Union
+from typing import List, Optional, TypedDict
 
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
 
 from src.config.prompts import FINAL_PROMPT, GENERAL_PROMPT
 from src.exceptions.agent_exceptions import GenerationError, handle_agent_exception
-from src.schemas.agent_types import GenerationData, GenerationResult, QueryIntent, create_error_result, create_success_result
-from src.schemas.state import AgentState
+from src.schemas.core_types import AgentState, GenerationData, GenerationResult, QueryIntent, create_error_result, create_success_result
 from src.utils.validation import validate_generation_input
 
 
@@ -209,7 +208,12 @@ class GeneratorAgent:
 _generator_agent = GeneratorAgent()
 
 
-def generator_agent(state: AgentState, model: ChatOpenAI) -> Dict[str, Union[str, object]]:
+class GeneratorAgentOutput(TypedDict):
+    answer: str
+    error: Optional[str]
+
+
+def generator_agent(state: AgentState, model: ChatOpenAI) -> GeneratorAgentOutput:
     """
     Main interface function - uses the improved agent implementation.
     """
