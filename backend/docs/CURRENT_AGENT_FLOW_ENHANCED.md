@@ -39,7 +39,7 @@ graph TD
         B --> B1[retrieve_memories]
         B1 --> B2[Qdrant Semantic Search]
         B2 --> B3[User Isolation Filter]
-        B3 --> B4[SessionMemoryEntry Objects]
+        B3 --> B4[MemoryEntry Objects]
         B4 --> B5[Memory Summary Creation]
     end
     
@@ -107,7 +107,7 @@ graph TD
         I1 --> I5[ExtractedInformation Objects]
         I2 --> I6[DocumentCitation Objects]
         I3 --> I7[Summarized Documents]
-        I4 --> I8[SessionMemoryEntry Integration]
+        I4 --> I8[MemoryEntry Integration]
         I5 --> I9[Processed Context]
         I6 --> I9
         I7 --> I9
@@ -350,10 +350,10 @@ The **Context Processor** implements a sophisticated pipeline for document proce
 - **Source**: Pinecone vector store with session isolation
 - **Process**:
   1. Retrieve top-k relevant session memories
-  2. Convert raw memory to `SessionMemoryEntry` objects
+  2. Convert raw memory to `MemoryEntry` objects
   3. Integrate with current processing context
   4. Relevance scoring and ranking
-- **Output**: Integrated session memory for personalized responses
+- **Output**: Integrated session memory entries for personalized responses
 
 #### **Context Processor Output**
 ```python

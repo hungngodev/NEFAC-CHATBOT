@@ -6,7 +6,7 @@ description = ""
 authors = [
     {name = "HUNG NGO",email = "hungngo1607@gmail.com"}
 ]
-requires-python = ">=3.9,<3.13"
+requires-python = ">=3.10,<3.13"
 
 
 dependencies = [
@@ -166,7 +166,8 @@ dependencies = [
     "langchain-neo4j (>=0.4.0,<0.5.0)",
     "langgraph (>=0.5.0,<0.6.0)",
     "langgraph-cli[inmem] (>=0.3.3,<0.4.0)",
-    "langchain-qdrant (>=0.2.0,<0.3.0)"
+    "langchain-qdrant (>=0.2.0,<0.3.0)",
+    "langmem (>=0.0.27,<0.0.28)"
 ]
 
 

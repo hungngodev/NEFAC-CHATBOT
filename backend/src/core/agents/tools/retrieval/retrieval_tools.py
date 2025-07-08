@@ -23,6 +23,25 @@ from src.schemas.core_types import AgentState, ReactAgentRetrievalOutput, Retrie
 
 logger = logging.getLogger(__name__)
 
+RETRIEVAL_METHOD_SELECTION_PROMPT = """
+You are a retrieval-method selection agent for NEFAC’s First Amendment resources (https://nefac.org).
+
+Your task is to analyze the user’s reformulated question and choose the most appropriate retrieval strategy or combination of strategies. NEFAC supports three retrieval methods:
+
+• graph   – query NEFAC’s Neo4j knowledge graph of entities and relationships (e.g., laws, court cases, organizations); best for structured data or entity-linked queries  
+• dense   – run a semantic vector search over NEFAC’s full-text corpus; best for broad, conceptual questions or those using synonyms and abstract ideas  
+• sparse  – perform an Elasticsearch BM25 keyword search; best for exact terms, named references, or direct citations
+
+Guidelines:
+- Use **dense** for open-ended, conceptual, or exploratory queries
+- Use **sparse** for keyword-heavy queries, legal citations, names, or precise terms
+- Use **graph** when the query relates to structured data, named entities, or relationships (e.g., “Who funds NEFAC?”, “What law did X case involve?”)
+- Combine methods for multi-faceted or ambiguous queries
+- Weigh your selection based on query complexity, specificity, and the presence of legal or named entities
+
+After your reasoning, return only a comma-separated list of selected strategies (e.g., `graph, sparse` or `dense`).
+"""
+
 
 class GraphRetriever(BaseRetriever):
     """

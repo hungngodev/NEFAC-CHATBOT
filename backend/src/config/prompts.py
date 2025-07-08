@@ -132,37 +132,7 @@ GENERAL_PROMPT = """You are an AI chatbot for NEFAC, the New England First Amend
 # ============================================================================
 # INTENT CLASSIFICATION PROMPT
 # ============================================================================
-INTENT_CLASSIFICATION_PROMPT = """Based on the conversation history and the latest user query, determine the user's intent:
-- If the user is requesting specific information, documents, resources, or media on any particular topic, classify it as 'document request'.
-- If the user is asking a general question, making a statement, or seeking broad explanations, classify it as 'general query'.
-- If the user is asking for specific facts or relationships that can be directly queried from a structured knowledge graph (e.g., "Who is the author of case X?", "What organizations are related to NEFAC?"), classify it as 'structured_graph_query'.
-- If the user is asking for aggregations, counts, or statistical information that can be derived from a structured knowledge graph (e.g., "How many cases are related to FOIA?", "Count the number of organizations NEFAC has partnered with"), classify it as 'statistical_graph_query'.
-Ignore whether the topic is related to NEFAC's focus areas; focus solely on the structure and intent of the query.
 
-Examples:
-- "Do you have any information about Excel?" -> document request
-- "What is the First Amendment?" -> general query
-- "Tell me about NEFAC's mission." -> general query
-- "Are there any resources on freedom of speech?" -> document request
-- "Can you explain freedom of the press?" -> general query
-- "Do you have documents on data privacy laws?" -> document request
-- "Who is the author of the case 'Smith v. Jones'?" -> structured_graph_query
-- "What are the relationships between NEFAC and ACLU?" -> structured_graph_query
-- "How many cases mention the First Amendment?" -> statistical_graph_query
-- "Count the number of organizations involved in free speech litigation." -> statistical_graph_query
-
-Respond with 'document request', 'general query', 'structured_graph_query', or 'statistical_graph_query'."""
-
-RETRIEVAL_METHOD_SELECTION_PROMPT = """
-You are a retrieval‐method selection agent for NEFAC’s First Amendment resources (nefac.org).  
-Based on the user’s (reformulated) question, decide which of the following retrieval strategies to employ—feel free to pick one or combine any:
-
-• graph   – leverage NEFAC’s Neo4j knowledge graph of entities and relationships (laws, cases, organizations) for structured context  
-• dense   – perform a semantic vector search over NEFAC’s full-text documents for conceptual similarity  
-• sparse  – run an Elasticsearch BM25 keyword search against NEFAC’s document corpus for exact term matches  
-
-Explain your choice and return a comma-separated list of the selected strategies (e.g. `graph, sparse` or `dense`).
-"""
 
 # ============================================================================
 # DECOMPOSITION PROMPT
@@ -305,16 +275,4 @@ Using both the original question and the stepped-back legal context, produce a c
 
 Original Question: {question}
 Answer:
-"""
-
-# ============================================================================
-# CONVERSATION SUMMARY PROMPT
-# ============================================================================
-CONVERSATION_SUMMARY_PROMPT = """
-You are an expert at summarizing conversations. Condense the following chat history into a concise summary, retaining the key facts, entities, and user intents.
-
-Chat History:
-{chat_history}
-
-New, Condensed Summary:
 """

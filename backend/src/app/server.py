@@ -1,240 +1,84 @@
-"""
-Hierarchical Multi-Agent System
-Properly orchestrates existing agents following the documented architecture.
-Uses enhanced agents with proper typing and dependency injection.
-Integrates memory management and summarization features from main branch.
-"""
-
 import logging
-import os
 from functools import partial
-from typing import Dict, List, Optional, TypedDict, Union
+from typing import TypedDict
 
 from langchain_core.documents import Document
 from langchain_core.messages import BaseMessage
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
-from langgraph.graph import END, CompiledGraph, StateGraph
+from langgraph.graph import END, StateGraph
 
-# Configuration
-from src.config.constant import MODEL_NAME
-
-# Import enhanced agents with proper typing (from current branch)
-from src.core.agents.contextualizer.query_understanding import QueryUnderstandingAgent
-from src.core.agents.summarizer import summarizer_agent
-from src.core.agents.supervisor.complexity_analyzer import ComplexityAnalyzer
-from src.core.agents.supervisor.generator import GeneratorAgent
-
-# Import validation and other agents
-from src.core.agents.supervisor.validation import validation_agent
-
-# Import memory and summarization features (from main branch)
-from src.core.agents.tools.context_processor import context_processor_agent
-from src.core.agents.tools.memory.memory import MemoryManager
-from src.core.agents.workers.react.react_worker import multi_step_reasoning_agent
-from src.core.agents.workers.retriever.retrieval import RetrievalAgent
-
-# Import schemas and types
-from src.schemas.core_types import AgentState, DocumentCitation, ExtractedInformation, GenerationResult, QueryComplexityResult, QueryUnderstandingResult, RetrievalResult, SessionMemoryEntry
+from backend.src.config.constant import MODEL_NAME
+from backend.src.core.agents.contextualizer.query_understanding import QueryUnderstandingAgent
+from backend.src.core.agents.memory.summarizer import summarization_node
+from backend.src.core.agents.query_understanding.complexity_analyzer import ComplexityAnalyzer, QueryComplexity, analyze_complexity_node
+from backend.src.core.agents.query_understanding.contextualizer import contextualizer_node
+from backend.src.core.agents.query_understanding.intent_classification import IntentClassification, intent_classification_node
+from backend.src.core.agents.supervisor.generator import GeneratorAgent
+from backend.src.core.agents.supervisor.validation import validation_agent
+from backend.src.core.agents.tools.context_processor import context_processor_agent
+from backend.src.core.agents.workers.react.react_worker import multi_step_reasoning_agent
+from backend.src.core.agents.workers.retriever.retrieval import RetrievalAgent
+from backend.src.schemas.core_types import (
+    AgentState,
+    DocumentCitation,
+    ExtractedInformation,
+    GenerationResult,
+    MemoryEntry,
+    RetrievalResult,
+)
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Environment setup
-os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_PROJECT"] = "NEFAC_HIERARCHICAL_MULTI_AGENT"
-
-# Initialize LLM models directly
 llm = ChatOpenAI(model=MODEL_NAME, temperature=0)
-fast_llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
 
-# Initialize agents
-complexity_analyzer = ComplexityAnalyzer(llm=fast_llm)
+complexity_analyzer = ComplexityAnalyzer()
 query_understanding_agent_instance = QueryUnderstandingAgent()
 retrieval_agent_instance = RetrievalAgent()
 generator_agent_instance = GeneratorAgent()
-memory_manager = MemoryManager()
-
-
-# Define TypedDicts for node outputs for enhanced type safety
-class SupervisorNodeOutput(TypedDict):
-    supervisor_decision: str
-    query_complexity: float
-    error: Optional[str]
 
 
 class MemoryRetrievalNodeOutput(TypedDict):
     memory_context: str
-    retrieved_memories: List[SessionMemoryEntry]
-    error: Optional[str]
+    retrieved_memories: list[MemoryEntry]
+    error: str | None
 
 
 class HistoryCheckNodeOutput(TypedDict):
     needs_summarization: bool
-    history_summary: Optional[str]
-    chat_history: Optional[List[BaseMessage]]
-    error: Optional[str]
-
-
-class QueryUnderstandingNodeOutput(TypedDict):
-    contextualized_query: Optional[str]
-    intent: Optional[str]
-    entities: Optional[List[str]]
-    structured_query: Optional[str]
-    statistical_query: Optional[str]
-    error: Optional[str]
+    history_summary: str | None
+    chat_history: list[BaseMessage] | None
+    error: str | None
 
 
 class RetrieverWorkerNodeOutput(TypedDict):
-    documents: Optional[List[Document]]
-    retrieval_metadata: Optional[Dict[str, Union[str, int, float, bool]]]
-    extracted_info: Optional[List[ExtractedInformation]]
-    summarized_content: Optional[List[Document]]
-    citations: Optional[List[DocumentCitation]]
-    session_memory: Optional[List[SessionMemoryEntry]]
-    error: Optional[str]
+    documents: list[Document] | None
+    retrieval_metadata: dict[str, str | int | float | bool] | None
+    extracted_info: list[ExtractedInformation] | None
+    summarized_content: list[Document] | None
+    citations: list[DocumentCitation] | None
+    session_memory: list[MemoryEntry] | None
+    error: str | None
 
 
 class ReActWorkerNodeOutput(TypedDict):
-    answer: Optional[str]
-    documents: Optional[List[Document]]
-    error: Optional[str]
+    answer: str | None
+    documents: list[Document] | None
+    error: str | None
 
 
 class GeneratorNodeOutput(TypedDict):
-    answer: Optional[str]
-    confidence_score: Optional[float]
-    sources: Optional[List[str]]
-    error: Optional[str]
+    answer: str | None
+    confidence_score: float | None
+    sources: list[str] | None
+    error: str | None
 
 
 class ValidationNodeOutput(TypedDict):
-    validation: Dict[str, Union[bool, str, float, List[str]]]
-    error: Optional[str]
-
-
-def supervisor_node(state: AgentState) -> SupervisorNodeOutput:
-    """
-    Supervisor node that analyzes query complexity and makes routing decisions.
-    Uses the ComplexityAnalyzer with proper typing.
-    """
-    try:
-        # Convert messages to chat history format
-        chat_history = []
-        for msg in state.messages:
-            if hasattr(msg, "content"):
-                chat_history.append(msg)
-
-        # Analyze complexity using improved analyzer
-        complexity_result: QueryComplexityResult = complexity_analyzer.analyze_complexity(query=state.user_query, chat_history=chat_history)
-
-        if complexity_result.is_success:
-            # Determine routing decision based on complexity
-            complexity_score = complexity_result.data.complexity_score
-            if complexity_score < 0.3:
-                decision = "retriever_worker"
-            elif complexity_score < 0.7:
-                decision = "retriever_worker"  # Enhanced retrieval for medium complexity
-            else:
-                decision = "react_worker"
-
-            logger.info(f"Supervisor: Query='{state.user_query}' -> Decision='{decision}', Complexity={complexity_score:.2f}")
-            logger.debug(f"Supervisor: Detailed complexity reasoning: {complexity_result.data.reasoning}")
-
-            return {"supervisor_decision": decision, "query_complexity": complexity_score}
-        else:
-            logger.error(f"Complexity analysis failed: {complexity_result.error}")
-            return {"supervisor_decision": "retriever_worker", "query_complexity": 0.5, "error": f"Complexity analysis error: {complexity_result.error}"}  # Fallback
-
-    except Exception as e:
-        logger.error(f"Supervisor node error: {e}")
-        return {"supervisor_decision": "retriever_worker", "query_complexity": 0.5, "error": f"Supervisor error: {str(e)}"}  # Fallback
-
-
-def memory_retrieval_node(state: AgentState) -> MemoryRetrievalNodeOutput:
-    """
-    Memory retrieval node that gets relevant past interactions.
-    Uses the existing MemoryManager with enhanced typing.
-    """
-    try:
-        # Retrieve relevant memories
-        raw_memories = memory_manager.retrieve_memories(query=state.user_query, user_id=state.user_id, limit=5)
-
-        # Convert to structured SessionMemoryEntry objects
-        memory_entries: List[SessionMemoryEntry] = []
-        for i, memory in enumerate(raw_memories):
-            if hasattr(memory, "content"):
-                from src.schemas.enhanced_context_types import create_memory_entry
-
-                memory_entry = create_memory_entry(memory_id=getattr(memory, "id", f"mem_{i}"), content=memory.content, user_id=state.user_id, session_id=getattr(state, "session_id", "default"), memory_type="interaction", relevance_score=getattr(memory, "relevance_score", 0.5))
-                memory_entries.append(memory_entry)
-
-        # Create memory summary
-        memory_summary = ""
-        if memory_entries:
-            memory_texts = [entry.content for entry in memory_entries[:3]]
-            memory_summary = "\n".join(memory_texts)
-
-        logger.info(f"Memory retrieval: Found {len(memory_entries)} relevant memories")
-        return {"memory_context": memory_summary, "retrieved_memories": memory_entries}
-
-    except Exception as e:
-        logger.error(f"Memory retrieval error: {e}")
-        return {"memory_context": "", "retrieved_memories": [], "error": f"Memory error: {str(e)}"}
-
-
-def check_history_length_node(state: AgentState) -> HistoryCheckNodeOutput:
-    """
-    Check if chat history needs summarization based on length threshold.
-    Integrates the summarization logic from main branch.
-    """
-    try:
-        SUMMARY_THRESHOLD = 10
-
-        if len(state.chat_history) >= SUMMARY_THRESHOLD:
-            # Use the summarizer agent from main branch
-            summarizer_with_model = partial(summarizer_agent, model=llm)
-            summary_result = summarizer_with_model(state)
-
-            if summary_result.get("error"):
-                logger.error(f"Summarization failed: {summary_result['error']}")
-                return {"needs_summarization": False, "error": summary_result["error"]}
-
-            # Update state with summary
-            return {"needs_summarization": True, "history_summary": summary_result.get("history_summary", ""), "chat_history": summary_result.get("chat_history", state.chat_history)}
-        else:
-            return {"needs_summarization": False}
-
-    except Exception as e:
-        logger.error(f"History length check error: {e}")
-        return {"needs_summarization": False, "error": f"History check error: {str(e)}"}
-
-
-def query_understanding_node(state: AgentState) -> QueryUnderstandingNodeOutput:
-    """
-    Query understanding node using the enhanced QueryUnderstandingAgent.
-    """
-    try:
-        # Use the enhanced query understanding agent
-        understanding_result: QueryUnderstandingResult = query_understanding_agent_instance.understand_query(query=state.user_query, chat_history=state.chat_history, memory_context=getattr(state, "memory_context", ""))
-
-        if understanding_result.is_success:
-            logger.info(f"Query understanding: Intent='{understanding_result.data.intent}', Entities={understanding_result.data.entities}")
-            return {
-                "contextualized_query": understanding_result.data.contextualized_query,
-                "intent": understanding_result.data.intent,
-                "entities": understanding_result.data.entities,
-                "structured_query": understanding_result.data.structured_query,
-                "statistical_query": understanding_result.data.statistical_query,
-            }
-        else:
-            logger.error(f"Query understanding failed: {understanding_result.error}")
-            return {"error": f"Query understanding error: {understanding_result.error}"}
-
-    except Exception as e:
-        logger.error(f"Query understanding node error: {e}")
-        return {"error": f"Query understanding error: {str(e)}"}
+    validation: dict[str, bool | str | float | list[str]]
+    error: str | None
 
 
 def retriever_worker_node(state: AgentState) -> RetrieverWorkerNodeOutput:
@@ -338,7 +182,11 @@ def validation_node(state: AgentState) -> ValidationNodeOutput:
         return {"validation": {"is_valid": True}, "error": f"Validation error: {str(e)}"}  # Default to valid on error
 
 
-def create_enhanced_graph() -> CompiledGraph:
+def tool_node(state: AgentState) -> AgentState:
+    return state
+
+
+def create_enhanced_graph():
     """
     Creates the enhanced LangGraph workflow that combines hierarchical architecture
     with memory management and summarization features.
@@ -347,10 +195,12 @@ def create_enhanced_graph() -> CompiledGraph:
     workflow = StateGraph(AgentState)
 
     # Add all nodes
-    workflow.add_node("supervisor", supervisor_node)
-    workflow.add_node("memory_retrieval", memory_retrieval_node)
-    workflow.add_node("check_history_length", check_history_length_node)
-    workflow.add_node("query_understanding", query_understanding_node)
+
+    workflow.add_node("summarizataion", summarization_node)
+    workflow.add_node("contextualize", contextualizer_node)
+    workflow.add_node("intent_classification", intent_classification_node)
+    workflow.add_node("analyze_complexity", analyze_complexity_node)
+    workflow.add_node("tool_node", tool_node)
     workflow.add_node("retriever_worker", retriever_worker_node)
     workflow.add_node("react_worker", react_worker_node)
     workflow.add_node("generator", generator_node)
@@ -358,31 +208,39 @@ def create_enhanced_graph() -> CompiledGraph:
     workflow.add_node("error", lambda state: {"answer": "I'm sorry, but I encountered an error. Please try again."})
 
     # Set entry point
-    workflow.set_entry_point("memory_retrieval")
+    workflow.set_entry_point("summarization")
+    workflow.add_edge("summarization", "contextualize")
+    workflow.add_edge("contextualize", "intent_classification")
 
-    # Add edges
-    workflow.add_edge("memory_retrieval", "check_history_length")
-
-    # Conditional routing from check_history_length
-    def route_from_history_check(state: AgentState):
+    def route_from_intent_classification(state: IntentClassification):
         if state.error:
             return "error"
-        return "query_understanding"
+        decision = state.intent
+        if decision == "info":
+            return "analyze_complexity"
+        elif decision == "general":
+            return "generator"
 
-    workflow.add_conditional_edges("check_history_length", route_from_history_check, {"query_understanding": "query_understanding", "error": "error"})
+    workflow.add_conditional_edges("intent_classification", route_from_intent_classification)
 
-    workflow.add_edge("query_understanding", "supervisor")
-
-    # Conditional routing from supervisor
-    def route_from_supervisor(state: AgentState):
+    def route_from_complexity_analysis(state: QueryComplexity):
         if state.error:
             return "error"
-        decision = getattr(state, "supervisor_decision", "retriever_worker")
-        return decision
+        if state.tool_usage_required:
+            return "tool_node"
+        return route_from_tool_node(state)
 
-    workflow.add_conditional_edges("supervisor", route_from_supervisor, {"retriever_worker": "retriever_worker", "react_worker": "react_worker", "error": "error"})
+    workflow.add_conditional_edges("analyze_complexity", route_from_complexity_analysis)
 
-    # Both workers route to generator
+    def route_from_tool_node(state: QueryComplexity):
+        if state.error:
+            return "error"
+        if state.reasoning_required or state.multi_hop_needed:
+            return "react_worker"
+        return "retriever_worker"
+
+    workflow.add_conditional_edges("tool_node", route_from_tool_node)
+
     workflow.add_edge("retriever_worker", "generator")
     workflow.add_edge("react_worker", "generator")
     workflow.add_edge("generator", "validation")
@@ -398,14 +256,44 @@ def create_enhanced_graph() -> CompiledGraph:
             # Loop back for refinement if validation fails
             return "retriever_worker"
 
-    workflow.add_conditional_edges("validation", route_from_validation, {END: END, "retriever_worker": "retriever_worker", "error": "error"})
+    workflow.add_conditional_edges("validation", route_from_validation)
 
     workflow.add_edge("error", END)
 
-    # Compile with memory
     memory = MemorySaver()
     return workflow.compile(checkpointer=memory)
 
 
 # Create the enhanced application
 app = create_enhanced_graph()
+
+
+async def stream_chatbot(user_input: str, thread_id: str, user_id: str = "default_user", session_id: str = None, **kwargs):
+    """
+    Asynchronous streaming interface to run the chatbot with real-time updates.
+
+    Args:
+        user_input: The user's query
+        thread_id: Thread identifier for conversation continuity
+        user_id: User identifier for memory isolation
+        session_id: Session identifier
+        **kwargs: Additional configuration parameters
+
+    Yields:
+        Event dictionaries containing streaming updates
+    """
+    try:
+        # Create initial state
+        initial_state = AgentState(user_query=user_input, user_id=user_id, session_id=session_id or thread_id, thread_id=thread_id, messages=[], chat_history=[])
+
+        # Stream events from the graph
+        config = {"configurable": {"thread_id": thread_id}}
+
+        async for event in app.astream_events(initial_state, config=config, version="v1"):
+            # Yield the event for processing by the main.py streaming handler
+            yield event
+
+    except Exception as e:
+        logger.error(f"Error in stream_chatbot: {e}")
+        # Yield error event
+        yield {"event": "on_chain_end", "name": "error", "data": {"output": {"final_answer": f"I apologize, but I encountered an error: {str(e)}", "error": str(e)}}}

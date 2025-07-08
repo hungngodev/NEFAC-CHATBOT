@@ -8,54 +8,22 @@ import logging
 import os
 import uuid
 from datetime import datetime, timedelta
-from typing import Dict, List, Union
+from typing import Dict, List, Mapping, Union
 
 from dotenv import load_dotenv
-from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
 from langchain_core.vectorstores import VectorStore
 from langchain_openai import OpenAIEmbeddings
 from langchain_qdrant import Qdrant
 from qdrant_client import QdrantClient
 
+from src.config.constant import EMBEDDING_MODEL_NAME
 from src.schemas.core_types import MemoryEntry, MemorySearchResult
 
 # Load environment variables
 load_dotenv()
 
 logger = logging.getLogger(__name__)
-
-# === Memory Models ===
-
-# Import from centralized types
-
-
-# Legacy compatibility for existing methods
-class MemoryEntryCompat(MemoryEntry):
-    @classmethod
-    def from_dict(cls, data: Dict[str, Union[str, int, float, bool, List[float], None]]) -> "MemoryEntry":
-        """Create from dictionary."""
-        data["timestamp"] = datetime.fromisoformat(data["timestamp"])
-        return cls(**data)
-
-    def to_document(self) -> Document:
-        """Convert to LangChain Document for vector storage."""
-        content = f"Query: {self.query}\nResponse: {self.response}"
-        metadata = {
-            "id": self.id,
-            "user_id": self.user_id,
-            "session_id": self.session_id,
-            "timestamp": self.timestamp.isoformat(),
-            "query": self.query,
-            **self.metadata,
-        }
-        return Document(page_content=content, metadata=metadata)
-
-
-# MemorySearchResult is now imported from types.py
-
-
-# === Memory Storage Backend ===
 
 
 class QdrantMemoryBackend:
@@ -69,15 +37,9 @@ class QdrantMemoryBackend:
     async def store(self, entry: MemoryEntry) -> bool:
         """Store in vector store."""
         try:
-            # Convert to document
             doc = entry.to_document()
-
-            # Store in vector store
             await asyncio.to_thread(self.vector_store.add_documents, [doc])
-
-            # Cache metadata
             self.metadata_store[entry.id] = entry
-
             logger.info(f"Stored memory entry {entry.id} in vector store")
             return True
 
@@ -98,7 +60,7 @@ class QdrantMemoryBackend:
         relevant_entries.sort(key=lambda x: x.timestamp, reverse=True)
         return relevant_entries[:limit]
 
-    async def search_semantic(self, query: str, user_id: str, session_id: str = None, limit: int = 5) -> MemorySearchResult:
+    async def search_semantic(self, query: str, user_id: str, session_id: str = "", limit: int = 5) -> MemorySearchResult:
         """Semantic search using vector store."""
         start_time = datetime.now()
 
@@ -148,19 +110,27 @@ class QdrantMemoryBackend:
 # === Enhanced Memory Manager ===
 
 
-class EnhancedMemoryManager:
+class MemoryManager:
     """Enhanced memory manager with Qdrant storage backend and intelligent retrieval."""
 
-    def __init__(self, storage_backend: QdrantMemoryBackend, embedding_model: Embeddings, max_memories_per_session: int = 100, relevance_threshold: float = 0.7):
-        self.storage_backend = storage_backend
-        self.embedding_model = embedding_model
+    def __init__(self, max_memories_per_session: int = 100, relevance_threshold: float = 0.7):
+        qdrant_url = os.environ.get("QDRANT_ENDPOINT")
+        collection_name = os.environ.get("QDRANT_CLUSTER_ID")
+        api_key = os.environ.get("QDRANT_API_KEY")
+
+        embedding_model = OpenAIEmbeddings(model=EMBEDDING_MODEL_NAME)
+        client = QdrantClient(url=qdrant_url, api_key=api_key)
+        vector_store = Qdrant(client=client, collection_name=collection_name or "", embeddings=embedding_model)
+
+        self.storage_backend = QdrantMemoryBackend(vector_store, embedding_model)
+        self.embedding_model = OpenAIEmbeddings(model=EMBEDDING_MODEL_NAME)
         self.max_memories_per_session = max_memories_per_session
         self.relevance_threshold = relevance_threshold
 
         # Statistics
         self.stats = {"total_stored": 0, "total_retrieved": 0, "total_searches": 0, "cache_hits": 0}
 
-    async def store_interaction(self, user_id: str, session_id: str, query: str, response: str, metadata: Dict[str, Union[str, int, float, bool]] = None) -> bool:
+    async def store_interaction(self, user_id: str, session_id: str, query: str, response: str, metadata: Dict[str, Union[str, int, float, bool]] = {}) -> bool:
         """Store a user interaction in memory."""
 
         try:
@@ -250,85 +220,6 @@ class EnhancedMemoryManager:
         except Exception as e:
             logger.error(f"Failed to check session cleanup: {e}")
 
-    def get_stats(self) -> Dict[str, Union[str, int, float]]:
+    def get_stats(self) -> Mapping[str, Union[str, int, float]]:
         """Get memory manager statistics."""
         return self.stats.copy()
-
-
-# === Factory Functions ===
-
-
-def create_memory_manager(**kwargs) -> EnhancedMemoryManager:
-    """Factory function to create memory manager with Qdrant backend."""
-
-    embedding_model = kwargs.get("embedding_model") or OpenAIEmbeddings(model="text-embedding-3-small")
-
-    # Create Qdrant backend
-    qdrant_url = os.environ.get("QDRANT_ENDPOINT")
-    collection_name = os.environ.get("QDRANT_CLUSTER_ID")
-    api_key = os.environ.get("QDRANT_API_KEY")
-
-    if not all([qdrant_url, collection_name, api_key]):
-        raise ValueError("Qdrant environment variables not set")
-
-    client = QdrantClient(url=qdrant_url, api_key=api_key)
-    vector_store = Qdrant(client=client, collection_name=collection_name, embeddings=embedding_model)
-    backend = QdrantMemoryBackend(vector_store, embedding_model)
-
-    return EnhancedMemoryManager(storage_backend=backend, embedding_model=embedding_model, **{k: v for k, v in kwargs.items() if k not in ["embedding_model"]})
-
-
-# === Background Tasks ===
-
-
-class MemoryMaintenanceTask:
-    """Background task for memory maintenance."""
-
-    def __init__(self, memory_manager: EnhancedMemoryManager):
-        self.memory_manager = memory_manager
-        self.running = False
-
-    async def start_maintenance_loop(self, cleanup_interval_hours: int = 24, retention_days: int = 30):
-        """Start background maintenance loop."""
-        self.running = True
-
-        while self.running:
-            try:
-                # Wait for cleanup interval
-                await asyncio.sleep(cleanup_interval_hours * 3600)
-
-                # Perform cleanup
-                cleaned_count = await self.memory_manager.cleanup_old_memories(retention_days)
-                logger.info(f"Background cleanup removed {cleaned_count} old memories")
-
-            except Exception as e:
-                logger.error(f"Memory maintenance error: {e}")
-
-    def stop(self):
-        """Stop the maintenance loop."""
-        self.running = False
-
-
-# === Global Memory Manager Instance ===
-
-# Create global instance (can be configured via environment variables)
-global_memory_manager = create_memory_manager(max_memories_per_session=100, relevance_threshold=0.7)
-
-if __name__ == "__main__":
-    # Test the enhanced memory system
-    async def test_memory():
-        manager = create_memory_manager()
-
-        # Store some interactions
-        await manager.store_interaction("user1", "session1", "What are public records laws?", "Public records laws vary by state but generally require government transparency...", {"topic": "public_records", "complexity": 0.6})
-
-        await manager.store_interaction("user1", "session1", "What about in Massachusetts?", "In Massachusetts, the Public Records Law requires agencies to provide access...", {"topic": "massachusetts_law", "complexity": 0.4})
-
-        # Search for relevant memories
-        memories = await manager.retrieve_relevant_memories("user1", "session1", "Massachusetts public records")
-
-        print(f"Found {len(memories)} relevant memories")
-        for memory in memories:
-            print(f"- {memory.query} (relevance: {memory.relevance_score:.3f})")
-
-    asyncio.run(test_memory())

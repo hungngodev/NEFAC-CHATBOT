@@ -37,7 +37,7 @@ graph TD
         B --> B1[retrieve_memories]
         B1 --> B2[Qdrant Semantic Search]
         B2 --> B3[User Isolation Filter]
-        B3 --> B4[SessionMemoryEntry Objects]
+        B3 --> B4[MemoryEntry Objects]
         B4 --> B5[Memory Summary Creation]
     end
     
@@ -126,7 +126,7 @@ graph TD
 - **Type Safety**: Full typing with Optional fields and proper defaults
 
 #### 3. **Enhanced Typing System** (`schemas/enhanced_context_types.py`)
-- **Structured Data**: ExtractedInformation, DocumentCitation, SessionMemoryEntry
+- **Structured Data**: ExtractedInformation, DocumentCitation, MemoryEntry
 - **Factory Functions**: Type-safe object creation
 - **Conversion Utilities**: Dict to structured object conversion
 - **Type Guards**: Runtime type checking
@@ -144,7 +144,7 @@ graph TD
 2. **User Isolation**: Filters by user_id for privacy
 3. **Memory Ranking**: Relevance-based scoring
 4. **Summary Creation**: Top 3 memories converted to text summary
-5. **Structured Output**: SessionMemoryEntry objects with proper typing
+5. **Structured Output**: MemoryEntry objects with proper typing
 
 **Input**: `AgentState` with user_query, user_id  
 **Output**: `memory_context` (string), `retrieved_memories` (List[MemoryEntry])  

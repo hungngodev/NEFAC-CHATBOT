@@ -15,7 +15,7 @@ from src.schemas.core_types import (
     DocumentCitation,
     ExtractedInformation,
     InformationExtractionOutput,
-    SessionMemoryEntry,
+    MemoryEntry,
     create_citation,
     create_extracted_info,
     create_memory_entry,
@@ -37,7 +37,7 @@ class ContextProcessorOutput(TypedDict):
     extracted_info: Optional[List[ExtractedInformation]]
     summarized_content: Optional[List[Document]]
     citations: Optional[List[DocumentCitation]]
-    session_memory: Optional[List[SessionMemoryEntry]]
+    session_memory: Optional[List[MemoryEntry]]
     error: Optional[str]
 
 
@@ -188,15 +188,15 @@ def context_processor_agent(state: AgentState) -> ContextProcessorOutput:
     if hasattr(state, "session_id") and state.session_id:
         raw_memory = retrieve_memory_from_pinecone(state.session_id, state.query, top_k=5)
 
-        # Convert raw memory to structured SessionMemoryEntry objects
+        # Convert raw memory to structured MemoryEntry objects
         for i, memory_item in enumerate(raw_memory):
             if isinstance(memory_item, dict):
                 memory_entry = create_memory_entry(
-                    memory_id=memory_item.get("id", f"mem_{i}"),
-                    content=memory_item.get("content", str(memory_item)),
+                    id=memory_item.get("id", f"mem_{i}"),
                     user_id=state.user_id if hasattr(state, "user_id") else "unknown",
                     session_id=state.session_id,
-                    memory_type=memory_item.get("type", "interaction"),
+                    query=memory_item.get("query", ""),
+                    response=memory_item.get("response", memory_item.get("content", str(memory_item))),
                     relevance_score=memory_item.get("score", 0.5),
                 )
                 session_memory_entries.append(memory_entry)
