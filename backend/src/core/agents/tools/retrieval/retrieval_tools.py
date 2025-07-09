@@ -5,7 +5,6 @@ Merged best practices from retrieval_tools.py, retrieval.py, and ensemble_retrie
 """
 
 import logging
-import time
 from typing import List, Optional
 
 from langchain.retrievers.contextual_compression import ContextualCompressionRetriever
@@ -18,8 +17,8 @@ from langchain_core.retrievers import BaseRetriever
 from src.core.agents.tools.retrieval.graph_retrieval import expand_query_with_graph, graph_retrieval_agent
 from src.core.agents.tools.retrieval.keyword_retrieval import get_bm25_retriever
 from src.core.agents.tools.retrieval.vector_retrieval import get_qdrant_retriever
-from src.exceptions.agent_exceptions import RetrievalError, handle_agent_exception
-from src.schemas.core_types import AgentState, ReactAgentRetrievalOutput, RetrievalData, RetrievalMethod, RetrievalResult, RetrievalStrategy, RetrieverWorkerOutput, create_error_result, create_success_result
+from src.exceptions.agent_exceptions import RetrievalError
+from src.schemas.core_types import AgentState, ReactAgentRetrievalOutput, RetrievalData, RetrievalMethod, RetrievalResult, RetrievalStrategy, RetrieverWorkerOutput
 
 logger = logging.getLogger(__name__)
 
@@ -76,115 +75,45 @@ class RetrievalWorker:
 
     def select_retrieval_strategy(self, input: str, context: Optional[AgentState] = None) -> RetrievalStrategy:
         """Intelligently select retrieval methods based on query characteristics."""
-
-        if self.llm:
-            return self._llm_strategy_selection(input, context)
-        else:
-            return self._rule_based_strategy_selection(input, context)
+        return self._llm_strategy_selection(input, context)
 
     def _llm_strategy_selection(self, input: str, context: Optional[AgentState] = None) -> RetrievalStrategy:
         """Use LLM for intelligent strategy selection."""
 
-        strategy_prompt = ChatPromptTemplate.from_messages(
-            [
-                (
-                    "system",
-                    """You are an expert at selecting optimal retrieval strategies for legal queries.
-
-Available methods:
-- dense: Semantic/vector search - best for conceptual queries, synonyms, related topics
-- sparse: Keyword search (BM25) - best for exact terms, names, specific phrases
-- graph: Knowledge graph search - best for relationships, entities, structured data
-
-Guidelines:
-- Use dense for broad, conceptual queries
-- Use sparse for specific terms, names, citations
-- Use graph for entity relationships, structured queries
-- Combine methods for complex queries
-- Weight methods based on query characteristics
-
-Consider query complexity, entity presence, and conceptual vs factual nature.""",
-                ),
-                ("human", "Query: {query}\nContext: {context}\n\nSelect optimal retrieval strategy."),
-            ]
-        )
-
-        try:
-            chain = strategy_prompt | self.llm.with_structured_output(RetrievalStrategy)
-            result = chain.invoke({"query": input, "context": str(context) if context else ""})
-            return result
-        except Exception:
-            return self._rule_based_strategy_selection(input, context)
-
-    def _rule_based_strategy_selection(self, input: str, context: Optional[AgentState] = None) -> RetrievalStrategy:
-        """Enhanced rule-based fallback strategy selection."""
-
-        query_lower = input.lower()
-        methods = []
-        weights = []
-        reasoning_parts = []
-
-        # Enhanced query patterns
+        # Patterns to guide the LLM
         entity_patterns = ["who is", "what is", "relationship", "connected", "related to", "organization", "person", "case", "statute", "entity", "between", "association", "link", "connection"]
-
         exact_term_patterns = ["foia", "public records", "sunshine law", "exemption", "massachusetts", "rhode island", "connecticut", "section", "chapter", "subsection", "paragraph", "clause"]
-
         concept_patterns = ["similar", "like", "about", "regarding", "concerning", "concept", "principle", "approach", "method", "theory", "philosophy", "doctrine", "practice"]
-
-        # Enhanced pattern detection
-        has_entities = any(pattern in query_lower for pattern in entity_patterns)
-        has_exact_terms = any(pattern in query_lower for pattern in exact_term_patterns) or '"' in input or input.isupper()  # All caps might indicate specific terms
-        has_concepts = any(pattern in query_lower for pattern in concept_patterns)
-
-        # Check for question words that might indicate conceptual queries
         question_words = ["how", "why", "when", "where", "explain", "describe"]
-        has_conceptual_question = any(word in query_lower for word in question_words)
 
-        if has_conceptual_question and not has_concepts:
-            has_concepts = True
+        # Build a detailed system prompt embedding these heuristics
+        system_content = f"""
+        You are an expert at selecting optimal retrieval strategies for legal queries.
+        Available methods:
+        - dense: Semantic/vector search - best for conceptual queries, synonyms, related topics
+        - sparse: Keyword search (BM25) - best for exact terms, names, specific phrases
+        - graph: Knowledge graph search - best for relationships, entities, structured data
 
-        # Default to dense for general queries
-        if not (has_entities or has_exact_terms or has_concepts):
-            has_concepts = True
+        Guidelines (patterns to consider):
+        - Entity patterns: {entity_patterns}
+        - Exact-term patterns: {exact_term_patterns}
+        - Conceptual patterns: {concept_patterns}
+        - Question indicators: {question_words}
+        - Use dense for broad, conceptual queries
+        - Use sparse for specific terms, names, citations
+        - Use graph for entity relationships, structured queries
+        - Combine methods for complex queries
+        - Weight methods based on query characteristics
 
-        # Build strategy with intelligent weight distribution
-        base_weight = 0.4
+        Weigh and combine methods based on presence of these patterns in the query.
+        Provide a JSON output matching the RetrievalStrategy schema with 'methods', 'weights', 'reasoning', 'query_expansion', and 'rerank'.
+        """
+        human_content = "Query: {query}\n" "Context: {context}\n" "\nSelect the optimal retrieval strategy based on the guidelines above."
 
-        if has_entities:
-            methods.append("graph")
-            weights.append(base_weight)
-            reasoning_parts.append("graph search for entity relationships")
-
-        if has_exact_terms:
-            methods.append("sparse")
-            # Give higher weight to sparse if query has quotes or specific legal terms
-            weight = 0.5 if '"' in input else base_weight
-            weights.append(weight)
-            reasoning_parts.append("keyword search for exact terms")
-
-        if has_concepts:
-            methods.append("dense")
-            weights.append(base_weight)
-            reasoning_parts.append("semantic search for conceptual understanding")
-
-        # Normalize weights and handle fallback
-        if methods and weights:
-            total_weight = sum(weights)
-            weights = [w / total_weight for w in weights]
-            reasoning = f"Selected {', '.join(methods)} based on: {', '.join(reasoning_parts)}"
-        else:
-            # Fallback to dense search
-            methods = ["dense"]
-            weights = [1.0]
-            reasoning = "Default semantic search"
-
-        # Enable query expansion for multi-method strategies
-        query_expansion = len(methods) > 1
-
-        # Enable reranking for better results
-        rerank = True
-
-        return RetrievalStrategy(methods=methods, weights=weights, reasoning=reasoning, query_expansion=query_expansion, rerank=rerank)
+        prompt = ChatPromptTemplate.from_messages([("system", system_content), ("human", human_content)])
+        chain = prompt | self.llm.with_structured_output(RetrievalStrategy)
+        result: RetrievalStrategy = chain.invoke({"query": input, "context": str(context) if context else ""})
+        return result
 
     def _expand_queries(self, query: str, methods: List[str], entities: Optional[List[str]] = None, state: Optional[AgentState] = None) -> List[str]:
         """Expand queries using graph relationships if applicable."""
@@ -304,8 +233,6 @@ Consider query complexity, entity presence, and conceptual vs factual nature."""
         Main retrieval method with comprehensive error handling and performance tracking.
         Always returns RetrievalResult with structured metadata.
         """
-        start_time = time.time()
-
         try:
             # Extract configuration from state
             entities = state.entities or []
@@ -355,9 +282,6 @@ Consider query complexity, entity presence, and conceptual vs factual nature."""
                     doc.metadata = {}
                 doc.metadata.update({"retrieval_strategy": strategy.methods, "retrieval_rank": i + 1, "stream_tag": "retrieved_docs", "strategy_reasoning": strategy.reasoning})
 
-            # 9. Calculate execution time
-            execution_time = (time.time() - start_time) * 1000
-
             # Create structured result
             data = RetrievalData(
                 documents=final_documents,
@@ -367,20 +291,16 @@ Consider query complexity, entity presence, and conceptual vs factual nature."""
                 deduplication_applied=len(all_documents) != len(unique_documents),
                 reranking_applied=reranking_applied,
                 query_expansion_applied=len(expanded_queries) > 1,
-                retrieval_time_ms=execution_time,
             )
-
-            return create_success_result(data=data, execution_time_ms=execution_time, methods_used=",".join(strategy.methods))
+            return data
 
         except RetrievalError:
             raise
         except Exception as e:
-            execution_time = (time.time() - start_time) * 1000
             error_msg = f"Retrieval error: {str(e)}"
             logger.error(error_msg)
 
-            error = handle_agent_exception(e, self.agent_name, {"query": input_query, "retrieval_methods": getattr(state, "retrieval_selection", {})})
-            return create_error_result(error=str(error), execution_time_ms=execution_time)
+            # error = handle_agent_exception(e, self.agent_name, {"query": input_query, "retrieval_methods": getattr(state, "retrieval_selection", {})})
 
 
 def create_retrieval_tool(llm=None):
@@ -650,22 +570,3 @@ def get_ensemble_retriever_for_react(llm=None) -> EnsembleRetrieverTool:
     Emphasizes graph relationships for complex reasoning.
     """
     return EnsembleRetrieverTool(llm=llm, default_methods=["dense", "sparse", "graph"], default_weights=[0.3, 0.2, 0.5])  # Favor graph for reasoning
-
-
-# Global instances
-_retrieval_agent = RetrievalAgent()
-ensemble_retriever_tool = EnsembleRetrieverTool()
-
-
-def retrieval_agent(state: AgentState) -> List[Document]:
-    """
-    Main interface function for document retrieval.
-    Returns documents directly for compatibility with existing code.
-    """
-    result = _retrieval_agent.retrieve_documents(state)
-
-    if result.is_success:
-        return result.data.documents
-    else:
-        logger.error(f"Retrieval failed: {result.error}")
-        return []

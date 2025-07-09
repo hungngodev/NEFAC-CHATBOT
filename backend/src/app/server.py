@@ -9,23 +9,19 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, StateGraph
 
 from backend.src.config.constant import MODEL_NAME
-from backend.src.core.agents.contextualizer.query_understanding import QueryUnderstandingAgent
 from backend.src.core.agents.memory.summarizer import summarization_node
 from backend.src.core.agents.query_understanding.complexity_analyzer import ComplexityAnalyzer, QueryComplexity, analyze_complexity_node
 from backend.src.core.agents.query_understanding.contextualizer import contextualizer_node
 from backend.src.core.agents.query_understanding.intent_classification import IntentClassification, intent_classification_node
 from backend.src.core.agents.supervisor.generator import GeneratorAgent
 from backend.src.core.agents.supervisor.validation import validation_agent
-from backend.src.core.agents.tools.context_processor import context_processor_agent
 from backend.src.core.agents.workers.react.react_worker import multi_step_reasoning_agent
-from backend.src.core.agents.workers.retriever.retrieval import RetrievalAgent
 from backend.src.schemas.core_types import (
     AgentState,
     DocumentCitation,
     ExtractedInformation,
     GenerationResult,
     MemoryEntry,
-    RetrievalResult,
 )
 
 # Setup logging
@@ -35,8 +31,6 @@ logger = logging.getLogger(__name__)
 llm = ChatOpenAI(model=MODEL_NAME, temperature=0)
 
 complexity_analyzer = ComplexityAnalyzer()
-query_understanding_agent_instance = QueryUnderstandingAgent()
-retrieval_agent_instance = RetrievalAgent()
 generator_agent_instance = GeneratorAgent()
 
 
@@ -85,32 +79,6 @@ def retriever_worker_node(state: AgentState) -> RetrieverWorkerNodeOutput:
     """
     Retriever worker node using the enhanced RetrievalAgent.
     """
-    try:
-        # Use the enhanced retrieval agent
-        retrieval_result: RetrievalResult = retrieval_agent_instance.retrieve_documents(query=state.contextualized_query or state.user_query, intent=state.intent, entities=state.entities, structured_query=state.structured_query, statistical_query=state.statistical_query)
-
-        if retrieval_result.is_success:
-            # Process documents through context processor (from main branch)
-            context_state = AgentState(query=state.user_query, chat_history=state.chat_history, history_summary=getattr(state, "history_summary", ""), documents=retrieval_result.data.documents, session_id=getattr(state, "session_id", None))
-
-            processed_context = context_processor_agent(context_state)
-
-            logger.info(f"Retrieval: Found {len(retrieval_result.data.documents)} documents")
-            return {
-                "documents": retrieval_result.data.documents,
-                "retrieval_metadata": retrieval_result.data.metadata,
-                "extracted_info": processed_context.get("extracted_info"),
-                "summarized_content": processed_context.get("summarized_content"),
-                "citations": processed_context.get("citations"),
-                "session_memory": processed_context.get("session_memory"),
-            }
-        else:
-            logger.error(f"Retrieval failed: {retrieval_result.error}")
-            return {"error": f"Retrieval error: {retrieval_result.error}"}
-
-    except Exception as e:
-        logger.error(f"Retriever worker node error: {e}")
-        return {"error": f"Retriever worker error: {str(e)}"}
 
 
 def react_worker_node(state: AgentState) -> ReActWorkerNodeOutput:
