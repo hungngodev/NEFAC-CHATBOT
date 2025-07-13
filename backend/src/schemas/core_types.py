@@ -217,16 +217,6 @@ class Entities(BaseModel):
     types: list[str] | None = Field(None, description="Entity types (Person, Organization, etc.)")
 
 
-class RetrievalStrategy(BaseModel):
-    """Structured retrieval strategy selection."""
-
-    methods: list[str] = Field(description="List of retrieval methods to use")
-    weights: list[float] = Field(description="Weights for each method")
-    reasoning: str = Field(description="Explanation of strategy choice")
-    query_expansion: bool = Field(default=False, description="Whether to expand the query")
-    rerank: bool = Field(default=True, description="Whether to apply reranking")
-
-
 class QueryContext(BaseModel):
     """Context information for query processing."""
 
@@ -470,18 +460,6 @@ class ErrorResponse(APIResponse):
 
 
 T = TypeVar("T")
-
-
-@dataclass
-class RetrievalData:
-    documents: list[Document] = field(default_factory=list)
-    retrieval_methods_used: list[str] = field(default_factory=list)
-    total_documents_found: int = 0
-    documents_after_deduplication: int = 0
-    deduplication_applied: bool = False
-    reranking_applied: bool = False
-    query_expansion_applied: bool = False
-    retrieval_time_ms: float | None = None
 
 
 @dataclass
@@ -832,7 +810,6 @@ class SearchFilter:
 
 
 # === Result Type Aliases ===
-RetrievalResult = AgentResult[RetrievalData]
 ReActResult = AgentResult[ReActData]
 GenerationResult = AgentResult[GenerationData]
 ValidationResult = AgentResult[ValidationData]
