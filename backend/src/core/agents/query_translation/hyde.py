@@ -1,38 +1,94 @@
+import logging
+
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import Runnable
 from langchain_openai import ChatOpenAI
+from langgraph.graph import END, StateGraph
 
 from src.config.constant import QUERY_TRANSLATION_MODEL_NAME
-from src.config.prompts import HYDE_FINAL_PROMPT, HYDE_GENERATION_PROMPT
+from src.config.prompts import BASE_PROMPT
+from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
-from src.core.agents.tools.retrieval.retrieval_tools import ensemble_retriever_tool
-from src.load_env import load_env
+from src.schemas.core_types import AgentState
 
-load_env()
+logger = logging.getLogger(__name__)
+HYDE_GENERATION_PROMPT = f"""
+You are an AI assistant specialized in legal and First Amendment topics for the New England First Amendment Coalition (NEFAC).
 
-model = ChatOpenAI(temperature=0, model=QUERY_TRANSLATION_MODEL_NAME)
+To effectively retrieve relevant case studies, legal analyses, press freedom guides, and related NEFAC resources from our vector database, generate a hypothetical, concise, and informative legal passage that could directly address the user's question.
+{BASE_PROMPT} 
 
-hyde_prompt = ChatPromptTemplate.from_template(HYDE_GENERATION_PROMPT)
+The synthesized passage should:
+- Clearly resemble a NEFAC-authored case analysis, legal summary, or practical guidance document.
+- Include specific legal terminology, relevant case precedents, or practical implications where applicable.
+- Be focused, authoritative, and realistic enough to effectively query our document and transcript database.
 
-hyde_generation = hyde_prompt | model | StrOutputParser()
+User Question: {{question}}
 
-final_prompt = ChatPromptTemplate.from_template(HYDE_FINAL_PROMPT)
+Synthesized Legal Passage:
+"""
+# ============================================================================
+# HYDE FINAL PROMPT
+# ============================================================================
+HYDE_FINAL_PROMPT = """
+Answer the following question based on the NEFAC-related documents and resources provided below:
+
+{context}
+
+Question: {question}
+"""
+llm = ChatOpenAI(temperature=0, model=QUERY_TRANSLATION_MODEL_NAME)
 
 
-def get_hyDe_chain(retriever=None) -> Runnable:
-    """HyDE chain using ensemble retriever with hypothetical document generation."""
+# --- Subgraph State ---
+class HydeState(AgentState):
+    """State for the HyDE query transformation subgraph."""
 
-    def hyde_retrieval(hypothetical_doc: str) -> str:
-        """Retrieve documents based on hypothetical document."""
-        docs = ensemble_retriever_tool.retrieve(query=hypothetical_doc, methods=["dense", "sparse"], weights=[0.7, 0.3], max_documents=8)  # Dense for semantic similarity, sparse for key terms  # Favor dense for hypothetical document matching
-        return format_docs(docs)
+    hypothetical_document: str = ""
+    # The 'documents' field will be populated by the retrieval subgraph
 
-    hyde_rag_chain = (
-        # Generate hypothetical document and retrieve
-        {"context": hyde_generation | hyde_retrieval, "question": lambda x: x["question"]}
-        | final_prompt
-        | model
-        | StrOutputParser()
-    )
-    return hyde_rag_chain
+
+# --- Nodes ---
+def generate_hypothetical_document_node(state: HydeState) -> RetrievalSubgraphState:
+    """Generates a hypothetical document to be used as the retrieval query."""
+    logger.info("Generating hypothetical document for HyDE retrieval.")
+    question = state["contextualized_query"]
+
+    hyde_prompt = ChatPromptTemplate.from_template(HYDE_GENERATION_PROMPT)
+    chain = hyde_prompt | llm | StrOutputParser()
+
+    hypothetical_document = chain.invoke({"question": question})
+    logger.info("Generated hypothetical document.")
+    # Pass the hypothetical document to the retrieval subgraph via the 'retrieval_query' field
+    return {"retrieval_query": hypothetical_document}
+
+
+def generate_final_response_node(state: HydeState) -> AgentState:
+    """Generates a final response using the documents retrieved based on the HyDE query."""
+    logger.info("Generating final response using HyDE context.")
+    question = state["contextualized_query"]
+    # The retrieval subgraph has already populated the 'documents' field
+    documents = state["documents"]
+
+    context = format_docs(documents)
+
+    final_prompt = ChatPromptTemplate.from_template(HYDE_FINAL_PROMPT)
+    chain = final_prompt | llm | StrOutputParser()
+
+    final_response = chain.invoke({"context": context, "question": question})
+    return {"final_context": final_response}
+
+
+workflow = StateGraph(HydeState)
+
+workflow.add_node("generate_hypothetical_document", generate_hypothetical_document_node)
+# The retrieval subgraph is now a single, atomic node in this workflow
+workflow.add_node("retrieve_subgraph", retrieval_subgraph)
+workflow.add_node("generate_final_response", generate_final_response_node)
+
+workflow.set_entry_point("generate_hypothetical_document")
+workflow.add_edge("generate_hypothetical_document", "retrieve_subgraph")
+workflow.add_edge("retrieve_subgraph", "generate_final_response")
+workflow.add_edge("generate_final_response", END)
+
+hyde = workflow.compile()
