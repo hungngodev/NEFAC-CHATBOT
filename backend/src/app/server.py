@@ -13,9 +13,9 @@ from backend.src.core.agents.memory.summarizer import summarization_node
 from backend.src.core.agents.query_understanding.complexity_analyzer import ComplexityAnalyzer, QueryComplexity, analyze_complexity_node
 from backend.src.core.agents.query_understanding.contextualizer import contextualizer_node
 from backend.src.core.agents.query_understanding.intent_classification import IntentClassification, intent_classification_node
+from backend.src.core.agents.reasoning.react import multi_step_reasoning_agent
 from backend.src.core.agents.supervisor.generator import GeneratorAgent
 from backend.src.core.agents.supervisor.validation import validation_agent
-from backend.src.core.agents.workers.react.react_worker import multi_step_reasoning_agent
 from backend.src.schemas.core_types import (
     AgentState,
     DocumentCitation,
