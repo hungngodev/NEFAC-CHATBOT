@@ -1,4 +1,3 @@
-import logging
 from typing import List
 
 from langchain_core.documents import Document
@@ -14,7 +13,6 @@ from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.core_types import AgentState
 
-logger = logging.getLogger(__name__)
 MULTI_QUERY_PERSPECTIVES_PROMPT = f"""
 You are an AI assistant for the New England First Amendment Coalition (NEFAC).  
 Perform a multi-query translation of the user’s question by generating exactly five search queries (one per line) to retrieve diverse, relevant materials—transcripts, summaries, and docs—from our vector store.  
@@ -48,14 +46,12 @@ def generate_queries_node(state: MultiQueryState) -> MultiQueryState:
     Generates multiple queries and returns a list of Send objects
     to trigger parallel retrieval for each query.
     """
-    logger.info("Generating multiple queries for parallel retrieval.")
     question = state["contextualized_query"]
     prompt = ChatPromptTemplate.from_template(MULTI_QUERY_PERSPECTIVES_PROMPT)
     chain = prompt | llm | StrOutputParser() | (lambda x: x.split("\n"))
 
     generated_queries = chain.invoke({"question": question})
     generated_queries = [q.strip() for q in generated_queries if q.strip()]
-    logger.info(f"Generated {len(generated_queries)} queries.")
 
     # For each query, Send it to the retrieval subgraph
     # Each invocation will have its own `retrieval_query`
@@ -67,7 +63,6 @@ def deduplicate_documents_node(state: RetrievalSubgraphState) -> MultiQueryState
     Deduplicates documents from the multiple parallel retrieval runs.
     The results from the Send operations are automatically collected in the state.
     """
-    logger.info("Deduplicating retrieved documents from parallel runs.")
     # The `retrieved_documents_lists` will contain the output of each retrieval subgraph invocation
     retrieved_documents_lists = state["final_documents"]
 
@@ -81,21 +76,14 @@ def deduplicate_documents_node(state: RetrievalSubgraphState) -> MultiQueryState
 
     unique_documents = []
     for doc_str in unique_docs_str:
-        try:
-            doc = loads(doc_str)
-            if isinstance(doc, Document):
-                unique_documents.append(doc)
-        except Exception as e:
-            logger.warning(f"Failed to load document from string: {e}")
-            continue
-
-    logger.info(f"Reduced to {len(unique_documents)} unique documents.")
+        doc = loads(doc_str)
+        if isinstance(doc, Document):
+            unique_documents.append(doc)
     return {"final_documents": unique_documents}
 
 
 def format_documents_node(state: MultiQueryState) -> AgentState:
     """Formats the final list of documents into a single string."""
-    logger.info("Formatting final document list.")
     formatted_string = format_docs(state["final_documents"])
     # The final output of any query translation subgraph is the transformed query/result
     return {"final_context": formatted_string}

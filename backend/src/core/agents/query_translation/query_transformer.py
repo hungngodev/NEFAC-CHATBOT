@@ -1,4 +1,3 @@
-import logging
 from typing import ClassVar, Literal
 
 from langchain_core.prompts import ChatPromptTemplate
@@ -15,7 +14,6 @@ from src.core.agents.query_translation.multi_query import multi_query
 from src.core.agents.query_translation.step_back import step_back
 from src.schemas.core_types import AgentState
 
-logger = logging.getLogger(__name__)
 METHOD_SELECTION_PROMPT = """Analyze the question and choose the best query transformation strategy:
 1. multiquery - Use for ambiguous or open-ended questions where multiple interpretations or perspectives are possible. Generate several diverse queries to cover different angles.
 2. ragfusion - Use for complex or multifaceted questions that may require combining results from several distinct queries. Useful when a single query is unlikely to retrieve all relevant information.
@@ -64,7 +62,6 @@ method_chain = ChatPromptTemplate.from_template(METHOD_SELECTION_PROMPT) | llm.w
 def route_to_transformer(state: AgentState) -> str:
     """Routes to the appropriate query transformation subgraph based on the retrieval method."""
     question = state["contextualized_query"]
-    logger.info(f"Routing query transformation for question: '{question}'")
     response = method_chain.invoke({"question": question})
     method = response.method.lower().strip()
 

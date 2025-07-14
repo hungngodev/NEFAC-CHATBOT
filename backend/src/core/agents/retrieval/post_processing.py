@@ -13,10 +13,7 @@ def _parse_date_from_metadata(doc_metadata: Dict[str, Union[str, int, float, boo
     """Safely parse a date from document metadata."""
     doc_date_str = doc_metadata.get("date")
     if doc_date_str and isinstance(doc_date_str, str):
-        try:
-            return datetime.datetime.strptime(doc_date_str, "%Y-%m-%d").date()
-        except (ValueError, TypeError):
-            pass
+        return datetime.datetime.strptime(doc_date_str, "%Y-%m-%d").date()
     return None
 
 

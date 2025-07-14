@@ -1,5 +1,3 @@
-import logging
-
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
@@ -11,7 +9,6 @@ from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.core_types import AgentState
 
-logger = logging.getLogger(__name__)
 HYDE_GENERATION_PROMPT = f"""
 You are an AI assistant specialized in legal and First Amendment topics for the New England First Amendment Coalition (NEFAC).
 
@@ -51,21 +48,18 @@ class HydeState(AgentState):
 # --- Nodes ---
 def generate_hypothetical_document_node(state: HydeState) -> RetrievalSubgraphState:
     """Generates a hypothetical document to be used as the retrieval query."""
-    logger.info("Generating hypothetical document for HyDE retrieval.")
     question = state["contextualized_query"]
 
     hyde_prompt = ChatPromptTemplate.from_template(HYDE_GENERATION_PROMPT)
     chain = hyde_prompt | llm | StrOutputParser()
 
     hypothetical_document = chain.invoke({"question": question})
-    logger.info("Generated hypothetical document.")
     # Pass the hypothetical document to the retrieval subgraph via the 'retrieval_query' field
     return {"retrieval_query": hypothetical_document}
 
 
 def generate_final_response_node(state: HydeState) -> AgentState:
     """Generates a final response using the documents retrieved based on the HyDE query."""
-    logger.info("Generating final response using HyDE context.")
     question = state["contextualized_query"]
     # The retrieval subgraph has already populated the 'documents' field
     documents = state["documents"]

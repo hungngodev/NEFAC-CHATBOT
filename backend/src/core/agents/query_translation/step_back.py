@@ -1,4 +1,3 @@
-import logging
 from typing import List
 
 from langchain_core.documents import Document
@@ -12,8 +11,6 @@ from src.config.prompts import BASE_PROMPT
 from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.core_types import AgentState
-
-logger = logging.getLogger(__name__)
 
 STEP_BACK_SYSTEM_PROMPT = f"""
 You are an expert in First Amendment law and public records processes in New England.
@@ -52,7 +49,6 @@ class StepBackState(AgentState):
 # --- Nodes ---
 def generate_and_dispatch_node(state: StepBackState) -> StepBackState:
     """Generates a step-back question and dispatches retrieval for both questions in parallel."""
-    logger.info("Generating step-back question and dispatching parallel retrieval.")
     original_question = state["contextualized_query"]
 
     examples = [
@@ -65,7 +61,6 @@ def generate_and_dispatch_node(state: StepBackState) -> StepBackState:
 
     chain = step_back_prompt | llm | StrOutputParser()
     step_back_question = chain.invoke({"question": original_question})
-    logger.info(f"Generated step-back question: '{step_back_question}'")
     return {"step_back_question": step_back_question}
     # Dispatch retrieval for both questions in parallel
     return [Send("retrieval_subgraph", {"retrieval_query": original_question}), Send("retrieval_subgraph", {"retrieval_query": step_back_question, "step_back_question": step_back_question})]  # Pass step_back_question for context in the joiner
@@ -73,7 +68,6 @@ def generate_and_dispatch_node(state: StepBackState) -> StepBackState:
 
 def process_original_context_node(state: StepBackState) -> StepBackState:
     """Formats the original context documents into a single string."""
-    logger.info("Formatting documents from original retrieval.")
     documents = state["documents"]
     formatted_string = format_docs(documents)
     return {"origina_context": formatted_string}
@@ -81,7 +75,6 @@ def process_original_context_node(state: StepBackState) -> StepBackState:
 
 def process_step_back_context_node(state: StepBackState) -> StepBackState:
     """Formats the step-back context documents into a single string."""
-    logger.info("Formatting documents from step-back retrieval.")
     documents = state["documents"]
     formatted_string = format_docs(documents)
     return {"step_back_context": formatted_string}
@@ -89,7 +82,6 @@ def process_step_back_context_node(state: StepBackState) -> StepBackState:
 
 def generate_final_response_node(state: StepBackState) -> AgentState:
     """Generates a final response using both sets of retrieved documents."""
-    logger.info("Generating final response using combined context from parallel retrieval.")
     question = state["contextualized_query"]
     normal_context = format_docs(state["origina_context"])
     step_back_context = format_docs(state["step_back_context"])

@@ -3,7 +3,6 @@ Graph-based retrieval using Neo4j knowledge graph.
 Refactored to use the new modular approach with intelligent sub-tool selection.
 """
 
-import logging
 import os
 from typing import List, Optional
 
@@ -15,8 +14,6 @@ from langchain_openai import ChatOpenAI
 
 from src.config.constant import RETRIEVAL_MODEL_NAME
 from src.schemas.core_types import AgentState
-
-logger = logging.getLogger(__name__)
 
 NEO4J_URI = os.environ["NEO4J_URI"]
 NEO4J_USERNAME = os.environ["NEO4J_USERNAME"]

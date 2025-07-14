@@ -1,10 +1,6 @@
-import logging
 from typing import List
 
 from langchain_core.documents import Document
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 
 def format_docs(docs: List[Document]) -> str:

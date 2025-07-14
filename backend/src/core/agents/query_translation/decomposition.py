@@ -1,4 +1,3 @@
-import logging
 from operator import add
 from typing import Annotated, List
 
@@ -13,7 +12,6 @@ from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.core_types import AgentState
 
-logger = logging.getLogger(__name__)
 DECOMPOSITION_PROMPT = f"""
 You are an expert assistant for the New England First Amendment Coalition (NEFAC). Your role is to break down the user's complex question into exactly 3 focused, independently-answerable sub-questions to retrieve precise documents from our vector database of legal analyses, FOI guides, press-freedom resources, and relevant transcripts.
 {BASE_PROMPT}
@@ -69,7 +67,6 @@ class DecompositionState(AgentState):
 # --- Nodes ---
 def generate_sub_questions_node(state: DecompositionState) -> DecompositionState:
     """Decomposes the main question into a series of sub-questions."""
-    logger.info("Decomposing question into sub-questions.")
     question = state["contextualized_query"]
 
     prompt = ChatPromptTemplate.from_template(DECOMPOSITION_PROMPT)
@@ -78,7 +75,6 @@ def generate_sub_questions_node(state: DecompositionState) -> DecompositionState
     sub_questions = chain.invoke({"question": question})
     sub_questions = [q.strip() for q in sub_questions if q.strip()]
 
-    logger.info(f"Generated {len(sub_questions)} sub-questions.")
     return {"sub_questions": sub_questions}
 
 
@@ -108,7 +104,6 @@ def format_answer_node(state: DecompositionState) -> DecompositionState:
 
 def synthesize_final_answer_node(state: DecompositionState) -> AgentState:
     """Synthesizes the final answer from the Q&A pairs."""
-    logger.info("Synthesizing final answer.")
     question = state["contextualized_query"]
     q_a_pairs_str = "\n---\n".join(state["q_a_pairs"])
 

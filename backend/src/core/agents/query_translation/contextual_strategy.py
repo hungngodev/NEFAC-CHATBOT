@@ -1,5 +1,3 @@
-import logging
-
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
@@ -9,9 +7,6 @@ from src.config.constant import QUERY_TRANSLATION_MODEL_NAME
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.core_types import AgentState
-
-logger = logging.getLogger(__name__)
-
 
 CONTEXTUAL_STRATEGY_PROMPT = """
 You are an expert at understanding implied context in user queries, specifically in the domain of First Amendment rights, freedom of information, and government transparency as covered by nefac.org. For a given factual query, infer what background information, historical context, regional relevance (New England), or legal/policy themes might be implied but not explicitly stated. Focus on what contextual understanding would best support retrieval and accurate answering.
@@ -32,21 +27,18 @@ llm = ChatOpenAI(temperature=0, model=QUERY_TRANSLATION_MODEL_NAME)
 # --- Nodes ---
 def generate_contextual_query_node(state: ContextualStrategyState) -> dict:
     """Generates a contextual query and passes it to the retrieval subgraph."""
-    logger.info("Generating contextual query.")
     question = state["contextualized_query"]
 
     prompt = ChatPromptTemplate.from_template(CONTEXTUAL_STRATEGY_PROMPT)
     chain = prompt | llm | StrOutputParser()
 
     contextual_query = chain.invoke({"question": question})
-    logger.info(f"Generated contextual query: '{contextual_query}'")
     # Pass the new query to the retrieval subgraph
     return {"retrieval_query": contextual_query}
 
 
 def format_documents_node(state: ContextualStrategyState) -> dict:
     """Formats the retrieved documents into a single string."""
-    logger.info("Formatting documents from contextual retrieval.")
     documents = state["documents"]
     formatted_string = format_docs(documents)
     return {"final_context": formatted_string}

@@ -1,5 +1,3 @@
-import logging
-
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, StateGraph
@@ -8,8 +6,6 @@ from src.config.prompts import FACTUAL_STRATEGY_PROMPT
 from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.core_types import AgentState
-
-logger = logging.getLogger(__name__)
 
 
 # --- Subgraph State ---
@@ -22,21 +18,18 @@ class FactualStrategyState(AgentState):
 # --- Nodes ---
 def generate_factual_query_node(state: FactualStrategyState, llm) -> RetrievalSubgraphState:
     """Generates a factual query and passes it to the retrieval subgraph."""
-    logger.info("Generating factual query.")
     question = state["contextualized_query"]
 
     prompt = ChatPromptTemplate.from_template(FACTUAL_STRATEGY_PROMPT)
     chain = prompt | llm | StrOutputParser()
 
     factual_query = chain.invoke({"question": question})
-    logger.info(f"Generated factual query: '{factual_query}'")
     # Pass the new query to the retrieval subgraph
     return {"retrieval_query": factual_query}
 
 
 def format_documents_node(state: FactualStrategyState) -> AgentState:
     """Formats the retrieved documents into a single string."""
-    logger.info("Formatting documents from factual retrieval.")
     documents = state["documents"]
     formatted_string = format_docs(documents)
     return {"final_context": formatted_string}
