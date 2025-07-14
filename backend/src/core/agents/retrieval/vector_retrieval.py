@@ -25,29 +25,17 @@ logger = logging.getLogger(__name__)
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-large")
 
 
-def get_qdrant_retriever():
-    """Return a Qdrant retriever for dense/semantic search."""
-    if QdrantVectorStore is None or QdrantClient is None:
-        raise ImportError("Qdrant dependencies not installed.")
+qdrant_url = os.environ["QDRANT_ENDPOINT"]
+collection_name = os.environ["QDRANT_CLUSTER_ID"]
+api_key = os.environ.get("QDRANT_API_KEY")
 
-    try:
-        qdrant_url = os.environ["QDRANT_ENDPOINT"]
-        collection_name = os.environ["QDRANT_CLUSTER_ID"]
-        api_key = os.environ.get("QDRANT_API_KEY")
-
-        client = QdrantClient(url=qdrant_url, api_key=api_key)
-        vectorstore = QdrantVectorStore(
-            client=client,
-            collection_name=collection_name,
-            embedding=embedding_model,
-        )
-        return vectorstore.as_retriever()
-    except KeyError as e:
-        logger.error(f"Missing environment variable for Qdrant: {e}")
-        raise
-    except Exception as e:
-        logger.error(f"Failed to create Qdrant retriever: {e}")
-        raise
+client = QdrantClient(url=qdrant_url, api_key=api_key)
+vectorstore = QdrantVectorStore(
+    client=client,
+    collection_name=collection_name,
+    embedding=embedding_model,
+)
+vector_retriever = vectorstore.as_retriever()
 
 
 @tool
@@ -58,7 +46,7 @@ def vector_search(query: str, top_k: int = 10) -> List[Document]:
     """
     logger.info(f"Executing vector search for query: '{query}' with top_k={top_k}")
     try:
-        retriever = get_qdrant_retriever()
+        retriever = vector_retriever
         # Pass top_k to the underlying retriever
         documents = retriever.invoke(query, search_kwargs={"k": top_k})
 

@@ -112,11 +112,4 @@ def graph_tool_node(query: str, state: Optional[AgentState] = None) -> List[Docu
     metadata = {"source": "graph_cypher_qa", "retrieval_method": "graph_rag_chain", "cypher_query": intermediate_steps[0].get("query") if intermediate_steps and isinstance(intermediate_steps[0], dict) else "Unknown", "intermediate_steps": intermediate_steps}
     documents = [Document(page_content=final_result, metadata=metadata)]
 
-    # Add metadata tags
-    for doc in documents:
-        if not hasattr(doc, "metadata") or doc.metadata is None:
-            doc.metadata = {}
-        doc.metadata["stream_tag"] = "graph_retrieved_docs"
-        doc.metadata["retrieval_method"] = "graph_search"
-
     return documents
