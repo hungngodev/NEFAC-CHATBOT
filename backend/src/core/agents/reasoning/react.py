@@ -71,7 +71,7 @@ def multi_step_reasoning_agent(state: AgentState, model: ChatOpenAI, max_steps: 
                 query=sub_question,
                 chat_history=state.chat_history,
                 history_summary=state.history_summary,
-                transformed_query=sub_question,
+                retrieval_query=sub_question,
                 retrieval_selection=state.retrieval_selection,
                 entities=state.entities,
             )
