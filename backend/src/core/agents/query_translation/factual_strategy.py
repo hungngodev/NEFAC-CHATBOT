@@ -1,28 +1,56 @@
+import logging
+
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import Runnable
-from langchain_openai import ChatOpenAI
+from langgraph.graph import END, StateGraph
 
-from src.config.constant import QUERY_TRANSLATION_MODEL_NAME
 from src.config.prompts import FACTUAL_STRATEGY_PROMPT
+from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
-from src.core.agents.tools.retrieval.retrieval_tools import ensemble_retriever_tool
-from src.load_env import load_env
+from src.schemas.core_types import AgentState
 
-load_env()
-
-model = ChatOpenAI(temperature=0, model=QUERY_TRANSLATION_MODEL_NAME)
-factual_strategy_prompt = ChatPromptTemplate.from_template(FACTUAL_STRATEGY_PROMPT)
-
-generate_factual_query = factual_strategy_prompt | model | StrOutputParser()
+logger = logging.getLogger(__name__)
 
 
-def get_factual_strategy_chain(retriever=None) -> Runnable:
-    """Factual strategy chain using ensemble retriever with fact-focused retrieval."""
+# --- Subgraph State ---
+class FactualStrategyState(AgentState):
+    """State for the factual strategy subgraph."""
 
-    def factual_retrieval(factual_query: str) -> str:
-        """Retrieve documents using factual query with emphasis on precise information."""
-        docs = ensemble_retriever_tool.retrieve(query=factual_query, methods=["sparse", "dense", "graph"], weights=[0.5, 0.3, 0.2], max_documents=8)  # Prioritize sparse for exact facts  # Favor sparse for factual precision
-        return format_docs(docs)
+    # The 'documents' field will be populated by the retrieval subgraph
 
-    return generate_factual_query | factual_retrieval
+
+# --- Nodes ---
+def generate_factual_query_node(state: FactualStrategyState, llm) -> RetrievalSubgraphState:
+    """Generates a factual query and passes it to the retrieval subgraph."""
+    logger.info("Generating factual query.")
+    question = state["contextualized_query"]
+
+    prompt = ChatPromptTemplate.from_template(FACTUAL_STRATEGY_PROMPT)
+    chain = prompt | llm | StrOutputParser()
+
+    factual_query = chain.invoke({"question": question})
+    logger.info(f"Generated factual query: '{factual_query}'")
+    # Pass the new query to the retrieval subgraph
+    return {"retrieval_query": factual_query}
+
+
+def format_documents_node(state: FactualStrategyState) -> AgentState:
+    """Formats the retrieved documents into a single string."""
+    logger.info("Formatting documents from factual retrieval.")
+    documents = state["documents"]
+    formatted_string = format_docs(documents)
+    return {"final_context": formatted_string}
+
+
+workflow = StateGraph(FactualStrategyState)
+
+workflow.add_node("generate_factual_query", generate_factual_query_node)
+workflow.add_node("retrieve_subgraph", retrieval_subgraph)
+workflow.add_node("format_documents", format_documents_node)
+
+workflow.set_entry_point("generate_factual_query")
+workflow.add_edge("generate_factual_query", "retrieve_subgraph")
+workflow.add_edge("retrieve_subgraph", "format_documents")
+workflow.add_edge("format_documents", END)
+
+factual_strategy = workflow.compile()
