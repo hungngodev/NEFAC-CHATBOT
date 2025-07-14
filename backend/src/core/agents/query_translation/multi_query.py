@@ -1,74 +1,81 @@
 import logging
-from typing import List, Union
+from typing import List
 
 from langchain_core.documents import Document
 from langchain_core.load import dumps, loads
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langgraph.graph import StateGraph, END
+from langchain_openai import ChatOpenAI
+from langgraph.graph import END, Send, StateGraph
 
-from src.config.prompts import MULTI_QUERY_PERSPECTIVES_PROMPT
-from src.core.agents.retrieval.subgraph import create_retrieval_subgraph
+from src.config.constant import QUERY_TRANSLATION_MODEL_NAME
+from src.config.prompts import BASE_PROMPT
+from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.core_types import AgentState
 
 logger = logging.getLogger(__name__)
+MULTI_QUERY_PERSPECTIVES_PROMPT = f"""
+You are an AI assistant for the New England First Amendment Coalition (NEFAC).  
+Perform a multi-query translation of the user’s question by generating exactly five search queries (one per line) to retrieve diverse, relevant materials—transcripts, summaries, and docs—from our vector store.  
+
+{BASE_PROMPT}
+
+Each query should contain one of the following perspectives:
+
+1. Restate the core question to find precise answers.  
+2. Widen the frame to include New England’s free-speech and press-freedom context.  
+3. Surface related legal concepts, precedents, or foundational First Amendment principles.  
+4. Seek real-world NEFAC case studies, reports, or example applications.  
+5. Highlight challenges, debates, or alternative perspectives on the topic.
+
+Original question: {{question}}
+"""
+
+llm = ChatOpenAI(model=QUERY_TRANSLATION_MODEL_NAME)
 
 
 # --- Subgraph State ---
 class MultiQueryState(AgentState):
     """State for the multi-query subgraph."""
+
     generated_queries: List[str] = []
-    # This field will hold lists of documents for each query
-    retrieved_documents_lists: List[List[Document]] = []
-    # This field will hold the final, deduplicated list of documents
-    documents: List[Document] = []
 
 
 # --- Nodes ---
-def generate_queries_node(state: MultiQueryState, llm) -> dict:
-    """Generates multiple queries from the user's question."""
-    logger.info("Generating multiple queries for diversification.")
+def generate_queries_node(state: MultiQueryState) -> MultiQueryState:
+    """
+    Generates multiple queries and returns a list of Send objects
+    to trigger parallel retrieval for each query.
+    """
+    logger.info("Generating multiple queries for parallel retrieval.")
     question = state["contextualized_query"]
     prompt = ChatPromptTemplate.from_template(MULTI_QUERY_PERSPECTIVES_PROMPT)
-    chain = prompt | llm | StrOutputParser() | (lambda x: x.split("
-"))
+    chain = prompt | llm | StrOutputParser() | (lambda x: x.split("\n"))
 
     generated_queries = chain.invoke({"question": question})
-    # Filter out any empty strings that might result from splitting
     generated_queries = [q.strip() for q in generated_queries if q.strip()]
-
     logger.info(f"Generated {len(generated_queries)} queries.")
+
+    # For each query, Send it to the retrieval subgraph
+    # Each invocation will have its own `retrieval_query`
     return {"generated_queries": generated_queries}
 
 
-def retrieval_node(state: MultiQueryState, retrieval_subgraph) -> dict:
-    """Retrieves documents for each generated query using the retrieval subgraph."""
-    logger.info("Retrieving documents for generated queries.")
-    queries = state["generated_queries"]
-    all_docs_lists = []
-
-    for query in queries:
-        logger.debug(f"Invoking retrieval subgraph for query: '{query}'")
-        # The retrieval subgraph is invoked with a state containing the query
-        result_state = retrieval_subgraph.invoke({"transformed_query": query})
-        documents = result_state.get("documents", [])
-        logger.debug(f"Retrieved {len(documents)} documents for query: '{query}'")
-        all_docs_lists.append(documents)
-
-    return {"retrieved_documents_lists": all_docs_lists}
-
-
-def deduplicate_documents_node(state: MultiQueryState) -> dict:
-    """Deduplicates documents from the multiple retrieval runs."""
-    logger.info("Deduplicating retrieved documents.")
-    retrieved_documents_lists = state["retrieved_documents_lists"]
+def deduplicate_documents_node(state: RetrievalSubgraphState) -> MultiQueryState:
+    """
+    Deduplicates documents from the multiple parallel retrieval runs.
+    The results from the Send operations are automatically collected in the state.
+    """
+    logger.info("Deduplicating retrieved documents from parallel runs.")
+    # The `retrieved_documents_lists` will contain the output of each retrieval subgraph invocation
+    retrieved_documents_lists = state["final_documents"]
 
     flattened_docs_str = []
-    for doc_list in retrieved_documents_lists:
-        for doc in doc_list:
-            if isinstance(doc, Document):
-                flattened_docs_str.append(dumps(doc))
+
+    for doc in retrieved_documents_lists:
+        if isinstance(doc, Document):
+            flattened_docs_str.append(dumps(doc))
 
     unique_docs_str = list(set(flattened_docs_str))
 
@@ -82,37 +89,42 @@ def deduplicate_documents_node(state: MultiQueryState) -> dict:
             logger.warning(f"Failed to load document from string: {e}")
             continue
 
-    logger.info(f"Reduced from {len(flattened_docs_str)} to {len(unique_documents)} unique documents.")
-    return {"documents": unique_documents}
+    logger.info(f"Reduced to {len(unique_documents)} unique documents.")
+    return {"final_documents": unique_documents}
 
 
-def format_documents_node(state: MultiQueryState) -> dict:
+def format_documents_node(state: MultiQueryState) -> AgentState:
     """Formats the final list of documents into a single string."""
     logger.info("Formatting final document list.")
-    documents = state["documents"]
-    formatted_string = format_docs(documents)
-    return {"transformed_query": formatted_string}
+    formatted_string = format_docs(state["final_documents"])
+    # The final output of any query translation subgraph is the transformed query/result
+    return {"final_context": formatted_string}
 
 
-# --- Graph Definition ---
-def create_multi_query_subgraph(llm):
-    """
-    Creates a subgraph that generates multiple queries, retrieves documents for each,
-    deduplicates the results, and formats them.
-    """
-    retrieval_subgraph = create_retrieval_subgraph(llm)
+workflow = StateGraph(MultiQueryState)
 
-    workflow = StateGraph(MultiQueryState)
+workflow.add_node("generate_queries", generate_queries_node)
+workflow.add_node("retrieve_subgraph", retrieval_subgraph)
+workflow.add_node("deduplicate_documents", deduplicate_documents_node)
+workflow.add_node("format_documents", format_documents_node)
+workflow.set_entry_point("generate_queries")
 
-    workflow.add_node("generate_queries", lambda state: generate_queries_node(state, llm))
-    workflow.add_node("retrieve_documents", lambda state: retrieval_node(state, retrieval_subgraph))
-    workflow.add_node("deduplicate_documents", deduplicate_documents_node)
-    workflow.add_node("format_documents", format_documents_node)
 
-    workflow.set_entry_point("generate_queries")
-    workflow.add_edge("generate_queries", "retrieve_documents")
-    workflow.add_edge("retrieve_documents", "deduplicate_documents")
-    workflow.add_edge("deduplicate_documents", "format_documents")
-    workflow.add_edge("format_documents", END)
+def route_from_generate_queries(state: MultiQueryState) -> List[Send]:
+    """Route to multiple retrieval subgraph invocations based on generated queries."""
+    queries = state["generated_queries"]
+    sends = [Send("retrieve_subgraph", {"retrieval_query": q}) for q in queries]
+    return sends
 
-    return workflow.compile()
+
+# After generation, we fan-out to the retrieval subgraph
+workflow.add_conditional_edges(
+    "generate_queries",
+    route_from_generate_queries,
+)
+
+# After all parallel retrieval runs are complete, they are joined at the next node
+workflow.add_edge("retrieve_subgraph", "deduplicate_documents")
+workflow.add_edge("deduplicate_documents", "format_documents")
+workflow.add_edge("format_documents", END)
+multi_query = workflow.compile()
