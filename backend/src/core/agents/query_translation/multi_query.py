@@ -1,36 +1,23 @@
 from typing import List
 
+from langchain.chat_models import init_chat_model
 from langchain_core.documents import Document
 from langchain_core.load import dumps, loads
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
 from langgraph.graph import END, Send, StateGraph
+from langgraph.types import RunnableConfig
 
-from src.config.constant import QUERY_TRANSLATION_MODEL_NAME
-from src.config.prompts import BASE_PROMPT
+from src.config.node_names import (
+    MULTI_QUERY_DEDUPLICATE_DOCUMENTS,
+    MULTI_QUERY_FORMAT_DOCUMENTS,
+    MULTI_QUERY_GENERATE_QUERIES,
+    MULTI_QUERY_RETRIEVE_SUBGRAPH,
+)
+from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.core_types import AgentState
-
-MULTI_QUERY_PERSPECTIVES_PROMPT = f"""
-You are an AI assistant for the New England First Amendment Coalition (NEFAC).  
-Perform a multi-query translation of the user’s question by generating exactly five search queries (one per line) to retrieve diverse, relevant materials—transcripts, summaries, and docs—from our vector store.  
-
-{BASE_PROMPT}
-
-Each query should contain one of the following perspectives:
-
-1. Restate the core question to find precise answers.  
-2. Widen the frame to include New England’s free-speech and press-freedom context.  
-3. Surface related legal concepts, precedents, or foundational First Amendment principles.  
-4. Seek real-world NEFAC case studies, reports, or example applications.  
-5. Highlight challenges, debates, or alternative perspectives on the topic.
-
-Original question: {{question}}
-"""
-
-llm = ChatOpenAI(model=QUERY_TRANSLATION_MODEL_NAME)
 
 
 # --- Subgraph State ---
@@ -41,13 +28,16 @@ class MultiQueryState(AgentState):
 
 
 # --- Nodes ---
-def generate_queries_node(state: MultiQueryState) -> MultiQueryState:
+def generate_queries_node(state: MultiQueryState, config: RunnableConfig) -> MultiQueryState:
     """
     Generates multiple queries and returns a list of Send objects
     to trigger parallel retrieval for each query.
     """
+    configuration = Configuration.from_runnable_config(config)
+    llm = init_chat_model(configuration.multi_query_model)
+
     question = state["contextualized_query"]
-    prompt = ChatPromptTemplate.from_template(MULTI_QUERY_PERSPECTIVES_PROMPT)
+    prompt = ChatPromptTemplate.from_template(configuration.multi_query_perspectives_prompt)
     chain = prompt | llm | StrOutputParser() | (lambda x: x.split("\n"))
 
     generated_queries = chain.invoke({"question": question})
@@ -58,7 +48,7 @@ def generate_queries_node(state: MultiQueryState) -> MultiQueryState:
     return {"generated_queries": generated_queries}
 
 
-def deduplicate_documents_node(state: RetrievalSubgraphState) -> MultiQueryState:
+def deduplicate_documents_node(state: RetrievalSubgraphState, config: RunnableConfig) -> MultiQueryState:
     """
     Deduplicates documents from the multiple parallel retrieval runs.
     The results from the Send operations are automatically collected in the state.
@@ -91,28 +81,27 @@ def format_documents_node(state: MultiQueryState) -> AgentState:
 
 workflow = StateGraph(MultiQueryState)
 
-workflow.add_node("generate_queries", generate_queries_node)
-workflow.add_node("retrieve_subgraph", retrieval_subgraph)
-workflow.add_node("deduplicate_documents", deduplicate_documents_node)
-workflow.add_node("format_documents", format_documents_node)
-workflow.set_entry_point("generate_queries")
+workflow.add_node(MULTI_QUERY_GENERATE_QUERIES, generate_queries_node)
+workflow.add_node(MULTI_QUERY_RETRIEVE_SUBGRAPH, retrieval_subgraph)
+workflow.add_node(MULTI_QUERY_DEDUPLICATE_DOCUMENTS, deduplicate_documents_node)
+workflow.add_node(MULTI_QUERY_FORMAT_DOCUMENTS, format_documents_node)
+workflow.set_entry_point(MULTI_QUERY_GENERATE_QUERIES)
 
 
 def route_from_generate_queries(state: MultiQueryState) -> List[Send]:
     """Route to multiple retrieval subgraph invocations based on generated queries."""
     queries = state["generated_queries"]
-    sends = [Send("retrieve_subgraph", {"retrieval_query": q}) for q in queries]
+    sends = [Send(MULTI_QUERY_RETRIEVE_SUBGRAPH, {"retrieval_query": q}) for q in queries]
     return sends
 
 
-# After generation, we fan-out to the retrieval subgraph
 workflow.add_conditional_edges(
-    "generate_queries",
+    MULTI_QUERY_GENERATE_QUERIES,
     route_from_generate_queries,
 )
 
 # After all parallel retrieval runs are complete, they are joined at the next node
-workflow.add_edge("retrieve_subgraph", "deduplicate_documents")
-workflow.add_edge("deduplicate_documents", "format_documents")
-workflow.add_edge("format_documents", END)
+workflow.add_edge(MULTI_QUERY_RETRIEVE_SUBGRAPH, MULTI_QUERY_DEDUPLICATE_DOCUMENTS)
+workflow.add_edge(MULTI_QUERY_DEDUPLICATE_DOCUMENTS, MULTI_QUERY_FORMAT_DOCUMENTS)
+workflow.add_edge(MULTI_QUERY_FORMAT_DOCUMENTS, END)
 multi_query = workflow.compile()

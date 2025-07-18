@@ -1,18 +1,26 @@
+from __future__ import annotations
+
 import logging
-from functools import partial
 from typing import TypedDict
 
+from langchain.chat_models import init_chat_model
 from langchain_core.documents import Document
 from langchain_core.messages import BaseMessage
-from langchain_openai import ChatOpenAI
-from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, StateGraph
 
-from backend.src.config.constant import MODEL_NAME
+from backend.src.config.node_names import (
+    COMPLEXITY_ANALYZER_ANALYZE_COMPLEXITY_NODE,
+    CONTEXTUALIZER_NODE,
+    INTENT_CLASSIFICATION_NODE,
+    MEMORY_SUMMARIZER_NODE,
+)
+from backend.src.config.settings import Configuration
+
+# Import enhanced agents with proper typing (from current branch)
 from backend.src.core.agents.memory.summarizer import summarization_node
-from backend.src.core.agents.query_understanding.complexity_analyzer import ComplexityAnalyzer, QueryComplexity, analyze_complexity_node
+from backend.src.core.agents.query_understanding.complexity_analyzer import analyze_complexity_node
 from backend.src.core.agents.query_understanding.contextualizer import contextualizer_node
-from backend.src.core.agents.query_understanding.intent_classification import IntentClassification, intent_classification_node
+from backend.src.core.agents.query_understanding.intent_classification import intent_classification_node
 from backend.src.core.agents.reasoning.react import multi_step_reasoning_agent
 from backend.src.core.agents.supervisor.generator import GeneratorAgent
 from backend.src.core.agents.supervisor.validation import validation_agent
@@ -28,10 +36,12 @@ from backend.src.schemas.core_types import (
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-llm = ChatOpenAI(model=MODEL_NAME, temperature=0)
+# Initialize default configuration
+default_config = Configuration()
 
-complexity_analyzer = ComplexityAnalyzer()
-generator_agent_instance = GeneratorAgent()
+# Initialize models using the configuration
+llm = init_chat_model(default_config.generator_model)
+generator_agent_instance = GeneratorAgent(default_config)
 
 
 class MemoryRetrievalNodeOutput(TypedDict):
@@ -79,6 +89,75 @@ def retriever_worker_node(state: AgentState) -> RetrieverWorkerNodeOutput:
     """
     Retriever worker node using the enhanced RetrievalAgent.
     """
+    try:
+        # TODO: Implement retrieval logic here
+        # For now, return empty results to prevent main_graph blocking
+        logger.info("Retriever worker node called - implementation needed")
+        return {"documents": [], "retrieval_metadata": {}, "extracted_info": [], "summarized_content": [], "citations": [], "session_memory": [], "error": None}
+    except Exception as e:
+        logger.error(f"Retriever worker node error: {e}")
+        return {"error": f"Retriever error: {str(e)}"}
+
+
+def react_worker_node_with_config(state: AgentState, config) -> ReActWorkerNodeOutput:
+    """
+    ReAct worker node for complex multi-step reasoning with dynamic configuration.
+    """
+    try:
+        # Use the multi-step reasoning agent with provided configuration
+        reasoning_result = multi_step_reasoning_agent(state, config, max_steps=3)
+
+        if reasoning_result.get("error"):
+            logger.error(f"ReAct reasoning failed: {reasoning_result['error']}")
+            return {"error": f"ReAct reasoning error: {reasoning_result['error']}"}
+
+        logger.info("ReAct reasoning completed successfully")
+        return {"answer": reasoning_result.get("answer"), "documents": reasoning_result.get("documents", [])}
+
+    except Exception as e:
+        logger.error(f"ReAct worker node error: {e}")
+        return {"error": f"ReAct worker error: {str(e)}"}
+
+
+def generator_node_with_config(state: AgentState, config) -> GeneratorNodeOutput:
+    """
+    Generator node using the enhanced GeneratorAgent with dynamic configuration.
+    """
+    try:
+        # Create generator agent with provided configuration
+        generator_agent_instance = GeneratorAgent(config)
+        generation_result: GenerationResult = generator_agent_instance.generate_answer(state)
+
+        if generation_result.is_success:
+            logger.info("Response generation completed successfully")
+            return {"answer": generation_result.data.answer, "confidence_score": generation_result.data.confidence_score, "sources": generation_result.data.sources}
+        else:
+            logger.error(f"Generation failed: {generation_result.error}")
+            return {"error": f"Generation error: {generation_result.error}"}
+
+    except Exception as e:
+        logger.error(f"Generator node error: {e}")
+        return {"error": f"Generator error: {str(e)}"}
+
+
+def validation_node_with_config(state: AgentState, config) -> ValidationNodeOutput:
+    """
+    Validation node to check response quality with dynamic configuration.
+    """
+    try:
+        # Use validation agent with provided configuration
+        validation_result = validation_agent(state, config)
+
+        if validation_result.get("error"):
+            logger.error(f"Validation failed: {validation_result['error']}")
+            return {"validation": {"is_valid": True}, "error": validation_result["error"]}  # Default to valid on error
+
+        logger.info(f"Validation completed: {validation_result.get('validation', {})}")
+        return {"validation": validation_result.get("validation", {"is_valid": True})}
+
+    except Exception as e:
+        logger.error(f"Validation node error: {e}")
+        return {"validation": {"is_valid": True}, "error": f"Validation error: {str(e)}"}  # Default to valid on error
 
 
 def react_worker_node(state: AgentState) -> ReActWorkerNodeOutput:
@@ -86,8 +165,8 @@ def react_worker_node(state: AgentState) -> ReActWorkerNodeOutput:
     ReAct worker node for complex multi-step reasoning.
     """
     try:
-        # Use the multi-step reasoning agent
-        reasoning_result = multi_step_reasoning_agent(state, llm, max_steps=3)
+        # Use the multi-step reasoning agent with proper configuration
+        reasoning_result = multi_step_reasoning_agent(state, default_config, max_steps=3)
 
         if reasoning_result.get("error"):
             logger.error(f"ReAct reasoning failed: {reasoning_result['error']}")
@@ -106,16 +185,8 @@ def generator_node(state: AgentState) -> GeneratorNodeOutput:
     Generator node using the enhanced GeneratorAgent.
     """
     try:
-        # Use the enhanced generator agent
-        generation_result: GenerationResult = generator_agent_instance.generate_response(
-            query=state.contextualized_query or state.user_query,
-            documents=state.documents,
-            intent=state.intent,
-            extracted_info=getattr(state, "extracted_info", None),
-            citations=getattr(state, "citations", None),
-            memory_context=getattr(state, "memory_context", ""),
-            history_summary=getattr(state, "history_summary", ""),
-        )
+        # Use the enhanced generator agent with proper method
+        generation_result: GenerationResult = generator_agent_instance.generate_answer(state)
 
         if generation_result.is_success:
             logger.info("Response generation completed successfully")
@@ -134,9 +205,8 @@ def validation_node(state: AgentState) -> ValidationNodeOutput:
     Validation node to check response quality.
     """
     try:
-        # Use validation agent with model
-        validation_with_model = partial(validation_agent, model=llm)
-        validation_result = validation_with_model(state)
+        # Use validation agent with proper configuration
+        validation_result = validation_agent(state, default_config)
 
         if validation_result.get("error"):
             logger.error(f"Validation failed: {validation_result['error']}")
@@ -154,114 +224,83 @@ def tool_node(state: AgentState) -> AgentState:
     return state
 
 
-def create_enhanced_graph():
-    """
-    Creates the enhanced LangGraph workflow that combines hierarchical architecture
-    with memory management and summarization features.
-    """
-    # Create the workflow
-    workflow = StateGraph(AgentState)
+# Create the main_graph
+main_graph = StateGraph(AgentState, config_schema=Configuration)
 
-    # Add all nodes
+# Add all nodes with configuration
+main_graph.add_node(MEMORY_SUMMARIZER_NODE, summarization_node)
+main_graph.add_node(CONTEXTUALIZER_NODE, contextualizer_node)
+main_graph.add_node(INTENT_CLASSIFICATION_NODE, intent_classification_node)
+main_graph.add_node(COMPLEXITY_ANALYZER_ANALYZE_COMPLEXITY_NODE, analyze_complexity_node)
+main_graph.add_node("tool_node", tool_node)
+main_graph.add_node("retriever_worker", retriever_worker_node)
+main_graph.add_node("react_worker", react_worker_node_with_config)
+main_graph.add_node("generator", generator_node_with_config)
+main_graph.add_node("validation", validation_node_with_config)
+main_graph.add_node("error", lambda state: {"answer": "I'm sorry, but I encountered an error. Please try again."})
 
-    workflow.add_node("summarizataion", summarization_node)
-    workflow.add_node("contextualize", contextualizer_node)
-    workflow.add_node("intent_classification", intent_classification_node)
-    workflow.add_node("analyze_complexity", analyze_complexity_node)
-    workflow.add_node("tool_node", tool_node)
-    workflow.add_node("retriever_worker", retriever_worker_node)
-    workflow.add_node("react_worker", react_worker_node)
-    workflow.add_node("generator", generator_node)
-    workflow.add_node("validation", validation_node)
-    workflow.add_node("error", lambda state: {"answer": "I'm sorry, but I encountered an error. Please try again."})
+# Set entry point
+main_graph.set_entry_point("summarization")
+main_graph.add_edge("summarization", "contextualize")
+main_graph.add_edge("contextualize", "intent_classification")
 
-    # Set entry point
-    workflow.set_entry_point("summarization")
-    workflow.add_edge("summarization", "contextualize")
-    workflow.add_edge("contextualize", "intent_classification")
 
-    def route_from_intent_classification(state: IntentClassification):
-        if state.error:
-            return "error"
-        decision = state.intent
-        if decision == "info":
-            return "analyze_complexity"
-        elif decision == "general":
-            return "generator"
+def route_from_intent_classification(state: AgentState):
+    if getattr(state, "error", None):
+        return "error"
+    intent_result = getattr(state, "intent", None)
+    if intent_result == "info":
+        return "analyze_complexity"
+    elif intent_result == "general":
+        return "generator"
+    return "generator"  # Default fallback
 
-    workflow.add_conditional_edges("intent_classification", route_from_intent_classification)
 
-    def route_from_complexity_analysis(state: QueryComplexity):
-        if state.error:
-            return "error"
-        if state.tool_usage_required:
-            return "tool_node"
-        return route_from_tool_node(state)
+main_graph.add_conditional_edges("intent_classification", route_from_intent_classification, {"analyze_complexity": "analyze_complexity", "generator": "generator", "error": "error"})
 
-    workflow.add_conditional_edges("analyze_complexity", route_from_complexity_analysis)
 
-    def route_from_tool_node(state: QueryComplexity):
-        if state.error:
-            return "error"
-        if state.reasoning_required or state.multi_hop_needed:
-            return "react_worker"
+def route_from_complexity_analysis(state: AgentState):
+    if getattr(state, "error", None):
+        return "error"
+    tool_usage_required = getattr(state, "tool_usage_required", False)
+    if tool_usage_required:
+        return "tool_node"
+    return route_from_tool_node(state)
+
+
+main_graph.add_conditional_edges("analyze_complexity", route_from_complexity_analysis, {"tool_node": "tool_node", "retriever_worker": "retriever_worker", "react_worker": "react_worker", "error": "error"})
+
+
+def route_from_tool_node(state: AgentState):
+    if getattr(state, "error", None):
+        return "error"
+    reasoning_required = getattr(state, "reasoning_required", False)
+    multi_hop_needed = getattr(state, "multi_hop_needed", False)
+    if reasoning_required or multi_hop_needed:
+        return "react_worker"
+    return "retriever_worker"
+
+
+main_graph.add_conditional_edges("tool_node", route_from_tool_node, {"react_worker": "react_worker", "retriever_worker": "retriever_worker", "error": "error"})
+
+main_graph.add_edge("retriever_worker", "generator")
+main_graph.add_edge("react_worker", "generator")
+main_graph.add_edge("generator", "validation")
+
+
+# Conditional routing from validation
+def route_from_validation(state: AgentState):
+    if getattr(state, "error", None):
+        return "error"
+    validation_result = getattr(state, "validation", {})
+    if validation_result.get("is_valid", True):
+        return END
+    else:
+        # Loop back for refinement if validation fails
         return "retriever_worker"
 
-    workflow.add_conditional_edges("tool_node", route_from_tool_node)
 
-    workflow.add_edge("retriever_worker", "generator")
-    workflow.add_edge("react_worker", "generator")
-    workflow.add_edge("generator", "validation")
+main_graph.add_conditional_edges("validation", route_from_validation, {END: END, "retriever_worker": "retriever_worker", "error": "error"})
 
-    # Conditional routing from validation
-    def route_from_validation(state: AgentState):
-        if state.error:
-            return "error"
-        validation_result = getattr(state, "validation", {})
-        if validation_result.get("is_valid", True):
-            return END
-        else:
-            # Loop back for refinement if validation fails
-            return "retriever_worker"
-
-    workflow.add_conditional_edges("validation", route_from_validation)
-
-    workflow.add_edge("error", END)
-
-    memory = MemorySaver()
-    return workflow.compile(checkpointer=memory)
-
-
-# Create the enhanced application
-app = create_enhanced_graph()
-
-
-async def stream_chatbot(user_input: str, thread_id: str, user_id: str = "default_user", session_id: str = None, **kwargs):
-    """
-    Asynchronous streaming interface to run the chatbot with real-time updates.
-
-    Args:
-        user_input: The user's query
-        thread_id: Thread identifier for conversation continuity
-        user_id: User identifier for memory isolation
-        session_id: Session identifier
-        **kwargs: Additional configuration parameters
-
-    Yields:
-        Event dictionaries containing streaming updates
-    """
-    try:
-        # Create initial state
-        initial_state = AgentState(user_query=user_input, user_id=user_id, session_id=session_id or thread_id, thread_id=thread_id, messages=[], chat_history=[])
-
-        # Stream events from the graph
-        config = {"configurable": {"thread_id": thread_id}}
-
-        async for event in app.astream_events(initial_state, config=config, version="v1"):
-            # Yield the event for processing by the main.py streaming handler
-            yield event
-
-    except Exception as e:
-        logger.error(f"Error in stream_chatbot: {e}")
-        # Yield error event
-        yield {"event": "on_chain_end", "name": "error", "data": {"output": {"final_answer": f"I apologize, but I encountered an error: {str(e)}", "error": str(e)}}}
+main_graph.add_edge("error", END)
+main_graph.compile()

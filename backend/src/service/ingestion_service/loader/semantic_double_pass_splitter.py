@@ -9,12 +9,12 @@ from langchain_experimental.text_splitter import SemanticChunker
 from langchain_ollama import OllamaEmbeddings, OllamaLLM
 from tqdm import tqdm
 
-from src.config.constant import MODEL_NAME, QUERY_TRANSLATION_MODEL_NAME
+from src.config.constant import EMBEEDING_MODEL_NAME, MODEL_NAME
 from src.service.ingestion_service.loader.contextualize import contextualize_chunk
 
 # Global models (match processing.py)
 ollama_llm = OllamaLLM(model=MODEL_NAME)
-ollama_embedding_model = OllamaEmbeddings(model=QUERY_TRANSLATION_MODEL_NAME)
+ollama_embedding_model = OllamaEmbeddings(model=EMBEEDING_MODEL_NAME)
 
 
 # Fallback: whitespace token count (for demonstration, replace with a real tokenizer for production)

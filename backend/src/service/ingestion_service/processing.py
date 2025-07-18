@@ -8,7 +8,7 @@ from langchain_core.runnables import RunnableLambda, RunnableParallel
 from langchain_ollama import OllamaEmbeddings, OllamaLLM
 from tqdm import tqdm
 
-from src.config.constant import MODEL_NAME, QUERY_TRANSLATION_MODEL_NAME
+from src.config.constant import EMBEEDING_MODEL_NAME, MODEL_NAME
 from src.service.ingestion_service.index.contextual_retrieval import (
     contextualize_and_index_documents,
 )
@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 # LLM for context/summary generation (Llama 70B)
 ollama_llm = OllamaLLM(model=MODEL_NAME)
 # Embedding model for chunk embeddings (Qwen3:8b)
-ollama_embedding_model = OllamaEmbeddings(model=QUERY_TRANSLATION_MODEL_NAME)
+ollama_embedding_model = OllamaEmbeddings(model=EMBEEDING_MODEL_NAME)
 
 
 class LoaderService:

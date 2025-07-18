@@ -1,8 +1,15 @@
+from langchain.chat_models import init_chat_model
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, StateGraph
+from langgraph.types import RunnableConfig
 
-from src.config.prompts import FACTUAL_STRATEGY_PROMPT
+from src.config.node_names import (
+    FACTUAL_STRATEGY_FORMAT_DOCUMENTS,
+    FACTUAL_STRATEGY_GENERATE_FACTUAL_QUERY,
+    FACTUAL_STRATEGY_RETRIEVE_SUBGRAPH,
+)
+from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.core_types import AgentState
@@ -16,11 +23,13 @@ class FactualStrategyState(AgentState):
 
 
 # --- Nodes ---
-def generate_factual_query_node(state: FactualStrategyState, llm) -> RetrievalSubgraphState:
+def generate_factual_query_node(state: FactualStrategyState, config: RunnableConfig) -> RetrievalSubgraphState:
     """Generates a factual query and passes it to the retrieval subgraph."""
     question = state["contextualized_query"]
+    configuration = Configuration.from_runnable_config(config)
+    llm = init_chat_model(configuration.factual_strategy_model)
 
-    prompt = ChatPromptTemplate.from_template(FACTUAL_STRATEGY_PROMPT)
+    prompt = ChatPromptTemplate.from_template(configuration.factual_strategy_prompt)
     chain = prompt | llm | StrOutputParser()
 
     factual_query = chain.invoke({"question": question})
@@ -37,13 +46,13 @@ def format_documents_node(state: FactualStrategyState) -> AgentState:
 
 workflow = StateGraph(FactualStrategyState)
 
-workflow.add_node("generate_factual_query", generate_factual_query_node)
-workflow.add_node("retrieve_subgraph", retrieval_subgraph)
-workflow.add_node("format_documents", format_documents_node)
+workflow.add_node(FACTUAL_STRATEGY_GENERATE_FACTUAL_QUERY, generate_factual_query_node)
+workflow.add_node(FACTUAL_STRATEGY_RETRIEVE_SUBGRAPH, retrieval_subgraph)
+workflow.add_node(FACTUAL_STRATEGY_FORMAT_DOCUMENTS, format_documents_node)
 
-workflow.set_entry_point("generate_factual_query")
-workflow.add_edge("generate_factual_query", "retrieve_subgraph")
-workflow.add_edge("retrieve_subgraph", "format_documents")
-workflow.add_edge("format_documents", END)
+workflow.set_entry_point(FACTUAL_STRATEGY_GENERATE_FACTUAL_QUERY)
+workflow.add_edge(FACTUAL_STRATEGY_GENERATE_FACTUAL_QUERY, FACTUAL_STRATEGY_RETRIEVE_SUBGRAPH)
+workflow.add_edge(FACTUAL_STRATEGY_RETRIEVE_SUBGRAPH, FACTUAL_STRATEGY_FORMAT_DOCUMENTS)
+workflow.add_edge(FACTUAL_STRATEGY_FORMAT_DOCUMENTS, END)
 
 factual_strategy = workflow.compile()

@@ -9,13 +9,13 @@ from langchain_ollama import OllamaLLM
 from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 
-from src.config.constant import MODEL_NAME, QUERY_TRANSLATION_MODEL_NAME
+from src.config.constant import EMBEEDING_MODEL_NAME, MODEL_NAME
 
 llm = OllamaLLM(model=MODEL_NAME)
 logger = logging.getLogger(__name__)
 
 # --- Ollama Embedding Model for Qwen3:8b ---
-ollama_embedding_model = OllamaEmbeddings(model=QUERY_TRANSLATION_MODEL_NAME)
+ollama_embedding_model = OllamaEmbeddings(model=EMBEEDING_MODEL_NAME)
 
 
 # --- Qdrant Upload Logic ---

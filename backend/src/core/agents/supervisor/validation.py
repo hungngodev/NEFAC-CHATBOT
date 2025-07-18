@@ -1,20 +1,11 @@
 from typing import Dict, List, Optional, TypedDict, Union
 
+from langchain.chat_models import init_chat_model
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
+from langgraph.types import RunnableConfig
 
-from src.schemas.core_types import AgentState, Validation
-
-VALIDATION_PROMPT = ChatPromptTemplate.from_template(
-    """You are a validator. Given the user's question, the retrieved text, and the answer, 
-    determine if the answer fully answers the question using the text. 
-    Respond with a JSON object with two fields: 'is_valid' (boolean) and 'reason' (string).
-
-    Question: {question}
-    Context: {context}
-    Answer: {answer}
-    """
-)
+from backend.src.config.settings import Configuration
+from backend.src.schemas.core_types import AgentState, Validation
 
 
 class ValidationAgentOutput(TypedDict):
@@ -22,12 +13,23 @@ class ValidationAgentOutput(TypedDict):
     error: Optional[str]
 
 
-def validation_agent(state: AgentState, model: ChatOpenAI) -> ValidationAgentOutput:
+def validation_agent(state: AgentState, config: RunnableConfig) -> ValidationAgentOutput:
     """
     Validates the generated answer.
+
+    This function uses RunnableConfig for LangGraph Studio compatibility.
     """
     try:
-        chain = VALIDATION_PROMPT | model.with_structured_output(Validation)
+        # Get configuration from RunnableConfig
+        configuration = Configuration.from_runnable_config(config)
+
+        model = init_chat_model(configuration.validation_model)
+
+        # Use prompt from configuration (LangGraph Studio compatible)
+        validation_prompt_text = configuration.validation_prompt
+
+        validation_prompt = ChatPromptTemplate.from_template(validation_prompt_text)
+        chain = validation_prompt | model.with_structured_output(Validation)
 
         result = chain.invoke(
             {

@@ -1,17 +1,18 @@
+from langchain.chat_models import init_chat_model
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
 from langgraph.graph import END, StateGraph
+from langgraph.types import RunnableConfig
 
-from src.config.constant import QUERY_TRANSLATION_MODEL_NAME
+from src.config.node_names import (
+    CONTEXTUAL_STRATEGY_FORMAT_DOCUMENTS,
+    CONTEXTUAL_STRATEGY_GENERATE_CONTEXTUAL_QUERY,
+    CONTEXTUAL_STRATEGY_RETRIEVE_SUBGRAPH,
+)
+from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.core_types import AgentState
-
-CONTEXTUAL_STRATEGY_PROMPT = """
-You are an expert at understanding implied context in user queries, specifically in the domain of First Amendment rights, freedom of information, and government transparency as covered by nefac.org. For a given factual query, infer what background information, historical context, regional relevance (New England), or legal/policy themes might be implied but not explicitly stated. Focus on what contextual understanding would best support retrieval and accurate answering.
-Return ONLY a brief description of the implied context without any explanation.
-"""
 
 
 # --- Subgraph State ---
@@ -21,15 +22,16 @@ class ContextualStrategyState(AgentState):
     # The 'documents' field will be populated by the retrieval subgraph
 
 
-llm = ChatOpenAI(temperature=0, model=QUERY_TRANSLATION_MODEL_NAME)
-
-
 # --- Nodes ---
-def generate_contextual_query_node(state: ContextualStrategyState) -> dict:
+def generate_contextual_query_node(state: ContextualStrategyState, config: RunnableConfig) -> dict:
     """Generates a contextual query and passes it to the retrieval subgraph."""
     question = state["contextualized_query"]
 
-    prompt = ChatPromptTemplate.from_template(CONTEXTUAL_STRATEGY_PROMPT)
+    # Get configuration from runnable config
+    configuration = Configuration.from_runnable_config(config)
+    llm = init_chat_model(configuration.contextual_strategy_model)
+
+    prompt = ChatPromptTemplate.from_template(configuration.contextual_strategy_prompt)
     chain = prompt | llm | StrOutputParser()
 
     contextual_query = chain.invoke({"question": question})
@@ -46,13 +48,13 @@ def format_documents_node(state: ContextualStrategyState) -> dict:
 
 workflow = StateGraph(ContextualStrategyState)
 
-workflow.add_node("generate_contextual_query", generate_contextual_query_node)
-workflow.add_node("retrieve_subgraph", retrieval_subgraph)
-workflow.add_node("format_documents", format_documents_node)
+workflow.add_node(CONTEXTUAL_STRATEGY_GENERATE_CONTEXTUAL_QUERY, generate_contextual_query_node)
+workflow.add_node(CONTEXTUAL_STRATEGY_RETRIEVE_SUBGRAPH, retrieval_subgraph)
+workflow.add_node(CONTEXTUAL_STRATEGY_FORMAT_DOCUMENTS, format_documents_node)
 
-workflow.set_entry_point("generate_contextual_query")
-workflow.add_edge("generate_contextual_query", "retrieve_subgraph")
-workflow.add_edge("retrieve_subgraph", "format_documents")
-workflow.add_edge("format_documents", END)
+workflow.set_entry_point(CONTEXTUAL_STRATEGY_GENERATE_CONTEXTUAL_QUERY)
+workflow.add_edge(CONTEXTUAL_STRATEGY_GENERATE_CONTEXTUAL_QUERY, CONTEXTUAL_STRATEGY_RETRIEVE_SUBGRAPH)
+workflow.add_edge(CONTEXTUAL_STRATEGY_RETRIEVE_SUBGRAPH, CONTEXTUAL_STRATEGY_FORMAT_DOCUMENTS)
+workflow.add_edge(CONTEXTUAL_STRATEGY_FORMAT_DOCUMENTS, END)
 
 contextual_strategy = workflow.compile()

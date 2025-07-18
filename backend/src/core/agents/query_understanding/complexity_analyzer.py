@@ -1,8 +1,9 @@
+from langchain.chat_models import init_chat_model
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_openai import ChatOpenAI
+from langchain_core.runnables import RunnableConfig
 from pydantic import BaseModel, Field
 
-from src.config.constant import COMPLEXITY_ANALYSIS_MODEL_NAME
+from src.config.settings import Configuration
 from src.schemas.core_types import AgentState
 
 
@@ -12,65 +13,23 @@ class QueryComplexity(BaseModel):
     tool_usage_required: bool = Field(description="Indicates if the query requires external tools, API calls, or database filtering (e.g., FOIA log searches, public records API queries) to answer.")
 
 
-# Initialize the LLM model
-model = ChatOpenAI(model=COMPLEXITY_ANALYSIS_MODEL_NAME)
-
-# Prompt tailored to NEFAC.org’s content and offerings
-COMPLEXITY_ANALYSIS_PROMPT = """
-You are an expert AI assistant for the NEFAC.org chatbot, which helps the public navigate:
-  • The FOI Guide: state-by-state FOIA request processes
-  • 30 Minute Skills tutorials (Signal, immigration records, podcasting, etc.)
-  • Commentary & Advocacy pieces (legal briefs, reform proposals, Sunshine Week insights)
-  • Open Meeting and Public Records Laws for Massachusetts, Rhode Island, Connecticut
-
-For each incoming user query, decide exactly these three boolean flags. Use the following combined guidance, drawing on both NEFAC-specific and general legal-query complexity cues:
-
-1. reasoning_required:
-   - True if the query demands multi-step legal reasoning, such as:
-     • Interpreting statutory language or regulatory text (e.g., FOIA deadlines, exemptions)
-     • Comparing or contrasting case precedents (e.g., "Smith v. Jones")
-     • Synthesizing guidelines across different laws (FOIA vs Sunshine law) or commentary pieces
-   - **Linguistic cues**:
-     • Assess sentence structure, grammar, and vocabulary richness
-     • Note complex vs simple question forms: "why", "how", "analyze", "compare", "evaluate", "assess" vs "what", "who", "when", "where"
-     • Look for multiple clauses or conjunctions: "and", "but", "however", "although", "because", "since"
-     • Identify long sentences or high word counts
-   - **Domain cues**:
-     • Gauge density of legal terms: law, court, statute, regulation, jurisdiction, precedent, appellate
-     • Recognize specialized terms: FOIA, public records, exemption, redaction, open meeting, sunshine law
-
-2. multi_hop_needed:
-   - True if answering requires connecting multiple resources or dimensions, such as:
-     • Federal FOIA procedures plus state-specific public records laws (MA, RI, CT)
-     • Merging open meeting rules with Sunshine Week commentary and NEFAC tutorials
-     • Combining advocacy proposals with statutory requirements
-   - **Temporal complexity**:
-     • Look for time-based references: trend, over time, historical, evolution, change, development
-     • Time markers: decade, year, month, recent, past, future, since, until, event dates (e.g., "July 22 30 Minute Skills")
-   - **Citation complexity**:
-     • Case citations: "Smith v. Jones"
-     • Statute references: "42 U.S.C. § 1983"
-
-3. tool_usage_required:
-   - True if simple text lookup isn’t enough and you need external tools or data:
-     • Filtering FOIA log databases by date or requester attributes
-     • Querying public records APIs for aggregated statistics or counts
-     • Pulling event archives, CSVs, or tutorial transcripts for analysis
-   - Consider if the query asks for:
-     • Statistical summaries (e.g., number of requests in a time period)
-     • Programmatic access (e.g., download records, export logs)
-
-Output exactly one JSON object with keys: reasoning_required, multi_hop_needed, tool_usage_required. Do not include any other text or fields.
-"""
-
-
-def analyze_complexity_node(state: AgentState) -> QueryComplexity:
+def analyze_complexity_node(state: AgentState, config: RunnableConfig) -> QueryComplexity:
     """
-    Graph node that runs complexity analysis on tshe incoming AgentState.
+    Graph node that runs complexity analysis on the incoming AgentState.
+
+    This function uses RunnableConfig for LangGraph Studio compatibility.
     """
+    # Get configuration from RunnableConfig
+    configuration = Configuration.from_runnable_config(config)
+
+    model = init_chat_model(configuration.analyze_complexity_model)
+
+    # Use prompt from configuration (LangGraph Studio compatible)
+    complexity_prompt = configuration.complexity_analysis_prompt
+
     prompt = ChatPromptTemplate(
         [
-            ("system", COMPLEXITY_ANALYSIS_PROMPT),
+            ("system", complexity_prompt),
             MessagesPlaceholder(variable_name="chat_history"),
             ("human", "Query to analyze: {query}"),
         ]
