@@ -313,26 +313,6 @@ class Configuration(BaseModel):
         },
     )
 
-    intent_classification_model: Annotated[
-        models_module.ModelType,
-        {"__template_metadata__": {"kind": "llm"}},
-    ] = Field(
-        default=models_module.DEFAULT_INTENT_CLASSIFICATION_MODEL,
-        description="The name of the language model to use for the intent_classification node.",
-        json_schema_extra={
-            "langgraph_nodes": [node_names_module.INTENT_CLASSIFICATION_NODE],
-            "langgraph_type": "model",
-        },
-    )
-
-    intent_classification_prompt: str = Field(
-        default=prompts_module.DEFAULT_INTENT_CLASSIFICATION_PROMPT,
-        description="Prompt for classifying user intent to route queries to appropriate processing paths.",
-        json_schema_extra={
-            "langgraph_nodes": [node_names_module.INTENT_CLASSIFICATION_NODE],
-            "langgraph_type": "prompt",
-        },
-    )
     # ========================================================================
     # SPECIALIZED PROMPTS
     # ========================================================================

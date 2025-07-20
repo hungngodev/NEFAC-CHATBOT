@@ -4,7 +4,6 @@
 MEMORY_SUMMARIZER_NODE = "summarizer_node"
 
 # query_understanding
-INTENT_CLASSIFICATION_NODE = "intent_classification_node"
 COMPLEXITY_ANALYZER_ANALYZE_COMPLEXITY_NODE = "analyze_complexity"
 
 # query_translation
