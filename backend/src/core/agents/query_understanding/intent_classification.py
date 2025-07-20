@@ -7,7 +7,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from backend.src.config.node_names import INTENT_CLASSIFICATION_NODE
 from backend.src.config.settings import Configuration
-from backend.src.schemas.core_types import AgentState
+from backend.src.schemas.state import AgentState
 
 
 class IntentClassification(BaseModel):

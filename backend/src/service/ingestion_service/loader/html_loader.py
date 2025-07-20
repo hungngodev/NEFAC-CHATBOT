@@ -9,7 +9,7 @@ from langchain.docstore.document import Document
 from langchain_core.runnables import RunnableLambda
 from tqdm import tqdm
 
-from src.schemas.core_types import ContentChunkMetadata
+from backend.src.schemas.state import ContentChunkMetadata
 from src.service.ingestion_service.loader.semantic_double_pass_splitter import (
     SemanticDoublePassMergingSplitterWithContext,
 )

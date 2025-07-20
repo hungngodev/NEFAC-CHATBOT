@@ -5,7 +5,7 @@ from langchain_core.messages import AnyMessage
 from langgraph.graph import MessagesState
 from langmem.short_term import RunningSummary, summarize_messages
 
-from backend.src.schemas.core_types import AgentState
+from backend.src.schemas.state import AgentState
 from src.config.settings import Configuration
 
 

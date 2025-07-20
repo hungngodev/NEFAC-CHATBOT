@@ -8,6 +8,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, Send, StateGraph
 from langgraph.types import RunnableConfig
 
+from backend.src.schemas.state import AgentState
 from src.config.node_names import (
     MULTI_QUERY_DEDUPLICATE_DOCUMENTS,
     MULTI_QUERY_FORMAT_DOCUMENTS,
@@ -17,7 +18,6 @@ from src.config.node_names import (
 from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
-from src.schemas.core_types import AgentState
 
 
 # --- Subgraph State ---

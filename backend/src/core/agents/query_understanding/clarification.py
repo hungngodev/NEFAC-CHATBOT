@@ -1,0 +1,27 @@
+from typing import Literal
+
+from langchain.chat_models import init_chat_model
+from langchain_core.messages import AIMessage, HumanMessage, get_buffer_string
+from langchain_core.runnables import RunnableConfig
+from langgraph.graph import END
+from langgraph.types import Command
+
+from backend.src.core.agents.tools.main import get_api_key_for_model, get_today_str
+from src.config.prompts import CLARIFY_WITH_USER_INSTRUCTIONS
+from src.config.settings import Configuration
+from src.schemas.state import AgentState, ClarifyWithUser
+
+
+async def clarify_with_user(state: AgentState, config: RunnableConfig) -> Command[Literal["write_research_brief", "__end__"]]:
+    configurable = Configuration.from_runnable_config(config)
+    if not configurable.allow_clarification:
+        return Command(goto="write_research_brief")
+    messages = state["messages"]
+    model_config = {"model": configurable.research_model, "max_tokens": configurable.research_model_max_tokens, "api_key": get_api_key_for_model(configurable.research_model, config), "tags": ["langsmith:nostream"]}
+    configurable_model = init_chat_model(configurable.research_model).bind(**model_config)
+    model = configurable_model.with_structured_output(ClarifyWithUser).with_retry(stop_after_attempt=configurable.max_structured_output_retries).with_config(model_config)
+    response = await model.ainvoke([HumanMessage(content=CLARIFY_WITH_USER_INSTRUCTIONS.format(messages=get_buffer_string(messages), date=get_today_str()))])
+    if response.need_clarification:
+        return Command(goto=END, update={"messages": [AIMessage(content=response.question)]})
+    else:
+        return Command(goto="write_research_brief", update={"messages": [AIMessage(content=response.verification)]})

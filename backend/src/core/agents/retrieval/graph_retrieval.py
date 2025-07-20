@@ -15,7 +15,7 @@ from langchain_neo4j import GraphCypherQAChain, Neo4jGraph
 
 from backend.src.config.node_names import GRAPH_RETRIEVAL_GRAPH_TOOL_NODE
 from backend.src.config.settings import Configuration
-from backend.src.schemas.core_types import AgentState
+from backend.src.schemas.state import AgentState
 
 
 @tool(tags=[GRAPH_RETRIEVAL_GRAPH_TOOL_NODE])

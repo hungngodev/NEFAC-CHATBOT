@@ -9,6 +9,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, StateGraph
 from pydantic import BaseModel
 
+from backend.src.schemas.state import AgentState
 from src.config.node_names import (
     RETRIEVAL_SUBGRAPH_COMBINE_DOCUMENTS,
     RETRIEVAL_SUBGRAPH_ENSEMBLE_RETRIEVAL,
@@ -21,7 +22,6 @@ from src.core.agents.retrieval.keyword_retrieval import keyword_retriever
 
 # We need the vector_store object to dynamically create retrievers with different `k` values
 from src.core.agents.retrieval.vector_retrieval import vector_retriever
-from src.schemas.core_types import AgentState
 
 
 class DocumentSearchParamsModel(BaseModel):

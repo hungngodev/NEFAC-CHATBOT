@@ -5,9 +5,9 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnableBranch, RunnableConfig
 from pydantic import BaseModel, Field
 
+from backend.src.schemas.state import AgentState
 from src.config.node_names import CONTEXTUALIZER_CONTEXTUALIZER_NODE
 from src.config.settings import Configuration
-from src.schemas.core_types import AgentState
 
 
 class NeedForContextualization(BaseModel):

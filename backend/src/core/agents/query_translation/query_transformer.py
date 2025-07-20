@@ -6,6 +6,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, StateGraph
 from pydantic import BaseModel, ConfigDict, Field
 
+from backend.src.schemas.state import AgentState
 from src.config.node_names import (
     QUERY_TRANSFORMER_CONTEXTUAL_STRATEGY,
     QUERY_TRANSFORMER_DECOMPOSITION,
@@ -21,7 +22,6 @@ from src.core.agents.query_translation.factual_strategy import factual_strategy
 from src.core.agents.query_translation.hyde import hyde
 from src.core.agents.query_translation.multi_query import multi_query
 from src.core.agents.query_translation.step_back import step_back
-from src.schemas.core_types import AgentState
 
 
 class MethodSelection(BaseModel):

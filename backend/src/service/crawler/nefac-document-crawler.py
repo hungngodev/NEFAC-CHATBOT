@@ -20,7 +20,7 @@ import yt_dlp
 from youtube_transcript_api import YouTubeTranscriptApi  # type: ignore
 from youtube_transcript_api.proxies import WebshareProxyConfig
 
-from src.schemas.core_types import ContentMetadata, PDFMetadata, YouTubeMetadata
+from backend.src.schemas.state import ContentMetadata, PDFMetadata, YouTubeMetadata
 
 # Configure logging
 logging.basicConfig(

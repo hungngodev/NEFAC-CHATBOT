@@ -1,33 +1,96 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from datetime import datetime
-from enum import Enum
+import operator
 from operator import add
-from typing import Annotated, Any, ClassVar, Generic, Literal, TypedDict, TypeVar
+from typing import Annotated, Optional, TypedDict
 
 from langchain_core.documents import Document
-from langchain_core.messages import AnyMessage
+from langchain_core.messages import AnyMessage, MessageLikeRepresentation
 from langgraph.graph import MessagesState
-from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator
+from pydantic import BaseModel, Field
+
+
+###################
+# Structured Outputs
+###################
+class ConductResearch(BaseModel):
+    """Call this tool to conduct research on a specific topic."""
+
+    research_topic: str = Field(
+        description="The topic to research. Should be a single topic, and should be described in high detail (at least a paragraph).",
+    )
+
+
+class ResearchComplete(BaseModel):
+    """Call this tool to indicate that the research is complete."""
+
+
+class Summary(BaseModel):
+    summary: str
+    key_excerpts: str
+
+
+class ClarifyWithUser(BaseModel):
+    need_clarification: bool = Field(
+        description="Whether the user needs to be asked a clarifying question.",
+    )
+    question: str = Field(
+        description="A question to ask the user to clarify the report scope",
+    )
+    verification: str = Field(
+        description="Verify message that we will start research after the user has provided the necessary information.",
+    )
+
+
+class ResearchQuestion(BaseModel):
+    research_brief: str = Field(
+        description="A research question that will be used to guide the research.",
+    )
+
+
+###################
+# State Definitions
+###################
+
+
+def override_reducer(current_value, new_value):
+    if isinstance(new_value, dict) and new_value.get("type") == "override":
+        return new_value.get("value", new_value)
+    else:
+        return operator.add(current_value, new_value)
+
+
+class AgentInputState(MessagesState):
+    """InputState is only 'messages'"""
 
 
 class AgentState(MessagesState):
-    """
-    Unified state for the hierarchical multi-agent system.
-    This is the single source of truth that flows through all nodes.
-    """
-
+    supervisor_messages: Annotated[list[MessageLikeRepresentation], override_reducer]
     summarized_messages: list[AnyMessage]
-
-    # Core conversation fields
-    user_query: str = Field(description="Current user query")
-    # Contextualizer
-    contextualized_query: str | None = Field(default=None, description="Standalone query with context")
-
+    research_brief: Optional[str]
+    raw_notes: Annotated[list[str], override_reducer] = []
+    notes: Annotated[list[str], override_reducer] = []
+    final_report: str
     final_documents: Annotated[list[Document], add] = Field(default_factory=list, description="Final list of retrieved documents")
     final_context: str | None = Field(default=None, description="Final formatted context from all retrievals")
-    # Final answer
-    final_answer: str | None = Field(default=None, description="Generated final answer")
-    # Error handling
-    error: str | None = Field(default=None, description="Error message if any")
+
+
+class SupervisorState(TypedDict):
+    supervisor_messages: Annotated[list[MessageLikeRepresentation], override_reducer]
+    research_brief: str
+    notes: Annotated[list[str], override_reducer] = []
+    research_iterations: int = 0
+    raw_notes: Annotated[list[str], override_reducer] = []
+
+
+class ResearcherState(TypedDict):
+    researcher_messages: Annotated[list[MessageLikeRepresentation], operator.add]
+    tool_call_iterations: int = 0
+    research_topic: str
+    compressed_research: str
+    raw_notes: Annotated[list[str], override_reducer] = []
+
+
+class ResearcherOutputState(BaseModel):
+    compressed_research: str
+    raw_notes: Annotated[list[str], override_reducer] = []

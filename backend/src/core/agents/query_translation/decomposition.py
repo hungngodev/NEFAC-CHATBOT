@@ -11,6 +11,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableConfig
 from langgraph import END, StateGraph
 
+from backend.src.schemas.state import AgentState
 from src.config.node_names import (
     DECOMPOSITION_ANSWER_SUB_QUESTIONS,
     DECOMPOSITION_FORMAT_ANSWER,
@@ -21,7 +22,6 @@ from src.config.node_names import (
 from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
-from src.schemas.core_types import AgentState
 
 
 # --- Subgraph State ---
