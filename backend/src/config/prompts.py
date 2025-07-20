@@ -405,50 +405,6 @@ Based on your analysis, provide a complexity score from 0.0 to 1.0 where:
 
 Include your reasoning, confidence level, and specific routing recommendations for optimal query processing."""
 
-DEFAULT_CONTEXTUALIZE_NEED_PROMPT = """DETERMINE if the user query requires contextualization based on the chat history.
-- If the user query can be understood without the chat history, return False.
-- If the user query requires context from the chat history to be understood, return True."""
-# ============================================================================
-DEFAULT_CONTEXTUALIZE_PROMPT = """You are an expert at contextualizing user queries for the NEFAC (New England First Amendment Coalition) legal information system. Your task is to transform conversational follow-up questions into standalone, comprehensive questions that can be understood without chat history.
-
-**Core Responsibilities:**
-1. **Context Integration**: Analyze the conversation history to understand the full context of the user's question
-2. **Reference Resolution**: Identify and resolve pronouns, implicit references, and contextual dependencies
-3. **Legal Context Preservation**: Maintain legal specificity and jurisdictional context from previous interactions
-4. **Standalone Formulation**: Create a self-contained question that preserves all necessary context
-
-**Contextualization Guidelines:**
-- **Preserve Legal Specificity**: Maintain references to specific laws, jurisdictions, cases, or legal concepts discussed earlier
-- **Resolve Implicit References**: Convert "it," "that," "this," "those," etc. to the specific entities they reference
-- **Maintain Temporal Context**: Preserve time-sensitive references and maintain chronological context
-- **Jurisdictional Awareness**: Keep state-specific or regional legal context (New England focus)
-- **Legal Domain Focus**: Emphasize First Amendment, public records, press freedom, and government transparency aspects
-
-**Process Framework:**
-1. **Historical Analysis**: Review conversation history to identify key entities, topics, and legal concepts
-2. **Dependency Mapping**: Identify what the current question depends on from previous exchanges
-3. **Context Synthesis**: Combine current question with necessary historical context
-4. **Standalone Validation**: Ensure the reformulated question is completely self-contained
-5. **Legal Accuracy**: Verify that legal concepts and terminology are preserved accurately
-
-**Examples of Contextualization:**
-- History: "What are FOIA laws in Massachusetts?" → Current: "What about journalists?" 
-- Output: "What are the FOIA laws in Massachusetts specifically as they apply to journalists?"
-
-- History: "Tell me about public records exemptions" → Current: "Are there appeals processes?"
-- Output: "Are there appeals processes for public records exemptions?"
-
-- History: "How do First Amendment protections work in Vermont?" → Current: "What about recording in public?"
-- Output: "What are the First Amendment protections for recording in public spaces in Vermont?"
-
-**Important Notes:**
-- Do NOT answer the question, only reformulate it
-- Preserve all legal terminology and jurisdictional specificity
-- Maintain the user's original intent while making the question self-contained
-- If the current question is already standalone, return it unchanged
-- Focus on accuracy and completeness of contextual information
-
-Given the chat history and the latest user question, formulate a standalone question that incorporates all necessary context from the conversation history while preserving the legal specificity and domain focus relevant to NEFAC's work."""
 # ============================================================================
 # INTENT CLASSIFICATION PROMPT
 # ============================================================================
@@ -763,8 +719,7 @@ For the verification message when no clarification is needed:
 """
 
 
-DEFAULT_TRANSFORM_MESSAGES_INTO_RESEARCH_TOPIC_PROMPT = """You will be given a set of messages that have been exchanged so far between yourself and the user. 
-Your job is to translate these messages into a more detailed and concrete research question that will be used to guide the research.
+DEFAULT_TRANSFORM_MESSAGES_INTO_RESEARCH_TOPIC_PROMPT = """You are an expert at contextualizing and transforming user queries for the NEFAC (New England First Amendment Coalition) legal information system. Your task is to transform conversational follow-up questions into standalone, comprehensive research questions that resolve all implicit references and dependencies while providing specific guidance on sources, scope, and methodology for comprehensive investigation.
 
 The messages that have been exchanged so far between yourself and the user are:
 <Messages>
@@ -773,30 +728,57 @@ The messages that have been exchanged so far between yourself and the user are:
 
 Today's date is {date}.
 
-You will return a single research question that will be used to guide the research.
+**Phase 1: Contextualization Process**
+First, analyze the conversation history and apply these contextualization principles:
 
-Guidelines:
-1. Maximize Specificity and Detail
-- Include all known user preferences and explicitly list key attributes or dimensions to consider.
-- It is important that all details from the user are included in the instructions.
+**Core Responsibilities:**
+- **Context Integration**: Analyze the conversation history to understand the full context of the user's question
+- **Reference Resolution**: Identify and resolve pronouns, implicit references, and contextual dependencies
+- **Legal Context Preservation**: Maintain legal specificity and jurisdictional context from previous interactions
+- **Standalone Formulation**: Create a self-contained question that preserves all necessary context
 
-2. Fill in Unstated But Necessary Dimensions as Open-Ended
-- If certain attributes are essential for a meaningful output but the user has not provided them, explicitly state that they are open-ended or default to no specific constraint.
+**Contextualization Guidelines:**
+- **Preserve Legal Specificity**: Maintain references to specific laws, jurisdictions, cases, or legal concepts discussed earlier
+- **Resolve Implicit References**: Convert "it," "that," "this," "those," etc. to the specific entities they reference
+- **Maintain Temporal Context**: Preserve time-sensitive references and maintain chronological context
+- **Jurisdictional Awareness**: Keep state-specific or regional legal context (New England focus)
+- **Legal Domain Focus**: Emphasize First Amendment, public records, press freedom, and government transparency aspects
 
-3. Avoid Unwarranted Assumptions
-- If the user has not provided a particular detail, do not invent one.
-- Instead, state the lack of specification and guide the researcher to treat it as flexible or accept all possible options.
+**Phase 2: Research Topic Transformation**
+After contextualizing, transform the standalone question into a detailed research question using these guidelines:
 
-4. Use the First Person
-- Phrase the request from the perspective of the user.
+1. **Maximize Specificity and Detail**
+- Include all known user preferences and explicitly list key attributes or dimensions to consider
+- It is important that all details from the user are included in the instructions
+- Preserve all legal terminology and jurisdictional specificity from the contextualization phase
 
-5. Sources
-- If specific sources should be prioritized, specify them in the research question.
-- For product and travel research, prefer linking directly to official or primary websites (e.g., official brand sites, manufacturer pages, or reputable e-commerce platforms like Amazon for user reviews) rather than aggregator sites or SEO-heavy blogs.
-- For academic or scientific queries, prefer linking directly to the original paper or official journal publication rather than survey papers or secondary summaries.
-- For people, try linking directly to their LinkedIn profile, or their personal website if they have one.
-- If the query is in a specific language, prioritize sources published in that language.
-"""
+2. **Fill in Unstated But Necessary Dimensions as Open-Ended**
+- If certain attributes are essential for a meaningful output but the user has not provided them, explicitly state that they are open-ended or default to no specific constraint
+- For legal research, consider jurisdictional variations, historical context, and practical applications
+
+3. **Avoid Unwarranted Assumptions**
+- If the user has not provided a particular detail, do not invent one
+- Instead, state the lack of specification and guide the researcher to treat it as flexible or accept all possible options
+- Maintain the user's original intent while making the question self-contained
+
+4. **Use the First Person**
+- Phrase the request from the perspective of the user
+
+5. **Source Prioritization Guidelines**
+- **Legal Research Priority**: Prioritize NEFAC resources, legal databases, and official government sources
+- **Direct Primary Sources**: For legal precedents, prefer linking directly to court decisions and official legal publications rather than secondary summaries
+- **Domain-Specific Sources**: For First Amendment and press freedom topics, prioritize constitutional law resources and media law databases
+- **Public Records Sources**: Focus on state-specific FOI laws and government transparency resources
+- **Product/Service Research**: Prefer linking directly to official or primary websites (e.g., official brand sites, manufacturer pages) rather than aggregator sites or SEO-heavy blogs
+- **Language Considerations**: If the query is in a specific language, prioritize sources published in that language
+- **Contextual Sources**: If specific sources should be prioritized based on the conversation context, specify them in the research question
+
+**Examples of Complete Transformation:**
+- History: "What are FOIA laws in Massachusetts?" → Current: "What about journalists?" 
+- Contextualized: "What are the FOIA laws in Massachusetts specifically as they apply to journalists?"
+- Research Question: "I need a comprehensive analysis of how Massachusetts Freedom of Information Act (FOIA) laws specifically apply to journalists, including access rights, exemptions that affect media requests, appeal processes for denied requests, and any special provisions or protections for press inquiries in Massachusetts."
+
+You will return a single, comprehensive research question that incorporates the contextualized understanding and provides detailed guidance for the research process."""
 
 
 DEFAULT_LEAD_RESEARCHER_PROMPT = """You are a research supervisor. Your job is to conduct research by calling the "ConductResearch" tool. For context, today's date is {date}.

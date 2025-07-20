@@ -292,36 +292,6 @@ class Configuration(BaseModel):
         },
     )
 
-    contextualize_model: Annotated[
-        models_module.ModelType,
-        {"__template_metadata__": {"kind": "llm"}},
-    ] = Field(
-        default=models_module.DEFAULT_CONTEXTUALIZE_MODEL,
-        description="The name of the language model to use for the contextualize node.",
-        json_schema_extra={
-            "langgraph_nodes": [node_names_module.CONTEXTUALIZER_NODE],
-            "langgraph_type": "model",
-        },
-    )
-
-    contextualize_need_prompt: str = Field(
-        default=prompts_module.DEFAULT_CONTEXTUALIZE_NEED_PROMPT,
-        description="Prompt for determining if the user query requires contextualization based on chat history.",
-        json_schema_extra={
-            "langgraph_nodes": [node_names_module.CONTEXTUALIZER_NODE],
-            "langgraph_type": "prompt",
-        },
-    )
-
-    contextualize_prompt: str = Field(
-        default=prompts_module.DEFAULT_CONTEXTUALIZE_PROMPT,
-        description="Prompt for contextualizing user queries by incorporating chat history to create standalone questions.",
-        json_schema_extra={
-            "langgraph_nodes": [node_names_module.CONTEXTUALIZER_NODE],
-            "langgraph_type": "prompt",
-        },
-    )
-
     analyze_complexity_model: Annotated[
         models_module.ModelType,
         {"__template_metadata__": {"kind": "llm"}},
@@ -458,7 +428,6 @@ class Configuration(BaseModel):
             "langgraph_nodes": [
                 node_names_module.SUPERVISOR_GENERATOR_AGENT,
                 node_names_module.SUPERVISOR_VALIDATION_AGENT,
-                node_names_module.CONTEXTUALIZER_NODE,
                 node_names_module.COMPLEXITY_ANALYZER_ANALYZE_COMPLEXITY_NODE,
                 node_names_module.INTENT_CLASSIFICATION_NODE,
                 node_names_module.REASONING_REACT_MULTI_STEP_REASONING,
