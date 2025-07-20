@@ -5,7 +5,7 @@ from operator import add
 from typing import Annotated, Optional, TypedDict
 
 from langchain_core.documents import Document
-from langchain_core.messages import AnyMessage, MessageLikeRepresentation
+from langchain_core.messages import MessageLikeRepresentation
 from langgraph.graph import MessagesState
 from pydantic import BaseModel, Field
 
@@ -48,7 +48,6 @@ class AgentInputState(MessagesState):
 
 class AgentState(MessagesState):
     supervisor_messages: Annotated[list[MessageLikeRepresentation], override_reducer]
-    summarized_messages: list[AnyMessage]
     research_brief: Optional[str]
     raw_notes: Annotated[list[str], override_reducer] = []
     notes: Annotated[list[str], override_reducer] = []
