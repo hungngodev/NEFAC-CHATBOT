@@ -722,7 +722,7 @@ Your routing decisions directly impact user experience and system efficiency. Pr
 
 # researcher prompts
 
-CLARIFY_WITH_USER_INSTRUCTIONS = """
+DEFAULT_CLARIFY_WITH_USER_INSTRUCTIONS = """
 These are the messages that have been exchanged so far from the user asking for the report:
 <Messages>
 {messages}
@@ -763,7 +763,7 @@ For the verification message when no clarification is needed:
 """
 
 
-TRANSFORM_MESSAGES_INTO_RESEARCH_TOPIC_PROMPT = """You will be given a set of messages that have been exchanged so far between yourself and the user. 
+DEFAULT_TRANSFORM_MESSAGES_INTO_RESEARCH_TOPIC_PROMPT = """You will be given a set of messages that have been exchanged so far between yourself and the user. 
 Your job is to translate these messages into a more detailed and concrete research question that will be used to guide the research.
 
 The messages that have been exchanged so far between yourself and the user are:
@@ -799,7 +799,7 @@ Guidelines:
 """
 
 
-LEAD_RESEARCHER_PROMPT = """You are a research supervisor. Your job is to conduct research by calling the "ConductResearch" tool. For context, today's date is {date}.
+DEFAULT_LEAD_RESEARCHER_PROMPT = """You are a research supervisor. Your job is to conduct research by calling the "ConductResearch" tool. For context, today's date is {date}.
 
 <Task>
 Your focus is to call the "ConductResearch" tool to conduct research against the overall research question passed in by the user. 
@@ -862,7 +862,7 @@ With all of the above in mind, call the ConductResearch tool to conduct research
 """
 
 
-RESEARCH_SYSTEM_PROMPT = """You are a research assistant conducting deep research on the user's input topic. Use the tools and search methods provided to research the user's input topic. For context, today's date is {date}.
+DEFAULT_RESEARCH_SYSTEM_PROMPT = """You are a research assistant conducting deep research on the user's input topic. Use the tools and search methods provided to research the user's input topic. For context, today's date is {date}.
 
 <Task>
 Your job is to use tools and search methods to find information that can answer the question that a user asks.
@@ -899,7 +899,7 @@ You can use any of the tools provided to you to find resources that can help ans
 """
 
 
-COMPRESS_RESEARCH_SYSTEM_PROMPT = """You are a research assistant that has conducted research on a topic by calling several tools and web searches. Your job is now to clean up the findings, but preserve all of the relevant statements and information that the researcher has gathered. For context, today's date is {date}.
+DEFAULT_COMPRESS_RESEARCH_SYSTEM_PROMPT = """You are a research assistant that has conducted research on a topic by calling several tools and web searches. Your job is now to clean up the findings, but preserve all of the relevant statements and information that the researcher has gathered. For context, today's date is {date}.
 
 <Task>
 You need to clean up information gathered from tool calls and web searches in the existing messages.
@@ -937,11 +937,11 @@ The report should be structured like this:
 Critical Reminder: It is extremely important that any information that is even remotely relevant to the user's research topic is preserved verbatim (e.g. don't rewrite it, don't summarize it, don't paraphrase it).
 """
 
-COMPRESS_RESEARCH_SIMPLE_HUMAN_MESSAGE = """All above messages are about research conducted by an AI Researcher. Please clean up these findings.
+DEFAULT_COMPRESS_RESEARCH_SIMPLE_HUMAN_MESSAGE = """All above messages are about research conducted by an AI Researcher. Please clean up these findings.
 
 DO NOT summarize the information. I want the raw information returned, just in a cleaner format. Make sure all relevant information is preserved - you can rewrite findings verbatim."""
 
-FINAL_REPORT_GENERATION_PROMPT = """Based on all the research conducted, create a comprehensive, well-structured answer to the overall research brief:
+DEFAULT_FINAL_REPORT_GENERATION_PROMPT = """Based on all the research conducted, create a comprehensive, well-structured answer to the overall research brief:
 <Research Brief>
 {research_brief}
 </Research Brief>
@@ -1010,7 +1010,7 @@ Format the report in clear markdown with proper structure and include source ref
 """
 
 
-SUMMARIZE_WEBPAGE_PROMPT = """You are tasked with summarizing the raw content of a webpage retrieved from a web search. Your goal is to create a summary that preserves the most important information from the original web page. This summary will be used by a downstream research agent, so it's crucial to maintain the key details without losing essential information.
+DEFAULT_SUMMARIZE_WEBPAGE_PROMPT = """You are tasked with summarizing the raw content of a webpage retrieved from a web search. Your goal is to create a summary that preserves the most important information from the original web page. This summary will be used by a downstream research agent, so it's crucial to maintain the key details without losing essential information.
 
 Here is the raw content of the webpage:
 

@@ -64,3 +64,14 @@ RETRIEVAL_SUBGRAPH_COMBINE_DOCUMENTS = "combine_documents"
 # supervisor
 SUPERVISOR_GENERATOR_AGENT = "generator_agent"
 SUPERVISOR_VALIDATION_AGENT = "validation_agent"
+SUPERVISOR_NODE = "supervisor"
+SUPERVISOR_TOOLS_NODE = "supervisor_tools"
+
+# research agents
+RESEARCH_CLARIFY_WITH_USER = "clarify_with_user"
+RESEARCH_WRITE_RESEARCH_BRIEF = "write_research_brief"
+RESEARCH_SUPERVISOR = "research_supervisor"
+RESEARCH_FINAL_REPORT_GENERATION = "final_report_generation"
+RESEARCH_RESEARCHER = "researcher"
+RESEARCH_RESEARCHER_TOOLS = "researcher_tools"
+RESEARCH_COMPRESS_RESEARCH = "compress_research"

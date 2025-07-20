@@ -17,7 +17,6 @@ from langgraph.config import get_store
 from mcp import McpError
 from tavily import AsyncTavilyClient
 
-from src.config.prompts import SUMMARIZE_WEBPAGE_PROMPT
 from src.config.settings import Configuration, SearchAPI
 from src.schemas.state import ResearchComplete, Summary
 
@@ -64,6 +63,7 @@ async def tavily_search(queries: List[str], max_results: Annotated[int, Injected
             else summarize_webpage(
                 summarization_model,
                 result["raw_content"][:max_char_to_include],
+                config,
             )
         )
         for result in unique_results.values()
@@ -90,9 +90,10 @@ async def tavily_search_async(search_queries, max_results: int = 5, topic: Liter
     return search_docs
 
 
-async def summarize_webpage(model: BaseChatModel, webpage_content: str) -> str:
+async def summarize_webpage(model: BaseChatModel, webpage_content: str, config: RunnableConfig) -> str:
     try:
-        summary = await asyncio.wait_for(model.ainvoke([HumanMessage(content=SUMMARIZE_WEBPAGE_PROMPT.format(webpage_content=webpage_content, date=get_today_str()))]), timeout=60.0)
+        configurable = Configuration.from_runnable_config(config)
+        summary = await asyncio.wait_for(model.ainvoke([HumanMessage(content=configurable.summarize_webpage_prompt.format(webpage_content=webpage_content, date=get_today_str()))]), timeout=60.0)
         return f"""<summary>\n{summary.summary}\n</summary>\n\n<key_excerpts>\n{summary.key_excerpts}\n</key_excerpts>"""
     except (asyncio.TimeoutError, Exception) as e:
         print(f"Failed to summarize webpage: {str(e)}")

@@ -3,7 +3,6 @@ from langchain_core.messages import HumanMessage, SystemMessage, filter_messages
 from langchain_core.runnables import RunnableConfig
 
 from backend.src.core.agents.tools.main import get_api_key_for_model, get_today_str, is_token_limit_exceeded, remove_up_to_last_ai_message
-from src.config.prompts import COMPRESS_RESEARCH_SIMPLE_HUMAN_MESSAGE, COMPRESS_RESEARCH_SYSTEM_PROMPT
 from src.config.settings import Configuration
 from src.schemas.state import ResearcherState
 
@@ -15,8 +14,8 @@ async def compress_research(state: ResearcherState, config: RunnableConfig):
     synthesizer_model = configurable_model.with_config({"model": configurable.compression_model, "max_tokens": configurable.compression_model_max_tokens, "api_key": get_api_key_for_model(configurable.compression_model, config), "tags": ["langsmith:nostream"]})
     researcher_messages = state.get("researcher_messages", [])
     # Update the system prompt to now focus on compression rather than research.
-    researcher_messages[0] = SystemMessage(content=COMPRESS_RESEARCH_SYSTEM_PROMPT.format(date=get_today_str()))
-    researcher_messages.append(HumanMessage(content=COMPRESS_RESEARCH_SIMPLE_HUMAN_MESSAGE))
+    researcher_messages[0] = SystemMessage(content=configurable.compress_research_system_prompt.format(date=get_today_str()))
+    researcher_messages.append(HumanMessage(content=configurable.compress_research_simple_human_message))
     while synthesis_attempts < 3:
         try:
             response = await synthesizer_model.ainvoke(researcher_messages)

@@ -6,6 +6,7 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.types import Command
 
 from backend.src.core.agents.tools.main import anthropic_websearch_called, get_all_tools, openai_websearch_called
+from src.config.node_names import RESEARCH_COMPRESS_RESEARCH, RESEARCH_RESEARCHER
 from src.config.settings import Configuration
 from src.schemas.state import ResearcherState
 
@@ -24,7 +25,7 @@ async def researcher_tools(state: ResearcherState, config: RunnableConfig) -> Co
     # Early Exit Criteria: No tool calls (or native web search calls)were made by the researcher
     if not most_recent_message.tool_calls and not (openai_websearch_called(most_recent_message) or anthropic_websearch_called(most_recent_message)):
         return Command(
-            goto="compress_research",
+            goto=RESEARCH_COMPRESS_RESEARCH,
         )
     # Otherwise, execute tools and gather results.
     tools = await get_all_tools(config)
@@ -38,13 +39,13 @@ async def researcher_tools(state: ResearcherState, config: RunnableConfig) -> Co
     # These are late exit criteria because we need to add ToolMessages
     if state.get("tool_call_iterations", 0) >= configurable.max_react_tool_calls or any(tool_call["name"] == "ResearchComplete" for tool_call in most_recent_message.tool_calls):
         return Command(
-            goto="compress_research",
+            goto=RESEARCH_COMPRESS_RESEARCH,
             update={
                 "researcher_messages": tool_outputs,
             },
         )
     return Command(
-        goto="researcher",
+        goto=RESEARCH_RESEARCHER,
         update={
             "researcher_messages": tool_outputs,
         },

@@ -3,7 +3,6 @@ from langchain_core.messages import HumanMessage
 from langchain_core.runnables import RunnableConfig
 
 from backend.src.core.agents.tools.main import get_api_key_for_model, get_model_token_limit, get_today_str, is_token_limit_exceeded
-from src.config.prompts import FINAL_REPORT_GENERATION_PROMPT
 from src.config.settings import Configuration
 from src.schemas.state import AgentState
 
@@ -24,7 +23,7 @@ async def final_report_generation(state: AgentState, config: RunnableConfig):
     max_retries = 3
     current_retry = 0
     while current_retry <= max_retries:
-        final_report_prompt = FINAL_REPORT_GENERATION_PROMPT.format(research_brief=state.get("research_brief", ""), findings=findings, date=get_today_str())
+        final_report_prompt = configurable.final_report_generation_prompt.format(research_brief=state.get("research_brief", ""), findings=findings, date=get_today_str())
         try:
             final_report = await configurable_model.with_config(writer_model_config).ainvoke([HumanMessage(content=final_report_prompt)])
             return {"final_report": final_report.content, "messages": [final_report], **cleared_state}
