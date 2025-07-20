@@ -1,11 +1,11 @@
 from langgraph.graph import END, START, StateGraph
 
+from backend.src.core.agents.generation.final_report_generation import final_report_generation
 from backend.src.core.agents.query_understanding.write_research_brief import write_research_brief
 from src.config.node_names import MEMORY_SUMMARIZER_NODE, RESEARCH_CLARIFY_WITH_USER, RESEARCH_FINAL_REPORT_GENERATION, RESEARCH_SUPERVISOR, RESEARCH_WRITE_RESEARCH_BRIEF
 from src.config.settings import Configuration
 from src.core.agents.memory.summarizer import summarizer
 from src.core.agents.query_understanding.clarification import clarify_with_user
-from src.core.agents.research.final_report_generation import final_report_generation
 from src.core.agents.supervisor.supervisor import supervisor_subgraph
 from src.schemas.state import AgentInputState, AgentState
 

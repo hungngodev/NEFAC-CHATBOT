@@ -46,6 +46,16 @@ _Goal: Maximize the relevance and completeness of retrieved context for the LLM.
 
 _Goal: Ensure the LLM gets the best, most relevant, and most trustworthy context._
 
+- [ ] **Planning Agent Enhancement**: Add a dedicated planning agent to improve research coordination and strategy:
+  - **Separation of Concerns**: Split current supervisor into Planning Agent (strategy/planning) and Supervisor Agent (execution/coordination)
+  - **Research Strategy Development**: Analyze user questions and create comprehensive research plans
+  - **Topic Decomposition**: Break complex legal questions into focused, independently-researchable topics
+  - **Priority Assessment**: Determine which research areas are most critical for NEFAC's legal domain
+  - **Dependency Analysis**: Identify if research topics need sequential vs parallel execution
+  - **Scope Estimation**: Predict research depth needed ("shallow"|"medium"|"deep") for each topic
+  - **Cost Optimization**: Better planning leads to more efficient research resource utilization
+  - **Domain-Specific Legal Research Strategy**: Incorporate NEFAC's specific research patterns and legal methodology
+  - **Implementation**: Sequential flow (User Question → Planning Agent → Research Plan → Enhanced Supervisor → Research Results)
 - [ ] Rerank: Integrate a reranker (e.g., Cohere, Voyage) to sort retrieved chunks by relevance to the query.
 - [ ] Evaluation Framework: Set up evals to test different chunking, retrieval, and reranking strategies.
 - [ ] User Feedback Loop: Allow users to flag good/bad answers to improve retrieval and chunking strategies.
