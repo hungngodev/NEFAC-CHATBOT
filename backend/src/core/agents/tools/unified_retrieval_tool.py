@@ -6,23 +6,20 @@ from langchain_core.tools import tool as lc_tool
 
 from src.core.agents.query_translation.query_transformer import QueryTransformerState, query_internal_documents
 
-INTERNAL_DOCUMENT_SEARCH_DESCRIPTION = (
-    "Search internal documents and knowledge base using intelligent retrieval strategies. "
-    "This tool automatically analyzes your query and selects the most appropriate search method: "
-    "basic direct search for simple queries, or advanced transformation strategies (multi-query, "
-    "decomposition, step-back, HyDE, factual enhancement, contextual expansion) for complex queries. "
-    "Use this to find relevant information from the organization's document collection, "
-    "including legal documents, policy papers, reports, and other internal resources. "
-    "The system intelligently chooses between direct retrieval and sophisticated query transformation "
-    "based on query characteristics, providing comprehensive coverage from multiple perspectives "
-    "when needed while maintaining efficiency for straightforward searches."
-)
 
-
-@lc_tool(description=INTERNAL_DOCUMENT_SEARCH_DESCRIPTION)
+@lc_tool(parse_docstring=True)
 async def internal_document_search(query: str, config: Annotated[RunnableConfig, InjectedToolArg] = None) -> str:
-    """
-    Search internal documents using intelligent query analysis and retrieval strategies.
+    """Search internal documents and knowledge base using intelligent retrieval strategies.
+
+    This tool automatically analyzes your query and selects the most appropriate search method:
+    basic direct search for simple queries, or advanced transformation strategies (multi-query,
+    decomposition, step-back, HyDE, factual enhancement, contextual expansion) for complex queries.
+    Use this to find relevant information from the organization's document collection,
+    including legal documents, policy papers, reports, and other internal resources.
+    The system intelligently chooses between direct retrieval and sophisticated query transformation
+    based on query characteristics, providing comprehensive coverage from multiple perspectives
+    when needed while maintaining efficiency for straightforward searches.
+    Always prioritize this tool for legal, policy, NEFAC-related, or organizational queries before using external search.
 
     This unified tool automatically:
     1. Analyzes your query complexity and characteristics
@@ -38,10 +35,13 @@ async def internal_document_search(query: str, config: Annotated[RunnableConfig,
     4. Returns comprehensive, formatted results
 
     Args:
-        query (str): The search query for internal documents
+        query: The search query for internal documents. Be specific and detailed
+               for best results. Examples: "First Amendment rights for journalists",
+               "FOIA exemptions for law enforcement", "NEFAC v. Department of Justice"
 
     Returns:
-        str: Formatted search results with strategy information
+        Formatted search results with strategy information and source metadata.
+        Returns comprehensive document excerpts with titles, summaries, and content.
     """
     try:
         # Use the unified query transformer which intelligently selects strategy
@@ -71,7 +71,13 @@ async def internal_document_search(query: str, config: Annotated[RunnableConfig,
             strategy_name = strategy_map.get(method_used, method_used)
             strategy_info = f" (using {strategy_name})"
 
-        return f"Internal Document Search Results{strategy_info} for: '{query}'\n\n{formatted_result}"
+        # Format the final response with clear structure
+        response_header = f"📚 Internal Document Search Results{strategy_info} for: '{query}'"
+        separator = "\n" + "=" * 80 + "\n"
+
+        return f"{response_header}{separator}{formatted_result}"
 
     except Exception as e:
-        return f"Error searching internal documents: {str(e)}. Try rephrasing your query or use web search instead."
+        error_msg = f"❌ Error searching internal documents: {str(e)}"
+        suggestion = "💡 Try rephrasing your query or use web search for external information."
+        return f"{error_msg}\n{suggestion}"

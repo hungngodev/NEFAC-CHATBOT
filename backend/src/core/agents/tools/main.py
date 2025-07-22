@@ -29,13 +29,25 @@ async def get_search_tool(search_api: SearchAPI):
 
 
 async def get_all_tools(config: RunnableConfig):
+    """
+    Get all available tools for the agent with proper configuration.
+
+    Returns a list of tools in priority order:
+    1. Research completion tool
+    2. External search tools (web search)
+    3. Internal document search (prioritized for legal/organizational queries)
+    4. MCP tools (additional integrations)
+    """
     tools = [lc_tool(ResearchComplete)]
     configurable = Configuration.from_runnable_config(config)
     search_api = SearchAPI(get_config_value(configurable.search_api))
     tools.extend(await get_search_tool(search_api))
 
-    # Add unified internal document retrieval tool
-    tools.append(internal_document_search.with_config(config))  # Intelligent internal search with automatic strategy selection
+    # Add unified internal document retrieval tool with proper metadata
+    internal_search_tool = internal_document_search.with_config(config)
+    # Add metadata to help with tool selection
+    internal_search_tool.metadata = {**(internal_search_tool.metadata or {}), "type": "internal_search", "priority": "high", "domain": "legal_organizational"}
+    tools.append(internal_search_tool)
 
     existing_tool_names = {tool.name if hasattr(tool, "name") else tool.get("name", "web_search") for tool in tools}
     mcp_tools = await load_mcp_tools(config, existing_tool_names)
