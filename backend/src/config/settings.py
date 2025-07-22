@@ -291,28 +291,6 @@ class Configuration(BaseModel):
             "langgraph_type": "prompt",
         },
     )
-
-    analyze_complexity_model: Annotated[
-        models_module.ModelType,
-        {"__template_metadata__": {"kind": "llm"}},
-    ] = Field(
-        default=models_module.DEFAULT_COMPLEXITY_ANALYSIS_MODEL,
-        description="The name of the language model to use for the analyze_complexity node.",
-        json_schema_extra={
-            "langgraph_nodes": [node_names_module.COMPLEXITY_ANALYZER_ANALYZE_COMPLEXITY_NODE],
-            "langgraph_type": "model",
-        },
-    )
-
-    complexity_analysis_prompt: str = Field(
-        default=prompts_module.DEFAULT_COMPLEXITY_ANALYSIS_PROMPT,
-        description="Prompt for analyzing query complexity to determine appropriate routing and processing strategies.",
-        json_schema_extra={
-            "langgraph_nodes": [node_names_module.COMPLEXITY_ANALYZER_ANALYZE_COMPLEXITY_NODE],
-            "langgraph_type": "prompt",
-        },
-    )
-
     # ========================================================================
     # SPECIALIZED PROMPTS
     # ========================================================================
@@ -330,15 +308,6 @@ class Configuration(BaseModel):
         description="QA prompt for answering questions using knowledge graph context.",
         json_schema_extra={
             "langgraph_nodes": [node_names_module.GRAPH_RETRIEVAL_GRAPH_TOOL_NODE],
-            "langgraph_type": "prompt",
-        },
-    )
-
-    sub_question_prompt: str = Field(
-        default=prompts_module.DEFAULT_SUB_QUESTION_PROMPT,
-        description="Prompt for generating sub-questions in multi-step reasoning.",
-        json_schema_extra={
-            "langgraph_nodes": [node_names_module.REASONING_MULTI_STEP_REASONING, node_names_module.REASONING_REACT_MULTI_STEP_REASONING],
             "langgraph_type": "prompt",
         },
     )
@@ -408,9 +377,6 @@ class Configuration(BaseModel):
             "langgraph_nodes": [
                 node_names_module.SUPERVISOR_GENERATOR_AGENT,
                 node_names_module.SUPERVISOR_VALIDATION_AGENT,
-                node_names_module.COMPLEXITY_ANALYZER_ANALYZE_COMPLEXITY_NODE,
-                node_names_module.INTENT_CLASSIFICATION_NODE,
-                node_names_module.REASONING_REACT_MULTI_STEP_REASONING,
                 node_names_module.RETRIEVAL_SUBGRAPH_PLANNER,
                 node_names_module.RETRIEVAL_SUBGRAPH_ENSEMBLE_RETRIEVAL,
                 node_names_module.RETRIEVAL_SUBGRAPH_GRAPH_RETRIEVAL,
@@ -459,24 +425,6 @@ class Configuration(BaseModel):
         description="Prompt for validating generated answers against the retrieved context and original question.",
         json_schema_extra={
             "langgraph_nodes": [node_names_module.SUPERVISOR_VALIDATION_AGENT],
-            "langgraph_type": "prompt",
-        },
-    )
-
-    synthesis_prompt: str = Field(
-        default=prompts_module.DEFAULT_SYNTHESIS_PROMPT,
-        description="Prompt for synthesizing information from multiple sources to create comprehensive answers.",
-        json_schema_extra={
-            "langgraph_nodes": [node_names_module.REASONING_MULTI_STEP_REASONING, node_names_module.REASONING_REACT_MULTI_STEP_REASONING],
-            "langgraph_type": "prompt",
-        },
-    )
-
-    generation_prompt: str = Field(
-        default=prompts_module.FINAL_PROMPT,
-        description="Prompt for generating final answers based on context and conversation history.",
-        json_schema_extra={
-            "langgraph_nodes": [node_names_module.SUPERVISOR_GENERATOR_AGENT],
             "langgraph_type": "prompt",
         },
     )

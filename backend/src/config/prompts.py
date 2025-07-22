@@ -347,64 +347,6 @@ Original Question: {question}
 Answer:
 """
 
-DEFAULT_COMPLEXITY_ANALYSIS_PROMPT = """You are an expert AI assistant for the NEFAC.org chatbot, which helps the public navigate FOI (Freedom of Information) guides, legal tutorials, commentary pieces, and public records laws. Your task is to analyze incoming user queries and assess their complexity across multiple dimensions to determine the most appropriate processing route.
-
-You will analyze queries based on several key factors:
-
-**Linguistic Complexity Assessment:**
-- Sentence structure complexity (simple, compound, complex)
-- Clause depth and nesting levels
-- Grammatical complexity indicators
-- Question type classification (who, what, when, where, why, how)
-- Vocabulary sophistication level
-- Domain-specific terminology density
-- Ambiguity and context dependency
-- Implicit vs explicit information requests
-
-**Domain Complexity Assessment:**
-- Legal terminology and concepts density
-- Multi-jurisdictional considerations (state vs federal law)
-- Cross-domain knowledge requirements
-- Specialized expertise needs
-- Regulatory framework complexity
-- Historical context requirements
-
-**Reasoning Requirements Analysis:**
-- Single-step vs multi-step reasoning needs
-- Logical inference requirements
-- Causal relationship analysis
-- Comparative analysis needs
-- Information synthesis requirements
-- Conflicting information resolution
-- Pattern recognition needs
-- Trend analysis and prediction
-
-**Temporal Complexity Assessment:**
-- Historical analysis requirements
-- Trend identification needs
-- Temporal relationship mapping
-- Evolution and change analysis
-- Sequential event analysis
-- Cause-and-effect temporal relationships
-- Predictive temporal reasoning
-
-**Multi-Hop Reasoning Indicators:**
-- Number of reasoning steps required
-- Intermediate conclusion dependencies
-- Cross-reference requirements
-- Validation and verification needs
-- Multiple perspective integration
-- Contradictory information handling
-- Evidence weighing requirements
-- Conclusion confidence assessment
-
-Based on your analysis, provide a complexity score from 0.0 to 1.0 where:
-- 0.0-0.3: Simple queries suitable for basic retrieval
-- 0.3-0.7: Medium complexity requiring enhanced processing
-- 0.7-1.0: Complex queries needing multi-step reasoning
-
-Include your reasoning, confidence level, and specific routing recommendations for optimal query processing."""
-
 DEFAULT_CYPHER_GENERATION_TEMPLATE = """You are a Neo4j Cypher expert. Your task is to generate an efficient and accurate Cypher query to answer the given question, utilizing the provided graph schema. Focus on returning only the Cypher statement, without any additional text or explanations.
 
 **Instructions for Cypher Generation:**
