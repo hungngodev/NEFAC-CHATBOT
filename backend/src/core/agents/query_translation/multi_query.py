@@ -8,7 +8,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, Send, StateGraph
 from langgraph.types import RunnableConfig
 
-from backend.src.schemas.state import AgentState
+from backend.src.core.agents.query_translation.query_transformer import QueryTransformerState
 from src.config.node_names import (
     MULTI_QUERY_DEDUPLICATE_DOCUMENTS,
     MULTI_QUERY_FORMAT_DOCUMENTS,
@@ -21,7 +21,7 @@ from src.core.agents.tools.document_formatter import format_docs
 
 
 # --- Subgraph State ---
-class MultiQueryState(AgentState):
+class MultiQueryState(QueryTransformerState):
     """State for the multi-query subgraph."""
 
     generated_queries: List[str] = []
@@ -36,7 +36,7 @@ def generate_queries_node(state: MultiQueryState, config: RunnableConfig) -> Mul
     configuration = Configuration.from_runnable_config(config)
     llm = init_chat_model(configuration.multi_query_model)
 
-    question = state["contextualized_query"]
+    question = state["transformed_query"]
     prompt = ChatPromptTemplate.from_template(configuration.multi_query_perspectives_prompt)
     chain = prompt | llm | StrOutputParser() | (lambda x: x.split("\n"))
 
@@ -54,7 +54,7 @@ def deduplicate_documents_node(state: RetrievalSubgraphState, config: RunnableCo
     The results from the Send operations are automatically collected in the state.
     """
     # The `retrieved_documents_lists` will contain the output of each retrieval subgraph invocation
-    retrieved_documents_lists = state["final_documents"]
+    retrieved_documents_lists = state["accumulated_documents"]
 
     flattened_docs_str = []
 
@@ -69,14 +69,14 @@ def deduplicate_documents_node(state: RetrievalSubgraphState, config: RunnableCo
         doc = loads(doc_str)
         if isinstance(doc, Document):
             unique_documents.append(doc)
-    return {"final_documents": unique_documents}
+    return {"accumulated_documents": unique_documents}
 
 
-def format_documents_node(state: MultiQueryState) -> AgentState:
+def format_documents_node(state: MultiQueryState) -> QueryTransformerState:
     """Formats the final list of documents into a single string."""
-    formatted_string = format_docs(state["final_documents"])
+    formatted_string = format_docs(state["accumulated_documents"])
     # The final output of any query translation subgraph is the transformed query/result
-    return {"final_context": formatted_string}
+    return {"transformed_context": formatted_string}
 
 
 workflow = StateGraph(MultiQueryState)

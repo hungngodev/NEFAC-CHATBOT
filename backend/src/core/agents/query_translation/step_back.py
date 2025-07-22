@@ -7,7 +7,7 @@ from langchain_core.prompts import ChatPromptTemplate, FewShotChatMessagePromptT
 from langgraph.graph import END, Send, StateGraph
 from langgraph.types import RunnableConfig
 
-from backend.src.schemas.state import AgentState
+from backend.src.core.agents.query_translation.query_transformer import QueryTransformerState
 from src.config.node_names import (
     STEP_BACK_GENERATE_AND_DISPATCH,
     STEP_BACK_GENERATE_FINAL_RESPONSE,
@@ -22,7 +22,7 @@ from src.core.agents.tools.document_formatter import format_docs
 
 
 # --- Subgraph State ---
-class StepBackState(AgentState):
+class StepBackState(QueryTransformerState):
     """State for the step-back query transformation subgraph."""
 
     step_back_question: str = ""
@@ -36,7 +36,7 @@ def generate_and_dispatch_node(state: StepBackState, config: RunnableConfig) -> 
     configuration = Configuration.from_runnable_config(config)
     llm = init_chat_model(configuration.step_back_generate_model)
 
-    original_question = state["contextualized_query"]
+    original_question = state["transformed_query"]
 
     examples = [
         {"input": "Can I film police during a protest in Massachusetts?", "output": "What are the legal rights around recording public officials in Massachusetts?"},
@@ -65,12 +65,12 @@ def process_step_back_context_node(state: StepBackState, config: RunnableConfig)
     return {"step_back_context": formatted_string}
 
 
-def generate_final_response_node(state: StepBackState, config: RunnableConfig) -> AgentState:
+def generate_final_response_node(state: StepBackState, config: RunnableConfig) -> QueryTransformerState:
     """Generates a final response using both sets of retrieved documents."""
     configuration = Configuration.from_runnable_config(config)
     llm = init_chat_model(configuration.step_back_response_model)
 
-    question = state["contextualized_query"]
+    question = state["transformed_query"]
     normal_context = state["original_context"]
     step_back_context = state["step_back_context"]
 
@@ -79,7 +79,7 @@ def generate_final_response_node(state: StepBackState, config: RunnableConfig) -
 
     final_response = chain.invoke({"question": question, "normal_context": normal_context, "step_back_context": step_back_context})
 
-    return {"final_context": final_response}
+    return {"transformed_context": final_response}
 
 
 workflow = StateGraph(StepBackState)
@@ -96,7 +96,7 @@ workflow.set_entry_point(STEP_BACK_GENERATE_AND_DISPATCH)
 
 def route_form_generate_and_dispatch(state: StepBackState) -> RetrievalSubgraphState:
     """Route based on whether we have both retrieval results."""
-    return [Send(STEP_BACK_RETRIEVE_ORIGINAL, {"retrieval_query": state["contextualized_query"]}), Send(STEP_BACK_RETRIEVE_STEP_BACK, {"retrieval_query": state["step_back_question"]})]
+    return [Send(STEP_BACK_RETRIEVE_ORIGINAL, {"retrieval_query": state["transformed_query"]}), Send(STEP_BACK_RETRIEVE_STEP_BACK, {"retrieval_query": state["step_back_question"]})]
 
 
 workflow.add_conditional_edges(STEP_BACK_GENERATE_AND_DISPATCH, route_form_generate_and_dispatch)

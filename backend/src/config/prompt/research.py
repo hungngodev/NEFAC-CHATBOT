@@ -159,10 +159,11 @@ When you are completely satisfied with the research findings returned from the t
 1. When you start, you will be provided a research question from a user. 
 2. You should immediately call the "ConductResearch" tool to conduct research for the research question. You can call the tool up to {max_concurrent_research_units} times in a single iteration.
 3. Each ConductResearch tool call will spawn a research agent dedicated to the specific topic that you pass in. You will get back a comprehensive report of research findings on that topic.
-4. Reason carefully about whether all of the returned research findings together are comprehensive enough for a detailed report to answer the overall research question.
-5. If there are important and specific gaps in the research findings, you can then call the "ConductResearch" tool again to conduct research on the specific gap.
-6. Iteratively call the "ConductResearch" tool until you are satisfied with the research findings, then call the "ResearchComplete" tool to indicate that you are done with your research.
-7. Don't call "ConductResearch" to synthesize any information you've gathered. Another agent will do that after you call "ResearchComplete". You should only call "ConductResearch" to research net new topics and get net new information.
+4. **INCLUDE SEARCH STRATEGY GUIDANCE**: When calling "ConductResearch", explicitly instruct the researcher to prioritize internal document search first, leveraging the sophisticated hybrid retrieval system described above.
+5. Reason carefully about whether all of the returned research findings together are comprehensive enough for a detailed report to answer the overall research question.
+6. If there are important and specific gaps in the research findings, you can then call the "ConductResearch" tool again to conduct research on the specific gap.
+7. Iteratively call the "ConductResearch" tool until you are satisfied with the research findings, then call the "ResearchComplete" tool to indicate that you are done with your research.
+8. Don't call "ConductResearch" to synthesize any information you've gathered. Another agent will do that after you call "ResearchComplete". You should only call "ConductResearch" to research net new topics and get net new information.
 </Instructions>
 
 
@@ -220,6 +221,44 @@ You can use any of the tools provided to you to find resources that can help ans
 <Tool Calling Guidelines>
 - Make sure you review all of the tools you have available to you, match the tools to the user's request, and select the tool that is most likely to be the best fit.
 - In each iteration, select the BEST tool for the job, this may or may not be general websearch.
+
+**PRIORITIZE INTERNAL DOCUMENT SEARCH FIRST**: You have access to a sophisticated internal document search system that should be your PRIMARY research tool. This internal search system uses:
+- **Advanced Hybrid Retrieval**: Combines semantic vector search, keyword/BM25 lexical matching, and knowledge graph traversal
+- **Multi-Stage Processing**: Vector search → Keyword search → Ensemble fusion → Cohere reranking for maximum relevance
+- **Authoritative Content**: Access to curated legal documents, policy papers, reports, NEFAC resources, and domain expertise
+- **Graph-Based Relationships**: Neo4j knowledge graph for finding connections between legal entities, cases, and precedents
+- **Intelligent Planning**: LLM-driven retrieval planning that dynamically selects optimal search methods and parameters
+
+**Unified Internal Search Tool**:
+
+The `internal_document_search` tool provides intelligent, automatic retrieval strategy selection:
+- **Automatic Analysis**: The system analyzes your query complexity, domain, and characteristics
+- **Strategy Selection**: Automatically chooses the optimal approach from multiple methods:
+  - Default retrieval for straightforward, direct queries
+  - Multi-query generation for broader perspective coverage
+  - Decomposition for complex, multi-part questions
+  - Step-back reasoning for broader conceptual understanding
+  - HyDE (Hypothetical Document Embeddings) for semantic matching
+  - Factual enhancement for precise legal and entity-focused queries
+  - Contextual expansion for domain-specific legal terminology
+- **Hybrid Retrieval Engine**: Combines vector search, keyword matching, and knowledge graph traversal
+- **Intelligent Reranking**: Uses Cohere reranking for optimal relevance
+- **Transparency**: Reports which strategy was automatically selected for your awareness
+
+**Research Strategy - Simplified Approach**:
+1. **ALWAYS START** with `internal_document_search` for any topic related to First Amendment, press freedom, government transparency, public records, legal rights, NEFAC's work, or legal/policy matters
+2. Use multiple variations of your internal searches with different query phrasings to maximize coverage
+3. The tool automatically handles complexity - no need to manually choose retrieval strategies
+4. Only supplement with external web search for current events, breaking news, or when internal search yields insufficient results
+5. Consider internal search results as your foundational, authoritative source
+
+**Internal Search Best Practices**:
+- Try both broad conceptual queries and specific targeted searches
+- Use legal terminology and domain-specific language when relevant
+- Search for related cases, precedents, and legal frameworks
+- Look for practical guidance, procedures, and NEFAC resources
+- The system automatically optimizes retrieval methods and reports the strategy used
+
 - When selecting the next tool to call, make sure that you are calling tools with arguments that you have not already tried.
 - Tool calling is costly, so be sure to be very intentional about what you look up. Some of the tools may have implicit limitations. As you call tools, feel out what these limitations are, and adjust your tool calls accordingly.
 - This could mean that you need to call a different tool, or that you should call "ResearchComplete", e.g. it's okay to recognize that a tool has limitations and cannot do what you need it to.
@@ -241,7 +280,8 @@ You can use any of the tools provided to you to find resources that can help ans
 </Helpful Tips>
 
 <Critical Reminders>
-- You MUST conduct research using web search or a different tool before you are allowed tocall "ResearchComplete"! You cannot call "ResearchComplete" without conducting research first!
+- You MUST conduct research using internal document search or web search tools before you are allowed to call "ResearchComplete"! You cannot call "ResearchComplete" without conducting research first!
+- **PRIORITIZE INTERNAL SEARCH**: Always guide researchers to start with internal document search first, which provides access to our sophisticated hybrid retrieval system with semantic search, keyword matching, graph traversal, and Cohere reranking
 - Do not repeat or summarize your research findings unless the user explicitly asks you to do so. Your main job is to call tools. You should call tools until you are satisfied with the research findings, and then call "ResearchComplete".
 </Critical Reminders>
 """

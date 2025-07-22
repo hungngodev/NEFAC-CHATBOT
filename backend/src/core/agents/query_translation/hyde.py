@@ -4,7 +4,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, StateGraph
 from langgraph.types import RunnableConfig
 
-from backend.src.schemas.state import AgentState
+from backend.src.core.agents.query_translation.query_transformer import QueryTransformerState
 from src.config.node_names import (
     HYDE_GENERATE_FINAL_RESPONSE,
     HYDE_GENERATE_HYPOTHETICAL_DOCUMENT,
@@ -20,7 +20,7 @@ llm = init_chat_model(default_config.hyde_model)
 
 
 # --- Subgraph State ---
-class HydeState(AgentState):
+class HydeState(QueryTransformerState):
     """State for the HyDE query transformation subgraph."""
 
     hypothetical_document: str = ""
@@ -30,7 +30,7 @@ class HydeState(AgentState):
 # --- Nodes ---
 def generate_hypothetical_document_node(state: HydeState, config: RunnableConfig) -> RetrievalSubgraphState:
     """Generates a hypothetical document to be used as the retrieval query."""
-    question = state["contextualized_query"]
+    question = state["transformed_query"]
     configuration = Configuration.from_runnable_config(config)
     llm = init_chat_model(configuration.hyde_model)
 
@@ -42,9 +42,9 @@ def generate_hypothetical_document_node(state: HydeState, config: RunnableConfig
     return {"retrieval_query": hypothetical_document}
 
 
-def generate_final_response_node(state: HydeState, config: RunnableConfig) -> AgentState:
+def generate_final_response_node(state: HydeState, config: RunnableConfig) -> QueryTransformerState:
     """Generates a final response using the documents retrieved based on the HyDE query."""
-    question = state["contextualized_query"]
+    question = state["transformed_query"]
     # The retrieval subgraph has already populated the 'documents' field
     documents = state["documents"]
     configuration = Configuration.from_runnable_config(config)
@@ -56,7 +56,7 @@ def generate_final_response_node(state: HydeState, config: RunnableConfig) -> Ag
     chain = final_prompt | llm | StrOutputParser()
 
     final_response = chain.invoke({"context": context, "question": question})
-    return {"final_context": final_response}
+    return {"transformed_context": final_response}
 
 
 workflow = StateGraph(HydeState)

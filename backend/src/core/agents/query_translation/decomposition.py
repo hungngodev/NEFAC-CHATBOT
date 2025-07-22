@@ -11,7 +11,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableConfig
 from langgraph import END, StateGraph
 
-from backend.src.schemas.state import AgentState
+from backend.src.core.agents.query_translation.query_transformer import QueryTransformerState
 from src.config.node_names import (
     DECOMPOSITION_ANSWER_SUB_QUESTIONS,
     DECOMPOSITION_FORMAT_ANSWER,
@@ -25,7 +25,7 @@ from src.core.agents.tools.document_formatter import format_docs
 
 
 # --- Subgraph State ---
-class DecompositionState(AgentState):
+class DecompositionState(QueryTransformerState):
     """State for the decomposition query transformation subgraph."""
 
     sub_questions: List[str] = []
@@ -39,7 +39,7 @@ def generate_sub_questions_node(state: DecompositionState, config: RunnableConfi
     configuration = Configuration.from_runnable_config(config)
 
     model = init_chat_model(configuration.decomposition_generate_model)
-    question = state["contextualized_query"]
+    question = state["transformed_query"]
 
     # Use prompt from configuration
     prompt = ChatPromptTemplate.from_template(configuration.decomposition_generate_prompt)
@@ -81,12 +81,12 @@ def format_answer_node(state: DecompositionState, config: RunnableConfig) -> Dec
     return {"q_a_pairs": [f"Question: {sub_question}\nAnswer: {answer}"]}
 
 
-def synthesize_final_answer_node(state: DecompositionState, config: RunnableConfig) -> AgentState:
+def synthesize_final_answer_node(state: DecompositionState, config: RunnableConfig) -> QueryTransformerState:
     """Synthesizes the final answer from the Q&A pairs."""
     configuration = Configuration.from_runnable_config(config)
     llm = init_chat_model(configuration.decomposition_final_model)
 
-    question = state["contextualized_query"]
+    question = state["transformed_query"]
     q_a_pairs_str = "\n---\n".join(state["q_a_pairs"])
 
     synthesis_prompt = ChatPromptTemplate.from_template(configuration.decomposition_synthesis_template)
@@ -94,7 +94,7 @@ def synthesize_final_answer_node(state: DecompositionState, config: RunnableConf
 
     final_response = synthesis_chain.invoke({"context": q_a_pairs_str, "question": question})
 
-    return {"final_context": final_response}
+    return {"transformed_context": final_response}
 
 
 def route_from_format_nodes(state: DecompositionState) -> str:

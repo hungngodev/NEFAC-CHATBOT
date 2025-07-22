@@ -10,6 +10,7 @@ from src.config.node_names import RESEARCH_COMPRESS_RESEARCH, RESEARCH_RESEARCHE
 from src.config.settings import Configuration
 from src.core.agents.research.compress_research import compress_research
 from src.core.agents.research.researcher_tools import researcher_tools
+from src.core.agents.retrieval.subgraph import retrieval_subgraph
 from src.schemas.state import ResearcherOutputState, ResearcherState
 
 
@@ -31,6 +32,8 @@ researcher_builder = StateGraph(ResearcherState, output=ResearcherOutputState, c
 researcher_builder.add_node(RESEARCH_RESEARCHER, researcher)
 researcher_builder.add_node(RESEARCH_RESEARCHER_TOOLS, researcher_tools)
 researcher_builder.add_node(RESEARCH_COMPRESS_RESEARCH, compress_research)
+researcher_builder.add_node("retrieval_agent", retrieval_subgraph)
 researcher_builder.add_edge(START, RESEARCH_RESEARCHER)
 researcher_builder.add_edge(RESEARCH_COMPRESS_RESEARCH, END)
+# Retrieval agent returns to researcher via Command, so no explicit edge needed
 researcher_subgraph = researcher_builder.compile()

@@ -53,7 +53,6 @@ class AgentState(MessagesState):
     notes: Annotated[list[str], override_reducer] = []
     final_report: str
     final_documents: Annotated[list[Document], add] = Field(default_factory=list, description="Final list of retrieved documents")
-    final_context: str | None = Field(default=None, description="Final formatted context from all retrievals")
 
 
 class SupervisorState(TypedDict):

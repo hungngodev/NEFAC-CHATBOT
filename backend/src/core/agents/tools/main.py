@@ -8,6 +8,7 @@ from langchain_core.tools import tool as lc_tool
 from src.config.settings import Configuration, SearchAPI
 from src.core.agents.tools.mcp_utils import load_mcp_tools
 from src.core.agents.tools.search import tavily_search
+from src.core.agents.tools.unified_retrieval_tool import internal_document_search
 from src.schemas.state import ResearchComplete
 
 
@@ -32,6 +33,10 @@ async def get_all_tools(config: RunnableConfig):
     configurable = Configuration.from_runnable_config(config)
     search_api = SearchAPI(get_config_value(configurable.search_api))
     tools.extend(await get_search_tool(search_api))
+
+    # Add unified internal document retrieval tool
+    tools.append(internal_document_search.with_config(config))  # Intelligent internal search with automatic strategy selection
+
     existing_tool_names = {tool.name if hasattr(tool, "name") else tool.get("name", "web_search") for tool in tools}
     mcp_tools = await load_mcp_tools(config, existing_tool_names)
     tools.extend(mcp_tools)

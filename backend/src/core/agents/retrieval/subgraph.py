@@ -1,4 +1,5 @@
-from typing import Any, Dict, List
+from operator import add
+from typing import Annotated, Any, Dict, List, TypedDict
 
 from langchain.chat_models import init_chat_model
 from langchain.retrievers import EnsembleRetriever
@@ -7,9 +8,8 @@ from langchain_cohere import CohereRerank
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, StateGraph
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
-from backend.src.schemas.state import AgentState
 from src.config.node_names import (
     RETRIEVAL_SUBGRAPH_COMBINE_DOCUMENTS,
     RETRIEVAL_SUBGRAPH_ENSEMBLE_RETRIEVAL,
@@ -37,18 +37,19 @@ class RetrievalPlanModel(BaseModel):
     rerank_k: int
 
 
-class RetrievalSubgraphState(AgentState):
+class RetrievalSubgraphState(TypedDict):
     """State for the retrieval subgraph."""
 
-    # The `retrieval_query` from AgentState is used as the input query.
+    # The `retrieval_query` from  is used as the input query.
     retrieval_query: str = ""
     retrieval_plan: Dict[str, Any] = {}
     graph_documents: List[Document] = []
     document_search_documents: List[Document] = []
     documents: List[Document] = []  # Final combined list
+    accumulated_documents: Annotated[list[Document], add] = Field(default_factory=list, description="Final list of retrieved documents")
 
 
-def plan_retrieval_node(state: AgentState, config: Configuration) -> dict:
+def plan_retrieval_node(state: RetrievalSubgraphState, config: Configuration) -> dict:
     query = state.retrieval_query
     llm = init_chat_model(config.retriever_worker_model)
 

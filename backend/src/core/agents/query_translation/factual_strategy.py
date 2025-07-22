@@ -4,7 +4,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, StateGraph
 from langgraph.types import RunnableConfig
 
-from backend.src.schemas.state import AgentState
+from backend.src.core.agents.query_translation.query_transformer import QueryTransformerState
 from src.config.node_names import (
     FACTUAL_STRATEGY_FORMAT_DOCUMENTS,
     FACTUAL_STRATEGY_GENERATE_FACTUAL_QUERY,
@@ -16,7 +16,7 @@ from src.core.agents.tools.document_formatter import format_docs
 
 
 # --- Subgraph State ---
-class FactualStrategyState(AgentState):
+class FactualStrategyState(QueryTransformerState):
     """State for the factual strategy subgraph."""
 
     # The 'documents' field will be populated by the retrieval subgraph
@@ -25,7 +25,7 @@ class FactualStrategyState(AgentState):
 # --- Nodes ---
 def generate_factual_query_node(state: FactualStrategyState, config: RunnableConfig) -> RetrievalSubgraphState:
     """Generates a factual query and passes it to the retrieval subgraph."""
-    question = state["contextualized_query"]
+    question = state["transformed_query"]
     configuration = Configuration.from_runnable_config(config)
     llm = init_chat_model(configuration.factual_strategy_model)
 
@@ -37,11 +37,11 @@ def generate_factual_query_node(state: FactualStrategyState, config: RunnableCon
     return {"retrieval_query": factual_query}
 
 
-def format_documents_node(state: FactualStrategyState) -> AgentState:
+def format_documents_node(state: FactualStrategyState) -> QueryTransformerState:
     """Formats the retrieved documents into a single string."""
     documents = state["documents"]
     formatted_string = format_docs(documents)
-    return {"final_context": formatted_string}
+    return {"transformed_context": formatted_string}
 
 
 workflow = StateGraph(FactualStrategyState)

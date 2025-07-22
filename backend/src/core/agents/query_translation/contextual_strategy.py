@@ -4,7 +4,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, StateGraph
 from langgraph.types import RunnableConfig
 
-from backend.src.schemas.state import AgentState
+from backend.src.core.agents.query_translation.query_transformer import QueryTransformerState
 from src.config.node_names import (
     CONTEXTUAL_STRATEGY_FORMAT_DOCUMENTS,
     CONTEXTUAL_STRATEGY_GENERATE_CONTEXTUAL_QUERY,
@@ -16,7 +16,7 @@ from src.core.agents.tools.document_formatter import format_docs
 
 
 # --- Subgraph State ---
-class ContextualStrategyState(AgentState):
+class ContextualStrategyState(QueryTransformerState):
     """State for the contextual strategy subgraph."""
 
     # The 'documents' field will be populated by the retrieval subgraph
@@ -25,7 +25,7 @@ class ContextualStrategyState(AgentState):
 # --- Nodes ---
 def generate_contextual_query_node(state: ContextualStrategyState, config: RunnableConfig) -> dict:
     """Generates a contextual query and passes it to the retrieval subgraph."""
-    question = state["contextualized_query"]
+    question = state["transformed_query"]
 
     # Get configuration from runnable config
     configuration = Configuration.from_runnable_config(config)
@@ -43,7 +43,7 @@ def format_documents_node(state: ContextualStrategyState) -> dict:
     """Formats the retrieved documents into a single string."""
     documents = state["documents"]
     formatted_string = format_docs(documents)
-    return {"final_context": formatted_string}
+    return {"transformed_context": formatted_string}
 
 
 workflow = StateGraph(ContextualStrategyState)
