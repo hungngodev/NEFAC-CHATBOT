@@ -491,6 +491,14 @@ class Configuration(BaseModel):
     compression_model_max_tokens: int = Field(default=8192, metadata={"x_oap_ui_config": {"type": "number", "default": 8192, "description": "Maximum output tokens for compression model"}})
     final_report_model: str = Field(default="openai:gpt-4.1", metadata={"x_oap_ui_config": {"type": "text", "default": "openai:gpt-4.1", "description": "Model for writing the final report from all research findings"}})
     final_report_model_max_tokens: int = Field(default=10000, metadata={"x_oap_ui_config": {"type": "number", "default": 10000, "description": "Maximum output tokens for final report model"}})
+    retriever_worker_model: str = Field(default="openai:gpt-4.1-mini", metadata={"x_oap_ui_config": {"type": "text", "default": "openai:gpt-4.1-mini", "description": "Model for retrieval planning and processing"}})
+    summarizer_model: str = Field(default="openai:gpt-4.1-nano", metadata={"x_oap_ui_config": {"type": "text", "default": "openai:gpt-4.1-nano", "description": "Model for summarizing conversation history"}})
+
+    # Retrieval Configuration
+    retrieval_planning_prompt: str = Field(
+        default=prompts_module.DEFAULT_RETRIEVAL_PLANNING_PROMPT,
+        description="Prompt for planning retrieval strategy based on query analysis with detailed method selection guidelines.",
+    )
 
     # Research Agent Prompts
     # ========================================================================

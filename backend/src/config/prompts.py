@@ -31,7 +31,7 @@ from src.config.prompt.research import (
     DEFAULT_SUMMARIZE_WEBPAGE_PROMPT,
     DEFAULT_TRANSFORM_MESSAGES_INTO_RESEARCH_TOPIC_PROMPT,
 )
-from src.config.prompt.retrieval import FINAL_PROMPT, GENERAL_PROMPT
+from src.config.prompt.retrieval import DEFAULT_RETRIEVAL_PLANNING_PROMPT, FINAL_PROMPT, GENERAL_PROMPT
 from src.config.prompt.supervisor import DEFAULT_SUPERVISOR_PROMPT
 from src.config.prompt.synthesis import DEFAULT_SUB_QUESTION_PROMPT, DEFAULT_SYNTHESIS_PROMPT
 from src.config.prompt.validation import DEFAULT_VALIDATION_PROMPT
@@ -43,6 +43,7 @@ __all__ = [
     # Retrieval prompts
     "FINAL_PROMPT",
     "GENERAL_PROMPT",
+    "DEFAULT_RETRIEVAL_PLANNING_PROMPT",
     # Validation prompts
     "DEFAULT_VALIDATION_PROMPT",
     # Synthesis prompts

@@ -20,7 +20,7 @@ class SummaryState(MessagesState):
 
 def summarization_node(state: SummaryState, config: Configuration) -> SummaryState:
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.su)
+    llm = init_chat_model(configuration.summarizer_model)
 
     summarization_result = summarize_messages(
         state["messages"],
@@ -35,3 +35,7 @@ def summarization_node(state: SummaryState, config: Configuration) -> SummarySta
     if summarization_result.running_summary:
         state_update["summary"] = summarization_result.running_summary
     return state_update
+
+
+# Create an alias for the summarizer
+summarizer = summarization_node

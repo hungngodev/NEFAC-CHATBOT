@@ -43,7 +43,8 @@ def graph_tool_node(query: str, state: Optional[AgentState] = None, config: Runn
     graph_qa_chain = GraphCypherQAChain.from_llm(llm, graph=graph, verbose=True, cypher_prompt=cypher_prompt, qa_prompt=qa_prompt, validate_cypher=True, return_intermediate_steps=True)
 
     # Invoke the chain with the combined question and entities
-    result = graph_qa_chain.invoke({"query": state["contextualized_query"]})
+    query_text = query if query else (state.get("retrieval_query", "") if state else "")
+    result = graph_qa_chain.invoke({"query": query_text})
 
     intermediate_steps = result.get("intermediate_steps", [])
     final_result = result.get("result", "")
