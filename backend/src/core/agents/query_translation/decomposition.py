@@ -9,7 +9,7 @@ from langchain.chat_models import init_chat_model
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableConfig
-from langgraph import END, StateGraph
+from langgraph.graph import END, StateGraph
 
 from src.config.node_names import (
     DECOMPOSITION_ANSWER_SUB_QUESTIONS,
@@ -122,7 +122,7 @@ workflow.set_entry_point(DECOMPOSITION_GENERATE_SUB_QUESTIONS)
 workflow.add_edge(DECOMPOSITION_GENERATE_SUB_QUESTIONS, DECOMPOSITION_ANSWER_SUB_QUESTIONS)
 workflow.add_edge(DECOMPOSITION_ANSWER_SUB_QUESTIONS, DECOMPOSITION_RETRIEVE_SUBGRAPH)
 workflow.add_edge(DECOMPOSITION_RETRIEVE_SUBGRAPH, DECOMPOSITION_FORMAT_ANSWER)
-workflow.add_conditional_edge(DECOMPOSITION_FORMAT_ANSWER, route_from_format_nodes)  # Loop back to answer next
+workflow.add_conditional_edges(DECOMPOSITION_FORMAT_ANSWER, route_from_format_nodes)  # Loop back to answer next
 workflow.add_edge(DECOMPOSITION_SYNTHESIZE_FINAL_ANSWER, END)
 
 # Compile the workflow

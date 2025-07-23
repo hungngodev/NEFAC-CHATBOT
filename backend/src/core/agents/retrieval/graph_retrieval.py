@@ -4,7 +4,7 @@ Refactored to use the new modular approach with intelligent sub-tool selection.
 """
 
 import os
-from typing import List, Optional
+from typing import List
 
 from langchain.chat_models import init_chat_model
 from langchain.prompts import ChatPromptTemplate
@@ -13,13 +13,16 @@ from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import tool
 from langchain_neo4j import GraphCypherQAChain, Neo4jGraph
 
-from src.config.node_names import GRAPH_RETRIEVAL_GRAPH_TOOL_NODE
 from src.config.settings import Configuration
-from src.schemas.state import AgentState
+
+NEO4J_URI = os.environ["NEO4J_URI"]
+NEO4J_USER = os.environ["NEO4J_USER"]
+NEO4J_PASSWORD = os.environ["NEO4J_PASSWORD"]
+graph = Neo4jGraph(url=NEO4J_URI, username=NEO4J_USER, password=NEO4J_PASSWORD)
 
 
-@tool(tags=[GRAPH_RETRIEVAL_GRAPH_TOOL_NODE])
-def graph_tool_node(query: str, state: Optional[AgentState] = None, config: RunnableConfig = None) -> List[Document]:
+@tool()
+def graph_tool_node(query: str, config: RunnableConfig = None) -> List[Document]:
     """
     Intelligent graph tool node that analyzes the query and decides which graph sub-tools to invoke.
 
@@ -31,11 +34,6 @@ def graph_tool_node(query: str, state: Optional[AgentState] = None, config: Runn
     configuration = Configuration.from_runnable_config(config)
     llm = init_chat_model(configuration.retriever_worker_model)
 
-    NEO4J_URI = os.environ["NEO4J_URI"]
-    NEO4J_USERNAME = os.environ["NEO4J_USERNAME"]
-    NEO4J_PASSWORD = os.environ["NEO4J_PASSWORD"]
-    graph = Neo4jGraph(url=NEO4J_URI, username=NEO4J_USERNAME, password=NEO4J_PASSWORD)
-
     cypher_prompt = ChatPromptTemplate.from_template(configuration.cypher_generation_template)
     qa_prompt = ChatPromptTemplate.from_template(configuration.graph_qa_prompt)
 
@@ -43,7 +41,7 @@ def graph_tool_node(query: str, state: Optional[AgentState] = None, config: Runn
     graph_qa_chain = GraphCypherQAChain.from_llm(llm, graph=graph, verbose=True, cypher_prompt=cypher_prompt, qa_prompt=qa_prompt, validate_cypher=True, return_intermediate_steps=True)
 
     # Invoke the chain with the combined question and entities
-    query_text = query if query else (state.get("retrieval_query", "") if state else "")
+    query_text = query
     result = graph_qa_chain.invoke({"query": query_text})
 
     intermediate_steps = result.get("intermediate_steps", [])

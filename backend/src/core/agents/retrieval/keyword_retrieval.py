@@ -6,13 +6,25 @@ Refactored to use the new modular approach with post-processing integration.
 import os
 from typing import List
 
+from elasticsearch import Elasticsearch
 from langchain_community.retrievers import ElasticSearchBM25Retriever
 from langchain_core.documents import Document
 from langchain_core.tools import tool
 
 elasticsearch_url = os.environ["ES_HOST"]
 index_name = os.environ["ES_INDEX"]
-keyword_retriever = ElasticSearchBM25Retriever.create(elasticsearch_url, index_name)
+print("ES_HOST =", os.environ.get("ES_HOST"))
+print("ES_INDEX =", os.environ.get("ES_INDEX"))
+
+# Initialize Elasticsearch client
+es = Elasticsearch(elasticsearch_url)
+
+if not es.indices.exists(index=index_name):
+    # Create index and retriever if index doesn't exist
+    keyword_retriever = ElasticSearchBM25Retriever.create(elasticsearch_url, index_name)
+else:
+    # Just instantiate the retriever if index already exists
+    keyword_retriever = ElasticSearchBM25Retriever(client=es, index_name=index_name)
 
 
 @tool

@@ -3,6 +3,7 @@ from langchain.retrievers import EnsembleRetriever
 from langchain.retrievers.contextual_compression import ContextualCompressionRetriever
 from langchain_cohere import CohereRerank
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, StateGraph
 
 from src.config.node_names import (
@@ -18,8 +19,9 @@ from src.core.agents.retrieval.vector_retrieval import vector_retriever
 from src.schemas.state import RetrievalPlanModel, RetrievalSubgraphState
 
 
-def plan_retrieval_node(state: RetrievalSubgraphState, config: Configuration) -> dict:
+def plan_retrieval_node(state: RetrievalSubgraphState, config: RunnableConfig) -> dict:
     query = state.retrieval_query
+    config = Configuration.from_runnable_config(config)
     llm = init_chat_model(config.retriever_worker_model)
 
     prompt = ChatPromptTemplate.from_messages(
@@ -56,10 +58,11 @@ def ensemble_retrieval_node(state: RetrievalSubgraphState) -> RetrievalSubgraphS
     return {"document_search_documents": final_docs}
 
 
-def graph_retrieval_node(state: RetrievalSubgraphState) -> RetrievalSubgraphState:
+def graph_retrieval_node(state: RetrievalSubgraphState, config: RunnableConfig) -> RetrievalSubgraphState:
     """Retrieves documents using graph search."""
     query = state["retrieval_query"]
-    documents = graph_tool_node.invoke(query, state=state)
+    config = Configuration.from_runnable_config(config)
+    documents = graph_tool_node.invoke(query, config=config)
     return {"graph_documents": documents}
 
 

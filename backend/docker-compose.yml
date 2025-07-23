@@ -3,6 +3,9 @@ version: "3.8"
 volumes:
   langgraph-data:
     driver: local
+  esdata:
+  qdrant-data:
+  neo4j-data:
 
 services:
   langgraph-redis:
@@ -12,6 +15,8 @@ services:
       interval: 5s
       timeout: 1s
       retries: 5
+    networks:
+      - nefacnet
 
   langgraph-postgres:
     image: postgres:16
@@ -29,6 +34,8 @@ services:
       timeout: 1s
       retries: 5
       interval: 5s
+    networks:
+      - nefacnet
 
   langgraph-api:
     image: my-langgraph-app:latest
@@ -44,3 +51,53 @@ services:
     environment:
       REDIS_URI: redis://langgraph-redis:6379/0
       POSTGRES_URI: postgres://postgres:postgres@langgraph-postgres:5432/postgres?sslmode=disable
+    networks:
+      - nefacnet
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.0.4
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    networks:
+      - nefacnet
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant-data:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__HTTP_PORT=6333
+      - QDRANT__SERVICE__GRPC_PORT=6334
+    networks:
+      - nefacnet
+
+  neo4j:
+    image: neo4j:5.15
+    container_name: neo4j
+    ports:
+      - "7474:7474" # HTTP
+      - "7687:7687" # Bolt
+    volumes:
+      - neo4j-data:/data
+    environment:
+      - NEO4J_AUTH=neo4j/password123
+      - NEO4J_PLUGINS=["apoc", "graph-data-science"]
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*,gds.*
+      - NEO4J_dbms_security_procedures_allowlist=apoc.*,gds.*
+    networks:
+      - nefacnet
+
+networks:
+  nefacnet:
+    driver: bridge

@@ -4,8 +4,8 @@ from langchain.chat_models import init_chat_model
 from langchain_core.documents import Document
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, FewShotChatMessagePromptTemplate
-from langgraph.graph import END, Send, StateGraph
-from langgraph.types import RunnableConfig
+from langgraph.graph import END, StateGraph
+from langgraph.types import RunnableConfig, Send
 
 from src.config.node_names import (
     STEP_BACK_GENERATE_AND_DISPATCH,
@@ -85,7 +85,7 @@ def generate_final_response_node(state: StepBackState, config: RunnableConfig) -
 workflow = StateGraph(StepBackState)
 
 workflow.add_node(STEP_BACK_GENERATE_AND_DISPATCH, generate_and_dispatch_node)
-workflow.add_node(STEP_BACK_RETRIEVE_ORIGINAL, retrieval_subgraph)  # The target for the parallel Sends
+workflow.add_node(STEP_BACK_RETRIEVE_ORIGINAL, retrieval_subgraph)  # The target for the paralles
 workflow.add_node(STEP_BACK_RETRIEVE_STEP_BACK, retrieval_subgraph)  # The target for the parallel Sends
 workflow.add_node(STEP_BACK_PROCESS_ORIGINAL_CONTEXT, process_original_context_node)  # Optional formatting step for original context
 workflow.add_node(STEP_BACK_PROCESS_STEP_BACK_CONTEXT, process_step_back_context_node)  # Optional formatting

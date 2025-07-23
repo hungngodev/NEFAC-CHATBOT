@@ -10,7 +10,8 @@ from src.config.settings import Configuration
 from src.core.agents.research.compress_research import compress_research
 from src.core.agents.research.researcher_tools import researcher_tools
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
-from src.core.agents.tools.main import get_all_tools, get_api_key_for_model
+from src.core.agents.tools.main import get_all_tools
+from src.core.agents.tools.misc_utils import get_api_key_for_model
 from src.schemas.state import ResearcherOutputState, ResearcherState
 
 

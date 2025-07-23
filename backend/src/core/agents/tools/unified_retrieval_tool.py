@@ -37,7 +37,7 @@ async def internal_document_search(query: str, config: Annotated[RunnableConfig,
 
     Args:
         query: The search query for internal documents. Be specific and detailed
-               for best results. Examples: "First Amendment rights for journalists",
+               for best results. Examples include "First Amendment rights for journalists",
                "FOIA exemptions for law enforcement", "NEFAC v. Department of Justice"
 
     Returns:

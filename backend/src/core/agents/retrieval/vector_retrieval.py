@@ -11,14 +11,33 @@ from langchain_core.tools import tool
 from langchain_openai import OpenAIEmbeddings
 from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
+from qdrant_client.models import Distance, VectorParams
 
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-large")
 
 qdrant_url = os.environ["QDRANT_ENDPOINT"]
 collection_name = os.environ["QDRANT_CLUSTER_ID"]
-api_key = os.environ.get("QDRANT_API_KEY")
+api_key = os.environ.get("QDRANT_API_KEY")  # Will be None for local
 
-client = QdrantClient(url=qdrant_url, api_key=api_key)
+# Initialize Qdrant client
+if api_key:
+    client = QdrantClient(url=qdrant_url, api_key=api_key)
+else:
+    # Local Qdrant doesn't need API key
+    client = QdrantClient(url=qdrant_url)
+
+# Check if collection exists, create if it doesn't
+try:
+    collections = client.get_collections()
+    collection_exists = any(col.name == collection_name for col in collections.collections)
+
+    if not collection_exists:
+        print(f"Creating new collection: {collection_name}")
+        client.create_collection(collection_name=collection_name, vectors_config=VectorParams(size=3072, distance=Distance.COSINE))  # text-embedding-3-large dimension
+        print(f"Collection {collection_name} created successfully")
+except Exception as e:
+    print(f"Error checking/creating collection: {e}")
+
 vectorstore = QdrantVectorStore(
     client=client,
     collection_name=collection_name,

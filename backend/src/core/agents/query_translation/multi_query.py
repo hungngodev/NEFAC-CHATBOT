@@ -5,8 +5,8 @@ from langchain_core.documents import Document
 from langchain_core.load import dumps, loads
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langgraph.graph import END, Send, StateGraph
-from langgraph.types import RunnableConfig
+from langgraph.graph import END, StateGraph
+from langgraph.types import RunnableConfig, Send
 
 from src.config.node_names import (
     MULTI_QUERY_DEDUPLICATE_DOCUMENTS,
