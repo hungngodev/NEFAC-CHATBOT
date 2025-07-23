@@ -1,6 +1,7 @@
 import logging
 import warnings
 from datetime import datetime, timedelta, timezone
+from typing import Any
 
 import aiohttp
 from langchain_core.runnables import RunnableConfig
@@ -15,7 +16,7 @@ from src.config.settings import Configuration
 async def get_mcp_access_token(
     supabase_token: str,
     base_mcp_url: str,
-) -> dict[str, any | None]:
+) -> dict[str, Any | None]:
     try:
         form_data = {
             "client_id": "mcp_default",
@@ -63,7 +64,7 @@ async def get_tokens(config: RunnableConfig):
     return tokens.value
 
 
-async def set_tokens(config: RunnableConfig, tokens: dict[str, any]):
+async def set_tokens(config: RunnableConfig, tokens: dict[str, Any]):
     store = get_store()
     thread_id = config.get("configurable", {}).get("thread_id")
     if not thread_id:
@@ -75,7 +76,7 @@ async def set_tokens(config: RunnableConfig, tokens: dict[str, any]):
     return
 
 
-async def fetch_tokens(config: RunnableConfig) -> dict[str, any]:
+async def fetch_tokens(config: RunnableConfig) -> dict[str, Any]:
     current_tokens = await get_tokens(config)
     if current_tokens:
         return current_tokens

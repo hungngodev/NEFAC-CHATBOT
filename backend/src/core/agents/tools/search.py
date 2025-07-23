@@ -33,7 +33,7 @@ async def tavily_search(queries: list[str], max_results: Annotated[int, Injected
     Fetches results from Tavily search API.
 
     Args
-        queries (list[str]): List of search queries, you can pass in as many queries as you need.
+        queries (list[str]): List of search queries, you can pass in as mAny queries as you need.
         max_results (int): Maximum number of results to return
         topic (Literal['general', 'news', 'finance']): Topic to filter results by
 

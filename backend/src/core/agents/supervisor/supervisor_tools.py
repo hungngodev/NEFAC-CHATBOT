@@ -38,7 +38,7 @@ async def supervisor_tools(state: SupervisorState, config: RunnableConfig) -> Co
         coros = [researcher_subgraph.ainvoke({"researcher_messages": [SystemMessage(content=researcher_system_prompt), HumanMessage(content=tool_call["args"]["research_topic"])], "research_topic": tool_call["args"]["research_topic"]}, config) for tool_call in conduct_research_calls]
         tool_results = await asyncio.gather(*coros)
         tool_messages = [ToolMessage(content=observation.get("compressed_research", "Error synthesizing research report: Maximum retries exceeded"), name=tool_call["name"], tool_call_id=tool_call["id"]) for observation, tool_call in zip(tool_results, conduct_research_calls)]
-        # Handle any tool calls made > max_concurrent_research_units
+        # Handle Any tool calls made > max_concurrent_research_units
         for overflow_conduct_research_call in overflow_conduct_research_calls:
             tool_messages.append(
                 ToolMessage(

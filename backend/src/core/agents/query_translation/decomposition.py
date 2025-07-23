@@ -53,7 +53,7 @@ def answer_sub_questions_node(state: DecompositionState) -> RetrievalSubgraphSta
     """Answers each sub-question iteratively, using retrieval for context."""
     sub_questions = state["sub_questions"]
     q_a_pairs = state["q_a_pairs"]
-    current_index = len(q_a_pairs)  # Track how many have been answered so far
+    current_index = len(q_a_pairs)  # Track how mAny have been answered so far
 
     sub_question = sub_questions[current_index]
     return {"retrieval_query": sub_question}  # Pass current q_a_pairs to state for context

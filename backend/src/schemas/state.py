@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import operator
 from operator import add
-from typing import Annotated, Literal, TypedDict, any
+from typing import Annotated, Any, Literal, TypedDict
 
 from langchain_core.documents import Document
 from langchain_core.messages import MessageLikeRepresentation
@@ -51,7 +51,7 @@ class RetrievalSubgraphState(TypedDict):
 
     # The `retrieval_query` from  is used as the input query.
     retrieval_query: str = ""
-    retrieval_plan: dict[str, any] = {}
+    retrieval_plan: dict[str, Any] = {}
     graph_documents: list[Document] = []
     document_search_documents: list[Document] = []
     documents: list[Document] = []  # Final combined list

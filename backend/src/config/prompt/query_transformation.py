@@ -38,7 +38,7 @@ For topics related to:
 6. factual - Use for straightforward factual questions where precision and specificity are critical. Reformulate the query to emphasize named entities, dates, legal topics, and relationships, using exact phrases and advanced search operators if appropriate.
 7. contextual - Use when the question is missing important background, historical, regional (New England), or legal/policy context. Infer and add the implied context to the query to improve retrieval accuracy.
 8. multi-step - Use for complex analytical questions requiring step-by-step reasoning. Breaks down complex queries into sequential reasoning steps, each building on previous context and findings.
-9. default - Use for simple, direct questions that do not require any special handling or transformation.
+9. default - Use for simple, direct questions that do not require Any special handling or transformation.
 
 Examples of when to use each method:
 - "What are the main challenges to public records access in Vermont?" → factual
@@ -79,7 +79,7 @@ Your task is to analyze a factual query and infer what background information, h
 - Do not provide explanations or reasoning, just the contextual insights
 - Consider what background knowledge would make the query more complete and searchable
 
-Return ONLY a brief description of the implied context without any explanation or additional commentary."""
+Return ONLY a brief description of the implied context without Any explanation or additional commentary."""
 
 DEFAULT_DECOMPOSITION_GENERATE_PROMPT = """You are an expert assistant for the New England First Amendment Coalition (NEFAC). Your role is to break down the user's complex question into exactly 3 focused, independently-answerable sub-questions to retrieve precise documents from our vector database of legal analyses, FOI guides, press-freedom resources, and relevant transcripts.
 

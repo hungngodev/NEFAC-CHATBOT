@@ -27,7 +27,7 @@ Given a question and context retrieved from the knowledge graph, your task is to
 Question: {question}
 Context: {context}"""
 
-DEFAULT_CYPHER_GENERATION_TEMPLATE = """You are a Neo4j Cypher expert. Your task is to generate an efficient and accurate Cypher query to answer the given question, utilizing the provided graph schema. Focus on returning only the Cypher statement, without any additional text or explanations.
+DEFAULT_CYPHER_GENERATION_TEMPLATE = """You are a Neo4j Cypher expert. Your task is to generate an efficient and accurate Cypher query to answer the given question, utilizing the provided graph schema. Focus on returning only the Cypher statement, without Any additional text or explanations.
 
 **Instructions for Cypher Generation:**
 1.  **Prioritize Graph Traversal:** Whenever possible, use graph patterns (MATCH, OPTIONAL MATCH) to find relationships between entities.

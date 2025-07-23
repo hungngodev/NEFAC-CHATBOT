@@ -73,7 +73,7 @@ def deduplicate_documents_node(state: RetrievalSubgraphState, config: RunnableCo
 def format_documents_node(state: MultiQueryState) -> QueryTransformerState:
     """Formats the final list of documents into a single string."""
     formatted_string = format_docs(state["accumulated_documents"])
-    # The final output of any query translation subgraph is the transformed query/result
+    # The final output of Any query translation subgraph is the transformed query/result
     return {"transformed_context": formatted_string}
 
 

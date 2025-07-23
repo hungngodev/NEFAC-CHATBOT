@@ -46,7 +46,7 @@ class LLMResponse(BaseModel):
     answer: str = Field(..., description="Final answer from the LLM.")
     context: list[DocumentMetadata] = Field([], description="List of retrieved document metadata.")
     metadata: dict[str, str | int | float | bool] = Field({}, description="Additional metadata about the response.")
-    error: str | None = Field(None, description="Error message if any.")
+    error: str | None = Field(None, description="Error message if Any.")
 
 
 class ComponentHealth(BaseModel):
@@ -74,14 +74,14 @@ class UserMemorySummary(BaseModel):
     conversation_summary: str | None = Field(None, description="Summary of the conversation.")
     memory_count: int = Field(..., description="Number of memories found.")
     recent_memories: list[RecentMemory] = Field([], description="List of recent memories.")
-    error: str | None = Field(None, description="Error message if any.")
+    error: str | None = Field(None, description="Error message if Any.")
 
 
 class MemoryCleanupResponse(BaseModel):
     message: str = Field(..., description="Message about the cleanup operation.")
     retention_days: int = Field(..., description="Retention days for cleanup.")
     status: str = Field(..., description="Status of the cleanup request.")
-    error: str | None = Field(None, description="Error message if any.")
+    error: str | None = Field(None, description="Error message if Any.")
 
 
 # Configure logging

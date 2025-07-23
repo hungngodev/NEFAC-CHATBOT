@@ -1,5 +1,7 @@
+from typing import Any
+
 from langchain.chat_models import init_chat_model
-from langchain_core.messages import anyMessage
+from langchain_core.messages import AnyMessage
 from langgraph.graph import MessagesState
 from langmem.short_term import RunningSummary, summarize_messages
 
@@ -8,8 +10,8 @@ from src.schemas.state import AgentState
 
 
 class LLMInputState(AgentState):
-    summarized_messages: list[anyMessage]
-    context: dict[str, any]
+    summarized_messages: list[AnyMessage]
+    context: dict[str, Any]
 
 
 class SummaryState(MessagesState):
