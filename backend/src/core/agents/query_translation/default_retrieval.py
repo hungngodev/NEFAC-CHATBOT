@@ -1,11 +1,11 @@
 from langgraph.graph import END, StateGraph
 from langgraph.types import RunnableConfig
 
-from backend.src.core.agents.query_translation.query_transformer import QueryTransformerState
 from src.config.node_names import (
     DEFAULT_RETRIEVAL_FORMAT,
     DEFAULT_RETRIEVAL_RETRIEVE,
 )
+from src.core.agents.query_translation.query_transformer import QueryTransformerState
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 

@@ -5,12 +5,12 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import Command
 
-from backend.src.core.agents.tools.main import get_all_tools, get_api_key_for_model
 from src.config.node_names import RESEARCH_COMPRESS_RESEARCH, RESEARCH_RESEARCHER, RESEARCH_RESEARCHER_TOOLS
 from src.config.settings import Configuration
 from src.core.agents.research.compress_research import compress_research
 from src.core.agents.research.researcher_tools import researcher_tools
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
+from src.core.agents.tools.main import get_all_tools, get_api_key_for_model
 from src.schemas.state import ResearcherOutputState, ResearcherState
 
 

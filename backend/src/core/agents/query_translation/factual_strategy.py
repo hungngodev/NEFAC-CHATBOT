@@ -4,13 +4,13 @@ from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, StateGraph
 from langgraph.types import RunnableConfig
 
-from backend.src.core.agents.query_translation.query_transformer import QueryTransformerState
 from src.config.node_names import (
     FACTUAL_STRATEGY_FORMAT_DOCUMENTS,
     FACTUAL_STRATEGY_GENERATE_FACTUAL_QUERY,
     FACTUAL_STRATEGY_RETRIEVE_SUBGRAPH,
 )
 from src.config.settings import Configuration
+from src.core.agents.query_translation.query_transformer import QueryTransformerState
 from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 

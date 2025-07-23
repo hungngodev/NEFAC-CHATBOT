@@ -13,9 +13,9 @@ from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import tool
 from langchain_neo4j import GraphCypherQAChain, Neo4jGraph
 
-from backend.src.config.node_names import GRAPH_RETRIEVAL_GRAPH_TOOL_NODE
-from backend.src.config.settings import Configuration
-from backend.src.schemas.state import AgentState
+from src.config.node_names import GRAPH_RETRIEVAL_GRAPH_TOOL_NODE
+from src.config.settings import Configuration
+from src.schemas.state import AgentState
 
 
 @tool(tags=[GRAPH_RETRIEVAL_GRAPH_TOOL_NODE])

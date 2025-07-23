@@ -7,7 +7,6 @@ from langchain_core.prompts import ChatPromptTemplate, FewShotChatMessagePromptT
 from langgraph.graph import END, Send, StateGraph
 from langgraph.types import RunnableConfig
 
-from backend.src.core.agents.query_translation.query_transformer import QueryTransformerState
 from src.config.node_names import (
     STEP_BACK_GENERATE_AND_DISPATCH,
     STEP_BACK_GENERATE_FINAL_RESPONSE,
@@ -17,6 +16,7 @@ from src.config.node_names import (
     STEP_BACK_RETRIEVE_STEP_BACK,
 )
 from src.config.settings import Configuration
+from src.core.agents.query_translation.query_transformer import QueryTransformerState
 from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 

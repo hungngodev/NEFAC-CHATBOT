@@ -6,9 +6,9 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.types import Command
 from pydantic import BaseModel, Field
 
-from backend.src.core.agents.tools.main import get_api_key_for_model, get_today_str
 from src.config.node_names import RESEARCH_SUPERVISOR
 from src.config.settings import Configuration
+from src.core.agents.tools.main import get_api_key_for_model, get_today_str
 from src.schemas.state import AgentState
 
 

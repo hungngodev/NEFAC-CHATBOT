@@ -2,8 +2,8 @@ from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage, SystemMessage, filter_messages
 from langchain_core.runnables import RunnableConfig
 
-from backend.src.core.agents.tools.main import get_api_key_for_model, get_today_str, is_token_limit_exceeded, remove_up_to_last_ai_message
 from src.config.settings import Configuration
+from src.core.agents.tools.main import get_api_key_for_model, get_today_str, is_token_limit_exceeded, remove_up_to_last_ai_message
 from src.schemas.state import ResearcherState
 
 

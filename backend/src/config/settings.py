@@ -16,9 +16,9 @@ from typing import Annotated, Any, Dict, List, Optional
 from langchain_core.runnables import RunnableConfig
 from pydantic import BaseModel, Field
 
-import backend.src.config.models as models_module  # For introspection
-import backend.src.config.node_names as node_names_module  # For introspection
-import backend.src.config.prompts as prompts_module  # For introspection
+import src.config.models as models_module  # For introspection
+import src.config.node_names as node_names_module  # For introspection
+import src.config.prompts as prompts_module  # For introspection
 
 
 class SearchAPI(Enum):

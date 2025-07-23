@@ -5,10 +5,10 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.graph import START, StateGraph
 from langgraph.types import Command
 
-from backend.src.core.agents.tools.main import get_api_key_for_model
 from src.config.node_names import SUPERVISOR_NODE, SUPERVISOR_TOOLS_NODE
 from src.config.settings import Configuration
 from src.core.agents.supervisor.supervisor_tools import supervisor_tools
+from src.core.agents.tools.main import get_api_key_for_model
 from src.schemas.state import ConductResearch, ResearchComplete, SupervisorState
 
 
