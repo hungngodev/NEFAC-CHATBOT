@@ -16,9 +16,9 @@ from src.config.node_names import (
     STEP_BACK_RETRIEVE_STEP_BACK,
 )
 from src.config.settings import Configuration
-from src.core.agents.query_translation.query_transformer import QueryTransformerState
 from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
+from src.schemas.state import QueryTransformerState
 
 
 # --- Subgraph State ---

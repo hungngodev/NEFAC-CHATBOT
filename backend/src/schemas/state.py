@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import operator
 from operator import add
-from typing import Annotated, Optional, TypedDict
+from typing import Annotated, Any, Dict, List, Literal, Optional, TypedDict
 
 from langchain_core.documents import Document
 from langchain_core.messages import MessageLikeRepresentation
@@ -33,6 +33,41 @@ class Summary(BaseModel):
 ###################
 # State Definitions
 ###################
+class DocumentSearchParamsModel(BaseModel):
+    weights: Dict[str, float]
+    vector_k: int
+    keyword_k: int
+    ensemble_k: int
+
+
+class RetrievalPlanModel(BaseModel):
+    methods: List[str]
+    doc_search_params: DocumentSearchParamsModel
+    rerank_k: int
+
+
+class RetrievalSubgraphState(TypedDict):
+    """State for the retrieval subgraph."""
+
+    # The `retrieval_query` from  is used as the input query.
+    retrieval_query: str = ""
+    retrieval_plan: Dict[str, Any] = {}
+    graph_documents: List[Document] = []
+    document_search_documents: List[Document] = []
+    documents: List[Document] = []  # Final combined list
+    accumulated_documents: Annotated[list[Document], add] = Field(default_factory=list, description="Final list of retrieved documents")
+
+
+class QueryTransformerState(RetrievalSubgraphState):
+    """Standalone state for the query transformer workflow."""
+
+    transformed_query: str  # The input query to transform
+    method_used: Literal["multiquery", "decompose", "stepback", "hyde", "factual", "contextual", "default"]  # Which transformation method was applied
+    transformed_context: str  # Formatted final context
+    generated_queries: List[str]  # For multi-query strategy
+    sub_questions: List[str]  # For decomposition strategy
+    step_back_question: str  # For step-back strategy
+    hypothetical_document: str  # For HyDE strategy
 
 
 def override_reducer(current_value, new_value):
@@ -74,3 +109,6 @@ class ResearcherState(TypedDict):
 class ResearcherOutputState(BaseModel):
     compressed_research: str
     raw_notes: Annotated[list[str], override_reducer] = []
+
+
+# Import metadata schemas for crawler compatibility

@@ -5,8 +5,8 @@ from typing import AsyncGenerator, Dict, List, Optional, TypedDict, Union
 
 from pydantic import BaseModel, Field
 
-from backend.src.app.server import stream_chatbot
-from backend.src.config.constant import (
+from src.app.server import stream_chatbot
+from src.config.constant import (
     STREAMING_SLEEP_INTERVAL,
     STREAMING_WORD_COUNT,
 )

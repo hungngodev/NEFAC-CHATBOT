@@ -3,7 +3,8 @@ from langchain_core.messages import HumanMessage, SystemMessage, filter_messages
 from langchain_core.runnables import RunnableConfig
 
 from src.config.settings import Configuration
-from src.core.agents.tools.main import get_api_key_for_model, get_today_str, is_token_limit_exceeded, remove_up_to_last_ai_message
+from src.core.agents.tools.misc_utils import get_api_key_for_model, get_today_str
+from src.core.agents.tools.token_utils import is_token_limit_exceeded
 from src.schemas.state import ResearcherState
 
 
@@ -23,7 +24,7 @@ async def compress_research(state: ResearcherState, config: RunnableConfig):
         except Exception as e:
             synthesis_attempts += 1
             if is_token_limit_exceeded(e, configurable.research_model):
-                researcher_messages = remove_up_to_last_ai_message(researcher_messages)
+                researcher_messages(researcher_messages)
                 print(f"Token limit exceeded while synthesizing: {e}. Pruning the messages to try again.")
                 continue
             print(f"Error synthesizing research report: {e}")

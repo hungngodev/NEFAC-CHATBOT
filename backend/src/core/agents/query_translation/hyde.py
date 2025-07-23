@@ -10,9 +10,9 @@ from src.config.node_names import (
     HYDE_RETRIEVE_SUBGRAPH,
 )
 from src.config.settings import Configuration
-from src.core.agents.query_translation.query_transformer import QueryTransformerState
 from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
+from src.schemas.state import QueryTransformerState
 
 # Create a default configuration for backward compatibility
 default_config = Configuration()

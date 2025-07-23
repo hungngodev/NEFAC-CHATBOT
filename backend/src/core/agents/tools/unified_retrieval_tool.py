@@ -4,7 +4,8 @@ from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import InjectedToolArg
 from langchain_core.tools import tool as lc_tool
 
-from src.core.agents.query_translation.query_transformer import QueryTransformerState, query_internal_documents
+from src.core.agents.query_translation.query_transformer import query_internal_documents
+from src.schemas.state import QueryTransformerState
 
 
 @lc_tool(parse_docstring=True)

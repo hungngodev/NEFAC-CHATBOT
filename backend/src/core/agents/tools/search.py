@@ -11,7 +11,7 @@ from langchain_core.tools import tool as lc_tool
 from tavily import AsyncTavilyClient
 
 from src.config.settings import Configuration, SearchAPI
-from src.core.agents.tools.main import get_api_key_for_model, get_today_str
+from src.core.agents.tools.misc_utils import get_api_key_for_model, get_today_str
 from src.schemas.state import Summary
 
 TAVILY_SEARCH_DESCRIPTION = "A search engine optimized for comprehensive, accurate, and trusted results. " "Useful for when you need to answer questions about current events."

@@ -1,14 +1,9 @@
-from operator import add
-from typing import Annotated, Any, Dict, List, TypedDict
-
 from langchain.chat_models import init_chat_model
 from langchain.retrievers import EnsembleRetriever
 from langchain.retrievers.contextual_compression import ContextualCompressionRetriever
 from langchain_cohere import CohereRerank
-from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, StateGraph
-from pydantic import BaseModel, Field
 
 from src.config.node_names import (
     RETRIEVAL_SUBGRAPH_COMBINE_DOCUMENTS,
@@ -19,34 +14,8 @@ from src.config.node_names import (
 from src.config.settings import Configuration
 from src.core.agents.retrieval.graph_retrieval import graph_tool_node
 from src.core.agents.retrieval.keyword_retrieval import keyword_retriever
-
-# We need the vector_store object to dynamically create retrievers with different `k` values
 from src.core.agents.retrieval.vector_retrieval import vector_retriever
-
-
-class DocumentSearchParamsModel(BaseModel):
-    weights: Dict[str, float]
-    vector_k: int
-    keyword_k: int
-    ensemble_k: int
-
-
-class RetrievalPlanModel(BaseModel):
-    methods: List[str]
-    doc_search_params: DocumentSearchParamsModel
-    rerank_k: int
-
-
-class RetrievalSubgraphState(TypedDict):
-    """State for the retrieval subgraph."""
-
-    # The `retrieval_query` from  is used as the input query.
-    retrieval_query: str = ""
-    retrieval_plan: Dict[str, Any] = {}
-    graph_documents: List[Document] = []
-    document_search_documents: List[Document] = []
-    documents: List[Document] = []  # Final combined list
-    accumulated_documents: Annotated[list[Document], add] = Field(default_factory=list, description="Final list of retrieved documents")
+from src.schemas.state import RetrievalPlanModel, RetrievalSubgraphState
 
 
 def plan_retrieval_node(state: RetrievalSubgraphState, config: Configuration) -> dict:

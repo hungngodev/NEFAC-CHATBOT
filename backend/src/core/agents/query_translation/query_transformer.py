@@ -1,5 +1,5 @@
 from functools import partial
-from typing import ClassVar, List, Literal
+from typing import ClassVar, Literal
 
 from langchain.chat_models import init_chat_model
 from langchain_core.prompts import ChatPromptTemplate
@@ -22,19 +22,7 @@ from src.core.agents.query_translation.factual_strategy import factual_strategy
 from src.core.agents.query_translation.hyde import hyde
 from src.core.agents.query_translation.multi_query import multi_query
 from src.core.agents.query_translation.step_back import step_back
-from src.core.agents.retrieval.subgraph import RetrievalSubgraphState
-
-
-class QueryTransformerState(RetrievalSubgraphState):
-    """Standalone state for the query transformer workflow."""
-
-    transformed_query: str  # The input query to transform
-    method_used: Literal["multiquery", "decompose", "stepback", "hyde", "factual", "contextual", "default"]  # Which transformation method was applied
-    transformed_context: str  # Formatted final context
-    generated_queries: List[str]  # For multi-query strategy
-    sub_questions: List[str]  # For decomposition strategy
-    step_back_question: str  # For step-back strategy
-    hypothetical_document: str  # For HyDE strategy
+from src.schemas.state import QueryTransformerState
 
 
 class MethodSelection(BaseModel):
