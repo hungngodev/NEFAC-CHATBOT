@@ -4,12 +4,11 @@ This module consolidates logic from the previously deleted metadata_filter.py.
 """
 
 import datetime
-from typing import Dict, List, Union
 
 from langchain_core.documents import Document
 
 
-def _parse_date_from_metadata(doc_metadata: Dict[str, Union[str, int, float, bool]]) -> datetime.date | None:
+def _parse_date_from_metadata(doc_metadata: dict[str, str | int | float | bool]) -> datetime.date | None:
     """Safely parse a date from document metadata."""
     doc_date_str = doc_metadata.get("date")
     if doc_date_str and isinstance(doc_date_str, str):
@@ -17,7 +16,7 @@ def _parse_date_from_metadata(doc_metadata: Dict[str, Union[str, int, float, boo
     return None
 
 
-def _matches_filters(doc: Document, filters: Dict[str, Union[str, int, float, bool, List[str], tuple]]) -> bool:
+def _matches_filters(doc: Document, filters: dict[str, str | int | float | bool | list[str, tuple]]) -> bool:
     """Check if a single document matches the provided filters."""
     if not filters:
         return True
@@ -30,7 +29,7 @@ def _matches_filters(doc: Document, filters: Dict[str, Union[str, int, float, bo
     return True
 
 
-def _calculate_priority_score(doc: Document, priorities: List[Dict[str, Union[str, int, float]]]) -> int:
+def _calculate_priority_score(doc: Document, priorities: list[dict[str, str | int | float]]) -> int:
     """Calculate a priority score for a document based on rules."""
     score = 0
     if not priorities:
@@ -50,7 +49,7 @@ def _calculate_priority_score(doc: Document, priorities: List[Dict[str, Union[st
     return score
 
 
-def filter_and_prioritize_documents(documents: List[Document], filters: Dict[str, Union[str, int, float, bool, List[str], tuple]] = None, priorities: List[Dict[str, Union[str, int, float]]] = None) -> List[Document]:
+def filter_and_prioritize_documents(documents: list[Document], filters: dict[str, str | int | float | bool | list[str, tuple]] = None, priorities: list[dict[str, str | int | float]] = None) -> list[Document]:
     """
     Filters and prioritizes a list of documents in a single pass.
 

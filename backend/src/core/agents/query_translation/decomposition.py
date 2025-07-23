@@ -3,8 +3,6 @@ Decomposition query transformation agent.
 Breaks down complex queries into sub-questions for better retrieval.
 """
 
-from typing import List
-
 from langchain.chat_models import init_chat_model
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
@@ -28,8 +26,8 @@ from src.schemas.state import QueryTransformerState
 class DecompositionState(QueryTransformerState):
     """State for the decomposition query transformation subgraph."""
 
-    sub_questions: List[str] = []
-    q_a_pairs: List[str] = []
+    sub_questions: list[str] = []
+    q_a_pairs: list[str] = []
 
 
 # --- Nodes ---

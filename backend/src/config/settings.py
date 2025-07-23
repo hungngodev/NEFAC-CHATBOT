@@ -11,7 +11,7 @@ configurations in a single, cohesive system.
 
 import os
 from enum import Enum
-from typing import Annotated, Any, Dict, List, Optional
+from typing import Annotated, Optional, any
 
 from langchain_core.runnables import RunnableConfig
 from pydantic import BaseModel, Field
@@ -34,7 +34,7 @@ class MCPConfig(BaseModel):
         optional=True,
     )
     """The URL of the MCP server"""
-    tools: Optional[List[str]] = Field(
+    tools: Optional[list[str]] = Field(
         default=None,
         optional=True,
     )
@@ -406,7 +406,7 @@ class Configuration(BaseModel):
     # ========================================================================
 
     # Advanced settings
-    model_kwargs: Dict[str, Any] = Field(
+    model_kwargs: dict[str, any] = Field(
         default_factory=dict,
         description="Additional model configuration parameters.",
     )
@@ -576,14 +576,14 @@ class Configuration(BaseModel):
 
     # MCP server configuration
     mcp_config: Optional[MCPConfig] = Field(default=None, optional=True, metadata={"x_oap_ui_config": {"type": "mcp", "description": "MCP server configuration"}})
-    mcp_prompt: Optional[str] = Field(default=None, optional=True, metadata={"x_oap_ui_config": {"type": "text", "description": "Any additional instructions to pass along to the Agent regarding the MCP tools that are available to it."}})
+    mcp_prompt: Optional[str] = Field(default=None, optional=True, metadata={"x_oap_ui_config": {"type": "text", "description": "any additional instructions to pass along to the Agent regarding the MCP tools that are available to it."}})
 
     @classmethod
     def from_runnable_config(cls, config: Optional[RunnableConfig] = None) -> "Configuration":
         """Create a Configuration instance from a RunnableConfig."""
         configurable = config.get("configurable", {}) if config else {}
         field_names = list(cls.model_fields.keys())
-        values: dict[str, Any] = {field_name: os.environ.get(field_name.upper(), configurable.get(field_name)) for field_name in field_names}
+        values: dict[str, any] = {field_name: os.environ.get(field_name.upper(), configurable.get(field_name)) for field_name in field_names}
         return cls(**{k: v for k, v in values.items() if v is not None})
 
     class Config:

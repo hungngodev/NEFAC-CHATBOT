@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import operator
 from operator import add
-from typing import Annotated, Any, Dict, List, Literal, Optional, TypedDict
+from typing import Annotated, Literal, Optional, TypedDict, any
 
 from langchain_core.documents import Document
 from langchain_core.messages import MessageLikeRepresentation
@@ -34,14 +34,14 @@ class Summary(BaseModel):
 # State Definitions
 ###################
 class DocumentSearchParamsModel(BaseModel):
-    weights: Dict[str, float]
+    weights: dict[str, float]
     vector_k: int
     keyword_k: int
     ensemble_k: int
 
 
 class RetrievalPlanModel(BaseModel):
-    methods: List[str]
+    methods: list[str]
     doc_search_params: DocumentSearchParamsModel
     rerank_k: int
 
@@ -51,10 +51,10 @@ class RetrievalSubgraphState(TypedDict):
 
     # The `retrieval_query` from  is used as the input query.
     retrieval_query: str = ""
-    retrieval_plan: Dict[str, Any] = {}
-    graph_documents: List[Document] = []
-    document_search_documents: List[Document] = []
-    documents: List[Document] = []  # Final combined list
+    retrieval_plan: dict[str, any] = {}
+    graph_documents: list[Document] = []
+    document_search_documents: list[Document] = []
+    documents: list[Document] = []  # Final combined list
     accumulated_documents: Annotated[list[Document], add] = Field(default_factory=list, description="Final list of retrieved documents")
 
 
@@ -64,8 +64,8 @@ class QueryTransformerState(RetrievalSubgraphState):
     transformed_query: str  # The input query to transform
     method_used: Literal["multiquery", "decompose", "stepback", "hyde", "factual", "contextual", "default"]  # Which transformation method was applied
     transformed_context: str  # Formatted final context
-    generated_queries: List[str]  # For multi-query strategy
-    sub_questions: List[str]  # For decomposition strategy
+    generated_queries: list[str]  # For multi-query strategy
+    sub_questions: list[str]  # For decomposition strategy
     step_back_question: str  # For step-back strategy
     hypothetical_document: str  # For HyDE strategy
 

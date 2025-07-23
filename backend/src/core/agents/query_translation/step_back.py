@@ -1,5 +1,3 @@
-from typing import List
-
 from langchain.chat_models import init_chat_model
 from langchain_core.documents import Document
 from langchain_core.output_parsers import StrOutputParser
@@ -26,8 +24,8 @@ class StepBackState(QueryTransformerState):
     """State for the step-back query transformation subgraph."""
 
     step_back_question: str = ""
-    original_context: List[Document] = []
-    step_back_context: List[Document] = []
+    original_context: list[Document] = []
+    step_back_context: list[Document] = []
 
 
 # --- Nodes ---

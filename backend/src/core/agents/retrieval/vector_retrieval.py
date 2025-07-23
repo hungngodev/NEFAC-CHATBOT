@@ -4,7 +4,6 @@ Refactored to use the new modular approach with post-processing integration.
 """
 
 import os
-from typing import List
 
 from langchain_core.documents import Document
 from langchain_core.tools import tool
@@ -47,7 +46,7 @@ vector_retriever = vectorstore.as_retriever()
 
 
 @tool
-def vector_search(query: str, top_k: int = 10) -> List[Document]:
+def vector_search(query: str, top_k: int = 10) -> list[Document]:
     """
     Performs semantic search on a Qdrant vector store to find documents
     conceptually related to the query. Best for broad, conceptual questions.

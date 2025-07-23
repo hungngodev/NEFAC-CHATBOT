@@ -1,16 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from datetime import datetime
-from enum import Enum
-from operator import add
-from typing import Annotated, Any, ClassVar, Generic, Literal, TypedDict, TypeVar
+from dataclasses import field
+from typing import ClassVar, any
 
-from langchain_core.documents import Document
-from langchain_core.messages import AnyMessage
-from langgraph.graph import MessagesState
-from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator
-
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class BaseMetadata(BaseModel):
@@ -128,8 +121,8 @@ class YouTubeMetadata(BaseModel):
     availability: str | None = None
     live_status: str | None = None
     release_timestamp: str | None = None
-    chapters: dict[str, Any] | None = None
-    heatmap: dict[str, Any] | None = None
+    chapters: dict[str, any] | None = None
+    heatmap: dict[str, any] | None = None
     transcript_available: bool | None = None
     transcript_file: str | None = None
     transcript_length: int | None = None
@@ -149,7 +142,7 @@ class PDFChunkMetadata(PDFMetadata):
     total_chunks_in_document: int = 0  # For document-level chunking
     chunking_strategy: str
     pages: list[int] = field(default_factory=list)  # List of page numbers this chunk covers
-    pages_info: list[dict[str, Any]] = field(default_factory=list)  # List of page info dicts for each page covered by the chunk
+    pages_info: list[dict[str, any]] = field(default_factory=list)  # List of page info dicts for each page covered by the chunk
 
 
 class ContentChunkMetadata(ContentMetadata):
@@ -170,4 +163,3 @@ class YouTubeChunkMetadata(YouTubeMetadata):
     chunking_strategy: str
     start_time: float = 0.0
     end_time: float = 0.0
-

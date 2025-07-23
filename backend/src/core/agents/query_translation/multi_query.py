@@ -1,5 +1,3 @@
-from typing import List
-
 from langchain.chat_models import init_chat_model
 from langchain_core.documents import Document
 from langchain_core.load import dumps, loads
@@ -24,7 +22,7 @@ from src.schemas.state import QueryTransformerState
 class MultiQueryState(QueryTransformerState):
     """State for the multi-query subgraph."""
 
-    generated_queries: List[str] = []
+    generated_queries: list[str] = []
 
 
 # --- Nodes ---
@@ -88,7 +86,7 @@ workflow.add_node(MULTI_QUERY_FORMAT_DOCUMENTS, format_documents_node)
 workflow.set_entry_point(MULTI_QUERY_GENERATE_QUERIES)
 
 
-def route_from_generate_queries(state: MultiQueryState) -> List[Send]:
+def route_from_generate_queries(state: MultiQueryState) -> list[Send]:
     """Route to multiple retrieval subgraph invocations based on generated queries."""
     queries = state["generated_queries"]
     sends = [Send(MULTI_QUERY_RETRIEVE_SUBGRAPH, {"retrieval_query": q}) for q in queries]

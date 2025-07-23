@@ -10,7 +10,7 @@ DEFAULT_SYNTHESIS_PROMPT = """You are an expert information synthesizer for the 
 You will be provided with:
 1. The original user question
 2. Multiple pieces of context from different sources/retrieval steps
-3. Any extracted information from previous processing steps
+3. any extracted information from previous processing steps
 4. Citation information for proper source attribution
 
 Your task is to:

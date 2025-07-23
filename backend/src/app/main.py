@@ -1,7 +1,7 @@
 import asyncio
 import logging
 import uuid
-from typing import AsyncGenerator, Dict, List, Optional, TypedDict, Union
+from typing import AsyncGenerator, Optional, TypedDict
 
 from pydantic import BaseModel, Field
 
@@ -26,7 +26,7 @@ class MessageChunk(BaseModel):
 
 
 class ContextChunk(BaseModel):
-    context: List[DocumentMetadata] = Field(..., description="List of retrieved document metadata.")
+    context: list[DocumentMetadata] = Field(..., description="List of retrieved document metadata.")
     order: int = Field(..., description="Order of the context chunk in the stream.")
 
 
@@ -44,28 +44,28 @@ class ChatInput(BaseModel):
 
 class LLMResponse(BaseModel):
     answer: str = Field(..., description="Final answer from the LLM.")
-    context: List[DocumentMetadata] = Field([], description="List of retrieved document metadata.")
-    metadata: Dict[str, Union[str, int, float, bool]] = Field({}, description="Additional metadata about the response.")
+    context: list[DocumentMetadata] = Field([], description="List of retrieved document metadata.")
+    metadata: dict[str, str | int | float | bool] = Field({}, description="Additional metadata about the response.")
     error: Optional[str] = Field(None, description="Error message if any.")
 
 
 class ComponentHealth(BaseModel):
     status: str = Field(..., description="Health status of the component (healthy, warning, error).")
-    errors: List[str] = Field([], description="List of errors for the component.")
+    errors: list[str] = Field([], description="List of errors for the component.")
 
 
 class HealthCheckResponse(BaseModel):
     status: str = Field(..., description="Overall health status (healthy, degraded, unhealthy).")
     timestamp: str = Field(..., description="Timestamp of the health check.")
-    components: Dict[str, ComponentHealth] = Field({}, description="Health status of individual components.")
-    memory_stats: Dict[str, Union[str, int, float]] = Field({}, description="Memory usage statistics.")
-    errors: List[str] = Field([], description="List of overall errors.")
+    components: dict[str, ComponentHealth] = Field({}, description="Health status of individual components.")
+    memory_stats: dict[str, str | int | float] = Field({}, description="Memory usage statistics.")
+    errors: list[str] = Field([], description="List of overall errors.")
 
 
 class RecentMemory(BaseModel):
     query: str = Field(..., description="Query associated with the memory.")
     timestamp: str = Field(..., description="Timestamp of the memory.")
-    metadata: Dict[str, Union[str, int, float, bool]] = Field({}, description="Metadata associated with the memory.")
+    metadata: dict[str, str | int | float | bool] = Field({}, description="Metadata associated with the memory.")
 
 
 class UserMemorySummary(BaseModel):
@@ -73,7 +73,7 @@ class UserMemorySummary(BaseModel):
     session_id: Optional[str] = Field(None, description="Session ID.")
     conversation_summary: Optional[str] = Field(None, description="Summary of the conversation.")
     memory_count: int = Field(..., description="Number of memories found.")
-    recent_memories: List[RecentMemory] = Field([], description="List of recent memories.")
+    recent_memories: list[RecentMemory] = Field([], description="List of recent memories.")
     error: Optional[str] = Field(None, description="Error message if any.")
 
 
