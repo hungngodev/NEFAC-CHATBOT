@@ -11,7 +11,7 @@ configurations in a single, cohesive system.
 
 import os
 from enum import Enum
-from typing import Annotated, Optional, any
+from typing import Annotated, any
 
 from langchain_core.runnables import RunnableConfig
 from pydantic import BaseModel, Field
@@ -29,17 +29,17 @@ class SearchAPI(Enum):
 
 
 class MCPConfig(BaseModel):
-    url: Optional[str] = Field(
+    url: str | None = Field(
         default=None,
         optional=True,
     )
     """The URL of the MCP server"""
-    tools: Optional[list[str]] = Field(
+    tools: list[str | None] = Field(
         default=None,
         optional=True,
     )
     """The tools to make available to the LLM"""
-    auth_required: Optional[bool] = Field(
+    auth_required: bool | None = Field(
         default=False,
         optional=True,
     )
@@ -575,11 +575,11 @@ class Configuration(BaseModel):
     )
 
     # MCP server configuration
-    mcp_config: Optional[MCPConfig] = Field(default=None, optional=True, metadata={"x_oap_ui_config": {"type": "mcp", "description": "MCP server configuration"}})
-    mcp_prompt: Optional[str] = Field(default=None, optional=True, metadata={"x_oap_ui_config": {"type": "text", "description": "any additional instructions to pass along to the Agent regarding the MCP tools that are available to it."}})
+    mcp_config: MCPConfig | None = Field(default=None, optional=True, metadata={"x_oap_ui_config": {"type": "mcp", "description": "MCP server configuration"}})
+    mcp_prompt: str | None = Field(default=None, optional=True, metadata={"x_oap_ui_config": {"type": "text", "description": "any additional instructions to pass along to the Agent regarding the MCP tools that are available to it."}})
 
     @classmethod
-    def from_runnable_config(cls, config: Optional[RunnableConfig] = None) -> "Configuration":
+    def from_runnable_config(cls, config: RunnableConfig | None = None) -> "Configuration":
         """Create a Configuration instance from a RunnableConfig."""
         configurable = config.get("configurable", {}) if config else {}
         field_names = list(cls.model_fields.keys())

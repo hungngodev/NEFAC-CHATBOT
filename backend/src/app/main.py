@@ -1,7 +1,7 @@
 import asyncio
 import logging
 import uuid
-from typing import AsyncGenerator, Optional, TypedDict
+from typing import AsyncGenerator, TypedDict
 
 from pydantic import BaseModel, Field
 
@@ -37,16 +37,16 @@ class ReformulatedChunk(BaseModel):
 
 class ChatInput(BaseModel):
     query: str = Field(..., description="User's input query.")
-    convo_id: Optional[str] = Field(None, description="Conversation ID.")
+    convo_id: str | None = Field(None, description="Conversation ID.")
     user_id: str = Field("default_user", description="User ID.")
-    session_id: Optional[str] = Field(None, description="Session ID.")
+    session_id: str | None = Field(None, description="Session ID.")
 
 
 class LLMResponse(BaseModel):
     answer: str = Field(..., description="Final answer from the LLM.")
     context: list[DocumentMetadata] = Field([], description="List of retrieved document metadata.")
     metadata: dict[str, str | int | float | bool] = Field({}, description="Additional metadata about the response.")
-    error: Optional[str] = Field(None, description="Error message if any.")
+    error: str | None = Field(None, description="Error message if any.")
 
 
 class ComponentHealth(BaseModel):
@@ -70,18 +70,18 @@ class RecentMemory(BaseModel):
 
 class UserMemorySummary(BaseModel):
     user_id: str = Field(..., description="User ID.")
-    session_id: Optional[str] = Field(None, description="Session ID.")
-    conversation_summary: Optional[str] = Field(None, description="Summary of the conversation.")
+    session_id: str | None = Field(None, description="Session ID.")
+    conversation_summary: str | None = Field(None, description="Summary of the conversation.")
     memory_count: int = Field(..., description="Number of memories found.")
     recent_memories: list[RecentMemory] = Field([], description="List of recent memories.")
-    error: Optional[str] = Field(None, description="Error message if any.")
+    error: str | None = Field(None, description="Error message if any.")
 
 
 class MemoryCleanupResponse(BaseModel):
     message: str = Field(..., description="Message about the cleanup operation.")
     retention_days: int = Field(..., description="Retention days for cleanup.")
     status: str = Field(..., description="Status of the cleanup request.")
-    error: Optional[str] = Field(None, description="Error message if any.")
+    error: str | None = Field(None, description="Error message if any.")
 
 
 # Configure logging
@@ -103,7 +103,7 @@ class LLMRequestConfig(TypedDict, total=False):
     include_sources: bool
 
 
-async def ask_llm_stream_enhanced(query: str, convo_id: Optional[str] = None, user_id: str = "default_user", session_id: Optional[str] = None, **kwargs: LLMRequestConfig) -> AsyncGenerator[str, None]:
+async def ask_llm_stream_enhanced(query: str, convo_id: str | None = None, user_id: str = "default_user", session_id: str | None = None, **kwargs: LLMRequestConfig) -> AsyncGenerator[str, None]:
     """
     Enhanced streaming interface that provides real-time updates.
     Compatible with existing frontend while providing enhanced capabilities.

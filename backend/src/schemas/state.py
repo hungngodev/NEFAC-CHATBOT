@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import operator
 from operator import add
-from typing import Annotated, Literal, Optional, TypedDict, any
+from typing import Annotated, Literal, TypedDict, any
 
 from langchain_core.documents import Document
 from langchain_core.messages import MessageLikeRepresentation
@@ -83,7 +83,7 @@ class AgentInputState(MessagesState):
 
 class AgentState(MessagesState):
     supervisor_messages: Annotated[list[MessageLikeRepresentation], override_reducer]
-    research_brief: Optional[str]
+    research_brief: str | None
     raw_notes: Annotated[list[str], override_reducer] = []
     notes: Annotated[list[str], override_reducer] = []
     final_report: str

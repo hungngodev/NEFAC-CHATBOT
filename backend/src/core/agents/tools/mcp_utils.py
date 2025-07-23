@@ -1,7 +1,6 @@
 import logging
 import warnings
 from datetime import datetime, timedelta, timezone
-from typing import Optional
 
 import aiohttp
 from langchain_core.runnables import RunnableConfig
@@ -16,7 +15,7 @@ from src.config.settings import Configuration
 async def get_mcp_access_token(
     supabase_token: str,
     base_mcp_url: str,
-) -> Optional[dict[str, any]]:
+) -> dict[str, any | None]:
     try:
         form_data = {
             "client_id": "mcp_default",

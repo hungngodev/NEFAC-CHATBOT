@@ -135,10 +135,10 @@ class YouTubeMetadata(BaseModel):
 
 
 class PDFChunkMetadata(PDFMetadata):
-    page_number: int = 0  # Optional, for compatibility
+    page_number: int = 0  # for compatibility
     total_pages: int
     chunk_index: int
-    total_chunks_in_page: int = 0  # Optional, for compatibility
+    total_chunks_in_page: int = 0  # for compatibility
     total_chunks_in_document: int = 0  # For document-level chunking
     chunking_strategy: str
     pages: list[int] = field(default_factory=list)  # List of page numbers this chunk covers
