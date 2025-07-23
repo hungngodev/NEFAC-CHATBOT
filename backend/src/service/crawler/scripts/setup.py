@@ -56,8 +56,14 @@ def main() -> Any:
         print("\n✅ Setup completed successfully!")
         print("\nNext steps:")
         print("1. Edit .env file with your Faust secret key")
-        print("2. Run: python nefac-document-crawler.py")
+        print("2. Run: python bin/cli.py  (or: python run_crawler.py)")
         print("3. Check the nefac_documents/ directory for results")
+        print("\nAvailable commands:")
+        print("  python bin/cli.py --help           # Show all options")
+        print("  python bin/cli.py --metadata-only  # Extract metadata only")
+        print("  python bin/cli.py --youtube-only   # YouTube videos only")
+        print("  make crawl                         # Full crawl")
+        print("  make youtube                       # YouTube only")
 
     except Exception as e:
         print(f"❌ Setup failed: {e}")
