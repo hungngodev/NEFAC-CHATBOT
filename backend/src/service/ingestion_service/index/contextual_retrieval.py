@@ -39,8 +39,8 @@ def upload_to_qdrant(documents: List[Document], embedding_model) -> Any:
 def save_contextual_elasticsearch_bm25_for_backend(
     contextualized_documents: List[Document],
 ):
-    elasticsearch_url = "http://elasticsearch:9200"
-    index_name = "nefac-contextual-index"
+    elasticsearch_url = os.getenv("ES_HOST", "http://localhost:9200")
+    index_name = os.getenv("ES_INDEX", "contextualized_documents")
     retriever = ElasticSearchBM25Retriever.create(elasticsearch_url, index_name)
     texts = [doc.page_content for doc in contextualized_documents]
     retriever.add_texts(texts)

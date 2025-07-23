@@ -13,7 +13,7 @@ from langchain_openai import ChatOpenAI
 # -----------------------------------------------------------------------------
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-for var in ("NEO4J_URI", "NEO4J_USERNAME", "NEO4J_PASSWORD", "OPENAI_API_KEY"):
+for var in ("NEO4J_URI", "NEO4J_USER", "NEO4J_PASSWORD", "OPENAI_API_KEY"):
     if not os.getenv(var):
         raise EnvironmentError(f"Missing required env var: {var}")
 
@@ -624,7 +624,7 @@ custom_prompt = ChatPromptTemplate.from_template(custom_prompt_template)
 def graph_rag_ingest(documents: List[Document]) -> None:
     graph = Neo4jGraph(
         url=os.environ["NEO4J_URI"],
-        username=os.environ["NEO4J_USERNAME"],
+        username=os.environ["NEO4J_USER"],
         password=os.environ["NEO4J_PASSWORD"],
     )
     from src.config.constant import MODEL_NAME
