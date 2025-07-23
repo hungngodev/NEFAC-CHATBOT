@@ -8,6 +8,18 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+try:
+    from selenium import webdriver
+    from selenium.common.exceptions import NoSuchElementException
+    from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support import expected_conditions as EC
+    from selenium.webdriver.support.ui import WebDriverWait
+
+    SELENIUM_AVAILABLE = True
+except ImportError:
+    SELENIUM_AVAILABLE = False
+
 from ..core.types import CrawlerSource, ExtractorResult
 from .base import BaseExtractor
 
@@ -16,6 +28,12 @@ logger = logging.getLogger(__name__)
 
 class SeleniumExtractor(BaseExtractor):
     """Extractor using Selenium for dynamic content."""
+
+    def __init__(self, config):
+        super().__init__(config)
+        self.driver = None
+        self.selenium_timeout = 30
+        self.page_load_delay = 2.0
 
     @property
     def source_name(self) -> str:
@@ -28,9 +46,12 @@ class SeleniumExtractor(BaseExtractor):
         result = ExtractorResult(documents=[])
 
         try:
-            # Run selenium scraper
+            # Try the subprocess method first (matches legacy)
             selenium_documents = self._run_selenium_scraper()
-            # Convert to DocumentInfo format and add to result
+            if not selenium_documents:
+                # Fallback to direct Selenium method
+                selenium_documents = self._run_direct_selenium()
+
             result.metadata["selenium_content"] = selenium_documents
 
         except Exception as e:
@@ -40,6 +61,226 @@ class SeleniumExtractor(BaseExtractor):
 
         self._log_extraction_result(result)
         return result
+
+    def _run_selenium_scraper(self) -> List[Dict[str, Any]]:
+        """Run the Selenium-based scraper to extract text content from web pages."""
+        selenium_scraper_path = Path("tools/selenium-scraper/nefac_scraper.py")
+        if not selenium_scraper_path.exists():
+            logger.warning(f"Selenium scraper not found at {selenium_scraper_path}")
+            return []
+
+        logger.info("Running Selenium scraper for text content extraction...")
+
+        try:
+            result = subprocess.run(["python", str(selenium_scraper_path)], capture_output=True, text=True, timeout=600, cwd=self.config.output_dir)  # 10 minutes
+
+            if result.returncode == 0:
+                logger.info("Selenium scraper completed successfully")
+                return self._process_selenium_output()
+            else:
+                logger.error(f"Selenium scraper failed: {result.stderr}")
+                return []
+
+        except subprocess.TimeoutExpired:
+            logger.error("Selenium scraper timed out")
+            return []
+        except Exception as e:
+            logger.error(f"Error running Selenium scraper: {e}")
+            return []
+
+    def _process_selenium_output(self) -> List[Dict[str, Any]]:
+        """Process the output from the Selenium scraper."""
+        output_dir = self.config.output_dir / "output"
+        if not output_dir.exists():
+            logger.warning(f"Selenium output directory not found: {output_dir}")
+            return []
+
+        processed_files = []
+
+        for txt_file in output_dir.glob("*.txt"):
+            try:
+                content = txt_file.read_text(encoding="utf-8")
+
+                processed_file = {
+                    "source_url": f"file://{txt_file}",
+                    "title": txt_file.stem.replace("_", " ").title(),
+                    "content": content,
+                    "word_count": len(content.split()),
+                    "char_count": len(content),
+                    "file_path": str(txt_file),
+                    "extracted_at": txt_file.stat().st_mtime,
+                }
+
+                processed_files.append(processed_file)
+
+            except Exception as e:
+                logger.error(f"Error processing {txt_file}: {e}")
+
+        # Save metadata for Selenium content
+        if processed_files:
+            metadata_file = self.config.output_dir / "metadata" / "selenium_metadata.json"
+            try:
+                from ..utils.common import JSONUtils
+
+                JSONUtils.save_json(processed_files, metadata_file)
+                logger.info(f"Saved metadata for {len(processed_files)} Selenium files")
+            except Exception as e:
+                logger.error(f"Error saving Selenium metadata: {e}")
+
+        return processed_files
+
+    def _run_direct_selenium(self) -> List[Dict[str, Any]]:
+        """Direct Selenium extraction method."""
+        if not SELENIUM_AVAILABLE:
+            logger.warning("Selenium not available, skipping direct extraction")
+            return []
+
+        logger.info("Starting direct Selenium-based extraction...")
+        extracted_content = []
+
+        try:
+            self._setup_driver()
+            urls_to_scrape = self._get_scraping_urls()
+
+            for url in urls_to_scrape:
+                try:
+                    content = self._scrape_page(url)
+                    if content:
+                        extracted_content.append(content)
+                        logger.info(f"Scraped content from: {url}")
+
+                    time.sleep(self.page_load_delay)
+
+                except Exception as e:
+                    logger.error(f"Failed to scrape {url}: {e}")
+
+        finally:
+            self._cleanup_driver()
+
+        logger.info(f"Extracted {len(extracted_content)} items via direct Selenium")
+        return extracted_content
+
+    def _setup_driver(self):
+        """Setup Selenium WebDriver."""
+        if not SELENIUM_AVAILABLE:
+            raise RuntimeError("Selenium is not available")
+
+        try:
+            chrome_options = Options()
+            chrome_options.add_argument("--headless")
+            chrome_options.add_argument("--no-sandbox")
+            chrome_options.add_argument("--disable-dev-shm-usage")
+            chrome_options.add_argument("--disable-gpu")
+            chrome_options.add_argument("--window-size=1920,1080")
+            chrome_options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+
+            self.driver = webdriver.Chrome(options=chrome_options)
+            self.driver.set_page_load_timeout(self.selenium_timeout)
+
+            logger.info("Selenium WebDriver initialized successfully")
+
+        except Exception as e:
+            logger.error(f"Failed to setup Selenium driver: {e}")
+            raise
+
+    def _cleanup_driver(self):
+        """Cleanup Selenium WebDriver."""
+        if self.driver:
+            try:
+                self.driver.quit()
+                logger.info("Selenium WebDriver cleaned up")
+            except Exception as e:
+                logger.error(f"Error cleaning up driver: {e}")
+
+    def _get_scraping_urls(self) -> List[str]:
+        """Get URLs that require Selenium scraping."""
+        base_urls = [
+            f"{self.config.wordpress_base_url}/resources/",
+            f"{self.config.wordpress_base_url}/news/",
+            f"{self.config.wordpress_base_url}/training/",
+        ]
+
+        return base_urls
+
+    def _scrape_page(self, url: str) -> Optional[Dict[str, Any]]:
+        """Scrape a single page with Selenium."""
+        if not self.driver:
+            return None
+
+        try:
+            self.driver.get(url)
+
+            # Wait for page to load
+            WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
+
+            # Extract content
+            title = self._extract_title()
+            content = self._extract_content()
+            links = self._extract_links()
+
+            return {
+                "source_url": url,
+                "title": title,
+                "content": content,
+                "links": links,
+                "word_count": len(content.split()) if content else 0,
+                "char_count": len(content) if content else 0,
+                "extracted_at": time.time(),
+            }
+
+        except Exception as e:
+            logger.error(f"Error scraping page {url}: {e}")
+            return None
+
+    def _extract_title(self) -> str:
+        """Extract page title."""
+        try:
+            return self.driver.title or "Untitled"
+        except Exception:
+            return "Untitled"
+
+    def _extract_content(self) -> str:
+        """Extract page content."""
+        try:
+            # Try to find main content areas
+            content_selectors = [".content", ".main-content", "#content", "main", "article", ".post-content", ".entry-content"]
+
+            for selector in content_selectors:
+                try:
+                    elements = self.driver.find_elements(By.CSS_SELECTOR, selector)
+                    if elements:
+                        return "\n".join([elem.text for elem in elements])
+                except NoSuchElementException:
+                    continue
+
+            # Fallback to body text
+            return self.driver.find_element(By.TAG_NAME, "body").text
+
+        except Exception as e:
+            logger.error(f"Error extracting content: {e}")
+            return ""
+
+    def _extract_links(self) -> List[str]:
+        """Extract document links from the page."""
+        links = []
+        try:
+            link_elements = self.driver.find_elements(By.TAG_NAME, "a")
+            for link in link_elements:
+                href = link.get_attribute("href")
+                if href and self._is_document_link(href):
+                    links.append(href)
+        except Exception as e:
+            logger.error(f"Error extracting links: {e}")
+
+        return list(set(links))  # Remove duplicates
+
+    def _is_document_link(self, url: str) -> bool:
+        """Check if URL is a document link."""
+        if not url:
+            return False
+
+        document_extensions = [".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".csv"]
+        return any(url.lower().endswith(ext) for ext in document_extensions)
 
     def _run_selenium_scraper(self) -> List[Dict[str, Any]]:
         """Run the Selenium-based scraper to extract text content from web pages."""

@@ -454,7 +454,7 @@ class YouTubeExtractor(BaseExtractor, RequestMixin):
             minutes = int(parts[1])
             seconds = float(parts[2])
             return hours * 3600 + minutes * 60 + seconds
-        except Exception:
+        except (ValueError, IndexError):
             return 0.0
 
     def get_youtube_metadata(self, url: str) -> Dict[str, Any]:
