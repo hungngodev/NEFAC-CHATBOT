@@ -12,18 +12,18 @@ from src.schemas.state import ConductResearch, ResearchComplete, SupervisorState
 
 async def supervisor(state: SupervisorState, config: RunnableConfig) -> dict:
     configurable = Configuration.from_runnable_config(config)
-    research_model_config = {"model": configurable.research_model, "max_tokens": configurable.research_model_max_tokens, "api_key": get_api_key_for_model(configurable.research_model, config), "tags": ["langsmith:nostream"]}
-    configurable_model = init_chat_model(configurable.research_model).bind(**research_model_config)
+    supervisor_model_config = {"model": configurable.supervisor_model, "max_tokens": configurable.research_model_max_tokens, "api_key": get_api_key_for_model(configurable.supervisor_model, config), "tags": ["langsmith:nostream"]}
+    configurable_model = init_chat_model(configurable.supervisor_model).bind(**supervisor_model_config)
     lead_researcher_tools = [ConductResearch, ResearchComplete]
-    research_model = configurable_model.bind_tools(lead_researcher_tools).with_retry(stop_after_attempt=configurable.max_structured_output_retries).with_config(research_model_config)
+    supervisor_model = configurable_model.bind_tools(lead_researcher_tools).with_retry(stop_after_attempt=configurable.max_structured_output_retries).with_config(supervisor_model_config)
     supervisor_messages = state.get("supervisor_messages", [])
-    response = await research_model.ainvoke(supervisor_messages)
+    response = await supervisor_model.ainvoke(supervisor_messages)
     return {"supervisor_messages": [response], "research_iterations": state.get("research_iterations", 0) + 1}
 
 
 supervisor_builder = StateGraph(state_schema=SupervisorState, config_schema=Configuration)
 
-# Add nodes with comprehensive operational metadata
+# Add nodes with comprehensive operational xmetadata
 supervisor_builder.add_node(
     node=SUPERVISOR_TOOLS_NODE,
     action=supervisor_tools,

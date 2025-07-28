@@ -87,6 +87,12 @@ DEFAULT_MULTI_QUERY_MODEL = "openai:gpt-4o-mini"
 DEFAULT_STEP_BACK_GENERATE_MODEL = "openai:gpt-4o-mini"
 DEFAULT_STEP_BACK_RESPONSE_MODEL = "openai:gpt-4o-mini"
 
+DEFAULT_CLARIFY_WITH_USER_MODEL = "openai:gpt-4o-mini"
+DEFAULT_TRANSFORM_MESSAGES_INTO_RESEARCH_TOPIC_MODEL = "openai:gpt-4o-mini"
+DEFAULT_COMPRESS_RESEARCH_MODEL = "openai:gpt-4o-mini"
+DEFAULT_SUPERVISOR_MODEL = "openai:gpt-4o"
+DEFAULT_FINAL_REPORT_MODEL = "openai:gpt-4o-mini"
+
 # ============================================================================
 # EMBEDDING MODEL CONFIGURATIONS
 # ============================================================================

@@ -16,10 +16,10 @@ class ResearchQuestion(BaseModel):
 
 async def write_research_brief(state: AgentState, config: RunnableConfig) -> dict:
     configurable = Configuration.from_runnable_config(config)
-    research_model_config = {"model": configurable.research_model, "max_tokens": configurable.research_model_max_tokens, "api_key": get_api_key_for_model(configurable.research_model, config), "tags": ["langsmith:nostream"]}
-    configurable_model = init_chat_model(configurable.research_model).bind(**research_model_config)
-    research_model = configurable_model.with_structured_output(ResearchQuestion).with_retry(stop_after_attempt=configurable.max_structured_output_retries).with_config(research_model_config)
-    response = await research_model.ainvoke([HumanMessage(content=configurable.transform_messages_into_research_topic_prompt.format(messages=get_buffer_string(state.get("messages", [])), date=get_today_str()))])
+    write_model_config = {"model": configurable.transform_messages_into_research_topic_model, "max_tokens": configurable.research_model_max_tokens, "api_key": get_api_key_for_model(configurable.transform_messages_into_research_topic_model, config), "tags": ["langsmith:nostream"]}
+    configurable_model = init_chat_model(configurable.transform_messages_into_research_topic_model).bind(**write_model_config)
+    write_brief_model = configurable_model.with_structured_output(ResearchQuestion).with_retry(stop_after_attempt=configurable.max_structured_output_retries).with_config(write_model_config)
+    response = await write_brief_model.ainvoke([HumanMessage(content=configurable.transform_messages_into_research_topic_prompt.format(messages=get_buffer_string(state.get("messages", [])), date=get_today_str()))])
     return {
         "research_brief": response.research_brief,
         "supervisor_messages": {"type": "override", "value": [SystemMessage(content=configurable.lead_researcher_prompt.format(date=get_today_str(), max_concurrent_research_units=configurable.max_concurrent_research_units)), HumanMessage(content=response.research_brief)]},

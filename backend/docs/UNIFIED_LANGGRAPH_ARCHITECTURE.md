@@ -406,13 +406,13 @@ async def internal_document_search(query: str, config: RunnableConfig = None) ->
 
 **Design Benefits**:
 
-| Benefit                    | Explanation                                      | Impact              |
-| -------------------------- | ------------------------------------------------ | ------------------- |
-| **Seamless Integration**   | Researcher treats it as a normal tool call       | Zero complexity     |
-| **Strategy Transparency**  | Results include which strategy was used          | Full observability  |
-| **Automatic Optimization** | Query transformer selects best strategy          | Intelligent retrieval |
-| **Clean Separation**       | Tier 3 doesn't need to know Tier 4 internals     | Perfect architecture |
-| **Unified Interface**      | Single tool provides all retrieval capabilities  | Developer friendly  |
+| Benefit                    | Explanation                                     | Impact                |
+| -------------------------- | ----------------------------------------------- | --------------------- |
+| **Seamless Integration**   | Researcher treats it as a normal tool call      | Zero complexity       |
+| **Strategy Transparency**  | Results include which strategy was used         | Full observability    |
+| **Automatic Optimization** | Query transformer selects best strategy         | Intelligent retrieval |
+| **Clean Separation**       | Tier 3 doesn't need to know Tier 4 internals    | Perfect architecture  |
+| **Unified Interface**      | Single tool provides all retrieval capabilities | Developer friendly    |
 
 This integration pattern represents enterprise-grade architectural design - the researcher simply calls `internal_document_search` and receives intelligently transformed results without needing to understand the complexity of the 7-strategy query transformation system underneath.
 

@@ -54,7 +54,7 @@ async def supervisor_tools(state: SupervisorState, config: RunnableConfig) -> Su
         return Command(goto=research_sends, update={"supervisor_messages": supervisor_messages + overflow_messages, "research_tool_calls": conduct_research_calls})
 
     except Exception as e:
-        if is_token_limit_exceeded(e, configurable.research_model):
+        if is_token_limit_exceeded(e, configurable.supervisor_model):
             print(f"Token limit exceeded while reflecting: {e}")
         else:
             print(f"Other error in reflection phase: {e}")

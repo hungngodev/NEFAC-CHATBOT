@@ -17,7 +17,7 @@ async def final_report_generation(state: AgentState, config: RunnableConfig):
     writer_model_config = {
         "model": configurable.final_report_model,
         "max_tokens": configurable.final_report_model_max_tokens,
-        "api_key": get_api_key_for_model(configurable.research_model, config),
+        "api_key": get_api_key_for_model(configurable.final_report_model, config),
     }
     configurable_model = init_chat_model(configurable.final_report_model).with_config(writer_model_config)
     findings = "\n".join(notes)
