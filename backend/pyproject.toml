@@ -31,6 +31,7 @@ dependencies = [
     "langgraph-api (>=0.2.100,<0.3.0)",
     "elasticsearch (>=9.0.2,<10.0.0)",
     "mcp-graphql (>=0.3.0,<0.4.0)",
+    "ipython (>=9.4.0,<10.0.0)",
 ]
 
 [build-system]
