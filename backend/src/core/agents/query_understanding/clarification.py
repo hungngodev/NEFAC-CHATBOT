@@ -1,5 +1,3 @@
-from typing import Literal
-
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import AIMessage, HumanMessage, get_buffer_string
 from langchain_core.runnables import RunnableConfig
@@ -25,7 +23,7 @@ class ClarifyWithUser(BaseModel):
     )
 
 
-async def clarify_with_user(state: AgentState, config: RunnableConfig) -> Command[Literal["write_research_brief", "__end__"]]:
+async def clarify_with_user(state: AgentState, config: RunnableConfig):
     configurable = Configuration.from_runnable_config(config)
     if not configurable.allow_clarification:
         return Command(goto=RESEARCH_WRITE_RESEARCH_BRIEF)
