@@ -6,8 +6,9 @@ from src.config.settings import Configuration, SearchAPI
 from src.core.agents.tools.mcp_utils import load_mcp_tools
 from src.core.agents.tools.misc_utils import get_config_value
 from src.core.agents.tools.search import tavily_search
-from src.core.agents.tools.unified_retrieval_tool import internal_document_search
-from src.schemas.state import ResearchComplete
+
+# ✅ REMOVED: unified_retrieval_tool import - now using Send() API delegation
+from src.schemas.state import InternalDocumentSearch, ResearchComplete
 
 
 ##########################
@@ -32,20 +33,17 @@ async def get_all_tools(config: RunnableConfig):
 
     Returns a list of tools in priority order:
     1. Research completion tool
-    2. External search tools (web search)
-    3. Internal document search (prioritized for legal/organizational queries)
+    2. Internal document search (handled via Send() API delegation)
+    3. External search tools (web search)
     4. MCP tools (additional integrations)
     """
-    tools = [lc_tool(ResearchComplete)]
+    tools = [lc_tool(ResearchComplete), lc_tool(InternalDocumentSearch)]
     configurable = Configuration.from_runnable_config(config)
     search_api = SearchAPI(get_config_value(configurable.search_api))
     tools.extend(await get_search_tool(search_api))
 
-    # Add unified internal document retrieval tool with proper metadata
-    internal_search_tool = internal_document_search.with_config(config)
-    # Add metadata to help with tool selection
-    internal_search_tool.metadata = {**(internal_search_tool.metadata or {}), "type": "internal_search", "priority": "high", "domain": "legal_organizational"}
-    tools.append(internal_search_tool)
+    # ✅ NOTE: InternalDocumentSearch is handled by researcher_tools -> Send("query_transformer")
+    # The tool call triggers subgraph delegation, not direct tool execution
 
     existing_tool_names = {tool.name if hasattr(tool, "name") else tool.get("name", "web_search") for tool in tools}
     mcp_tools = await load_mcp_tools(config, existing_tool_names)

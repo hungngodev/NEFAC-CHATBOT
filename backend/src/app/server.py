@@ -9,16 +9,105 @@ from src.core.agents.query_understanding.write_research_brief import write_resea
 from src.core.agents.supervisor.supervisor import supervisor_subgraph
 from src.schemas.state import AgentInputState, AgentState
 
-deep_researcher_builder = StateGraph(AgentState, input=AgentInputState, config_schema=Configuration)
-deep_researcher_builder.add_node(RESEARCH_CLARIFY_WITH_USER, clarify_with_user)
-deep_researcher_builder.add_node(RESEARCH_WRITE_RESEARCH_BRIEF, write_research_brief)
-deep_researcher_builder.add_node(RESEARCH_SUPERVISOR, supervisor_subgraph)
-deep_researcher_builder.add_node(RESEARCH_FINAL_REPORT_GENERATION, final_report_generation)
-deep_researcher_builder.add_node(MEMORY_SUMMARIZER_NODE, summarizer)
+deep_researcher_builder = StateGraph(state_schema=AgentState, input_schema=AgentInputState, config_schema=Configuration)
+
+deep_researcher_builder.add_node(
+    node=RESEARCH_CLARIFY_WITH_USER,
+    action=clarify_with_user,
+    destinations=[RESEARCH_WRITE_RESEARCH_BRIEF, END],
+    metadata={
+        "description": "Clarifies user research intent and determines if additional information is needed",
+        "type": "decision_node",
+        "interaction": "user_facing",
+        "criticality": "high",
+        "llm_powered": True,
+        "conditional_routing": True,
+        "expected_duration": "medium",
+        "dependencies": ["memory_context"],
+        "outputs": ["clarified_intent", "routing_decision"],
+    },
+    retry_policy=None,
+    cache_policy=None,
+)
+
+deep_researcher_builder.add_node(
+    node=RESEARCH_WRITE_RESEARCH_BRIEF,
+    action=write_research_brief,
+    metadata={
+        "description": "Generates a comprehensive research brief based on clarified user intent",
+        "type": "generation_node",
+        "interaction": "internal",
+        "criticality": "high",
+        "llm_powered": True,
+        "expected_duration": "medium",
+        "dependencies": ["clarified_intent"],
+        "outputs": ["research_brief", "research_scope"],
+    },
+    retry_policy=None,
+    cache_policy=None,
+)
+
+deep_researcher_builder.add_node(
+    node=RESEARCH_SUPERVISOR,
+    action=supervisor_subgraph,
+    metadata={
+        "description": "Coordinates research activities and manages research team workflow",
+        "type": "coordination_subgraph",
+        "interaction": "internal",
+        "criticality": "critical",
+        "parallel_capable": True,
+        "command_routing": True,
+        "expected_duration": "long",
+        "dependencies": ["research_brief"],
+        "outputs": ["research_results", "notes", "raw_notes"],
+    },
+    retry_policy=None,
+    cache_policy=None,
+)
+
+deep_researcher_builder.add_node(
+    node=RESEARCH_FINAL_REPORT_GENERATION,
+    action=final_report_generation,
+    metadata={
+        "description": "Synthesizes all research findings into a final comprehensive report",
+        "type": "generation_node",
+        "interaction": "user_facing",
+        "criticality": "high",
+        "llm_powered": True,
+        "expected_duration": "medium",
+        "dependencies": ["research_results", "notes"],
+        "outputs": ["final_report"],
+    },
+    retry_policy=None,
+    cache_policy=None,
+)
+
+deep_researcher_builder.add_node(
+    node=MEMORY_SUMMARIZER_NODE,
+    action=summarizer,
+    metadata={
+        "description": "Summarizes conversation history and context for research preparation",
+        "type": "preprocessing_node",
+        "interaction": "internal",
+        "criticality": "medium",
+        "llm_powered": True,
+        "expected_duration": "short",
+        "dependencies": ["conversation_history"],
+        "outputs": ["memory_context", "summarized_history"],
+    },
+    retry_policy=None,
+    cache_policy=None,
+)
 
 deep_researcher_builder.add_edge(START, MEMORY_SUMMARIZER_NODE)
 deep_researcher_builder.add_edge(MEMORY_SUMMARIZER_NODE, RESEARCH_CLARIFY_WITH_USER)
+deep_researcher_builder.add_edge(RESEARCH_WRITE_RESEARCH_BRIEF, RESEARCH_SUPERVISOR)
 deep_researcher_builder.add_edge(RESEARCH_SUPERVISOR, RESEARCH_FINAL_REPORT_GENERATION)
 deep_researcher_builder.add_edge(RESEARCH_FINAL_REPORT_GENERATION, END)
 
-deep_researcher = deep_researcher_builder.compile()
+deep_researcher = deep_researcher_builder.compile(
+    debug=True,
+    name="deep_researcher_main_graph",
+    interrupt_before=None,
+    interrupt_after=None,
+)

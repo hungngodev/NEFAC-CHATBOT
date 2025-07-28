@@ -21,6 +21,16 @@ class ConductResearch(BaseModel):
     )
 
 
+class InternalDocumentSearch(BaseModel):
+    """Call this tool to search internal documents and knowledge base using intelligent retrieval strategies.
+
+    Use this for legal documents, organizational policies, NEFAC-related content, or any internal resources.
+    The system automatically selects the optimal search strategy based on query characteristics.
+    """
+
+    query: str = Field(description="The search query for internal documents. Be specific and detailed for best results. Examples: 'First Amendment rights for journalists', 'FOIA exemptions for law enforcement', 'NEFAC v. Department of Justice'")
+
+
 class ResearchComplete(BaseModel):
     """Call this tool to indicate that the research is complete."""
 
@@ -68,6 +78,14 @@ class QueryTransformerState(RetrievalSubgraphState):
     sub_questions: list[str]  # For decomposition strategy
     step_back_question: str  # For step-back strategy
     hypothetical_document: str  # For HyDE strategy
+    # ✅ ADD: Support for tool call context in Send() API
+    _source_tool_call: dict = {}  # Store original tool call for result processing
+
+
+class QueryTransformerOutputState(TypedDict):
+    """Output state for query transformer - following legacy Send() API pattern."""
+
+    _completed_query_results: Annotated[list[dict], operator.add]  # ✅ Key field for Send() API aggregation
 
 
 def override_reducer(current_value, new_value):
@@ -96,6 +114,9 @@ class SupervisorState(TypedDict):
     notes: Annotated[list[str], override_reducer] = []
     research_iterations: int = 0
     raw_notes: Annotated[list[str], override_reducer] = []
+    # Send() API aggregation fields (following legacy pattern)
+    completed_research_results: Annotated[list["ResearcherOutputState"], operator.add] = []
+    research_tool_calls: list[dict] = []  # Store tool calls for result matching
 
 
 class ResearcherState(TypedDict):
@@ -104,6 +125,8 @@ class ResearcherState(TypedDict):
     research_topic: str
     compressed_research: str
     raw_notes: Annotated[list[str], override_reducer] = []
+    # ✅ CORRECTED: Simplified query transformer integration fields
+    _completed_query_results: Annotated[list[dict], operator.add] = []  # Aggregated query transformer results
 
 
 class ResearcherOutputState(BaseModel):
