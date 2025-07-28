@@ -33,13 +33,11 @@ class DecompositionState(QueryTransformerState):
 # --- Nodes ---
 def generate_sub_questions_node(state: DecompositionState, config: RunnableConfig) -> DecompositionState:
     """Decomposes the main question into a series of sub-questions."""
-    # Get configuration from RunnableConfig
     configuration = Configuration.from_runnable_config(config)
 
     model = init_chat_model(configuration.decomposition_generate_model)
     question = state["transformed_query"]
 
-    # Use prompt from configuration
     prompt = ChatPromptTemplate.from_template(configuration.decomposition_generate_prompt)
     chain = prompt | model | StrOutputParser() | (lambda x: x.strip().split("\n"))
 
@@ -53,10 +51,10 @@ def answer_sub_questions_node(state: DecompositionState) -> RetrievalSubgraphSta
     """Answers each sub-question iteratively, using retrieval for context."""
     sub_questions = state["sub_questions"]
     q_a_pairs = state["q_a_pairs"]
-    current_index = len(q_a_pairs)  # Track how mAny have been answered so far
+    current_index = len(q_a_pairs)
 
     sub_question = sub_questions[current_index]
-    return {"retrieval_query": sub_question}  # Pass current q_a_pairs to state for context
+    return {"retrieval_query": sub_question}
 
 
 def format_answer_node(state: DecompositionState, config: RunnableConfig) -> DecompositionState:
@@ -71,7 +69,7 @@ def format_answer_node(state: DecompositionState, config: RunnableConfig) -> Dec
 
     qa_prompt = ChatPromptTemplate.from_template(configuration.decomposition_qa_template)
     sub_questions = state["sub_questions"]
-    sub_question = sub_questions[len(q_a_pairs)]  # Next unanswered sub-question
+    sub_question = sub_questions[len(q_a_pairs)]
 
     qa_chain = qa_prompt | llm | StrOutputParser()
     answer = qa_chain.invoke({"sub_question": sub_question, "q_a_pairs": previous_q_a, "context": context})
@@ -98,30 +96,84 @@ def synthesize_final_answer_node(state: DecompositionState, config: RunnableConf
 def route_from_format_nodes(state: DecompositionState) -> str:
     """Decide whether to loop back to answer next sub-question or proceed to synthesis."""
     if len(state["q_a_pairs"]) < len(state["sub_questions"]):
-        return DECOMPOSITION_ANSWER_SUB_QUESTIONS  # More to answer, loop back
+        return DECOMPOSITION_ANSWER_SUB_QUESTIONS
     else:
-        return DECOMPOSITION_SYNTHESIZE_FINAL_ANSWER  # All done, proceed to synthesis
+        return DECOMPOSITION_SYNTHESIZE_FINAL_ANSWER
 
 
-# --- Workflow ---
 workflow = StateGraph(DecompositionState)
 
-# Add nodes
-workflow.add_node(DECOMPOSITION_GENERATE_SUB_QUESTIONS, generate_sub_questions_node)
-# Note: This node now loops internally, invoking retrieval for each sub-question.
-# A more complex graph could unroll this loop, but this is simpler.
-workflow.add_node(DECOMPOSITION_ANSWER_SUB_QUESTIONS, answer_sub_questions_node)
-workflow.add_node(DECOMPOSITION_FORMAT_ANSWER, format_answer_node)  # Intermediate formatting step
-workflow.add_node(DECOMPOSITION_RETRIEVE_SUBGRAPH, retrieval_subgraph)
-workflow.add_node(DECOMPOSITION_SYNTHESIZE_FINAL_ANSWER, synthesize_final_answer_node)
+workflow.add_node(
+    DECOMPOSITION_GENERATE_SUB_QUESTIONS,
+    generate_sub_questions_node,
+    metadata={
+        "description": "Decomposes complex queries into focused sub-questions for iterative retrieval",
+        "dependencies": ["transformed_query"],
+        "outputs": ["sub_questions"],
+        "strategy": "query_decomposition",
+        "expected_duration": "2-4s",
+        "model_type": "decomposition_generate_model",
+        "loop_control": "generates_sub_questions_list",
+    },
+)
 
-# Add edges
+workflow.add_node(
+    DECOMPOSITION_ANSWER_SUB_QUESTIONS,
+    answer_sub_questions_node,
+    metadata={"description": "Prepares retrieval query for current unanswered sub-question", "dependencies": ["sub_questions", "q_a_pairs"], "outputs": ["retrieval_query"], "strategy": "iterative_sub_question_processing", "expected_duration": "0.1-0.5s", "loop_control": "tracks_current_index"},
+)
+
+workflow.add_node(
+    DECOMPOSITION_FORMAT_ANSWER,
+    format_answer_node,
+    destinations=[DECOMPOSITION_ANSWER_SUB_QUESTIONS, DECOMPOSITION_SYNTHESIZE_FINAL_ANSWER],
+    metadata={
+        "description": "Formats answer for current sub-question using retrieved context",
+        "dependencies": ["documents", "q_a_pairs", "sub_questions"],
+        "outputs": ["q_a_pairs"],
+        "strategy": "contextual_qa_formatting",
+        "expected_duration": "2-5s",
+        "model_type": "decomposition_answer_model",
+        "loop_control": "conditional_routing_target",
+    },
+)
+
+workflow.add_node(
+    DECOMPOSITION_RETRIEVE_SUBGRAPH,
+    retrieval_subgraph,
+    metadata={
+        "description": "Retrieval subgraph for decomposition strategy sub-questions",
+        "dependencies": ["retrieval_query"],
+        "outputs": ["documents"],
+        "strategy": "multi_strategy_retrieval",
+        "expected_duration": "3-8s",
+        "retrieval_methods": ["vector", "hybrid", "knowledge_graph"],
+        "context": "sub_question_focused",
+    },
+)
+
+workflow.add_node(
+    DECOMPOSITION_SYNTHESIZE_FINAL_ANSWER,
+    synthesize_final_answer_node,
+    metadata={
+        "description": "Synthesizes final comprehensive answer from all Q&A pairs",
+        "dependencies": ["q_a_pairs", "transformed_query"],
+        "outputs": ["transformed_context"],
+        "strategy": "qa_synthesis",
+        "expected_duration": "3-6s",
+        "model_type": "decomposition_final_model",
+        "synthesis_method": "contextual_integration",
+    },
+)
+
 workflow.set_entry_point(DECOMPOSITION_GENERATE_SUB_QUESTIONS)
 workflow.add_edge(DECOMPOSITION_GENERATE_SUB_QUESTIONS, DECOMPOSITION_ANSWER_SUB_QUESTIONS)
 workflow.add_edge(DECOMPOSITION_ANSWER_SUB_QUESTIONS, DECOMPOSITION_RETRIEVE_SUBGRAPH)
 workflow.add_edge(DECOMPOSITION_RETRIEVE_SUBGRAPH, DECOMPOSITION_FORMAT_ANSWER)
-workflow.add_conditional_edges(DECOMPOSITION_FORMAT_ANSWER, route_from_format_nodes)  # Loop back to answer next
+workflow.add_conditional_edges(DECOMPOSITION_FORMAT_ANSWER, route_from_format_nodes)
 workflow.add_edge(DECOMPOSITION_SYNTHESIZE_FINAL_ANSWER, END)
 
-# Compile the workflow
-decomposition = workflow.compile()
+decomposition = workflow.compile(
+    debug=True,
+    name="decomposition_strategy_loop",
+)
