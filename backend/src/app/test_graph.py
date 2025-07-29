@@ -49,7 +49,7 @@ def collect_results_node(state: TestState) -> TestState:
     return {"characters": sorted_chars}
 
 
-test_builder = StateGraph(state_schema=TestState)
+test_builder = StateGraph(state_schema=TestState, input_schema=TestState, output_schema=TestState)
 
 test_builder.add_node(node="generator", action=generator_node, destinations=["add_character"], metadata={"description": "Generates 5 Send commands for parallel character addition", "type": "generator_node", "parallel_trigger": True, "send_count": 5, "execution_time": "1s"})
 

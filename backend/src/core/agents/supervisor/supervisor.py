@@ -21,7 +21,7 @@ async def supervisor(state: SupervisorState, config: RunnableConfig) -> dict:
     return {"supervisor_messages": [response], "research_iterations": state.get("research_iterations", 0) + 1}
 
 
-supervisor_builder = StateGraph(state_schema=SupervisorState, config_schema=Configuration)
+supervisor_builder = StateGraph(state_schema=SupervisorState, input_schema=SupervisorState, output_schema=SupervisorState, config_schema=Configuration)
 
 # Add nodes with comprehensive operational xmetadata
 supervisor_builder.add_node(

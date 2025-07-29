@@ -9,7 +9,7 @@ from src.core.agents.query_understanding.write_research_brief import write_resea
 from src.core.agents.supervisor.supervisor import supervisor_subgraph
 from src.schemas.state import AgentInputState, AgentState
 
-deep_researcher_builder = StateGraph(state_schema=AgentState, input_schema=AgentInputState, config_schema=Configuration)
+deep_researcher_builder = StateGraph(state_schema=AgentState, input_schema=AgentInputState, output_schema=AgentState, config_schema=Configuration)
 
 deep_researcher_builder.add_node(
     node=RESEARCH_CLARIFY_WITH_USER,
