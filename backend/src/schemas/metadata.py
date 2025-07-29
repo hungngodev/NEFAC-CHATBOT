@@ -1,16 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from datetime import datetime
-from enum import Enum
-from operator import add
-from typing import Annotated, Any, ClassVar, Generic, Literal, TypedDict, TypeVar
+from dataclasses import field
+from typing import Any, ClassVar
 
-from langchain_core.documents import Document
-from langchain_core.messages import AnyMessage
-from langgraph.graph import MessagesState
-from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator
-
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class BaseMetadata(BaseModel):
@@ -142,10 +135,10 @@ class YouTubeMetadata(BaseModel):
 
 
 class PDFChunkMetadata(PDFMetadata):
-    page_number: int = 0  # Optional, for compatibility
+    page_number: int = 0  # for compatibility
     total_pages: int
     chunk_index: int
-    total_chunks_in_page: int = 0  # Optional, for compatibility
+    total_chunks_in_page: int = 0  # for compatibility
     total_chunks_in_document: int = 0  # For document-level chunking
     chunking_strategy: str
     pages: list[int] = field(default_factory=list)  # List of page numbers this chunk covers
@@ -170,4 +163,3 @@ class YouTubeChunkMetadata(YouTubeMetadata):
     chunking_strategy: str
     start_time: float = 0.0
     end_time: float = 0.0
-

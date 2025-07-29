@@ -4,7 +4,6 @@ Refactored to use the new modular approach with intelligent sub-tool selection.
 """
 
 import os
-from typing import List
 
 from langchain.chat_models import init_chat_model
 from langchain.prompts import ChatPromptTemplate
@@ -22,7 +21,7 @@ graph = Neo4jGraph(url=NEO4J_URI, username=NEO4J_USER, password=NEO4J_PASSWORD)
 
 
 @tool()
-def graph_tool_node(query: str, config: RunnableConfig = None) -> List[Document]:
+def graph_tool_node(query: str, config: RunnableConfig = None) -> list[Document]:
     """
     Intelligent graph tool node that analyzes the query and decides which graph sub-tools to invoke.
 

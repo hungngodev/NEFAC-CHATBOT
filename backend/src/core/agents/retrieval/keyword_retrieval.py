@@ -4,7 +4,6 @@ Refactored to use the new modular approach with post-processing integration.
 """
 
 import os
-from typing import List
 
 from elasticsearch import Elasticsearch
 from langchain_community.retrievers import ElasticSearchBM25Retriever
@@ -28,7 +27,7 @@ else:
 
 
 @tool
-def keyword_search(query: str, top_k: int = 10) -> List[Document]:
+def keyword_search(query: str, top_k: int = 10) -> list[Document]:
     """
     Performs a keyword-based search using ElasticSearch BM25.
     Ideal for queries with specific, exact terms, names, or legal citations.

@@ -1,4 +1,4 @@
-from langgraph.graph import END, StateGraph
+from langgraph.graph import END, START, StateGraph
 from langgraph.types import RunnableConfig
 
 from src.config.node_names import (
@@ -16,10 +16,8 @@ def retrieve_node(state: QueryTransformerState, config: RunnableConfig) -> Query
     """
     query = state["transformed_query"]
 
-    # Invoke the retrieval subgraph directly
     result = retrieval_subgraph.invoke({"retrieval_query": query}, config)
 
-    # Extract documents from the result
     documents = result.get("documents", [])
 
     return {"documents": documents}
@@ -31,14 +29,18 @@ def format_documents_node(state: QueryTransformerState) -> QueryTransformerState
     return {"transformed_context": formatted_string}
 
 
-# Build the default retrieval workflow
 workflow = StateGraph(QueryTransformerState)
 
-workflow.add_node(DEFAULT_RETRIEVAL_RETRIEVE, retrieve_node)
-workflow.add_node(DEFAULT_RETRIEVAL_FORMAT, format_documents_node)
+workflow.add_node(DEFAULT_RETRIEVAL_RETRIEVE, retrieve_node, metadata={"description": "Direct retrieval using transformed query", "dependencies": ["transformed_query"], "outputs": ["documents"], "strategy": "direct_retrieval", "expected_duration": "2-5s", "retrieval_method": "vector_search"})
 
-workflow.set_entry_point(DEFAULT_RETRIEVAL_RETRIEVE)
+workflow.add_node(
+    DEFAULT_RETRIEVAL_FORMAT, format_documents_node, metadata={"description": "Formats retrieved documents into single string", "dependencies": ["documents"], "outputs": ["transformed_context"], "strategy": "document_formatting", "expected_duration": "0.5-1s", "formatter": "format_docs"}
+)
+
+workflow.add_edge(START, DEFAULT_RETRIEVAL_RETRIEVE)
 workflow.add_edge(DEFAULT_RETRIEVAL_RETRIEVE, DEFAULT_RETRIEVAL_FORMAT)
 workflow.add_edge(DEFAULT_RETRIEVAL_FORMAT, END)
-
-default_retrieval = workflow.compile()
+default_retrieval = workflow.compile(
+    debug=True,
+    name="default_retrieval_sequence",
+)

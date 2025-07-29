@@ -15,7 +15,7 @@ You will be provided with:
 
 Your task is to:
 
-**Analyze and Integrate**: Review all provided context pieces and identify the key information relevant to answering the user's question. Look for complementary information, overlapping details, and any contradictions that need to be resolved.
+**Analyze and Integrate**: Review all provided context pieces and identify the key information relevant to answering the user's question. Look for complementary information, overlapping details, and Any contradictions that need to be resolved.
 
 **Synthesize Coherently**: Combine the information into a logical, flowing response that addresses all aspects of the user's question. Ensure the answer is comprehensive yet concise.
 

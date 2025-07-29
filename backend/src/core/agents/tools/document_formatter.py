@@ -1,11 +1,9 @@
-from typing import List
-
 from langchain_core.documents import Document
 
 
-def format_docs(docs: List[Document]) -> str:
+def format_docs(docs: list[Document]) -> str:
     """Format documents with default values for missing metadata."""
-    formatted_docs: List[str] = []
+    formatted_docs: list[str] = []
     for i, doc in enumerate(docs):
         original_metadata = doc.metadata
         title = original_metadata.get("title", "Unknown Source")

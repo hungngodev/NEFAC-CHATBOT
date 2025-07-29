@@ -72,14 +72,77 @@ def combine_documents_node(state: RetrievalSubgraphState) -> RetrievalSubgraphSt
     return {"documents": all_docs}
 
 
-# --- Graph Definition ---
+# --- Enhanced Graph Definition ---
 
-workflow = StateGraph(RetrievalSubgraphState)
+workflow = StateGraph(state_schema=RetrievalSubgraphState, config_schema=Configuration)
 
-workflow.add_node(RETRIEVAL_SUBGRAPH_PLANNER, plan_retrieval_node)
-workflow.add_node(RETRIEVAL_SUBGRAPH_ENSEMBLE_RETRIEVAL, ensemble_retrieval_node)
-workflow.add_node(RETRIEVAL_SUBGRAPH_GRAPH_RETRIEVAL, graph_retrieval_node)
-workflow.add_node(RETRIEVAL_SUBGRAPH_COMBINE_DOCUMENTS, combine_documents_node)
+# Add retrieval nodes with comprehensive metadata
+workflow.add_node(
+    node=RETRIEVAL_SUBGRAPH_PLANNER,
+    action=plan_retrieval_node,
+    destinations=[RETRIEVAL_SUBGRAPH_ENSEMBLE_RETRIEVAL, RETRIEVAL_SUBGRAPH_GRAPH_RETRIEVAL, RETRIEVAL_SUBGRAPH_COMBINE_DOCUMENTS],
+    metadata={
+        "description": "Plans retrieval strategy based on query characteristics and available methods",
+        "type": "planning_node",
+        "interaction": "internal",
+        "criticality": "medium",
+        "llm_powered": False,
+        "strategy_selection": True,
+        "expected_duration": "short",
+        "analysis_types": ["query_complexity", "domain_requirements", "available_methods"],
+        "dependencies": ["retrieval_query"],
+        "outputs": ["retrieval_plan", "selected_methods"],
+    },
+)
+
+workflow.add_node(
+    node=RETRIEVAL_SUBGRAPH_ENSEMBLE_RETRIEVAL,
+    action=ensemble_retrieval_node,
+    metadata={
+        "description": "Performs ensemble document search across multiple vector retrievers",
+        "type": "retrieval_node",
+        "interaction": "vector_store",
+        "criticality": "high",
+        "parallel_capable": True,
+        "retrieval_methods": ["semantic", "hybrid", "keyword"],
+        "expected_duration": "medium",
+        "performance_sensitive": True,
+        "dependencies": ["retrieval_query", "vector_stores"],
+        "outputs": ["retrieved_documents", "relevance_scores"],
+    },
+)
+
+workflow.add_node(
+    node=RETRIEVAL_SUBGRAPH_GRAPH_RETRIEVAL,
+    action=graph_retrieval_node,
+    metadata={
+        "description": "Performs graph-based knowledge retrieval using entity relationships",
+        "type": "retrieval_node",
+        "interaction": "knowledge_graph",
+        "criticality": "high",
+        "parallel_capable": True,
+        "graph_methods": ["entity_traversal", "relationship_mining", "subgraph_extraction"],
+        "expected_duration": "medium",
+        "dependencies": ["retrieval_query", "knowledge_graph"],
+        "outputs": ["graph_entities", "relationships", "contextual_info"],
+    },
+)
+
+workflow.add_node(
+    node=RETRIEVAL_SUBGRAPH_COMBINE_DOCUMENTS,
+    action=combine_documents_node,
+    metadata={
+        "description": "Combines, ranks, and filters documents from multiple retrieval sources",
+        "type": "aggregation_node",
+        "interaction": "internal",
+        "criticality": "high",
+        "ranking_algorithms": ["relevance", "diversity", "recency"],
+        "deduplication": True,
+        "expected_duration": "short",
+        "dependencies": ["retrieved_documents", "graph_entities"],
+        "outputs": ["ranked_documents", "combined_results"],
+    },
+)
 workflow.set_entry_point(RETRIEVAL_SUBGRAPH_PLANNER)
 
 
@@ -96,10 +159,18 @@ def route_after_planning(state: RetrievalSubgraphState):
     return nodes_to_run if nodes_to_run else [RETRIEVAL_SUBGRAPH_COMBINE_DOCUMENTS]
 
 
-workflow.add_conditional_edges(RETRIEVAL_SUBGRAPH_PLANNER, route_after_planning)
-
+workflow.add_conditional_edges(
+    source=RETRIEVAL_SUBGRAPH_PLANNER,
+    path=route_after_planning,
+)
 workflow.add_edge(RETRIEVAL_SUBGRAPH_ENSEMBLE_RETRIEVAL, RETRIEVAL_SUBGRAPH_COMBINE_DOCUMENTS)
 workflow.add_edge(RETRIEVAL_SUBGRAPH_GRAPH_RETRIEVAL, RETRIEVAL_SUBGRAPH_COMBINE_DOCUMENTS)
 workflow.add_edge(RETRIEVAL_SUBGRAPH_COMBINE_DOCUMENTS, END)
-# Compile the graph into a runnable object
-retrieval_subgraph = workflow.compile()
+
+
+retrieval_subgraph = workflow.compile(
+    debug=True,
+    name="retrieval_coordination_subgraph",
+    interrupt_before=None,
+    interrupt_after=None,
+)

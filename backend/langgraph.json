@@ -4,6 +4,9 @@
     "agent": {
       "path": "src.app.server:deep_researcher",
       "config_schema": "src.app.server:Configuration"
+    },
+    "test_graph": {
+      "path": "src.app.test_graph:test_graph"
     }
   },
   "env": "../.env"

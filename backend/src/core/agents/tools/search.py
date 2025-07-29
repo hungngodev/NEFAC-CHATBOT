@@ -1,6 +1,6 @@
 import asyncio
 import os
-from typing import Annotated, List, Literal
+from typing import Annotated, Literal
 
 from langchain.chat_models import init_chat_model
 from langchain_core.language_models import BaseChatModel
@@ -28,12 +28,12 @@ async def summarize_webpage(model: BaseChatModel, webpage_content: str, config: 
 
 
 @lc_tool(description=TAVILY_SEARCH_DESCRIPTION)
-async def tavily_search(queries: List[str], max_results: Annotated[int, InjectedToolArg] = 5, topic: Annotated[Literal["general", "news", "finance"], InjectedToolArg] = "general", config: RunnableConfig = None) -> str:
+async def tavily_search(queries: list[str], max_results: Annotated[int, InjectedToolArg] = 5, topic: Annotated[Literal["general", "news", "finance"], InjectedToolArg] = "general", config: RunnableConfig = None) -> str:
     """
     Fetches results from Tavily search API.
 
     Args
-        queries (List[str]): List of search queries, you can pass in as many queries as you need.
+        queries (list[str]): List of search queries, you can pass in as mAny queries as you need.
         max_results (int): Maximum number of results to return
         topic (Literal['general', 'news', 'finance']): Topic to filter results by
 

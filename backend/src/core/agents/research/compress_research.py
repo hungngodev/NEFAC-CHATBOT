@@ -11,8 +11,8 @@ from src.schemas.state import ResearcherState
 async def compress_research(state: ResearcherState, config: RunnableConfig):
     configurable = Configuration.from_runnable_config(config)
     synthesis_attempts = 0
-    configurable_model = init_chat_model(configurable.compression_model)
-    synthesizer_model = configurable_model.with_config({"model": configurable.compression_model, "max_tokens": configurable.compression_model_max_tokens, "api_key": get_api_key_for_model(configurable.compression_model, config), "tags": ["langsmith:nostream"]})
+    configurable_model = init_chat_model(configurable.compress_research_model)
+    synthesizer_model = configurable_model.with_config({"model": configurable.compress_research_model, "max_tokens": configurable.compression_model_max_tokens, "api_key": get_api_key_for_model(configurable.compress_research_model, config), "tags": ["langsmith:nostream"]})
     researcher_messages = state.get("researcher_messages", [])
     # Update the system prompt to now focus on compression rather than research.
     researcher_messages[0] = SystemMessage(content=configurable.compress_research_system_prompt.format(date=get_today_str()))
@@ -23,7 +23,7 @@ async def compress_research(state: ResearcherState, config: RunnableConfig):
             return {"compressed_research": str(response.content), "raw_notes": ["\n".join([str(m.content) for m in filter_messages(researcher_messages, include_types=["tool", "ai"])])]}
         except Exception as e:
             synthesis_attempts += 1
-            if is_token_limit_exceeded(e, configurable.research_model):
+            if is_token_limit_exceeded(e, configurable.compress_research_model):
                 researcher_messages(researcher_messages)
                 print(f"Token limit exceeded while synthesizing: {e}. Pruning the messages to try again.")
                 continue

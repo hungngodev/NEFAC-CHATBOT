@@ -5,12 +5,16 @@ MEMORY_SUMMARIZER_NODE = "summarizer_node"
 
 # query_translation
 QUERY_TRANSFORMER_NODE = "query_transformer"
-QUERY_TRANSFORMER_MULTI_QUERY = "multi_query"
-QUERY_TRANSFORMER_DECOMPOSITION = "decomposition"
-QUERY_TRANSFORMER_STEP_BACK = "step_back"
-QUERY_TRANSFORMER_HYDE = "hyde"
-QUERY_TRANSFORMER_FACTUAL_STRATEGY = "factual_strategy"
+QUERY_TRANSFORMER_PREPARE_OUTPUT = "prepare_output"
+
+# Query transformation strategies (alphabetical order)
 QUERY_TRANSFORMER_CONTEXTUAL_STRATEGY = "contextual_strategy"
+QUERY_TRANSFORMER_DECOMPOSITION = "decomposition"
+QUERY_TRANSFORMER_DEFAULT_RETRIEVAL = "default_retrieval"
+QUERY_TRANSFORMER_FACTUAL_STRATEGY = "factual_strategy"
+QUERY_TRANSFORMER_HYDE = "hyde"
+QUERY_TRANSFORMER_MULTI_QUERY = "multi_query"
+QUERY_TRANSFORMER_STEP_BACK = "step_back"
 
 # Default retrieval
 DEFAULT_RETRIEVAL_RETRIEVE = "default_retrieve"
@@ -49,6 +53,7 @@ STEP_BACK_GENERATE_FINAL_RESPONSE = "generate_final_response"
 # retrieval
 GRAPH_RETRIEVAL_GRAPH_TOOL_NODE = "graph_tool_node"
 KEYWORD_RETRIEVAL_KEYWORD_SEARCH = "keyword_search"
+RETRIEVAL_AGENT = "retrieval_agent"
 
 RETRIEVAL_SUBGRAPH_PLANNER = "planner"
 RETRIEVAL_SUBGRAPH_ENSEMBLE_RETRIEVAL = "ensemble_retrieval"
@@ -69,3 +74,4 @@ RESEARCH_FINAL_REPORT_GENERATION = "final_report_generation"
 RESEARCH_RESEARCHER = "researcher"
 RESEARCH_RESEARCHER_TOOLS = "researcher_tools"
 RESEARCH_COMPRESS_RESEARCH = "compress_research"
+RESEARCH_TEAM = "research_team"
