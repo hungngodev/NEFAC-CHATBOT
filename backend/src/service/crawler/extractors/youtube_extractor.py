@@ -1,5 +1,5 @@
 """
-YouTube content extractor for NEFAC crawler.
+YouTube Extractor for NEFAC Crawler - Comprehensive YouTube Channel Crawling
 """
 
 import json
@@ -7,515 +7,611 @@ import logging
 import random
 import re
 import time
-import xml.etree.ElementTree as ET
 from typing import Any, Dict, List, Optional
+from urllib.parse import parse_qs, urlparse
 
-import requests
-
-# Optional YouTube dependencies - handle import errors gracefully
-try:
-    import yt_dlp
-except ImportError:
-    yt_dlp = None
-
-try:
-    from youtube_transcript_api import YouTubeTranscriptApi
-    from youtube_transcript_api.proxies import WebshareProxyConfig
-except ImportError:
-    YouTubeTranscriptApi = None
-    WebshareProxyConfig = None
-
-from ..core.config import CrawlerConfig
-from ..core.types import ExtractorResult
-from .base import BaseExtractor, RequestMixin
+# Imports relative to the crawler directory (where run.py is located)
+from src.service.crawler.core.config import CrawlerConfig
+from src.service.crawler.core.types import CrawlerSource, DocumentInfo, ExtractorResult
+from src.service.crawler.extractors.base import BaseExtractor
+from src.service.crawler.utils.common import DateUtils
 
 logger = logging.getLogger(__name__)
 
 
-class YouTubeExtractor(BaseExtractor, RequestMixin):
-    """Extracts YouTube video information and transcripts."""
+class YouTubeExtractor(BaseExtractor):
+    """Comprehensive YouTube extractor for NEFAC channel."""
 
     def __init__(self, config: CrawlerConfig):
         super().__init__(config)
-        self.youtube_dir = config.output_dir / "youtube"
-        self.youtube_dir.mkdir(parents=True, exist_ok=True)
-        self.youtube_channel_url = "https://www.youtube.com/@nefac"
 
-        # Configure yt-dlp
-        self.ytdl_opts = {
-            "quiet": True,
-            "no_warnings": True,
-            "extractaudio": False,
-            "writeinfojson": False,
-            "writethumbnail": False,
-            "writesubtitles": False,
-            "writeautomaticsub": False,
-            "skip_download": True,
-            "extract_flat": True,
-            "playlist_items": "1-1000",
-        }
+        # Use dedicated YouTube configuration
+        self.youtube_config = config.youtube
+        self.youtube_channel_url = self.youtube_config.channel_url
+        self.youtube_dir = self.config.output_dir / self.youtube_config.output_subdir
+        # Don't create directory until we actually have videos to save
+
+        # YouTube processing settings from dedicated config
+        self.youtube_delay = self.youtube_config.request_delay
+        self.max_videos = self.youtube_config.max_videos
+        self.max_concurrent = self.youtube_config.max_concurrent
+        self.batch_size = self.youtube_config.batch_size
+        self.enable_transcripts = self.youtube_config.enable_transcripts
+        self.timeout_seconds = self.youtube_config.timeout_seconds
+
+        # Proxy settings from YouTube config
+        self.webshare_username = self.youtube_config.webshare_username
+        self.webshare_password = self.youtube_config.webshare_password
+        self.http_proxy = self.youtube_config.http_proxy
+        self.https_proxy = self.youtube_config.https_proxy
+        self.rotating_proxy = self.youtube_config.rotating_proxy
+
+        # Content filtering settings
+        self.min_duration = self.youtube_config.min_duration_seconds
+        self.max_duration = self.youtube_config.max_duration_seconds
+        self.skip_live_streams = self.youtube_config.skip_live_streams
+        self.skip_shorts = self.youtube_config.skip_shorts
 
     @property
     def source_name(self) -> str:
-        return "youtube_channel"
+        return CrawlerSource.YOUTUBE.value
 
     def extract(self) -> ExtractorResult:
-        """Extract YouTube content - full channel crawl."""
-        self._log_extraction_start()
+        """Extract all videos from NEFAC YouTube channel."""
+        logger.info("🎥 Starting NEFAC YouTube channel extraction...")
 
-        result = ExtractorResult(documents=[])
-
-        # Check if YouTube dependencies are available
-        if not yt_dlp and not YouTubeTranscriptApi:
-            error_msg = "YouTube dependencies (yt-dlp, youtube_transcript_api) not available. Install with: pip install yt-dlp youtube_transcript_api"
-            logger.error(error_msg)
-            result.errors.append(error_msg)
-            self._log_extraction_result(result)
-            return result
-
-        try:
-            youtube_videos = self._extract_youtube_videos()
-            # Convert to DocumentInfo format
-            for video in youtube_videos:
-                # YouTube videos are handled differently but still need DocumentInfo format
-                result.metadata["youtube_videos"] = youtube_videos
-
-        except Exception as e:
-            error_msg = f"Error in YouTube extraction: {e}"
-            logger.error(error_msg)
-            result.errors.append(error_msg)
-
-        self._log_extraction_result(result)
-        return result
-
-    def _extract_youtube_videos(self) -> List[Dict[str, Any]]:
-        """Extract YouTube content - full channel crawl."""
-        logger.info("Starting YouTube channel crawl...")
-
-        if not yt_dlp:
-            logger.warning("yt-dlp not available, skipping YouTube crawl")
-            return []
+        # Check dependencies
+        if not self._check_dependencies():
+            return ExtractorResult(
+                documents=[],
+                metadata={
+                    "error": "Missing required dependencies: yt-dlp, youtube-transcript-api"
+                },
+            )
 
         try:
-            with yt_dlp.YoutubeDL(self.ytdl_opts) as ydl:
-                # Extract channel info
-                channel_info = ydl.extract_info(self.youtube_channel_url, download=False)
+            # Get all videos from channel
+            videos = self._get_channel_videos()
 
-                if not channel_info or "entries" not in channel_info:
-                    logger.error("Could not extract channel videos")
-                    return []
+            if not videos:
+                logger.warning("No videos found in NEFAC YouTube channel")
+                return ExtractorResult(documents=[], metadata={"videos_found": 0})
 
-                videos = channel_info["entries"]
-                logger.info(f"Found {len(videos)} videos in channel")
+            logger.info(f"Found {len(videos)} videos in NEFAC channel")
 
-                youtube_documents = []
+            # Process each video
+            documents = []
+            failed_count = 0
 
-                for i, video in enumerate(videos, 1):
-                    if not video:
-                        continue
-
-                    video_url = video.get("url", "")
-                    if not video_url:
-                        continue
-
-                    logger.info(f"Processing video {i}/{len(videos)}: {video.get('title', 'Unknown')}")
-
-                    try:
-                        # Get full metadata
-                        full_metadata = self.get_youtube_metadata(video_url)
-                        video_id = full_metadata.get("video_id", "")
-
-                        if not video_id:
-                            logger.warning(f"Could not get video ID for {video_url}")
-                            continue
-
-                        # Get transcript
-                        transcript_data = self.get_youtube_transcript(video_id)
-
-                        # Normalize transcript data to consistent format
-                        if transcript_data:
-                            transcript_data = self.normalize_transcript(transcript_data)
-
-                        # Create document info
-                        document_info = {
-                            "id": f"youtube_{video_id}",
-                            "title": full_metadata.get("title", "Unknown"),
-                            "source_url": video_url,
-                            "mime_type": "text/plain",
-                            "date": full_metadata.get("upload_date", ""),
-                            "modified": full_metadata.get("upload_date", ""),
-                            "alt_text": "",
-                            "description": full_metadata.get("description", ""),
-                            "caption": "",
-                            "source": "youtube_channel",
-                            "file_size": 0,
-                            "youtube_metadata": full_metadata,
-                            "transcript_available": transcript_data is not None,
-                            "video_id": video_id,
-                            "channel": full_metadata.get("channel", ""),
-                            "channel_id": full_metadata.get("channel_id", ""),
-                            "duration": full_metadata.get("duration", 0),
-                            "view_count": full_metadata.get("view_count", 0),
-                            "like_count": full_metadata.get("like_count", 0),
-                            "comment_count": full_metadata.get("comment_count", 0),
-                            "tags": full_metadata.get("tags", []),
-                            "categories": full_metadata.get("categories", []),
-                            "thumbnail": full_metadata.get("thumbnail", ""),
-                            "uploader": full_metadata.get("uploader", ""),
-                        }
-
-                        # Save transcript if available
-                        if transcript_data:
-                            transcript_file = self.save_youtube_transcript(video_id, transcript_data, full_metadata)
-                            document_info["transcript_file"] = transcript_file
-                            document_info["transcript_length"] = len(transcript_data)
-
-                            # Calculate transcript word count
-                            total_words = sum(len(entry.get("text", "").split()) for entry in transcript_data)
-                            document_info["transcript_word_count"] = total_words
-
-                        youtube_documents.append(document_info)
-
-                        # Rate limiting
-                        time.sleep(self.config.youtube_delay)
-
-                    except Exception as e:
-                        logger.error(f"Error processing video {video_url}: {e}")
-                        continue
-
-                logger.info(f"YouTube crawl completed: {len(youtube_documents)} videos processed")
-                return youtube_documents
-
-        except Exception as e:
-            logger.error(f"YouTube channel crawl failed: {e}")
-            return []
-
-    def normalize_transcript(self, transcript):
-        """Normalize transcript entries to consistent dictionary format"""
-        normalized = []
-        for entry in transcript:
-            if hasattr(entry, "text"):
-                # Convert object to dict
-                normalized.append(
-                    {
-                        "text": entry.text,
-                        "start": entry.start,
-                        "duration": entry.duration,
-                    }
-                )
-            elif isinstance(entry, dict):
-                # Already a dict, keep as is
-                normalized.append(entry)
-        return normalized
-
-    def get_youtube_transcript(self, video_id: str, max_retries: int = 3) -> Optional[List[Dict]]:
-        """Get transcript for a YouTube video using multiple free methods"""
-        if not YouTubeTranscriptApi and not yt_dlp:
-            logger.warning("YouTube dependencies not available")
-            return None
-
-        # Method 1: YouTube Transcript API (Primary method - most reliable)
-        if YouTubeTranscriptApi:
-            transcript = self._get_transcript_youtube_api(video_id, max_retries)
-            if transcript:
-                logger.info(f"Transcript found using YouTube Transcript API for {video_id}")
-                return transcript
-
-        # Method 2: yt-dlp subtitle extraction (Secondary method)
-        if yt_dlp:
-            transcript = self._get_transcript_ytdlp(video_id)
-            if transcript:
-                logger.info(f"Transcript found using yt-dlp for {video_id}")
-                return transcript
-
-        # Method 3: YouTube's internal API endpoints (Fallback)
-        transcript = self._get_transcript_alternative_methods(video_id)
-        if transcript:
-            logger.info(f"Transcript found using YouTube internal API for {video_id}")
-            return transcript
-
-        logger.warning(f"No transcript found for video {video_id} using any method")
-        return None
-
-    def _get_transcript_youtube_api(self, video_id: str, max_retries: int = 3) -> Optional[List[Dict]]:
-        """Get transcript using YouTube Transcript API (primary method)"""
-        # Initialize the API client
-        ytt_api = None
-        if self.config.webshare_username and self.config.webshare_password:
-            logger.info("Using Webshare proxy for YouTube requests.")
-            try:
-                ytt_api = YouTubeTranscriptApi(
-                    proxy_config=WebshareProxyConfig(
-                        proxy_username=self.config.webshare_username,
-                        proxy_password=self.config.webshare_password,
-                    )
-                )
-            except Exception as e:
-                logger.error(f"Failed to initialize Webshare proxy: {e}")
-                # Fallback to a direct client
-                ytt_api = YouTubeTranscriptApi()
-        else:
-            ytt_api = YouTubeTranscriptApi()
-
-        # Language preferences in order of preference
-        language_preferences = ["en", "en-US", "en-GB", "en-orig"]
-
-        for attempt in range(max_retries):
-            try:
-                # Add small delay between attempts to avoid rate limiting
-                if attempt > 0:
-                    delay = random.uniform(1, 3) * attempt
-                    logger.info(f"Retrying transcript fetch after {delay:.1f}s delay (attempt {attempt + 1}/{max_retries})")
-                    time.sleep(delay)
-
-                # Get available transcripts
-                transcript_list = ytt_api.list_transcripts(video_id)
-
-                # Try preferred languages first
-                for lang in language_preferences:
-                    try:
-                        transcript = transcript_list.find_transcript([lang])
-                        transcript_data = transcript.fetch()
-                        return list(transcript_data)
-                    except Exception:
-                        continue  # Try next language
-
-                # If no preferred language found, try manual transcripts first
+            for i, video in enumerate(videos, 1):
                 try:
-                    for transcript in transcript_list:
-                        if not transcript.is_generated:  # Manual transcripts
-                            transcript_data = transcript.fetch()
-                            return list(transcript_data)
-                except Exception:
-                    pass  # Continue to auto-generated
-
-                # Finally, try any auto-generated transcript
-                try:
-                    for transcript in transcript_list:
-                        if transcript.is_generated:  # Auto-generated transcripts
-                            transcript_data = transcript.fetch()
-                            return list(transcript_data)
-                except Exception:
-                    pass
-
-            except Exception as e:
-                if "no transcripts" in str(e).lower():
-                    logger.info(f"No transcripts available for video {video_id}")
-                    return None
-                elif "could not retrieve" in str(e).lower():
-                    logger.warning(f"Could not retrieve transcript for {video_id}, attempt {attempt + 1}: {e}")
-                    if attempt < max_retries - 1:
-                        continue
-                else:
-                    logger.error(f"Unexpected error getting transcript for {video_id}: {e}")
-                    return None
-
-        return None
-
-    def _get_transcript_ytdlp(self, video_id: str) -> Optional[List[Dict]]:
-        """Get transcript using yt-dlp subtitle extraction"""
-        if not yt_dlp:
-            return None
-
-        video_url = f"https://www.youtube.com/watch?v={video_id}"
-
-        # Try multiple language preferences
-        language_preferences = [
-            ["en"],
-            ["en-US"],
-            ["en-GB"],
-            ["en-orig"],
-        ]
-
-        for lang_pref in language_preferences:
-            try:
-                ydl_opts = {
-                    "quiet": True,
-                    "no_warnings": True,
-                    "skip_download": True,
-                    "writesubtitles": False,
-                    "writeautomaticsub": True,
-                    "subtitleslangs": lang_pref,
-                    "listsubtitles": False,
-                }
-
-                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                    info = ydl.extract_info(video_url, download=False)
-                    if "subtitles" in info:
-                        for lang, subs in info["subtitles"].items():
-                            if subs:
-                                # Try to extract subtitle content
-                                sub_url = subs[0]["url"]
-                                response = requests.get(sub_url, timeout=30)
-                                if response.status_code == 200:
-                                    return self._parse_vtt_content(response.text)
-
-            except Exception as e:
-                logger.debug(f"yt-dlp failed for language {lang_pref}: {e}")
-                continue
-
-        logger.warning(f"yt-dlp could not extract transcript for {video_id} with any language preference.")
-        return None
-
-    def _get_transcript_alternative_methods(self, video_id: str) -> Optional[List[Dict]]:
-        """Get transcript using YouTube's internal API endpoints"""
-        try:
-            # Try YouTube's internal timedtext API
-            url = f"https://www.youtube.com/api/timedtext?v={video_id}&lang=en"
-            response = requests.get(url, timeout=30)
-            if response.status_code == 200:
-                return self._parse_xml_transcript(response.text)
-        except Exception as e:
-            logger.debug(f"Alternative method failed for {video_id}: {e}")
-
-        return None
-
-    def _parse_xml_transcript(self, xml_content: str) -> Optional[List[Dict]]:
-        """Parse XML transcript content"""
-        try:
-            root = ET.fromstring(xml_content)
-            transcript = []
-
-            for text_elem in root.findall(".//text"):
-                start = float(text_elem.get("start", 0))
-                duration = float(text_elem.get("dur", 0))
-                text = text_elem.text or ""
-
-                # Clean up the text
-                text = re.sub(r"<[^>]+>", "", text)  # Remove XML tags
-                text = text.strip()
-
-                if text:
-                    transcript.append(
-                        {
-                            "text": text,
-                            "start": start,
-                            "duration": duration,
-                        }
+                    logger.info(
+                        f"📹 Processing video {i}/{len(videos)}: {video.get('title', 'Unknown')}"
                     )
 
-            return transcript if transcript else None
-
-        except Exception as e:
-            logger.debug(f"Failed to parse XML transcript: {e}")
-            return None
-
-    def _parse_vtt_content(self, vtt_content: str) -> Optional[List[Dict]]:
-        """Parse VTT subtitle content"""
-        try:
-            transcript = []
-            lines = vtt_content.split("\n")
-
-            i = 0
-            while i < len(lines):
-                line = lines[i].strip()
-
-                # Look for timestamp lines (format: 00:00:00.000 --> 00:00:00.000)
-                if "-->" in line:
-                    times = line.split(" --> ")
-                    if len(times) == 2:
-                        start_time = self._parse_vtt_time(times[0])
-                        end_time = self._parse_vtt_time(times[1])
-
-                        # Get the text lines that follow
-                        text_lines = []
-                        i += 1
-                        while i < len(lines) and lines[i].strip():
-                            text_line = lines[i].strip()
-                            if text_line:
-                                # Remove VTT formatting
-                                text_line = re.sub(r"<[^>]+>", "", text_line)
-                                text_lines.append(text_line)
-                            i += 1
-
-                        if text_lines:
-                            transcript.append(
-                                {
-                                    "text": " ".join(text_lines),
-                                    "start": start_time,
-                                    "duration": end_time - start_time,
-                                }
+                    doc = self._process_video(video)
+                    # Ensure we only append DocumentInfo objects, not dictionaries
+                    if doc and isinstance(doc, DocumentInfo):
+                        documents.append(doc)
+                    else:
+                        failed_count += 1
+                        if doc:
+                            logger.warning(
+                                f"Skipping non-DocumentInfo object: {type(doc)}"
                             )
 
-                i += 1
+                    # Rate limiting to avoid YouTube restrictions - EMERGENCY LONG DELAYS
+                    if i < len(videos):
+                        # Check if we're in IP ban emergency mode
+                        if (
+                            hasattr(self, "_consecutive_transcript_failures")
+                            and self._consecutive_transcript_failures >= 3
+                        ):
+                            delay = random.uniform(
+                                180.0, 300.0
+                            )  # 3-5 minute delays during IP ban
+                            logger.warning(
+                                f"🚫 IP BAN MODE: Waiting {delay:.1f}s before next video (no transcripts)"
+                            )
+                        else:
+                            delay = random.uniform(
+                                self.youtube_delay, self.youtube_delay + 10.0
+                            )  # Increased random range
+                            logger.debug(
+                                f"⏳ Waiting {delay:.1f}s before next video..."
+                            )
+                        time.sleep(delay)
 
-            return transcript if transcript else None
+                except Exception as e:
+                    logger.error(
+                        f"❌ Failed to process video {video.get('url', 'unknown')}: {e}"
+                    )
+                    failed_count += 1
+                    continue
+
+            logger.info(
+                f"✅ YouTube extraction complete: {len(documents)} videos processed, {failed_count} failed"
+            )
+
+            return ExtractorResult(
+                documents=documents,
+                metadata={
+                    "channel_url": self.youtube_channel_url,
+                    "videos_found": len(videos),
+                    "videos_processed": len(documents),
+                    "failed_videos": failed_count,
+                    "success_rate": len(documents) / len(videos) if videos else 0,
+                },
+            )
 
         except Exception as e:
-            logger.debug(f"Failed to parse VTT content: {e}")
-            return None
+            logger.error(f"❌ YouTube extraction failed: {e}")
+            return ExtractorResult(documents=[], metadata={"error": str(e)})
 
-    def _parse_vtt_time(self, time_str: str) -> float:
-        """Parse VTT time format to seconds"""
+    def _check_dependencies(self) -> bool:
+        """Check if required dependencies are available."""
         try:
-            # Format: 00:00:00.000
-            parts = time_str.split(":")
-            hours = int(parts[0])
-            minutes = int(parts[1])
-            seconds = float(parts[2])
-            return hours * 3600 + minutes * 60 + seconds
-        except (ValueError, IndexError):
-            return 0.0
+            pass
 
-    def get_youtube_metadata(self, url: str) -> Dict[str, Any]:
-        """Get YouTube video metadata using yt-dlp"""
+            return True
+        except ImportError as e:
+            logger.error(f"Missing YouTube dependencies: {e}")
+            logger.error("Install with: pip install yt-dlp youtube-transcript-api")
+            return False
+
+    def _get_channel_videos(self) -> List[Dict[str, Any]]:
+        """Get all videos from the NEFAC YouTube channel."""
         try:
-            opts = {
+            import yt_dlp
+
+            ydl_opts = {
                 "quiet": True,
                 "no_warnings": True,
                 "skip_download": True,
+                "extract_flat": True,
+                "playlist_items": f"1-{self.max_videos}",
+                "socket_timeout": self.timeout_seconds,
             }
 
-            with yt_dlp.YoutubeDL(opts) as ydl:
-                info = ydl.extract_info(url, download=False)
+            # Add proxy if configured
+            if self.webshare_username and self.webshare_password:
+                proxy_url = f"http://{self.webshare_username}:{self.webshare_password}@p.webshare.io:8080"
+                ydl_opts["proxy"] = proxy_url
+                logger.info("🔒 Using Webshare proxy for YouTube requests")
 
-                return {
-                    "video_id": info.get("id", ""),
-                    "title": info.get("title", ""),
-                    "description": info.get("description", ""),
-                    "duration": info.get("duration", 0),
-                    "view_count": info.get("view_count", 0),
-                    "like_count": info.get("like_count", 0),
-                    "comment_count": info.get("comment_count", 0),
-                    "uploader": info.get("uploader", ""),
-                    "channel": info.get("channel", ""),
-                    "channel_id": info.get("channel_id", ""),
-                    "upload_date": info.get("upload_date", ""),
-                    "tags": info.get("tags", []),
-                    "categories": info.get("categories", []),
-                    "thumbnail": info.get("thumbnail", ""),
-                    "uploader_url": info.get("uploader_url", ""),
-                    "availability": info.get("availability", ""),
-                    "live_status": info.get("live_status", ""),
-                    "release_timestamp": info.get("release_timestamp", ""),
-                    "chapters": info.get("chapters", []),
-                    "heatmap": info.get("heatmap", {}),
-                }
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                logger.info(f"🔍 Extracting video list from {self.youtube_channel_url}")
+                channel_info = ydl.extract_info(
+                    self.youtube_channel_url, download=False
+                )
+
+                if not channel_info or "entries" not in channel_info:
+                    logger.error("Could not extract channel video list")
+                    return []
+
+                videos = [
+                    v for v in channel_info["entries"] if v
+                ]  # Filter out None entries
+                logger.info(f"📊 Found {len(videos)} videos in channel")
+
+                return videos
 
         except Exception as e:
-            logger.error(f"Failed to get metadata for {url}: {e}")
+            logger.error(f"Failed to get channel videos: {e}")
+            return []
+
+    def _process_video(self, video: Dict[str, Any]) -> Optional[DocumentInfo]:
+        """Process a single YouTube video."""
+        try:
+            video_url = video.get("url", "")
+            if not video_url:
+                logger.warning("Video has no URL, skipping")
+                return None
+
+            # Get video ID
+            video_id = self._extract_video_id(video_url)
+            if not video_id:
+                logger.warning(f"Could not extract video ID from {video_url}")
+                return None
+
+            # Get comprehensive metadata
+            metadata = self._get_video_metadata(video_url)
+
+            # Get transcript if available
+            transcript_data = self._get_video_transcript(video_id)
+
+            # Create document
+            doc = DocumentInfo(
+                id=f"youtube_{video_id}",
+                title=metadata.get("title", "Unknown YouTube Video"),
+                source_url=video_url,
+                mime_type="video/youtube",
+                date=self._parse_upload_date(metadata.get("upload_date", "")),
+                modified=self._parse_upload_date(metadata.get("upload_date", "")),
+                source=self.source_name,
+                file_size=0,  # Videos are not downloaded, only metadata
+                download_date=DateUtils.get_current_iso_string(),
+                description=metadata.get("description", ""),
+                caption=json.dumps(
+                    {
+                        "video_id": video_id,
+                        "title": metadata.get("title", ""),
+                        "description": metadata.get("description", ""),
+                        "duration": metadata.get("duration", 0),
+                        "view_count": metadata.get("view_count", 0),
+                        "like_count": metadata.get("like_count", 0),
+                        "comment_count": metadata.get("comment_count", 0),
+                        "upload_date": metadata.get("upload_date", ""),
+                        "uploader": metadata.get("uploader", ""),
+                        "channel": metadata.get("channel", ""),
+                        "channel_id": metadata.get("channel_id", ""),
+                        "channel_url": metadata.get("channel_url", ""),
+                        "tags": metadata.get("tags", []),
+                        "categories": metadata.get("categories", []),
+                        "thumbnail": metadata.get("thumbnail", ""),
+                        "webpage_url": metadata.get("webpage_url", video_url),
+                        "availability": metadata.get("availability", ""),
+                        "age_limit": metadata.get("age_limit", 0),
+                        "live_status": metadata.get("live_status", ""),
+                        "release_timestamp": metadata.get("release_timestamp", ""),
+                        "language": metadata.get("language", ""),
+                        "subtitles_available": bool(
+                            metadata.get("automatic_captions", {})
+                        ),
+                        "chapters": metadata.get("chapters", []),
+                        "transcript_available": transcript_data is not None,
+                        "transcript_length": (
+                            len(transcript_data) if transcript_data else 0
+                        ),
+                        "platform": "youtube",
+                        "content_type": "video",
+                    }
+                ),
+            )
+
+            # Save transcript if available
+            if transcript_data:
+                transcript_file = self._save_transcript(
+                    video_id, transcript_data, metadata
+                )
+                logger.info(f"📝 Transcript saved: {transcript_file}")
+                # Add transcript information to caption field
+                try:
+                    caption_data = json.loads(doc.caption) if doc.caption else {}
+                    caption_data.update(
+                        {
+                            "transcript_file": transcript_file,
+                            "transcript_word_count": self._count_transcript_words(
+                                transcript_data
+                            ),
+                        }
+                    )
+                    doc.caption = json.dumps(caption_data)
+                except json.JSONDecodeError:
+                    # If caption is not valid JSON, create new JSON with transcript info
+                    doc.caption = json.dumps(
+                        {
+                            "transcript_file": transcript_file,
+                            "transcript_word_count": self._count_transcript_words(
+                                transcript_data
+                            ),
+                        }
+                    )
+            else:
+                logger.warning(
+                    f"❌ No transcript available for video: {metadata.get('title', video_id)}"
+                )
+
+            # Save video metadata as JSON file for reference
+            metadata_file = self._save_video_metadata(
+                video_id, metadata, transcript_data is not None
+            )
+            logger.debug(f"📊 Metadata saved: {metadata_file}")
+
+            return doc
+
+        except Exception as e:
+            logger.error(f"Error processing video: {e}")
+            return None
+
+    def _extract_video_id(self, url: str) -> Optional[str]:
+        """Extract video ID from YouTube URL."""
+        try:
+            parsed_url = urlparse(url)
+            if parsed_url.hostname in ["youtu.be"]:
+                return parsed_url.path[1:]
+            elif parsed_url.hostname in ["www.youtube.com", "youtube.com"]:
+                if parsed_url.path == "/watch":
+                    return parse_qs(parsed_url.query)["v"][0]
+                elif parsed_url.path.startswith("/embed/"):
+                    return parsed_url.path.split("/")[2]
+                elif parsed_url.path.startswith("/v/"):
+                    return parsed_url.path.split("/")[2]
+            return None
+        except Exception:
+            return None
+
+    def _get_video_metadata(self, video_url: str) -> Dict[str, Any]:
+        """Get comprehensive video metadata using yt-dlp."""
+        try:
+            import yt_dlp
+
+            ydl_opts = {
+                "quiet": True,
+                "no_warnings": True,
+                "skip_download": True,
+                "socket_timeout": self.timeout_seconds,
+            }
+
+            # Add proxy if configured
+            if self.webshare_username and self.webshare_password:
+                proxy_url = f"http://{self.webshare_username}:{self.webshare_password}@p.webshare.io:8080"
+                ydl_opts["proxy"] = proxy_url
+
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(video_url, download=False)
+                return info if info else {}
+
+        except Exception as e:
+            logger.warning(f"Failed to get metadata for {video_url}: {e}")
             return {}
 
-    def save_youtube_transcript(self, video_id: str, transcript_data: List[Dict], metadata: Dict[str, Any]) -> str:
-        """Save YouTube transcript to file"""
-        transcript_file = self.youtube_dir / f"{video_id}_transcript.json"
-
-        transcript_info = {
-            "video_id": video_id,
-            "title": metadata.get("title", ""),
-            "url": f"https://www.youtube.com/watch?v={video_id}",
-            "transcript": transcript_data,
-            "metadata": metadata,
-            "extracted_at": time.time(),
-        }
-
+    def _get_video_transcript(
+        self, video_id: str, max_retries: int = 2
+    ) -> Optional[List[Dict]]:
+        """Get video transcript with IP ban detection and emergency skip mode."""
         try:
-            with open(transcript_file, "w", encoding="utf-8") as f:
-                json.dump(transcript_info, f, indent=2, ensure_ascii=False)
+            from youtube_transcript_api import YouTubeTranscriptApi
+            from youtube_transcript_api.proxies import (
+                WebshareProxyConfig,
+                GenericProxyConfig,
+            )
 
-            logger.debug(f"Saved transcript for {video_id} to {transcript_file}")
-            return str(transcript_file)
+            # Quick IP ban detection - if we've had multiple consecutive failures, skip transcripts
+            if (
+                hasattr(self, "_consecutive_transcript_failures")
+                and self._consecutive_transcript_failures >= 3
+            ):
+                logger.warning(
+                    f"🚫 EMERGENCY SKIP: Detected IP ban, skipping transcript for {video_id}"
+                )
+                return None
+
+            # Initialize failure counter if not exists
+            if not hasattr(self, "_consecutive_transcript_failures"):
+                self._consecutive_transcript_failures = 0
+
+            # Configure API client with proxy if available
+            api = None
+
+            # Try Webshare proxy first
+            if self.webshare_username and self.webshare_password:
+                try:
+                    api = YouTubeTranscriptApi(
+                        proxy_config=WebshareProxyConfig(
+                            proxy_username=self.webshare_username,
+                            proxy_password=self.webshare_password,
+                        )
+                    )
+                except Exception as e:
+                    logger.warning(f"Failed to initialize Webshare proxy: {e}")
+
+            # Try generic HTTP/HTTPS proxy
+            if api is None and (self.http_proxy or self.https_proxy):
+                try:
+                    api = YouTubeTranscriptApi(
+                        proxy_config=GenericProxyConfig(
+                            http_url=self.http_proxy,
+                            https_url=self.https_proxy or self.http_proxy,
+                        )
+                    )
+                except Exception as e:
+                    logger.warning(f"Failed to initialize generic proxy: {e}")
+
+            # Try rotating proxy
+            if api is None and self.rotating_proxy:
+                try:
+                    api = YouTubeTranscriptApi(
+                        proxy_config=GenericProxyConfig(
+                            http_url=self.rotating_proxy,
+                            https_url=self.rotating_proxy,
+                        )
+                    )
+                except Exception as e:
+                    logger.warning(f"Failed to initialize rotating proxy: {e}")
+
+            # Fallback to direct client
+            if api is None:
+                api = YouTubeTranscriptApi()
+
+            # Language preferences
+            language_preferences = ["en", "en-US", "en-GB", "en-orig"]
+
+            for attempt in range(max_retries):
+                try:
+                    # Add delay between attempts for IP ban recovery
+                    if attempt > 0:
+                        # Exponential backoff with much longer delays for IP ban recovery
+                        delay = 300 + (
+                            attempt * 300
+                        )  # Start at 5 minutes, increase by 5 minutes per attempt
+                        logger.debug(
+                            f"⏳ IP ban recovery: Waiting {delay}s before retry attempt {attempt}..."
+                        )
+                        time.sleep(delay)
+
+                    # Get available transcripts
+                    transcript_list = api.list(video_id)
+
+                    # Try preferred languages first
+                    for lang in language_preferences:
+                        try:
+                            transcript = transcript_list.find_transcript([lang])
+                            result = transcript.fetch()
+                            # Success! Reset failure counter
+                            self._consecutive_transcript_failures = 0
+                            return result
+                        except Exception:
+                            continue
+
+                    # Try manual transcripts
+                    for transcript in transcript_list:
+                        if not transcript.is_generated:
+                            result = transcript.fetch()
+                            # Success! Reset failure counter
+                            self._consecutive_transcript_failures = 0
+                            return result
+
+                    # Finally try auto-generated
+                    for transcript in transcript_list:
+                        if transcript.is_generated:
+                            result = transcript.fetch()
+                            # Success! Reset failure counter
+                            self._consecutive_transcript_failures = 0
+                            return result
+
+                    return None
+
+                except Exception as e:
+                    error_msg = str(e).lower()
+
+                    # Detect IP blocking
+                    if (
+                        "blocking requests from your ip" in error_msg
+                        or "ip has been blocked" in error_msg
+                    ):
+                        self._consecutive_transcript_failures += 1
+                        logger.warning(
+                            f"🚫 IP BAN DETECTED ({self._consecutive_transcript_failures}/3 failures) for video {video_id}"
+                        )
+
+                        if self._consecutive_transcript_failures >= 3:
+                            logger.error(
+                                "🚨 EMERGENCY MODE: IP banned, disabling transcript extraction for remaining videos"
+                            )
+                            return None
+
+                    if "disabled" in error_msg or "unavailable" in error_msg:
+                        return None
+                    elif attempt == max_retries - 1:
+                        self._consecutive_transcript_failures += 1
+                        logger.warning(
+                            f"Transcript unavailable for video {video_id}: {e}"
+                        )
+                        return None
+
+            return None
+
+        except ImportError:
+            logger.warning("youtube-transcript-api not available")
+            return None
+        except Exception as e:
+            logger.warning(f"Failed to get transcript for {video_id}: {e}")
+            return None
+
+    def _save_transcript(
+        self, video_id: str, transcript_data: List[Dict], metadata: Dict[str, Any]
+    ) -> str:
+        """Save transcript to file."""
+        try:
+            title = metadata.get("title", "Unknown")
+            safe_title = re.sub(r"[^\w\s-]", "", title).strip()
+            safe_title = re.sub(r"[-\s]+", "-", safe_title)
+
+            filename = f"{safe_title}_{video_id}.txt"
+            filepath = self.youtube_dir / filename
+
+            # Create directory only when we have content to save
+            self.youtube_dir.mkdir(parents=True, exist_ok=True)
+
+            with open(filepath, "w", encoding="utf-8") as f:
+                # Write video metadata header
+                f.write(f"YouTube Video: {title}\n")
+                f.write(f"Video ID: {video_id}\n")
+                f.write(f"URL: {metadata.get('webpage_url', '')}\n")
+                f.write(f"Upload Date: {metadata.get('upload_date', '')}\n")
+                f.write(f"Duration: {metadata.get('duration', 0)} seconds\n")
+                f.write(f"Views: {metadata.get('view_count', 0)}\n")
+                f.write("=" * 60 + "\n\n")
+
+                # Write transcript with timestamps
+                for entry in transcript_data:
+                    start_time = entry.get("start", 0)
+                    text = entry.get("text", "")
+                    f.write(f"[{start_time:.2f}s] {text}\n")
+
+            return str(filepath.relative_to(self.config.output_dir))
 
         except Exception as e:
             logger.error(f"Failed to save transcript for {video_id}: {e}")
             return ""
+
+    def _save_video_metadata(
+        self, video_id: str, metadata: Dict[str, Any], has_transcript: bool
+    ) -> str:
+        """Save video metadata as JSON file."""
+        try:
+            title = metadata.get("title", "Unknown")
+            safe_title = re.sub(r"[^\w\s-]", "", title).strip()
+            safe_title = re.sub(r"[-\s]+", "-", safe_title)
+
+            filename = f"{safe_title}_{video_id}_metadata.json"
+            filepath = self.youtube_dir / filename
+
+            # Create directory only when we have content to save
+            self.youtube_dir.mkdir(parents=True, exist_ok=True)
+
+            # Prepare metadata for saving
+            save_metadata = {
+                "video_id": video_id,
+                "title": metadata.get("title", ""),
+                "description": metadata.get("description", ""),
+                "url": metadata.get("webpage_url", ""),
+                "upload_date": metadata.get("upload_date", ""),
+                "duration": metadata.get("duration", 0),
+                "view_count": metadata.get("view_count", 0),
+                "like_count": metadata.get("like_count", 0),
+                "comment_count": metadata.get("comment_count", 0),
+                "uploader": metadata.get("uploader", ""),
+                "channel": metadata.get("channel", ""),
+                "channel_id": metadata.get("channel_id", ""),
+                "channel_url": metadata.get("channel_url", ""),
+                "tags": metadata.get("tags", []),
+                "categories": metadata.get("categories", []),
+                "thumbnail": metadata.get("thumbnail", ""),
+                "has_transcript": has_transcript,
+                "extracted_at": DateUtils.get_current_iso_string(),
+            }
+
+            with open(filepath, "w", encoding="utf-8") as f:
+                json.dump(save_metadata, f, indent=2, ensure_ascii=False)
+
+            return str(filepath.relative_to(self.config.output_dir))
+
+        except Exception as e:
+            logger.error(f"Failed to save metadata for {video_id}: {e}")
+            return ""
+
+    def _count_transcript_words(self, transcript_data: List[Dict]) -> int:
+        """Count words in transcript."""
+        try:
+            total_words = 0
+            for entry in transcript_data:
+                text = entry.get("text", "")
+                total_words += len(text.split())
+            return total_words
+        except Exception:
+            return 0
+
+    def _parse_upload_date(self, upload_date: str) -> str:
+        """Parse upload date to ISO format."""
+        try:
+            if upload_date and len(upload_date) == 8:  # YYYYMMDD format
+                year = upload_date[:4]
+                month = upload_date[4:6]
+                day = upload_date[6:8]
+                return f"{year}-{month}-{day}T00:00:00Z"
+            else:
+                return DateUtils.get_current_iso_string()
+        except Exception:
+            return DateUtils.get_current_iso_string()
