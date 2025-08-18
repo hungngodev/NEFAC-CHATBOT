@@ -363,7 +363,6 @@ class YouTubeExtractor(BaseExtractor):
         try:
             from youtube_transcript_api import YouTubeTranscriptApi
             from youtube_transcript_api.proxies import (
-                WebshareProxyConfig,
                 GenericProxyConfig,
             )
 
@@ -384,15 +383,30 @@ class YouTubeExtractor(BaseExtractor):
             # Configure API client with proxy if available
             api = None
 
-            # Try Webshare proxy first
-            if self.webshare_username and self.webshare_password:
+            # Try rotating proxy first for better IP rotation
+            if self.rotating_proxy:
                 try:
                     api = YouTubeTranscriptApi(
-                        proxy_config=WebshareProxyConfig(
-                            proxy_username=self.webshare_username,
-                            proxy_password=self.webshare_password,
+                        proxy_config=GenericProxyConfig(
+                            http_url=self.rotating_proxy,
+                            https_url=self.rotating_proxy,
                         )
                     )
+                    logger.info("Using rotating proxy for transcript extraction")
+                except Exception as e:
+                    logger.warning(f"Failed to initialize rotating proxy: {e}")
+
+            # Try Webshare proxy if rotating proxy fails
+            if api is None and self.webshare_username and self.webshare_password:
+                try:
+                    proxy_url = f"http://{self.webshare_username}:{self.webshare_password}@p.webshare.io:8080"
+                    api = YouTubeTranscriptApi(
+                        proxy_config=GenericProxyConfig(
+                            http_url=proxy_url,
+                            https_url=proxy_url,
+                        )
+                    )
+                    logger.info("Using Webshare proxy for transcript extraction")
                 except Exception as e:
                     logger.warning(f"Failed to initialize Webshare proxy: {e}")
 
@@ -405,24 +419,14 @@ class YouTubeExtractor(BaseExtractor):
                             https_url=self.https_proxy or self.http_proxy,
                         )
                     )
+                    logger.info("Using generic proxy for transcript extraction")
                 except Exception as e:
                     logger.warning(f"Failed to initialize generic proxy: {e}")
-
-            # Try rotating proxy
-            if api is None and self.rotating_proxy:
-                try:
-                    api = YouTubeTranscriptApi(
-                        proxy_config=GenericProxyConfig(
-                            http_url=self.rotating_proxy,
-                            https_url=self.rotating_proxy,
-                        )
-                    )
-                except Exception as e:
-                    logger.warning(f"Failed to initialize rotating proxy: {e}")
 
             # Fallback to direct client
             if api is None:
                 api = YouTubeTranscriptApi()
+                logger.info("Using direct connection for transcript extraction")
 
             # Language preferences
             language_preferences = ["en", "en-US", "en-GB", "en-orig"]
@@ -450,6 +454,36 @@ class YouTubeExtractor(BaseExtractor):
                             result = transcript.fetch()
                             # Success! Reset failure counter
                             self._consecutive_transcript_failures = 0
+                            # Handle new API response structure
+                            if (
+                                result
+                                and hasattr(result, "__iter__")
+                                and not isinstance(result, str)
+                            ):
+                                # Convert to list of dictionaries if needed
+                                processed_result = []
+                                for item in result:
+                                    if hasattr(item, "get"):
+                                        # It's a dict-like object
+                                        processed_result.append(
+                                            {
+                                                "text": item.get("text", ""),
+                                                "start": item.get("start", 0),
+                                                "duration": item.get("duration", 0),
+                                            }
+                                        )
+                                    else:
+                                        # Handle FetchedTranscriptSnippet objects
+                                        processed_result.append(
+                                            {
+                                                "text": getattr(item, "text", ""),
+                                                "start": getattr(item, "start", 0),
+                                                "duration": getattr(
+                                                    item, "duration", 0
+                                                ),
+                                            }
+                                        )
+                                return processed_result
                             return result
                         except Exception:
                             continue
@@ -460,6 +494,36 @@ class YouTubeExtractor(BaseExtractor):
                             result = transcript.fetch()
                             # Success! Reset failure counter
                             self._consecutive_transcript_failures = 0
+                            # Handle new API response structure
+                            if (
+                                result
+                                and hasattr(result, "__iter__")
+                                and not isinstance(result, str)
+                            ):
+                                # Convert to list of dictionaries if needed
+                                processed_result = []
+                                for item in result:
+                                    if hasattr(item, "get"):
+                                        # It's a dict-like object
+                                        processed_result.append(
+                                            {
+                                                "text": item.get("text", ""),
+                                                "start": item.get("start", 0),
+                                                "duration": item.get("duration", 0),
+                                            }
+                                        )
+                                    else:
+                                        # Handle FetchedTranscriptSnippet objects
+                                        processed_result.append(
+                                            {
+                                                "text": getattr(item, "text", ""),
+                                                "start": getattr(item, "start", 0),
+                                                "duration": getattr(
+                                                    item, "duration", 0
+                                                ),
+                                            }
+                                        )
+                                return processed_result
                             return result
 
                     # Finally try auto-generated
@@ -468,6 +532,36 @@ class YouTubeExtractor(BaseExtractor):
                             result = transcript.fetch()
                             # Success! Reset failure counter
                             self._consecutive_transcript_failures = 0
+                            # Handle new API response structure
+                            if (
+                                result
+                                and hasattr(result, "__iter__")
+                                and not isinstance(result, str)
+                            ):
+                                # Convert to list of dictionaries if needed
+                                processed_result = []
+                                for item in result:
+                                    if hasattr(item, "get"):
+                                        # It's a dict-like object
+                                        processed_result.append(
+                                            {
+                                                "text": item.get("text", ""),
+                                                "start": item.get("start", 0),
+                                                "duration": item.get("duration", 0),
+                                            }
+                                        )
+                                    else:
+                                        # Handle FetchedTranscriptSnippet objects
+                                        processed_result.append(
+                                            {
+                                                "text": getattr(item, "text", ""),
+                                                "start": getattr(item, "start", 0),
+                                                "duration": getattr(
+                                                    item, "duration", 0
+                                                ),
+                                            }
+                                        )
+                                return processed_result
                             return result
 
                     return None

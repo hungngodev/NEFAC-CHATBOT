@@ -1,75 +1,174 @@
 """
 WordPress REST API extractor for NEFAC documents.
+Direct API access using provided endpoint and secret key.
 """
 
 import logging
-from typing import Dict, List
+import time
+from typing import Dict, List, Optional
+import requests
+from urllib.parse import urljoin
 
-# Imports relative to the crawler directory (where run.py is located)
-from src.service.crawler.core.config import ENDPOINTS
-from src.service.crawler.core.types import CrawlerSource, DocumentInfo, ExtractorResult
+from src.service.crawler.core.types import DocumentInfo, ExtractorResult
+from src.service.crawler.extractors.base import BaseExtractor, RequestMixin
 from src.service.crawler.utils.common import ValidationUtils
-from src.service.crawler.extractors.base import (
-    BaseExtractor,
-    PaginationMixin,
-    RequestMixin,
-)
 
 logger = logging.getLogger(__name__)
 
 
-class WordPressExtractor(BaseExtractor, RequestMixin, PaginationMixin):
-    """Extractor for WordPress REST API."""
+class WordPressExtractor(BaseExtractor, RequestMixin):
+    """Enhanced extractor for WordPress REST API with optimized document retrieval."""
+
+    # WordPress API configuration
+    WORDPRESS_API_BASE = "https://nefac.org/wp-json/wp/v2/"
+    SECRET_KEY = "faustt"  # Provided secret key
+
+    def __init__(self, config):
+        super().__init__(config)
+        self.use_secret = True  # Flag to control secret usage
+        self.request_delay = 0.5  # Delay between requests to be respectful
 
     @property
     def source_name(self) -> str:
-        return CrawlerSource.WORDPRESS_REST_API.value
+        return "wordpress_rest_api"
 
     def extract(self) -> ExtractorResult:
-        """Extract documents from WordPress REST API."""
+        """Extract all documents from WordPress REST API directly."""
         logger.info("Starting WordPress REST API extraction...")
-
-        # Define extraction methods
-        extraction_methods = [
-            (self._extract_media_documents, "media"),
-            (self._extract_post_attachments, "posts"),
-            (self._extract_news_attachments, "news"),
-        ]
 
         all_documents = []
         errors = []
-
-        # Run all extraction methods
-        for method, name in extraction_methods:
-            try:
-                documents = method()
-                all_documents.extend(documents)
-                logger.debug(f"Extracted {len(documents)} documents from {name}")
-            except Exception as e:
-                error_msg = f"WordPress {name} extraction failed: {str(e)}"
-                logger.error(error_msg)
-                errors.append(error_msg)
-
-        logger.info(
-            f"WordPress extraction complete. Found {len(all_documents)} documents."
-        )
-        return ExtractorResult(documents=all_documents, errors=errors)
-
-    def _extract_media_documents(self) -> List[DocumentInfo]:
-        """Extract document media items from WordPress REST API with enhanced error handling."""
-        logger.info("Fetching media items from WordPress REST API...")
+        warnings = []
 
         try:
-            # Use a much higher per_page limit to get ALL media
-            media_endpoint = f"{ENDPOINTS['media']}?per_page=100"
-            media_items = self.fetch_paginated(media_endpoint)
+            # First, test the API to determine optimal strategy
+            self._test_api_access()
+
+            # Extract all media items (documents)
+            media_documents = self._extract_all_media()
+            all_documents.extend(media_documents)
+
             logger.info(
-                f"Retrieved {len(media_items)} total media items from WordPress API"
+                f"WordPress extraction complete. Found {len(all_documents)} documents."
             )
 
-            # Process ALL media items, not just documents - save everything as HTML files
+        except Exception as e:
+            error_msg = f"WordPress extraction failed: {str(e)}"
+            logger.error(error_msg)
+            errors.append(error_msg)
+
+        return ExtractorResult(
+            documents=all_documents, errors=errors, warnings=warnings
+        )
+
+    def _test_api_access(self) -> None:
+        """Test API access to determine if secret provides additional access."""
+        logger.info("Testing WordPress API access...")
+
+        try:
+            # Test without secret
+            params_public = {"per_page": 1, "_fields": "id"}
+            response_public = self.session.get(
+                urljoin(self.WORDPRESS_API_BASE, "media"),
+                params=params_public,
+                timeout=10,
+            )
+
+            if response_public.status_code == 200:
+                total_public = response_public.headers.get("x-wp-total", "0")
+                logger.info(f"Public API access: {total_public} total items")
+            else:
+                logger.warning(
+                    f"Public API access failed: {response_public.status_code}"
+                )
+                total_public = "0"
+
+            # Test with secret
+            if self.SECRET_KEY:
+                params_auth = {
+                    "per_page": 1,
+                    "_fields": "id",
+                    "secret": self.SECRET_KEY,
+                }
+                response_auth = self.session.get(
+                    urljoin(self.WORDPRESS_API_BASE, "media"),
+                    params=params_auth,
+                    timeout=10,
+                )
+
+                if response_auth.status_code == 200:
+                    total_auth = response_auth.headers.get("x-wp-total", "0")
+                    logger.info(f"Authenticated API access: {total_auth} total items")
+
+                    # Compare results
+                    if int(total_auth) > int(total_public):
+                        logger.info(
+                            "Authentication provides access to additional items"
+                        )
+                        self.use_secret = True
+                    elif int(total_auth) == int(total_public):
+                        logger.info("Authentication provides same access as public API")
+                        self.use_secret = False  # No benefit, avoid unnecessary auth
+                    else:
+                        logger.warning(
+                            "Authentication provides fewer items than public API"
+                        )
+                        self.use_secret = False
+                else:
+                    logger.warning(
+                        f"Authenticated API access failed: {response_auth.status_code}"
+                    )
+                    self.use_secret = False
+            else:
+                logger.info("No secret key provided, using public API only")
+                self.use_secret = False
+
+        except Exception as e:
+            logger.warning(f"API test failed: {e}. Proceeding with default settings.")
+            self.use_secret = True  # Default to using secret if test fails
+
+    def _extract_all_media(self) -> List[DocumentInfo]:
+        """Extract all media items from WordPress REST API with enhanced pagination."""
+        logger.info("Fetching all media items from WordPress REST API...")
+
+        try:
+            # Test both with and without secret to see which gives more results
+            all_media_items = []
+
+            # Try with secret first
+            if self.use_secret:
+                logger.info("Attempting extraction with authentication...")
+                media_with_secret = self._fetch_media_with_pagination(use_secret=True)
+                logger.info(f"Found {len(media_with_secret)} items with authentication")
+                all_media_items.extend(media_with_secret)
+
+            # Also try without secret to compare/supplement
+            logger.info("Attempting extraction without authentication...")
+            media_without_secret = self._fetch_media_with_pagination(use_secret=False)
+            logger.info(
+                f"Found {len(media_without_secret)} items without authentication"
+            )
+
+            # Merge results, avoiding duplicates based on ID
+            seen_ids = {item.get("id") for item in all_media_items}
+            for item in media_without_secret:
+                if item.get("id") not in seen_ids:
+                    all_media_items.append(item)
+
+            logger.info(f"Total unique media items: {len(all_media_items)}")
+
+            # Filter for document types only
+            document_items = [
+                item
+                for item in all_media_items
+                if ValidationUtils.is_document_type_supported(item.get("mime_type", ""))
+            ]
+
+            logger.info(f"Filtered to {len(document_items)} document items")
+
+            # Create DocumentInfo objects
             documents = []
-            for item in media_items:
+            for item in document_items:
                 try:
                     doc_info = self._create_media_document_info(item)
                     if doc_info:
@@ -79,172 +178,207 @@ class WordPressExtractor(BaseExtractor, RequestMixin, PaginationMixin):
                         f"Failed to process media item {item.get('id', 'unknown')}: {e}"
                     )
 
+            # Log document type breakdown
+            self._log_document_breakdown(documents)
+
             logger.info(
-                f"Successfully processed {len(documents)} media documents via WordPress REST API"
+                f"Successfully processed {len(documents)} documents via WordPress REST API"
             )
             return documents
 
         except Exception as e:
-            logger.error(f"Failed to extract media documents from WordPress API: {e}")
+            logger.error(f"Failed to extract media from WordPress API: {e}")
             return []
 
-    def _extract_post_attachments(self) -> List[DocumentInfo]:
-        """Extract document attachments from posts with enhanced error handling."""
-        logger.info("Extracting document attachments from posts...")
+    def _fetch_media_with_pagination(self, use_secret: bool = False) -> List[Dict]:
+        """Fetch media items with proper pagination and error handling."""
+        all_items = []
+        page = 1
+        max_pages = 500  # Safety limit to prevent infinite loops
 
-        try:
-            # Get ALL posts with higher per_page limit and embedded media
-            posts_endpoint = f"{ENDPOINTS['posts']}?per_page=100&_embed"
-            posts = self.fetch_paginated(posts_endpoint)
-            logger.info(f"Retrieved {len(posts)} posts from WordPress API")
-
-            documents = []
-            for post in posts:
-                try:
-                    # Create document for the post itself (as HTML)
-                    post_doc = self._create_post_document_info(post, "post")
-                    if post_doc:
-                        documents.append(post_doc)
-
-                    # Also extract any embedded media
-                    post_media = self._extract_post_media(post, "post")
-                    documents.extend(post_media)
-
-                except Exception as e:
-                    logger.warning(
-                        f"Failed to process post {post.get('id', 'unknown')}: {e}"
-                    )
-
-            logger.info(f"Successfully processed {len(documents)} documents from posts")
-            return documents
-
-        except Exception as e:
-            logger.error(f"Failed to extract post attachments from WordPress API: {e}")
-            return []
-
-    def _extract_news_attachments(self) -> List[DocumentInfo]:
-        """Extract document attachments from news posts with enhanced error handling."""
-        logger.info("Extracting document attachments from news posts...")
-
-        try:
-            # Get ALL news posts with higher per_page limit and embedded media
-            news_endpoint = f"{ENDPOINTS['news']}?per_page=100&_embed"
-            news_posts = self.fetch_paginated(news_endpoint)
-            logger.info(f"Retrieved {len(news_posts)} news posts from WordPress API")
-
-            documents = []
-            for post in news_posts:
-                try:
-                    # Create document for the news post itself (as HTML)
-                    news_doc = self._create_post_document_info(post, "news")
-                    if news_doc:
-                        documents.append(news_doc)
-
-                    # Also extract any embedded media
-                    post_media = self._extract_post_media(post, "news")
-                    documents.extend(post_media)
-
-                except Exception as e:
-                    logger.warning(
-                        f"Failed to process news post {post.get('id', 'unknown')}: {e}"
-                    )
-
-            logger.info(
-                f"Successfully processed {len(documents)} documents from news posts"
-            )
-            return documents
-
-        except Exception as e:
-            logger.error(f"Failed to extract news attachments from WordPress API: {e}")
-            return []
-
-    def _extract_post_media(self, post: Dict, post_type: str) -> List[DocumentInfo]:
-        """Extract media from a single post."""
-        documents = []
-
-        # Check embedded media
-        if "_embedded" not in post or "wp:featuredmedia" not in post["_embedded"]:
-            return documents
-
-        for media in post["_embedded"]["wp:featuredmedia"]:
-            if not self._is_document_media(media):
-                continue
-
+        while page <= max_pages:
             try:
-                doc_info = self._create_media_document_info(media)
-                # Add related post information
-                doc_info.description = f"Attached to {post_type}: {post.get('title', {}).get('rendered', 'Unknown')}"
-                documents.append(doc_info)
-            except Exception as e:
-                logger.warning(
-                    f"Failed to process media in {post_type} {post.get('id')}: {e}"
+                # Build parameters properly
+                params = {
+                    "per_page": 100,
+                    "page": page,
+                    "_embed": True,  # Get embedded data for more complete info
+                    "_fields": "id,title,source_url,mime_type,date,modified,description,caption,alt_text,media_details",
+                }
+
+                # Add secret if requested
+                if use_secret and self.SECRET_KEY:
+                    params["secret"] = self.SECRET_KEY
+
+                # Make request with proper error handling
+                url = urljoin(self.WORDPRESS_API_BASE, "media")
+                response = self.session.get(url, params=params, timeout=30)
+                response.raise_for_status()
+
+                media_items = response.json()
+
+                # Check for empty response (end of data)
+                if not media_items or len(media_items) == 0:
+                    logger.info(
+                        f"No more items found at page {page}, stopping pagination"
+                    )
+                    break
+
+                all_items.extend(media_items)
+
+                # Log progress
+                auth_status = "with auth" if use_secret else "without auth"
+                logger.info(
+                    f"Fetched page {page} {auth_status}: {len(media_items)} items (total: {len(all_items)})"
                 )
 
-        return documents
+                # Check if this was the last page (fewer items than requested)
+                if len(media_items) < 100:
+                    logger.info(
+                        f"Last page reached (got {len(media_items)} < 100 items)"
+                    )
+                    break
 
-    def _is_document_media(self, media_item: Dict) -> bool:
-        """Check if media item is a document type we're interested in."""
-        mime_type = media_item.get("mime_type", "")
-        return ValidationUtils.is_document_type_supported(mime_type)
+                page += 1
 
-    def _create_post_document_info(self, post: Dict, post_type: str) -> DocumentInfo:
-        """Create DocumentInfo from WordPress post."""
+                # Be respectful to the server
+                if self.request_delay > 0:
+                    time.sleep(self.request_delay)
+
+            except requests.exceptions.RequestException as e:
+                logger.error(f"Request failed on page {page}: {e}")
+                # Try to continue with next page for transient errors
+                if page == 1:
+                    # If first page fails, give up
+                    raise
+                else:
+                    # For later pages, log and continue
+                    logger.warning(
+                        f"Skipping page {page} due to request error, continuing..."
+                    )
+                    page += 1
+                    continue
+
+            except Exception as e:
+                logger.error(f"Unexpected error on page {page}: {e}")
+                break
+
+        logger.info(
+            f"Completed pagination: {len(all_items)} total items across {page-1} pages"
+        )
+        return all_items
+
+    def _log_document_breakdown(self, documents: List[DocumentInfo]) -> None:
+        """Log breakdown of document types found."""
+        if not documents:
+            logger.warning("No documents to analyze")
+            return
+
+        # Count by MIME type
+        mime_counts = {}
+        for doc in documents:
+            mime_type = doc.mime_type.lower()
+            mime_counts[mime_type] = mime_counts.get(mime_type, 0) + 1
+
+        # Log specific categories
+        pdf_count = mime_counts.get("application/pdf", 0)
+        word_count = sum(count for mime, count in mime_counts.items() if "word" in mime)
+        excel_count = sum(
+            count
+            for mime, count in mime_counts.items()
+            if "excel" in mime or "spreadsheet" in mime
+        )
+        csv_count = mime_counts.get("text/csv", 0)
+        txt_count = mime_counts.get("text/plain", 0)
+
+        logger.info("Document breakdown:")
+        logger.info(f"  - PDFs: {pdf_count}")
+        logger.info(f"  - Word docs: {word_count}")
+        logger.info(f"  - Excel docs: {excel_count}")
+        logger.info(f"  - CSV files: {csv_count}")
+        logger.info(f"  - Text files: {txt_count}")
+        logger.info(
+            f"  - Other types: {len(documents) - (pdf_count + word_count + excel_count + csv_count + txt_count)}"
+        )
+
+        # Log all MIME types found
+        logger.info(f"All MIME types found: {sorted(mime_counts.keys())}")
+
+    def _create_media_document_info(self, media_item: Dict) -> Optional[DocumentInfo]:
+        """Create DocumentInfo from WordPress media item with enhanced error handling."""
         try:
-            title = post.get("title", {})
+            # Extract title with fallback
+            title = media_item.get("title", {})
             if isinstance(title, dict):
-                title = title.get("rendered", "Unknown")
+                title = title.get("rendered", "")
+            if not title or title.strip() == "":
+                # Fallback to filename from source_url
+                source_url = media_item.get("source_url", "")
+                if source_url:
+                    from urllib.parse import urlparse
+                    import os
 
-            content = post.get("content", {})
-            if isinstance(content, dict):
-                content = content.get("rendered", "")
+                    filename = os.path.basename(urlparse(source_url).path)
+                    title = (
+                        os.path.splitext(filename)[0]
+                        if filename
+                        else f"Document {media_item.get('id', 'Unknown')}"
+                    )
+                else:
+                    title = f"Document {media_item.get('id', 'Unknown')}"
 
-            excerpt = post.get("excerpt", {})
-            if isinstance(excerpt, dict):
-                excerpt = excerpt.get("rendered", "")
+            # Extract description with fallback
+            description = media_item.get("description", {})
+            if isinstance(description, dict):
+                description = description.get("rendered", "")
+
+            # Extract caption with fallback
+            caption = media_item.get("caption", {})
+            if isinstance(caption, dict):
+                caption = caption.get("rendered", "")
+
+            # Validate required fields
+            if not media_item.get("source_url"):
+                logger.warning(
+                    f"Media item {media_item.get('id')} has no source_url, skipping"
+                )
+                return None
+
+            if not media_item.get("mime_type"):
+                logger.warning(
+                    f"Media item {media_item.get('id')} has no mime_type, skipping"
+                )
+                return None
+
+            # Extract file size with better error handling
+            file_size = 0
+            media_details = media_item.get("media_details", {})
+            if isinstance(media_details, dict):
+                file_size = media_details.get("filesize", 0)
+                # Sometimes filesize is a string
+                if isinstance(file_size, str):
+                    try:
+                        file_size = int(file_size)
+                    except (ValueError, TypeError):
+                        file_size = 0
 
             return self._create_document_info(
-                id_value=str(post["id"]),
-                title=title,
-                source_url=post["link"],
-                mime_type="text/html",
-                date=post["date"],
-                modified=post.get("modified"),
-                description=excerpt,
-                # content=content[:1000] if content else "",  # Preview of content - removed, not supported by DocumentInfo
-                file_size=len(content.encode("utf-8")) if content else 0,
+                id_value=str(media_item["id"]),
+                title=title.strip(),
+                source_url=media_item["source_url"],
+                mime_type=media_item.get("mime_type", ""),
+                date=media_item.get("date", ""),
+                modified=media_item.get("modified", ""),
+                alt_text=media_item.get("alt_text", ""),
+                description=description.strip() if description else "",
+                caption=caption.strip() if caption else "",
+                file_size=file_size,
             )
+        except KeyError as e:
+            logger.error(f"Missing required field in media item: {e}")
+            return None
         except Exception as e:
-            logger.error(f"Failed to create document info from post: {e}")
+            logger.error(
+                f"Failed to create document info from media item {media_item.get('id', 'unknown')}: {e}"
+            )
             return None
-
-    def _create_media_document_info(self, media_item: Dict) -> DocumentInfo:
-        """Create DocumentInfo from WordPress media item."""
-        # Handle None media items
-        if media_item is None:
-            logger.warning("Received None media_item, skipping")
-            return None
-
-        title = media_item.get("title", {})
-        if isinstance(title, dict):
-            title = title.get("rendered", "Unknown")
-
-        description = media_item.get("description", {})
-        if isinstance(description, dict):
-            description = description.get("rendered", "")
-
-        caption = media_item.get("caption", {})
-        if isinstance(caption, dict):
-            caption = caption.get("rendered", "")
-
-        return self._create_document_info(
-            id_value=str(media_item["id"]),
-            title=title,
-            source_url=media_item["source_url"],
-            mime_type=media_item.get("mime_type", ""),
-            date=media_item["date"],
-            modified=media_item.get("modified"),
-            alt_text=media_item.get("alt_text", ""),
-            description=description,
-            caption=caption,
-            file_size=media_item.get("media_details", {}).get("filesize", 0),
-        )

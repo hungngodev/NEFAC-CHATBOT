@@ -33,19 +33,21 @@ Examples:
     python run.py --debug
 """
 
+# flake8: noqa: E402
+# Add the backend directory to sys.path to enable absolute imports
+import sys
+from pathlib import Path
+
+backend_dir = Path(__file__).parent.parent.parent.parent
+sys.path.insert(0, str(backend_dir))
+
 import argparse
 import logging
-import sys
 import time
-from pathlib import Path
 from collections import defaultdict
 
 from src.service.crawler.core.main_crawler import NEFACCrawler
 from src.service.crawler.core.config import CrawlerConfig
-
-# Add backend directory to path for absolute imports
-backend_dir = Path(__file__).parent.parent.parent.parent
-sys.path.insert(0, str(backend_dir))
 
 
 def _analyze_documents(documents) -> tuple[dict, dict, dict]:

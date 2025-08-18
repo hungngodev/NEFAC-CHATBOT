@@ -87,7 +87,10 @@ class DocumentDownloader:
     def _generate_filepath(self, document_info: DocumentInfo) -> Path:
         """Generate file path for the document."""
         filename = self._generate_filename(document_info)
-        ext = Path(filename).suffix.lower()
+        # Use proper extension determination based on MIME type and URL
+        ext = self._get_file_extension(
+            document_info.mime_type, document_info.source_url
+        )
 
         # Special handling for YouTube content
         if (

@@ -38,9 +38,52 @@ class GraphQLExtractor(BaseExtractor, RequestMixin):
             media_docs = self._extract_media_documents()
             result.documents.extend(media_docs)
 
+            # Log media document statistics
+            media_mime_types = {}
+            for doc in media_docs:
+                mime_type = doc.mime_type if doc.mime_type else "unknown"
+                media_mime_types[mime_type] = media_mime_types.get(mime_type, 0) + 1
+
+            # Count specific document types
+            word_media_docs = sum(
+                1
+                for doc in media_docs
+                if doc.mime_type
+                and (
+                    "word" in doc.mime_type.lower()
+                    or "document" in doc.mime_type.lower()
+                )
+            )
+            pdf_media_docs = sum(
+                1
+                for doc in media_docs
+                if doc.mime_type and "pdf" in doc.mime_type.lower()
+            )
+            excel_media_docs = sum(
+                1
+                for doc in media_docs
+                if doc.mime_type
+                and (
+                    "excel" in doc.mime_type.lower()
+                    or "spreadsheet" in doc.mime_type.lower()
+                )
+            )
+
+            logger.info(
+                f"Media documents extracted - Total: {len(media_docs)}, Word: {word_media_docs}, PDF: {pdf_media_docs}, Excel: {excel_media_docs}"
+            )
+
             # Extract content with embedded documents
             content_docs = self._extract_content_documents()
             result.documents.extend(content_docs)
+
+            # Extract news posts
+            news_docs = self._extract_news_documents()
+            result.documents.extend(news_docs)
+
+            # Extract pages
+            page_docs = self._extract_page_documents()
+            result.documents.extend(page_docs)
 
         except Exception as e:
             error_msg = f"Error in GraphQL extraction: {e}"
@@ -154,6 +197,58 @@ class GraphQLExtractor(BaseExtractor, RequestMixin):
                 nodes = media_data.get("nodes", [])
                 logger.info(f"Retrieved {len(nodes)} media nodes from GraphQL API")
 
+                # Log sample node structure for debugging
+                if nodes and len(nodes) > 0:
+                    sample_node = nodes[0]
+                    logger.debug(
+                        f"Sample node keys: {list(sample_node.keys()) if sample_node else 'None'}"
+                    )
+                    if sample_node:
+                        logger.debug(
+                            f"Sample node sourceUrl: {sample_node.get('sourceUrl', 'MISSING')}"
+                        )
+                        if "mediaDetails" in sample_node:
+                            media_details = sample_node.get("mediaDetails", {})
+                            logger.debug(
+                                f"Sample node mediaDetails keys: {list(media_details.keys()) if media_details else 'None'}"
+                            )
+                            if media_details:
+                                logger.debug(
+                                    f"Sample node mediaDetails file: {media_details.get('file', 'MISSING')}"
+                                )
+
+                # Log MIME type distribution for debugging
+                mime_types = {}
+                for node in nodes:
+                    mime_type = node.get("mimeType", "unknown") if node else "unknown"
+                    mime_types[mime_type] = mime_types.get(mime_type, 0) + 1
+
+                # Log top MIME types
+                sorted_mime_types = sorted(
+                    mime_types.items(), key=lambda x: x[1], reverse=True
+                )
+                logger.debug(
+                    f"MIME type distribution in this batch: {sorted_mime_types[:10]}"
+                )
+
+                # Count specific document types
+                word_docs = sum(
+                    1
+                    for mt, count in mime_types.items()
+                    if "word" in mt.lower() or "document" in mt.lower()
+                )
+                pdf_docs = sum(
+                    1 for mt, count in mime_types.items() if "pdf" in mt.lower()
+                )
+                excel_docs = sum(
+                    1
+                    for mt, count in mime_types.items()
+                    if "excel" in mt.lower() or "spreadsheet" in mt.lower()
+                )
+                logger.debug(
+                    f"Document types in this batch - Word: {word_docs}, PDF: {pdf_docs}, Excel: {excel_docs}"
+                )
+
                 # Process nodes safely
                 processed_docs = self._safe_process_items(
                     nodes, self._create_media_document_info, "media"
@@ -239,51 +334,9 @@ class GraphQLExtractor(BaseExtractor, RequestMixin):
             }
             """
 
-            documents = []
-            cursor = None
-            items_fetched = 0
-            max_items = self.config.max_items_per_source
-
-            while items_fetched < max_items:
-                variables = {
-                    "first": min(self.config.per_page, max_items - items_fetched),
-                    "after": cursor,
-                }
-
-                response = self._make_graphql_request(query, variables)
-                if not response or "data" not in response:
-                    logger.warning(
-                        "No data received from GraphQL API for content documents, breaking pagination loop"
-                    )
-                    break
-
-                posts_data = response["data"]["posts"]
-                nodes = posts_data.get("nodes", [])
-                logger.info(f"Retrieved {len(nodes)} posts from GraphQL API")
-
-                # Process nodes safely
-                processed_docs = self._safe_process_items(
-                    nodes, self._create_content_document_info, "content"
-                )
-                logger.info(
-                    f"Processed {len(processed_docs)} content documents from GraphQL API"
-                )
-
-                for doc_info in processed_docs:
-                    if items_fetched >= max_items:
-                        break
-                    documents.append(doc_info)
-                    items_fetched += 1
-
-                page_info = posts_data.get("pageInfo", {})
-                if not page_info.get("hasNextPage", False):
-                    logger.info(
-                        "No more pages in GraphQL pagination for content documents, breaking loop"
-                    )
-                    break
-                cursor = page_info.get("endCursor")
-                time.sleep(self.config.request_delay)
-
+            documents = self._fetch_paginated_content(
+                "posts", query, self._create_content_document_info
+            )
             logger.info(
                 f"Successfully processed {len(documents)} content documents via GraphQL API"
             )
@@ -298,14 +351,12 @@ class GraphQLExtractor(BaseExtractor, RequestMixin):
             if content_metadata:
                 from ..utils.common import JSONUtils
 
-                # Ensure metadata directory exists
-                metadata_dir = self.config.output_dir / "metadata"
-                metadata_dir.mkdir(parents=True, exist_ok=True)
+                JSONUtils.save_to_file(
+                    content_metadata,
+                    self.config.output_dir
+                    / f"graphql_content_extraction_metadata_{int(time.time())}.json",
+                )
 
-                metadata_file = metadata_dir / "content_metadata.json"
-                JSONUtils.save_json(content_metadata, metadata_file)
-
-            logger.info(f"Found {len(documents)} content documents from posts")
             return documents
 
         except Exception as e:
@@ -455,6 +506,53 @@ class GraphQLExtractor(BaseExtractor, RequestMixin):
         description = media_item.get("description", "") if media_item else ""
         caption = media_item.get("caption", "") if media_item else ""
 
+        # If sourceUrl is empty, try to get it from mediaDetails
+        if not source_url and media_item and "mediaDetails" in media_item:
+            media_details = media_item.get("mediaDetails", {})
+            if media_details and "file" in media_details:
+                file_path = media_details.get("file", "")
+                if file_path:
+                    # Construct full URL from base URL and file path
+                    from urllib.parse import urljoin
+
+                    source_url = urljoin(
+                        self.config.wordpress_base_url.rstrip("/") + "/",
+                        file_path.lstrip("/"),
+                    )
+                    logger.debug(
+                        f"Constructed source URL from mediaDetails: {source_url}"
+                    )
+
+        # If we still don't have a source URL, log this for debugging
+        if not source_url:
+            logger.warning(
+                f"Document '{title}' (MIME: {mime_type}) has no source URL available"
+            )
+
+        # Log specific document types for debugging
+        if mime_type and (
+            "word" in mime_type.lower()
+            or "document" in mime_type.lower()
+            or (source_url and source_url.endswith(".docx"))
+        ):
+            logger.info(
+                f"Processing Word document: {title} (ID: {media_id}, MIME: {mime_type}, URL: {source_url})"
+            )
+        elif mime_type and (
+            "pdf" in mime_type.lower() or (source_url and source_url.endswith(".pdf"))
+        ):
+            logger.debug(
+                f"Processing PDF document: {title} (ID: {media_id}, MIME: {mime_type})"
+            )
+        elif mime_type and (
+            "excel" in mime_type.lower()
+            or "spreadsheet" in mime_type.lower()
+            or (source_url and source_url.endswith((".xls", ".xlsx")))
+        ):
+            logger.debug(
+                f"Processing Excel document: {title} (ID: {media_id}, MIME: {mime_type})"
+            )
+
         return self._create_document_info(
             id_value=media_id,
             title=title,
@@ -545,4 +643,273 @@ class GraphQLExtractor(BaseExtractor, RequestMixin):
                 "database_id": content_item.get("databaseId") if content_item else None,
                 "featured_image_id": featured_image_id,
             },
+        )
+
+    def _extract_news_documents(self) -> List[DocumentInfo]:
+        """Extract documents from news posts using GraphQL with enhanced error handling."""
+        logger.info("Fetching news posts from GraphQL API...")
+
+        try:
+            query = """
+            query GetNewsPosts($first: Int!, $after: String) {
+                newsPosts(first: $first, after: $after) {
+                    nodes {
+                        id
+                        databaseId
+                        slug
+                        title
+                        date
+                        modified
+                        content
+                        featuredImage {
+                            node {
+                                id
+                            }
+                        }
+                    }
+                    pageInfo {
+                        hasNextPage
+                        endCursor
+                    }
+                }
+            }
+            """
+
+            documents = self._fetch_paginated_content(
+                "newsPosts", query, self._create_news_document_info
+            )
+            logger.info(
+                f"Successfully processed {len(documents)} news documents via GraphQL API"
+            )
+
+            # Save news metadata
+            news_metadata = {
+                "total_news_processed": len(documents),
+                "extraction_timestamp": time.time(),
+                "source": "graphql_news_extraction",
+            }
+
+            if news_metadata:
+                from ..utils.common import JSONUtils
+
+                JSONUtils.save_to_file(
+                    news_metadata,
+                    self.config.output_dir
+                    / f"graphql_news_extraction_metadata_{int(time.time())}.json",
+                )
+
+            return documents
+
+        except Exception as e:
+            logger.error(f"Failed to extract news documents from GraphQL API: {e}")
+            return []
+
+    def _extract_page_documents(self) -> List[DocumentInfo]:
+        """Extract documents from pages using GraphQL with enhanced error handling."""
+        logger.info("Fetching pages from GraphQL API...")
+
+        try:
+            query = """
+            query GetPages($first: Int!, $after: String) {
+                pages(first: $first, after: $after) {
+                    nodes {
+                        id
+                        databaseId
+                        slug
+                        title
+                        date
+                        modified
+                        content
+                        featuredImage {
+                            node {
+                                id
+                            }
+                        }
+                    }
+                    pageInfo {
+                        hasNextPage
+                        endCursor
+                    }
+                }
+            }
+            """
+
+            documents = self._fetch_paginated_content(
+                "pages", query, self._create_page_document_info
+            )
+            logger.info(
+                f"Successfully processed {len(documents)} page documents via GraphQL API"
+            )
+
+            # Save page metadata
+            page_metadata = {
+                "total_pages_processed": len(documents),
+                "extraction_timestamp": time.time(),
+                "source": "graphql_page_extraction",
+            }
+
+            if page_metadata:
+                from ..utils.common import JSONUtils
+
+                JSONUtils.save_to_file(
+                    page_metadata,
+                    self.config.output_dir
+                    / f"graphql_page_extraction_metadata_{int(time.time())}.json",
+                )
+
+            return documents
+
+        except Exception as e:
+            logger.error(f"Failed to extract page documents from GraphQL API: {e}")
+            return []
+
+    def _fetch_paginated_content(
+        self, field_name: str, query: str, processor_func
+    ) -> List[DocumentInfo]:
+        """Fetch paginated content from GraphQL API."""
+        documents = []
+        cursor = None
+        items_fetched = 0
+        max_items = self.config.max_items_per_source
+
+        while items_fetched < max_items:
+            variables = {
+                "first": min(self.config.per_page, max_items - items_fetched),
+                "after": cursor,
+            }
+
+            response = self._make_graphql_request(query, variables)
+            if not response or "data" not in response:
+                logger.warning(
+                    f"No data received from GraphQL API for {field_name}, breaking pagination loop"
+                )
+                break
+
+            data = response["data"][field_name]
+            nodes = data.get("nodes", [])
+            logger.info(f"Retrieved {len(nodes)} {field_name} from GraphQL API")
+
+            # Process nodes safely
+            processed_docs = self._safe_process_items(nodes, processor_func, field_name)
+            logger.info(
+                f"Processed {len(processed_docs)} documents from {field_name} GraphQL API"
+            )
+
+            for doc_info in processed_docs:
+                if items_fetched >= max_items:
+                    break
+                documents.append(doc_info)
+                items_fetched += 1
+
+            page_info = data.get("pageInfo", {})
+            if not page_info.get("hasNextPage", False):
+                logger.info(
+                    f"No more pages in GraphQL pagination for {field_name}, breaking loop"
+                )
+                break
+            cursor = page_info.get("endCursor")
+            time.sleep(self.config.request_delay)
+
+        return documents
+
+    def _create_news_document_info(self, content_item: Dict) -> DocumentInfo:
+        """Create DocumentInfo from GraphQL news item."""
+        if not content_item:
+            return None
+
+        base_url = self.config.wordpress_base_url
+        title = content_item.get("title", "")
+        date_str = content_item.get("date", "")
+        slug = content_item.get("slug", "")
+        content_id = content_item.get("id", "unknown")
+        source_url = f"{base_url}/{slug}/" if slug else f"{base_url}/news/{content_id}"
+
+        # Get content for file size calculation
+        content_text = content_item.get("content", "")
+        file_size = len(content_text.encode("utf-8")) if content_text else 0
+
+        # Get featured image ID
+        featured_image_data = content_item.get("featuredImage", {})
+        featured_image_node = (
+            featured_image_data.get("node", {}) if featured_image_data else {}
+        )
+        featured_image_id = (
+            featured_image_node.get("id", "") if featured_image_node else ""
+        )
+
+        # Extract embedded URLs from content
+        embedded_urls = []
+        if content_text:
+            import re
+
+            # Find all URLs in the content
+            urls = re.findall(r'https?://[^\s"<>]+', content_text)
+            embedded_urls = list(set(urls))  # Remove duplicates
+
+        # Store content in metadata instead of passing as parameter
+        metadata = {
+            "featured_image_id": featured_image_id,
+        }
+        if embedded_urls:
+            metadata["embedded_urls"] = embedded_urls
+
+        return self._create_document_info(
+            id_value=content_id,
+            title=title,
+            source_url=source_url,
+            mime_type="text/html",
+            date=date_str,
+            file_size=file_size,
+            metadata=metadata,
+        )
+
+    def _create_page_document_info(self, content_item: Dict) -> DocumentInfo:
+        """Create DocumentInfo from GraphQL page item."""
+        if not content_item:
+            return None
+
+        base_url = self.config.wordpress_base_url
+        title = content_item.get("title", "")
+        date_str = content_item.get("date", "")
+        slug = content_item.get("slug", "")
+        content_id = content_item.get("id", "unknown")
+        source_url = f"{base_url}/{slug}/" if slug else f"{base_url}/page/{content_id}"
+
+        # Get content for file size calculation
+        content_text = content_item.get("content", "")
+        file_size = len(content_text.encode("utf-8")) if content_text else 0
+
+        # Get featured image ID
+        featured_image_data = content_item.get("featuredImage", {})
+        featured_image_node = (
+            featured_image_data.get("node", {}) if featured_image_data else {}
+        )
+        featured_image_id = (
+            featured_image_node.get("id", "") if featured_image_node else ""
+        )
+
+        # Extract embedded URLs from content
+        embedded_urls = []
+        if content_text:
+            import re
+
+            # Find all URLs in the content
+            urls = re.findall(r'https?://[^\s"<>]+', content_text)
+            embedded_urls = list(set(urls))  # Remove duplicates
+
+        # Store content in metadata instead of passing as parameter
+        metadata = {
+            "featured_image_id": featured_image_id,
+        }
+        if embedded_urls:
+            metadata["embedded_urls"] = embedded_urls
+
+        return self._create_document_info(
+            id_value=content_id,
+            title=title,
+            source_url=source_url,
+            mime_type="text/html",
+            date=date_str,
+            file_size=file_size,
+            metadata=metadata,
         )

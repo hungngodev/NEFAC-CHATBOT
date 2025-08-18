@@ -5,7 +5,6 @@ Works with the comprehensive discovery engine to ensure no files are missed.
 """
 
 import logging
-import shutil
 import time
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -14,7 +13,12 @@ from urllib.parse import urlparse, unquote
 
 # Imports relative to the crawler directory (where run.py is located)
 from src.service.crawler.core.config import CrawlerConfig
-from src.service.crawler.core.types import ExtractionResult, URLEntry, CrawlerSource
+from src.service.crawler.core.types import (
+    ExtractorResult,
+    URLEntry,
+    CrawlerSource,
+    DocumentInfo,
+)
 from src.service.crawler.utils.session_manager import SessionManager
 from src.service.crawler.extractors.base import BaseExtractor
 
@@ -24,7 +28,7 @@ logger = logging.getLogger(__name__)
 class ComprehensiveFileExtractor(BaseExtractor):
     """
     Extract ALL types of files from NEFAC website.
-    Downloads and processes every document, spreadsheet, presentation, etc.
+    Discovers and processes every document, spreadsheet, presentation, etc., emitting DocumentInfo objects for the main crawler to handle.
     """
 
     def __init__(self, config: CrawlerConfig):
@@ -93,17 +97,23 @@ class ComprehensiveFileExtractor(BaseExtractor):
     def source_name(self) -> str:
         return CrawlerSource.CONTENT_EXTRACTION.value
 
-    def extract(self, url_entries: Optional[List[URLEntry]] = None) -> ExtractionResult:
+    def extract(self, url_entries: Optional[List[URLEntry]] = None) -> ExtractorResult:
         """
         Extract ALL files from the provided URLs.
-        Downloads every document and processes metadata.
+        Processes every document and emits DocumentInfo objects for the main crawler to handle downloading and organization.
         """
         if url_entries is None:
             url_entries = []
 
         logger.info(
-            f"🔍 Starting comprehensive file extraction for {len(url_entries)} URLs"
+            f"Starting comprehensive file extraction for {len(url_entries)} URLs..."
         )
+
+        # Log initial PDF count
+        initial_pdf_count = sum(
+            1 for url in url_entries if url.lower().endswith(".pdf")
+        )
+        logger.info(f"Initial PDF count in discovery: {initial_pdf_count}")
 
         # Filter to only file URLs
         file_urls = self._filter_file_urls(url_entries)
@@ -112,16 +122,18 @@ class ComprehensiveFileExtractor(BaseExtractor):
         # Extract files in batches
         extracted_files = []
         failed_extractions = []
+        warnings = []
 
         batch_size = 5
         for i in range(0, len(file_urls), batch_size):
             batch = file_urls[i : i + batch_size]
+            valid_documents = []
 
             for url_entry in batch:
                 try:
                     result = self._extract_single_file(url_entry)
                     if result:
-                        extracted_files.append(result)
+                        valid_documents.append(result)
                     else:
                         failed_extractions.append(url_entry.url)
                 except Exception as e:
@@ -131,15 +143,30 @@ class ComprehensiveFileExtractor(BaseExtractor):
                 # Respectful delay
                 time.sleep(0.3)
 
+            # Log batch statistics
+            batch_pdf_count = sum(
+                1 for doc in valid_documents if doc.mime_type == "application/pdf"
+            )
+            rate = len(batch) / (time.time() - i)
+            logger.info(
+                f"Extraction batch {i//batch_size + 1} completed. Processed {len(batch)} URLs. "
+                f"Valid files: {len(valid_documents)} (PDFs: {batch_pdf_count}). "
+                f"Rate: {rate:.1f} URLs/sec"
+            )
+
+            extracted_files.extend(valid_documents)
+
             # Progress update
             processed = min(i + batch_size, len(file_urls))
             logger.info(
                 f"📄 Processed {processed}/{len(file_urls)} files, {len(extracted_files)} successful"
             )
 
-        # Create comprehensive result
-        result = ExtractionResult(
+        # Create ExtractorResult object
+        result = ExtractorResult(
             documents=extracted_files,
+            warnings=warnings,
+            errors=failed_extractions,
             metadata={
                 "total_urls_processed": len(url_entries),
                 "file_urls_found": len(file_urls),
@@ -176,141 +203,93 @@ class ComprehensiveFileExtractor(BaseExtractor):
 
         return file_urls
 
-    def _extract_single_file(self, url_entry: URLEntry) -> Optional[Dict]:
-        """Extract a single file and return document metadata."""
-        url = url_entry.url
-
+    def _extract_single_file(self, url_entry: URLEntry):
+        """Extract a single file and return DocumentInfo object."""
         try:
-            # First, check if we can access the file
-            head_response = self.session.head(url, timeout=10, allow_redirects=True)
+            url = url_entry.url
+            logger.debug(f"Processing file: {url}")
 
-            # Get content type and size
-            content_type = (
-                head_response.headers.get("content-type", "").split(";")[0].lower()
+            # Get file metadata
+            mime_type = self._get_mime_type(url)
+            file_size = self._get_file_size(url)
+            title = self._extract_title_from_url(url)
+            content_category = self._categorize_content(url, title)
+
+            # Validate file type
+            parsed_url = urlparse(url)
+            file_extension = Path(parsed_url.path).suffix.lower()
+
+            # Skip if it's an image
+            if file_extension in self.excluded_image_types:
+                logger.debug(f"Skipping image file: {url}")
+                return None
+
+            # Create filename
+            filename = Path(parsed_url.path).name or f"document_{int(time.time())}"
+            if not Path(filename).suffix and mime_type:
+                # Try to infer extension from MIME type
+                ext_map = {
+                    "application/pdf": ".pdf",
+                    "application/msword": ".doc",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx",
+                    "application/vnd.ms-excel": ".xls",
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": ".xlsx",
+                    "text/csv": ".csv",
+                    "text/plain": ".txt",
+                }
+                if mime_type in ext_map:
+                    filename += ext_map[mime_type]
+
+            # Create DocumentInfo object (no actual download)
+            document_info = self._create_document_info(
+                id_value=f"file_{hash(url) % 1000000}",
+                title=title,
+                source_url=url,
+                mime_type=mime_type or "application/octet-stream",
+                date=(
+                    url_entry.discovered_date.isoformat()
+                    if url_entry.discovered_date
+                    else None
+                ),
+                filename=filename,
+                file_size=file_size,
+                metadata={
+                    "content_category": content_category,
+                    "priority": url_entry.priority,
+                },
             )
+
+            logger.info(
+                f"✅ Prepared metadata for: {filename} ({file_size or 'unknown size'})"
+            )
+
+            return document_info
+
+        except Exception as e:
+            logger.error(f"❌ Failed to extract file {url_entry.url}: {e}")
+            return None
+
+    def _get_mime_type(self, url: str) -> Optional[str]:
+        """Get MIME type from URL headers."""
+        try:
+            head_response = self.session.head(url, timeout=10, allow_redirects=True)
+            return head_response.headers.get("content-type", "").split(";")[0].lower()
+        except Exception as e:
+            logger.error(f"Failed to get MIME type for {url}: {e}")
+            return None
+
+    def _get_file_size(self, url: str) -> Optional[int]:
+        """Get file size from URL headers."""
+        try:
+            head_response = self.session.head(url, timeout=10, allow_redirects=True)
             content_length = head_response.headers.get("content-length")
-            file_size = (
+            return (
                 int(content_length)
                 if content_length and content_length.isdigit()
                 else None
             )
-
-            # Skip if it's too large (>50MB)
-            if file_size and file_size > 50 * 1024 * 1024:
-                logger.warning(
-                    f"Skipping large file {url} ({file_size / (1024*1024):.1f}MB)"
-                )
-                return None
-
-            # Get file extension and type
-            parsed_url = urlparse(url)
-            file_path = unquote(parsed_url.path)
-            file_extension = (
-                "." + file_path.split(".")[-1].lower() if "." in file_path else ""
-            )
-
-            # Verify it's a file type we want
-            if (
-                file_extension not in self.target_file_types
-                and content_type not in self.target_mime_types
-            ):
-                return None
-
-            # Create document metadata
-            document_metadata = {
-                "url": url,
-                "title": getattr(url_entry, "title", None)
-                or self._extract_title_from_url(url),
-                "file_extension": file_extension,
-                "file_type": self.target_file_types.get(file_extension, "Unknown"),
-                "content_type": content_type,
-                "file_size": file_size,
-                "source": url_entry.source or "file_discovery",
-                "priority": url_entry.priority or 3,
-                "last_modified": getattr(url_entry, "last_modified", None),
-                "discovery_timestamp": time.time(),
-                "content_category": self._categorize_content(
-                    url, getattr(url_entry, "title", None)
-                ),
-                "download_url": url,
-            }
-
-            # If configured to download files, download them
-            if self.config.download_files:
-                local_path = self._download_file(url, file_extension)
-                if local_path:
-                    document_metadata["local_path"] = str(local_path)
-                    document_metadata["file_size_actual"] = local_path.stat().st_size
-
-            # Extract text content if possible
-            if file_extension in [".txt", ".csv", ".json", ".xml", ".rss", ".atom"]:
-                text_content = self._extract_text_content(url)
-                if text_content:
-                    document_metadata["text_content"] = text_content[
-                        :10000
-                    ]  # Limit size
-                    document_metadata["text_preview"] = text_content[:500]
-
-            return document_metadata
-
         except Exception as e:
-            logger.error(f"Error extracting file {url}: {e}")
-            return None
-
-    def _download_file(self, url: str, file_extension: str) -> Optional[Path]:
-        """Download file to local storage."""
-        try:
-            # Create download directory
-            download_dir = self.config.output_dir / "downloaded_files"
-            download_dir.mkdir(parents=True, exist_ok=True)
-
-            # Generate safe filename
-            parsed_url = urlparse(url)
-            filename = parsed_url.path.split("/")[-1]
-            if not filename or "." not in filename:
-                filename = f"file_{hash(url) % 100000}{file_extension}"
-
-            # Ensure filename is safe
-            safe_filename = "".join(c for c in filename if c.isalnum() or c in "._-")
-            if not safe_filename.endswith(file_extension):
-                safe_filename += file_extension
-
-            file_path = download_dir / safe_filename
-
-            # Download file
-            response = self.session.get(url, timeout=30, stream=True)
-            response.raise_for_status()
-
-            with open(file_path, "wb") as f:
-                shutil.copyfileobj(response.raw, f)
-
-            logger.debug(f"Downloaded {url} to {file_path}")
-            return file_path
-
-        except Exception as e:
-            logger.error(f"Failed to download {url}: {e}")
-            return None
-
-    def _extract_text_content(self, url: str) -> Optional[str]:
-        """Extract text content from text-based files."""
-        try:
-            response = self.session.get(url, timeout=10)
-            response.raise_for_status()
-
-            # Try to decode as text
-            try:
-                return response.text
-            except UnicodeDecodeError:
-                # Try different encodings
-                for encoding in ["utf-8", "latin-1", "cp1252"]:
-                    try:
-                        return response.content.decode(encoding)
-                    except UnicodeDecodeError:
-                        continue
-                return None
-
-        except Exception as e:
-            logger.error(f"Failed to extract text from {url}: {e}")
+            logger.error(f"Failed to get file size for {url}: {e}")
             return None
 
     def _extract_title_from_url(self, url: str) -> str:
@@ -378,15 +357,19 @@ class ComprehensiveFileExtractor(BaseExtractor):
 
         return "General Documents"
 
-    def _get_file_type_breakdown(self, documents: List[Dict]) -> Dict[str, int]:
+    def _get_file_type_breakdown(self, documents: List[DocumentInfo]) -> Dict[str, int]:
         """Get breakdown of extracted files by type."""
         breakdown = {}
         for doc in documents:
-            file_type = doc.get("file_type", "Unknown")
+            # Get file type from metadata if available, otherwise use mime_type
+            file_type = doc.metadata.get(
+                "file_type",
+                doc.mime_type.split("/")[-1] if doc.mime_type else "Unknown",
+            )
             breakdown[file_type] = breakdown.get(file_type, 0) + 1
         return breakdown
 
-    def _log_extraction_summary(self, result: ExtractionResult) -> None:
+    def _log_extraction_summary(self, result: ExtractorResult) -> None:
         """Log comprehensive extraction summary."""
         metadata = result.metadata
 
@@ -409,7 +392,12 @@ class ComprehensiveFileExtractor(BaseExtractor):
         # Show content categories
         category_breakdown = {}
         for doc in result.documents:
-            category = doc.get("content_category", "Unknown")
+            # Get content category from metadata if available
+            category = (
+                doc.metadata.get("content_category", "Unknown")
+                if hasattr(doc, "metadata")
+                else "Unknown"
+            )
             category_breakdown[category] = category_breakdown.get(category, 0) + 1
 
         if category_breakdown:

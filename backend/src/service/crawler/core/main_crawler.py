@@ -30,9 +30,9 @@ class NEFACCrawler:
 
     def __init__(self, config: CrawlerConfig):
         self.config = config
-        self.wordpress_extractor = WordPressExtractor(config)
-        self.graphql_extractor = GraphQLExtractor(config)
         self.crawl4ai_extractor = Crawl4AIExtractor(config)
+        self.wordpress_extractor = WordPressExtractor(config)  # Use unified extractor
+        self.graphql_extractor = GraphQLExtractor(config)
         self.youtube_extractor = YouTubeExtractor(config)
         self.file_extractor = ComprehensiveFileExtractor(config)
         self.downloader = DocumentDownloader(config)
@@ -45,9 +45,23 @@ class NEFACCrawler:
         logger.info("Starting NEFAC document crawling pipeline...")
 
         # Run all extractors
+        logger.info("Starting WordPress REST API extraction...")
         wordpress_result = self.wordpress_extractor.extract()
+        logger.info(
+            f"WordPress extraction completed. Found {len(wordpress_result.documents)} documents."
+        )
+
+        logger.info("Starting GraphQL API extraction...")
         graphql_result = self.graphql_extractor.extract()
+        logger.info(
+            f"GraphQL extraction completed. Found {len(graphql_result.documents)} documents."
+        )
+
+        logger.info("Starting Crawl4AI extraction...")
         crawl4ai_result = self.crawl4ai_extractor.extract()
+        logger.info(
+            f"Crawl4AI extraction completed. Found {len(crawl4ai_result.documents)} documents."
+        )
 
         # Check if YouTube is enabled in config
         youtube_documents = []

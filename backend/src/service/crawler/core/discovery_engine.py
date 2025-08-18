@@ -624,7 +624,6 @@ class DiscoveryEngine:
                                 source="direct_file",
                             )
                             file_urls.append(file_entry)
-                        continue
 
                     # Request the page to scan for file links
                     response = self.session.get(url, timeout=10)
@@ -662,12 +661,22 @@ class DiscoveryEngine:
                                 )
                                 file_urls.append(file_entry)
 
+                                # Log PDF discoveries for better tracking
+                                if file_url_lower.endswith(".pdf"):
+                                    logger.debug(
+                                        f"Discovered PDF: {file_url} from {url_entry.url}"
+                                    )
+
                     # Respectful delay
                     time.sleep(0.2)
 
+                    # Additional PDF-focused discovery
+                    self._discover_pdfs_from_content(
+                        html_content, url_entry.url, file_urls
+                    )
+
                 except Exception as e:
                     logger.warning(f"Could not scan {url_entry.url} for files: {e}")
-                    continue
 
             # Progress update
             processed = min(i + batch_size, total_pages)
@@ -687,7 +696,76 @@ class DiscoveryEngine:
         logger.info(
             f"📄 File discovery complete: {len(unique_file_urls)} unique downloadable files"
         )
+        # Log discovery statistics
+        pdf_count = sum(
+            1 for url in unique_file_urls if url.url.lower().endswith(".pdf")
+        )
+        logger.info(f"Total PDFs discovered: {pdf_count}/{len(unique_file_urls)} files")
+
         return unique_file_urls
+
+    def _discover_pdfs_from_content(
+        self, html_content: str, source_url: str, file_urls: List[URLEntry]
+    ):
+        """Discover PDFs using additional patterns and heuristics."""
+        try:
+            from bs4 import BeautifulSoup
+            import re
+            from urllib.parse import urljoin
+
+            soup = BeautifulSoup(html_content, "html.parser")
+
+            # Additional patterns for PDF discovery
+            pdf_patterns = [
+                r'href=["\']([^"\']*\.pdf["\'])',
+                r'src=["\']([^"\']*\.pdf["\'])',
+                r'data[-]src=["\']([^"\']*\.pdf["\'])',
+                r'download=["\'][^"\']*["\'][\s]*href=["\']([^"\']*\.pdf["\'])',
+            ]
+
+            discovered_pdfs = set()
+
+            # Check all links for PDFs
+            for link in soup.find_all(["a", "link"], href=True):
+                href = link.get("href")
+                if href and href.lower().endswith(".pdf"):
+                    full_url = urljoin(source_url, href)
+                    if full_url not in discovered_pdfs:
+                        discovered_pdfs.add(full_url)
+                        file_urls.append(
+                            URLEntry(
+                                url=full_url,
+                                content_type_hint="application/pdf",
+                                priority=5,
+                                source=f"pdf_pattern:{source_url}",
+                            )
+                        )
+
+            # Check for PDFs in data attributes
+            for element in soup.find_all(
+                attrs={"data-src": re.compile(r"\.pdf$", re.IGNORECASE)}
+            ):
+                data_src = element.get("data-src")
+                if data_src:
+                    full_url = urljoin(source_url, data_src)
+                    if full_url not in discovered_pdfs:
+                        discovered_pdfs.add(full_url)
+                        file_urls.append(
+                            URLEntry(
+                                url=full_url,
+                                content_type_hint="application/pdf",
+                                priority=5,
+                                source=f"pdf_data_attr:{source_url}",
+                            )
+                        )
+
+            if discovered_pdfs:
+                logger.debug(
+                    f"Found {len(discovered_pdfs)} additional PDFs from {source_url}"
+                )
+
+        except Exception as e:
+            logger.warning(f"Error in PDF pattern discovery from {source_url}: {e}")
 
     def _discover_wordpress_api_content(self) -> List[URLEntry]:
         """
