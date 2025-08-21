@@ -296,6 +296,9 @@ class GraphQLExtractor(BaseExtractor, RequestMixin):
                         modified
                         content
                         excerpt
+                        uri
+                        link
+                        commentCount
                         author {
                             node {
                                 name
@@ -323,6 +326,21 @@ class GraphQLExtractor(BaseExtractor, RequestMixin):
                         featuredImage {
                             node {
                                 id
+                                databaseId
+                                title
+                                altText
+                                sourceUrl
+                                mediaDetails {
+                                    width
+                                    height
+                                    file
+                                    sizes {
+                                        name
+                                        sourceUrl
+                                        width
+                                        height
+                                    }
+                                }
                             }
                         }
                     }
@@ -567,17 +585,28 @@ class GraphQLExtractor(BaseExtractor, RequestMixin):
         )
 
     def _create_content_document_info(self, content_item: Dict) -> DocumentInfo:
-        """Create DocumentInfo from GraphQL content item."""
+        """Create DocumentInfo from GraphQL content item with enhanced URL handling and document extraction."""
         # Handle None content items
         if content_item is None:
             logger.warning("Received None content_item, skipping")
             return None
 
-        # Generate URL from base URL and slug
+        # Use URI and link fields from GraphQL for accurate URLs
         base_url = self.config.wordpress_base_url
+        uri = content_item.get("uri", "") if content_item else ""
+        link = content_item.get("link", "") if content_item else ""
         slug = content_item.get("slug", "") if content_item else ""
         content_id = content_item.get("id", "unknown") if content_item else "unknown"
-        source_url = f"{base_url}/{slug}/" if slug else f"{base_url}/post/{content_id}"
+        
+        # Prioritize link field, then construct from URI, then fallback to slug
+        if link:
+            source_url = link
+        elif uri:
+            source_url = f"{base_url.rstrip('/')}{uri}" if not uri.startswith('http') else uri
+        elif slug:
+            source_url = f"{base_url}/{slug}/"
+        else:
+            source_url = f"{base_url}/post/{content_id}"
 
         # Extract categories and tags for description
         categories_data = content_item.get("categories", {}) if content_item else {}
@@ -594,7 +623,6 @@ class GraphQLExtractor(BaseExtractor, RequestMixin):
         if excerpt:
             # Clean HTML from excerpt
             import re
-
             clean_excerpt = re.sub(r"<[^>]+>", "", excerpt).strip()
             description_parts.append(clean_excerpt)
 
@@ -610,20 +638,59 @@ class GraphQLExtractor(BaseExtractor, RequestMixin):
         author_node = author_data.get("node", {}) if author_data else {}
         author_name = author_node.get("name", "") if author_node else ""
 
-        # Get content for file size calculation
-        content_text = content_item.get("content", "") if content_item else ""
-        file_size = len(content_text.encode("utf-8")) if content_text else 0
+        # Extract comment count
+        comment_count = content_item.get("commentCount", 0) if content_item else 0
 
-        # Get featured image ID
-        featured_image_data = (
-            content_item.get("featuredImage", {}) if content_item else {}
-        )
-        featured_image_node = (
-            featured_image_data.get("node", {}) if featured_image_data else {}
-        )
-        featured_image_id = (
-            featured_image_node.get("id") if featured_image_node else None
-        )
+        # Extract enhanced featured image information
+        featured_image_data = content_item.get("featuredImage", {}) if content_item else {}
+        featured_image_node = featured_image_data.get("node", {}) if featured_image_data else {}
+        featured_image_info = None
+        
+        if featured_image_node:
+            media_details = featured_image_node.get("mediaDetails", {})
+            featured_image_info = {
+                "id": featured_image_node.get("id", ""),
+                "databaseId": featured_image_node.get("databaseId", ""),
+                "title": featured_image_node.get("title", ""),
+                "altText": featured_image_node.get("altText", ""),
+                "sourceUrl": featured_image_node.get("sourceUrl", ""),
+                "width": media_details.get("width", 0) if media_details else 0,
+                "height": media_details.get("height", 0) if media_details else 0,
+                "file": media_details.get("file", "") if media_details else "",
+                "sizes": media_details.get("sizes", []) if media_details else []
+            }
+
+        # Extract embedded document links from content
+        content_text = content_item.get("content", "") if content_item else ""
+        embedded_document_urls = []
+        if content_text:
+            embedded_document_urls = self._extract_document_links_from_html(content_text)
+            
+        # Save HTML content to file (from legacy comprehensive crawler functionality)
+        try:
+            content_metadata = self._save_post_content(content_item)
+        except Exception as e:
+            logger.warning(f"Failed to save post content for {content_id}: {e}")
+            content_metadata = None
+
+        # Create metadata dictionary with all the enhanced information
+        metadata = {
+            "comment_count": comment_count,
+            "featured_image": featured_image_info,
+            "embedded_document_urls": embedded_document_urls,
+            "author": {
+                "name": author_name,
+                "slug": author_node.get("slug", "") if author_node else "",
+                "uri": author_node.get("uri", "") if author_node else "",
+                "description": author_node.get("description", "") if author_node else ""
+            },
+            "categories": category_names,
+            "tags": tag_names,
+            "content_metadata": content_metadata
+        }
+
+        # Get content for file size calculation  
+        file_size = len(content_text.encode("utf-8")) if content_text else 0
 
         return self._create_document_info(
             id_value=content_id,
@@ -634,15 +701,7 @@ class GraphQLExtractor(BaseExtractor, RequestMixin):
             modified=content_item.get("modified", "") if content_item else "",
             description=description,
             file_size=file_size,
-            metadata={
-                "author": author_name,
-                "categories": category_names,
-                "tags": tag_names,
-                "excerpt": excerpt,
-                "slug": slug,
-                "database_id": content_item.get("databaseId") if content_item else None,
-                "featured_image_id": featured_image_id,
-            },
+            metadata=metadata
         )
 
     def _extract_news_documents(self) -> List[DocumentInfo]:
