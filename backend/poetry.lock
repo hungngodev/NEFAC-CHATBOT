@@ -2335,6 +2335,27 @@ otel = ["opentelemetry-api (>=1.30.0,<2.0.0)", "opentelemetry-exporter-otlp-prot
 pytest = ["pytest (>=7.0.0)", "rich (>=13.9.4,<14.0.0)"]
 
 [[package]]
+name = "linkify-it-py"
+version = "2.0.3"
+description = "Links recognition library with FULL unicode support."
+optional = false
+python-versions = ">=3.7"
+groups = ["main"]
+files = [
+    {file = "linkify-it-py-2.0.3.tar.gz", hash = "sha256:68cda27e162e9215c17d786649d1da0021a451bdc436ef9e0fa0ba5234b9b048"},
+    {file = "linkify_it_py-2.0.3-py3-none-any.whl", hash = "sha256:6bcbc417b0ac14323382aef5c5192c0075bf8a9d6b41820a2b66371eac6b6d79"},
+]
+
+[package.dependencies]
+uc-micro-py = "*"
+
+[package.extras]
+benchmark = ["pytest", "pytest-benchmark"]
+dev = ["black", "flake8", "isort", "pre-commit", "pyproject-flake8"]
+doc = ["myst-parser", "sphinx", "sphinx-book-theme"]
+test = ["coverage", "pytest", "pytest-cov"]
+
+[[package]]
 name = "lxml"
 version = "6.0.0"
 description = "Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API."
@@ -2457,6 +2478,8 @@ files = [
 ]
 
 [package.dependencies]
+linkify-it-py = {version = ">=1,<3", optional = true, markers = "extra == \"linkify\""}
+mdit-py-plugins = {version = "*", optional = true, markers = "extra == \"plugins\""}
 mdurl = ">=0.1,<1.0"
 
 [package.extras]
@@ -2553,6 +2576,26 @@ aiohttp = ">=3.11.16"
 click = ">=8.1.8"
 gql = ">=3.5.2"
 mcp = {version = ">=1.6.0", extras = ["cli"]}
+
+[[package]]
+name = "mdit-py-plugins"
+version = "0.5.0"
+description = "Collection of plugins for markdown-it-py"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "mdit_py_plugins-0.5.0-py3-none-any.whl", hash = "sha256:07a08422fc1936a5d26d146759e9155ea466e842f5ab2f7d2266dd084c8dab1f"},
+    {file = "mdit_py_plugins-0.5.0.tar.gz", hash = "sha256:f4918cb50119f50446560513a8e311d574ff6aaed72606ddae6d35716fe809c6"},
+]
+
+[package.dependencies]
+markdown-it-py = ">=2.0.0,<5.0.0"
+
+[package.extras]
+code-style = ["pre-commit"]
+rtd = ["myst-parser", "sphinx-book-theme"]
+testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions"]
 
 [[package]]
 name = "mdurl"
@@ -3480,7 +3523,7 @@ version = "4.3.8"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`."
 optional = false
 python-versions = ">=3.9"
-groups = ["dev"]
+groups = ["main", "dev"]
 files = [
     {file = "platformdirs-4.3.8-py3-none-any.whl", hash = "sha256:ff7059bb7eb1179e2685604f4aaf157cfd9535242bd23742eadc3c13542139b4"},
     {file = "platformdirs-4.3.8.tar.gz", hash = "sha256:3d512d96e16bcb959a814c9f348431070822a6496326a4be0911c40b5a74c2bc"},
@@ -5121,6 +5164,28 @@ doc = ["reno", "sphinx"]
 test = ["pytest", "tornado (>=4.5)", "typeguard"]
 
 [[package]]
+name = "textual"
+version = "5.3.0"
+description = "Modern Text User Interface framework"
+optional = false
+python-versions = "<4.0.0,>=3.8.1"
+groups = ["main"]
+files = [
+    {file = "textual-5.3.0-py3-none-any.whl", hash = "sha256:02a6abc065514c4e21f94e79aaecea1f78a28a85d11d7bfc64abf3392d399890"},
+    {file = "textual-5.3.0.tar.gz", hash = "sha256:1b6128b339adef2e298cc23ab4777180443240ece5c232f29b22960efd658d4d"},
+]
+
+[package.dependencies]
+markdown-it-py = {version = ">=2.1.0", extras = ["linkify", "plugins"]}
+platformdirs = ">=3.6.0,<5"
+pygments = ">=2.19.2,<3.0.0"
+rich = ">=13.3.3"
+typing-extensions = ">=4.4.0,<5.0.0"
+
+[package.extras]
+syntax = ["tree-sitter (>=0.25.0) ; python_version >= \"3.10\"", "tree-sitter-bash (>=0.23.0) ; python_version >= \"3.10\"", "tree-sitter-css (>=0.23.0) ; python_version >= \"3.10\"", "tree-sitter-go (>=0.23.0) ; python_version >= \"3.10\"", "tree-sitter-html (>=0.23.0) ; python_version >= \"3.10\"", "tree-sitter-java (>=0.23.0) ; python_version >= \"3.10\"", "tree-sitter-javascript (>=0.23.0) ; python_version >= \"3.10\"", "tree-sitter-json (>=0.24.0) ; python_version >= \"3.10\"", "tree-sitter-markdown (>=0.3.0) ; python_version >= \"3.10\"", "tree-sitter-python (>=0.23.0) ; python_version >= \"3.10\"", "tree-sitter-regex (>=0.24.0) ; python_version >= \"3.10\"", "tree-sitter-rust (>=0.23.0,<=0.23.2) ; python_version >= \"3.10\"", "tree-sitter-sql (>=0.3.0,<0.3.8) ; python_version >= \"3.10\"", "tree-sitter-toml (>=0.6.0) ; python_version >= \"3.10\"", "tree-sitter-xml (>=0.7.0) ; python_version >= \"3.10\"", "tree-sitter-yaml (>=0.6.0) ; python_version >= \"3.10\""]
+
+[[package]]
 name = "tiktoken"
 version = "0.9.0"
 description = "tiktoken is a fast BPE tokeniser for use with OpenAI's models"
@@ -5404,6 +5469,21 @@ files = [
     {file = "tzdata-2025.2-py2.py3-none-any.whl", hash = "sha256:1a403fada01ff9221ca8044d701868fa132215d84beb92242d9acd2147f667a8"},
     {file = "tzdata-2025.2.tar.gz", hash = "sha256:b60a638fcc0daffadf82fe0f57e53d06bdec2f36c4df66280ae79bce6bd6f2b9"},
 ]
+
+[[package]]
+name = "uc-micro-py"
+version = "1.0.3"
+description = "Micro subset of unicode data files for linkify-it-py projects."
+optional = false
+python-versions = ">=3.7"
+groups = ["main"]
+files = [
+    {file = "uc-micro-py-1.0.3.tar.gz", hash = "sha256:d321b92cff673ec58027c04015fcaa8bb1e005478643ff4a500882eaab88c48a"},
+    {file = "uc_micro_py-1.0.3-py3-none-any.whl", hash = "sha256:db1dffff340817673d7b466ec86114a9dc0e9d4d9b5ba229d9d60e5c12600cd5"},
+]
+
+[package.extras]
+test = ["coverage", "pytest", "pytest-cov"]
 
 [[package]]
 name = "unstructured"
@@ -6215,4 +6295,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.13"
-content-hash = "a1cf6a6aa5150ee3d86d9e9514e5487093a80ca9ad4418b172ac515e8b66f7b5"
+content-hash = "4b506edb98f8aec40ae7b3d5844a75a8d2ed04fdb431f18d3ba6edd70b829574"

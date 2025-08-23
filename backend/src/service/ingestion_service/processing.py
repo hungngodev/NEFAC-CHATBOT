@@ -1,5 +1,8 @@
 # NOTE: Llama models are now managed via Ollama, not Hugging Face transformers. All Hugging Face Llama imports and code have been removed.
+import argparse
 import logging
+import sys
+import traceback
 from typing import List, TypedDict, cast
 
 from dotenv import load_dotenv
@@ -7,14 +10,13 @@ from langchain_core.documents import Document
 from langchain_core.runnables import RunnableLambda, RunnableParallel
 from tqdm import tqdm
 
-from src.service.ingestion_service.database_cleaner import clear_all_databases
+from backend.src.service.ingestion_service.index.database_cleaner import clear_all_databases
 from src.service.ingestion_service.index.contextual_retrieval import (
     contextualize_and_index_documents,
 )
 from src.service.ingestion_service.index.graph_rag import graph_rag_ingest
-from src.service.ingestion_service.loader.html_loader import html_loader
-from src.service.ingestion_service.loader.pdf_loader import pdf_loader
-from src.service.ingestion_service.loader.youtube_loader import youtube_loader
+from src.service.ingestion_service.interactive_pipeline import main as interactive_main
+from src.service.ingestion_service.loader.unstructured_loader import unstructured_loader
 from src.service.ingestion_service.settings import embedding_model
 
 load_dotenv()
@@ -24,13 +26,17 @@ logger = logging.getLogger(__name__)
 
 
 class LoaderService:
-    """Service class for loading documents of different types using appropriate loaders."""
+    """Service class for loading documents of different types using the unified unstructured_loader.
+
+    This replaces the previous separate html_loader, pdf_loader, and youtube_loader with a single
+    unified loader that handles all document types (PDF, HTML, YouTube transcripts, XLSX, DOCX, etc.).
+    """
 
     def __init__(self, logger, base_dir=None, base_metadata_dir=None):
         self.logger = logger
         # Use absolute path to nefac_documents directory if not provided
         if base_dir is None:
-            base_dir = "/Users/hung/Documents/coding/build/NEFAC_CHATBOT/resource/nefac_documents"
+            base_dir = "/Users/hung/Documents/coding/build/NEFAC_CHATBOT/src/service/crawler/nefac_documents"
         self.base_dir = base_dir
 
         # Define subdirectories for different file types
@@ -38,7 +44,7 @@ class LoaderService:
 
         # Define default metadata paths if not provided
         if base_metadata_dir is None:
-            base_metadata_dir = "/Users/hung/Documents/coding/build/NEFAC_CHATBOT/resource/nefac_documents/metadata"
+            base_metadata_dir = "/Users/hung/Documents/coding/build/NEFAC_CHATBOT/src/service/crawler/nefac_documents/metadata"
 
         self.default_metadata_paths = {
             "html": f"{base_metadata_dir}/content_metadata.json",
@@ -51,7 +57,23 @@ class LoaderService:
         return self.default_metadata_paths.get(file_type)
 
     def load(self, file_type, metadata_json_path=None, limit=None):
-        """Load documents using the appropriate loader for the file type."""
+        """Load documents using the unified unstructured_loader for all file types.
+
+        The unified loader automatically detects document types and handles:
+        - PDF files (with table structure inference)
+        - HTML files
+        - YouTube transcript files (with timestamp parsing)
+        - XLSX/DOCX files
+        - Generic text files
+
+        Args:
+            file_type: The type of documents ('pdf', 'html', 'youtube') - used for directory selection
+            metadata_json_path: Path to the metadata JSON file
+            limit: Optional limit on number of documents to process
+
+        Returns:
+            List[Document]: Processed documents with unified metadata structure
+        """
         # Use default metadata path if none provided
         if metadata_json_path is None:
             metadata_json_path = self.get_default_metadata_path(file_type)
@@ -71,12 +93,8 @@ class LoaderService:
         docs = []
 
         try:
-            if file_type == "pdf":
-                docs = pdf_loader(metadata_json_path, documents_dir, limit=limit)
-            elif file_type == "youtube":
-                docs = youtube_loader(metadata_json_path, documents_dir, limit=limit)
-            elif file_type == "html":
-                docs = html_loader(metadata_json_path, documents_dir, limit=limit)
+            # Use the unified unstructured_loader for all file types
+            docs = unstructured_loader(metadata_json_path, documents_dir, limit=limit)
 
             self.logger.info(f"Successfully loaded {len(docs)} documents of type '{file_type}' from {metadata_json_path}")
         except Exception as e:
@@ -238,22 +256,27 @@ def clear_databases_only():
 
 
 if __name__ == "__main__":
-    import argparse
-
     parser = argparse.ArgumentParser(description="NEFAC Document Ingestion Pipeline")
     parser.add_argument("--file-type", choices=["html", "pdf", "youtube", "all"], default="all", help="Type of documents to process")
     parser.add_argument("--metadata-path", help="Path to metadata JSON file (optional - uses default paths when not provided)")
     parser.add_argument("--limit", type=int, default=None, help="Limit number of documents to process (for testing)")
     parser.add_argument("--no-clear", action="store_true", help="Skip clearing existing database data before processing")
     parser.add_argument("--clear-only", action="store_true", help="Only clear databases without processing any documents")
+    parser.add_argument("--interactive", "-i", action="store_true", help="Run in interactive mode with start/stop controls")
 
     args = parser.parse_args()
+
+    # Handle interactive mode
+    if args.interactive:
+        print("🎮 Launching Interactive Pipeline Manager...")
+        interactive_main()
+        sys.exit(0)
 
     # Handle clear-only mode
     if args.clear_only:
         print("🧹 Clear-only mode: Clearing databases without processing documents...")
         success = clear_databases_only()
-        exit(0 if success else 1)
+        sys.exit(0 if success else 1)
 
     print("🚀 Starting NEFAC ingestion pipeline...")
     print(f"📄 File type: {args.file_type}")
@@ -278,15 +301,11 @@ if __name__ == "__main__":
             # Use default metadata path if not provided, just like the "all" option
             metadata_path = args.metadata_path
             if not metadata_path:
-                import logging
-
-                from src.service.ingestion_service.processing import LoaderService
-
                 loader_service = LoaderService(logging.getLogger("pipeline"))
                 metadata_path = loader_service.get_default_metadata_path(args.file_type)
                 if not metadata_path:
                     print(f"❌ No default metadata path configured for file type: {args.file_type}")
-                    exit(1)
+                    sys.exit(1)
                 print(f"📁 Using default metadata path: {metadata_path}")
 
             # Clear databases before processing individual file type if requested
@@ -308,6 +327,4 @@ if __name__ == "__main__":
             print(f"✅ Successfully processed {processed_count} documents!")
     except Exception as e:
         print(f"❌ Pipeline failed: {e}")
-        import traceback
-
         traceback.print_exc()
