@@ -59,9 +59,9 @@ class NEFACCrawler:
         self.max_workers = getattr(config, "max_workers", 5)
 
         # Initialize components
-        self.wordpress_extractor = WordPressExtractor(config)
-        self.youtube_extractor = YouTubeExtractor(config)
         self.downloader = DocumentDownloader(config)
+        self.wordpress_extractor = WordPressExtractor(config, self.downloader)
+        self.youtube_extractor = YouTubeExtractor(config)
         self.metadata_manager = MetadataManager(config)
 
     def extract_safe(self, extract_fn, source_name: str) -> List[BaseMetadata]:

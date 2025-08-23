@@ -17,14 +17,16 @@ from urllib3.util.retry import Retry
 from src.schemas.metadata import BaseMetadata, PDFMetadata
 from src.service.crawler.core.config import CrawlerConfig
 from src.service.crawler.core.types import ExtractorResult
+from src.service.crawler.downloaders.document_downloader import DocumentDownloader
 from src.service.crawler.extractors.base import BaseExtractor
 
 
 class WordPressExtractor(BaseExtractor):
     WORDPRESS_API_BASE = "https://nefac.org/wp-json/wp/v2/"
 
-    def __init__(self, config: CrawlerConfig):
+    def __init__(self, config: CrawlerConfig, downloader: "DocumentDownloader"):
         super().__init__(config)
+        self.downloader = downloader
         self.wp_username = os.getenv("WORDPRESS_USERNAME")
         self.wp_password = os.getenv("WORDPRESS_PASSWORD")
         self.use_auth = bool(self.wp_username and self.wp_password)
@@ -156,15 +158,7 @@ class WordPressExtractor(BaseExtractor):
         slug = item.get("slug") or str(item.get("id"))
         filename = f"{slug}.html"
 
-        metadata = {
-            "content": content,
-            "excerpt": self._rendered(item.get("excerpt")),
-            "content_type": content_type,
-            "slug": slug,
-            "status": item.get("status", ""),
-        }
-
-        return self._create_document_info(
+        doc_info = self._create_document_info(
             id_value=str(item["id"]),
             title=title.strip(),
             filename=filename,
@@ -172,8 +166,19 @@ class WordPressExtractor(BaseExtractor):
             mime_type="text/html",
             date=item.get("date", ""),
             modified=item.get("modified", ""),
-            metadata=metadata,
+            metadata={
+                "content": content,
+                "excerpt": self._rendered(item.get("excerpt")),
+                "content_type": content_type,
+                "slug": slug,
+                "status": item.get("status", ""),
+            },
         )
+
+        # Save the HTML content directly
+        self.downloader.save_html_content(doc_info, content)
+
+        return doc_info
 
     def _create_media_document(self, item: Dict) -> BaseMetadata | PDFMetadata:
         source_url = item.get("source_url")

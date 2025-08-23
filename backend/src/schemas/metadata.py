@@ -17,6 +17,7 @@ class BaseMetadata(BaseModel):
     modified: str | None = Field(default=None, description="Last modification date")
     mime_type: str | None = Field(default=None, description="MIME type of the document")
     file_size: int | None = Field(default=None, ge=0, description="File size in bytes")
+    expected_size: int | None = Field(default=None, ge=0, description="Expected file size in bytes from Content-Length")
     download_date: str | None = Field(default=None, description="Date when document was downloaded")
     crawler_version: str | None = Field(default=None, description="Version of crawler used")
 

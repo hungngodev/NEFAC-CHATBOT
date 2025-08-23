@@ -43,9 +43,16 @@ class DocumentDownloader:
             return True
 
         filepath = self._generate_filepath(document_info)
+
         if filepath.exists():
-            self._update_document_metadata(document_info, filepath)
-            return True
+            # If file exists, validate it and update metadata
+            if self._validate_downloaded_file(filepath, document_info):
+                self._update_document_metadata(document_info, filepath)
+                return True
+            else:
+                logger.warning("Existing file failed validation: %s", filepath)
+                # Decide if we should re-download. For now, let's just fail.
+                return False
 
         if self._download_file(document_info, filepath):
             if self._validate_downloaded_file(filepath, document_info):
@@ -168,20 +175,42 @@ class DocumentDownloader:
 
         filepath.parent.mkdir(parents=True, exist_ok=True)
 
-        response = self.session.get(source_url, timeout=self.config.request_timeout, stream=True)
-        response.raise_for_status()
+        try:
+            response = self.session.get(source_url, timeout=(10, self.config.request_timeout), stream=True)
+            response.raise_for_status()
 
-        if content_type := response.headers.get("content-type"):
-            document_info.mime_type = content_type
+            if content_type := response.headers.get("content-type"):
+                document_info.mime_type = content_type
 
-        with open(filepath, "wb") as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                f.write(chunk)
-        return True
+            document_info.expected_size = int(response.headers.get("content-length", 0))
+
+            with open(filepath, "wb") as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+            return True
+        except requests.exceptions.Timeout:
+            logger.warning("Timeout downloading %s", source_url)
+            return False
+        except requests.exceptions.RequestException as e:
+            logger.error("Error downloading %s: %s", source_url, e)
+            return False
 
     def _validate_downloaded_file(self, file_path: Path, doc: BaseMetadata) -> bool:
         """Validate downloaded file integrity and format."""
-        if not file_path.exists() or file_path.stat().st_size < 100:
+        if not file_path.exists():
+            return False
+
+        expected_size = getattr(doc, "expected_size", 0)
+        if expected_size > 0 and file_path.stat().st_size != expected_size:
+            logger.warning(
+                "File size mismatch for %s. Expected: %d, Got: %d",
+                file_path,
+                expected_size,
+                file_path.stat().st_size,
+            )
+            return False
+
+        if file_path.stat().st_size < 100:
             return False
 
         mime_type = (getattr(doc, "mime_type", "") or "").lower()
