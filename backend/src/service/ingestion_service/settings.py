@@ -1,3 +1,13 @@
+from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+
+from src.config.models import EMBEEDING_MODEL_NAME
+
+load_dotenv()
+
+
+llm_model = ChatOpenAI(model="gpt-4o", temperature=0)
+embedding_model = OpenAIEmbeddings(model=EMBEEDING_MODEL_NAME)
 # Chunking configuration for all loaders
 CHUNK_SIZE = 1024  # Number of characters per chunk (PDF, HTML)
 CHUNK_OVERLAP = 128  # Overlap for text chunking (PDF)

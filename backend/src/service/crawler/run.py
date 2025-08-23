@@ -1,429 +1,207 @@
 #!/usr/bin/env python3
-"""
-Enhanced NEFAC Crawler - File Type Organization & Comprehensive Crawling
+"""Complete NEFAC Crawler - WordPress & YouTube Content Extraction"""
 
-This script runs a comprehensive crawl with enhanced file-type organization:
-1. ALL URLs from the WordPress sitemap (https://nefac.org/wp-sitemap.xml)
-2. Complete NEFAC YouTube channel crawling with transcripts
-3. WordPress REST API and GraphQL extraction
-4. Intelligent deduplication and metadata merging
-5. FILE-TYPE SPECIFIC ORGANIZATION (NEW):
-   - youtube/ folder with videos + transcripts
-   - html/ folder with web content
-   - pdf/, docx/, xlsx/ folders by file type
-   - images/, archives/ for media files
-
-Usage:
-    python run.py [options]
-    
-Examples:
-    # Full comprehensive crawl with file-type organization (default)
-    python run.py
-    
-    # Sitemap-only crawl (all sitemap URLs)
-    python run.py --sitemap-only
-    
-    # YouTube-only crawl 
-    python run.py --youtube-only
-    
-    # Custom output directory
-    python run.py --output-dir /path/to/output
-    
-    # Enable debug logging
-    python run.py --debug
-"""
-
-# flake8: noqa: E402
-# Add the backend directory to sys.path to enable absolute imports
 import sys
 from pathlib import Path
 
-backend_dir = Path(__file__).parent.parent.parent.parent
-sys.path.insert(0, str(backend_dir))
+sys.path.insert(0, str(Path(__file__).parents[3]))
 
 import argparse
 import logging
 import time
-from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import List
 
-from src.service.crawler.core.main_crawler import NEFACCrawler
+from tqdm import tqdm
+
+from src.schemas.metadata import BaseMetadata
 from src.service.crawler.core.config import CrawlerConfig
+from src.service.crawler.downloaders.document_downloader import DocumentDownloader
+from src.service.crawler.downloaders.metadata_manager import MetadataManager
+from src.service.crawler.extractors.wordpress_extractor import WordPressExtractor
+from src.service.crawler.extractors.youtube_extractor import YouTubeExtractor
+
+logger = logging.getLogger(__name__)
 
 
-def _analyze_documents(documents) -> tuple[dict, dict, dict]:
-    """Analyze documents for file counts, content categories, and folder breakdown."""
-    file_counts = defaultdict(int)
-    content_categories = defaultdict(int)
-    folder_breakdown = defaultdict(int)
+class CrawlStats:
+    """Simple statistics tracker."""
 
-    # Count files by extension and analyze folder organization
-    for doc in documents:
-        # File type analysis by extension
-        if hasattr(doc, "file_extension") and doc.file_extension:
-            ext = doc.file_extension.upper()
-            file_counts[ext] += 1
+    def __init__(self):
+        self.wordpress = 0
+        self.youtube = 0
+        self.success = 0
+        self.failed = 0
+        self.errors = []
+        self.start_time = time.time()
 
-        # Content category analysis
-        if hasattr(doc, "metadata") and doc.metadata.get("content_category"):
-            category = doc.metadata["content_category"]
-            content_categories[category] += 1
+    @property
+    def total_docs(self) -> int:
+        return self.wordpress + self.youtube
 
-        # Analyze which folder this would go to based on our new organization
-        if hasattr(doc, "mime_type") and doc.mime_type:
-            if "youtube" in doc.source.lower() or doc.mime_type == "video/youtube":
-                folder_breakdown["youtube"] += 1
-            elif "html" in doc.mime_type.lower():
-                folder_breakdown["html"] += 1
-            elif doc.mime_type == "application/pdf":
-                folder_breakdown["pdf"] += 1
-            elif "word" in doc.mime_type.lower() or "document" in doc.mime_type.lower():
-                folder_breakdown["docx"] += 1
-            elif (
-                "excel" in doc.mime_type.lower()
-                or "spreadsheet" in doc.mime_type.lower()
-            ):
-                folder_breakdown["xlsx"] += 1
-            elif "image" in doc.mime_type.lower():
-                folder_breakdown["images"] += 1
-            else:
-                folder_breakdown["other"] += 1
+    @property
+    def duration(self) -> float:
+        return time.time() - self.start_time
 
-    return dict(file_counts), dict(content_categories), dict(folder_breakdown)
+    def print_summary(self):
+        print(f"\n✅ Complete: {self.total_docs} documents, {self.success} downloaded")
+        print(f"⏱️  Duration: {self.duration/60:.1f}m")
+        if self.failed:
+            print(f"⚠️  Failed: {self.failed}")
 
 
-def _analyze_youtube_documents(documents) -> dict:
-    """Analyze YouTube documents for folder breakdown."""
-    folder_breakdown = defaultdict(int)
-    for doc in documents:
-        # Determine folder based on MIME type
-        if "youtube" in doc.source.lower() or doc.mime_type == "video/youtube":
-            folder_breakdown["youtube"] += 1
-        elif doc.mime_type == "text/html":
-            folder_breakdown["html"] += 1
-        elif "pdf" in doc.mime_type:
-            folder_breakdown["pdf"] += 1
-        elif "word" in doc.mime_type or "document" in doc.mime_type:
-            folder_breakdown["docx"] += 1
-        elif "excel" in doc.mime_type or "spreadsheet" in doc.mime_type:
-            folder_breakdown["xlsx"] += 1
-        elif doc.mime_type.startswith("image/"):
-            folder_breakdown["images"] += 1
-        else:
-            folder_breakdown["other"] += 1
+class NEFACCrawler:
+    """Complete NEFAC document crawler."""
 
-    return dict(folder_breakdown)
+    def __init__(self, config: CrawlerConfig):
+        self.config = config
+        self.stats = CrawlStats()
+        self.max_workers = getattr(config, "max_workers", 5)
 
+        # Initialize components
+        self.wordpress_extractor = WordPressExtractor(config)
+        self.youtube_extractor = YouTubeExtractor(config)
+        self.downloader = DocumentDownloader(config)
+        self.metadata_manager = MetadataManager(config)
 
-def setup_logging(level: str = "INFO") -> None:
-    """Configure comprehensive logging for the crawler."""
-    numeric_level = getattr(logging, level.upper(), logging.INFO)
+    def extract_safe(self, extract_fn, source_name: str) -> List[BaseMetadata]:
+        """Extract documents."""
+        result = extract_fn()
+        docs = result.documents if result else []
+        logger.info(f"📊 {source_name}: {len(docs)} documents")
+        return docs
 
-    # Create formatters
-    detailed_formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    )
+    def download_safe(self, doc: BaseMetadata) -> bool:
+        """Safely download a single document."""
+        try:
+            self.downloader.download(doc)
+            return True
+        except Exception:
+            return False
 
-    simple_formatter = logging.Formatter("%(levelname)s: %(message)s")
+    def download_parallel(self, documents: List[BaseMetadata]):
+        """Download documents in parallel with progress bar."""
+        if not documents:
+            return
 
-    # Console handler (simple format)
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(numeric_level)
-    console_handler.setFormatter(simple_formatter)
+        logger.info(f"📥 Downloading {len(documents)} documents...")
 
-    # File handler (detailed format)
-    file_handler = logging.FileHandler("nefac_comprehensive_crawler.log")
-    file_handler.setLevel(logging.DEBUG)  # Always debug in file
-    file_handler.setFormatter(detailed_formatter)
+        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+            # Submit all tasks
+            future_to_doc = {executor.submit(self.download_safe, doc): doc for doc in documents}
 
-    # Configure root logger
-    root_logger = logging.getLogger()
-    root_logger.setLevel(logging.DEBUG)
-    root_logger.addHandler(console_handler)
-    root_logger.addHandler(file_handler)
+            # Process with progress bar
+            with tqdm(total=len(documents), desc="Downloading", unit="docs", ncols=80, bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]") as pbar:
 
-    # Reduce noise from external libraries
-    logging.getLogger("urllib3").setLevel(logging.WARNING)
-    logging.getLogger("requests").setLevel(logging.WARNING)
-    logging.getLogger("crawl4ai").setLevel(logging.INFO)
+                for future in as_completed(future_to_doc):
+                    try:
+                        if future.result():
+                            self.stats.success += 1
+                        else:
+                            self.stats.failed += 1
+                    except Exception as e:
+                        self.stats.failed += 1
+                        self.stats.errors.append(f"Download error: {e}")
 
+                    pbar.set_postfix({"✅": self.stats.success, "❌": self.stats.failed})
+                    pbar.update(1)
 
-def print_banner():
-    """Print NEFAC crawler banner."""
-    print("=" * 80)
-    print("    NEFAC OPTIMIZED CRAWLER v5.0 - MAXIMIZED DATA EXTRACTION")
-    print("        New England First Amendment Coalition")
-    print("=" * 80)
-    print("  ⚡ MAXIMIZED SPEED: 200 concurrent requests, 0.05s delays")
-    print("  📂 FILE-TYPE ORGANIZATION: youtube/, html/, pdf/, docx/, etc.")
-    print("  🗺️  UNLIMITED SITEMAP: ALL URLs processed")
-    print("  🎥 YOUTUBE AGGRESSIVE MODE: 5s delays, 2 concurrent requests")
-    print("  📄 WordPress & GraphQL APIs at maximum speed")
-    print("  🤖 AI-Powered Content Extraction (Crawl4AI)")
-    print("  🔄 Intelligent Deduplication & Metadata Merging")
-    print("")
-    print("  🚀 Just run: python run.py (no arguments needed!)")
-    print("=" * 80)
-    print()
+    def crawl(self, mode: str = "full") -> List[BaseMetadata]:
+        """Main crawl orchestrator."""
+        logger.info(f"🚀 Starting {mode} crawl...")
 
+        # Extract documents based on mode
+        wordpress_docs = []
+        youtube_docs = []
 
-def run_comprehensive_crawl(config: CrawlerConfig) -> dict:
-    """Run the comprehensive NEFAC crawl with enhanced file-type organization."""
-    print("🚀 Starting COMPREHENSIVE NEFAC Crawl with FILE-TYPE ORGANIZATION...")
-    print("📁 Files will be organized by type: youtube/, html/, pdf/, docx/, etc.")
-    start_time = time.time()
+        if mode in ["full", "wordpress"]:
+            wordpress_docs = self.extract_safe(self.wordpress_extractor.extract, "WordPress")
+            self.stats.wordpress = len(wordpress_docs)
 
-    try:
-        # Initialize crawler with enhanced configuration
-        crawler = NEFACCrawler(config)
+        if mode in ["full", "youtube"] and self.config.enable_youtube_integration:
+            youtube_docs = self.extract_safe(self.youtube_extractor.extract, "YouTube")
+            self.stats.youtube = len(youtube_docs)
 
-        # Run full comprehensive crawl with file-type organization
-        documents = crawler.run_full_crawl()
+        all_docs = wordpress_docs + youtube_docs
+        logger.info(f"📄 Processing {len(all_docs)} unique documents")
 
-        end_time = time.time()
-        duration = end_time - start_time
+        # Download and save
+        self.download_parallel(all_docs)
+        self.metadata_manager.save_documents_metadata(all_docs)
 
-        # Analyze the results for file breakdown by type
-        file_counts, content_categories, folder_breakdown = _analyze_documents(
-            documents
-        )
-
-        # Calculate statistics
-        total_documents = len(documents)
-
-        return {
-            "success": True,
-            "total_documents": total_documents,
-            "duration_minutes": duration / 60,
-            "documents_per_minute": (
-                total_documents / (duration / 60) if duration > 0 else 0
-            ),
-            "file_counts": file_counts,
-            "content_categories": content_categories,
-            "folder_breakdown": folder_breakdown,
-            "output_directory": str(config.output_dir),
-        }
-
-    except Exception as e:
-        logger = logging.getLogger(__name__)
-        logger.error(f"Comprehensive crawl failed: {e}")
-        return {
-            "success": False,
-            "error": str(e),
-            "total_documents": 0,
-            "duration_minutes": 0,
-        }
+        self.stats.print_summary()
+        return all_docs
 
 
-def run_sitemap_only_crawl(config: CrawlerConfig) -> dict:
-    """Run sitemap-only crawl."""
-    print("🗺️  Starting SITEMAP-ONLY crawl...")
-    start_time = time.time()
-
-    try:
-        # Initialize crawler
-        crawler = NEFACCrawler(config)
-
-        # Run sitemap-only crawl
-        documents = crawler.run_sitemap_only_crawl()
-
-        end_time = time.time()
-        duration = end_time - start_time
-
-        # Analyze the results for file breakdown by type
-        file_counts, content_categories, folder_breakdown = _analyze_documents(
-            documents
-        )
-
-        # Calculate statistics
-        total_documents = len(documents)
-
-        return {
-            "success": True,
-            "total_documents": total_documents,
-            "duration_minutes": duration / 60,
-            "documents_per_minute": (
-                total_documents / (duration / 60) if duration > 0 else 0
-            ),
-            "file_counts": file_counts,
-            "content_categories": content_categories,
-            "folder_breakdown": folder_breakdown,
-            "output_directory": str(config.output_dir),
-        }
-
-    except Exception as e:
-        logger = logging.getLogger(__name__)
-        logger.error(f"Sitemap-only crawl failed: {e}")
-        return {
-            "success": False,
-            "error": str(e),
-            "total_documents": 0,
-            "duration_minutes": 0,
-        }
-
-
-def run_youtube_only_crawl(config: CrawlerConfig) -> dict:
-    """Run YouTube-only crawl."""
-    print("🎥 Starting YOUTUBE-ONLY crawl...")
-    logger = logging.getLogger(__name__)
-
-    try:
-        # Initialize crawler with enhanced configuration
-        crawler = NEFACCrawler(config)
-
-        # Run YouTube-only crawl
-        documents = crawler.run_youtube_only_crawl()
-
-        # Categorize documents by folder for reporting
-        folder_breakdown = _analyze_youtube_documents(documents)
-
-        return {
-            "success": True,
-            "mode": "youtube-only",
-            "documents_count": len(documents),
-            "folder_breakdown": folder_breakdown,
-            "documents": documents,
-        }
-
-    except Exception as e:
-        logger.exception("YouTube-only crawl failed")
-        return {
-            "success": False,
-            "mode": "youtube-only",
-            "error": str(e),
-            "documents_count": 0,
-        }
-
-
-def print_results_summary(results: dict, mode: str):
-    """Print results summary."""
-    print("\n" + "=" * 80)
-    print("📊 NEFAC CRAWLER RESULTS - SITEMAP-ONLY MODE - FILE-TYPE ORGANIZED")
-    print("=" * 80)
-
-    if results.get("success"):
-        print("✅ Status: SUCCESS")
-        print(f"📄 Total Documents: {results.get('total_documents', 0):,}")
-        print(f"⏱️  Duration: {results.get('duration_minutes', 0):.1f} minutes")
-        print(f"📁 Output: {results.get('output_directory', 'nefac_documents')}")
-
-        # File type breakdown
-        if results.get("folder_breakdown"):
-            print("\n📂 File System Breakdown:")
-            for folder, count in results["folder_breakdown"].items():
-                print(f"  📊 {folder}/: {count} files")
-
-        print("\n🎯 Key File-Type Organization Features:")
-        print("   • YouTube videos with transcripts → youtube/ folder")
-        print("   • Web pages and articles → html/ folder")
-        print("   • PDF documents → pdf/ folder")
-        print("   • Word documents → docx/ folder")
-        print("   • Excel spreadsheets → xlsx/ folder")
-        print("   • Images → images/ folder")
-        print("   • Other files → other/ folder")
+def setup_logging(debug: bool = False, quiet: bool = False) -> None:
+    """Setup logging configuration."""
+    if quiet:
+        level = logging.WARNING
+    elif debug:
+        level = logging.DEBUG
     else:
-        print("❌ Status: FAILED")
-        print(f"Error: {results.get('error', 'Unknown error')}")
+        level = logging.INFO
+
+    logging.basicConfig(level=level, format="%(levelname)s: %(message)s", datefmt="%H:%M:%S")
+
+
+def create_parser() -> argparse.ArgumentParser:
+    """Create command line argument parser."""
+    parser = argparse.ArgumentParser(description="NEFAC Crawler")
+
+    # Mode selection
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--youtube-only", action="store_true", help="Crawl only YouTube content")
+    mode.add_argument("--wordpress-only", "--no-youtube", action="store_true", help="Crawl only WordPress content (skip YouTube)")
+
+    # Options
+    parser.add_argument("--output-dir", help="Output directory")
+    parser.add_argument("--workers", type=int, default=5, help="Parallel workers (default: 5)")
+    parser.add_argument("--debug", action="store_true", help="Debug logging")
+    parser.add_argument("--quiet", action="store_true", help="Minimal output")
+
+    return parser
 
 
 def main():
-    """Main entry point - Run comprehensive crawl by default."""
-    parser = argparse.ArgumentParser(
-        description="NEFAC Comprehensive Crawler - Extract ALL content from NEFAC website and YouTube channel",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog=__doc__,
-    )
-
-    # Optional mode overrides (comprehensive is default)
-    mode_group = parser.add_mutually_exclusive_group()
-    mode_group.add_argument(
-        "--sitemap-only",
-        action="store_true",
-        help="Crawl ONLY sitemap URLs (skip YouTube, skip APIs)",
-    )
-    mode_group.add_argument(
-        "--youtube-only", action="store_true", help="Crawl ONLY YouTube channel"
-    )
-    mode_group.add_argument(
-        "--no-youtube",
-        action="store_true",
-        help="Skip YouTube crawling (everything else at max speed)",
-    )
-
-    # Optional configuration overrides
-    parser.add_argument(
-        "--output-dir",
-        type=str,
-        help="Override output directory (default: nefac_documents)",
-    )
-    parser.add_argument(
-        "--max-urls", type=int, help="Limit URLs for testing (default: unlimited)"
-    )
-    parser.add_argument("--debug", action="store_true", help="Enable debug logging")
-
+    """Main entry point."""
+    parser = create_parser()
     args = parser.parse_args()
 
-    # Setup logging
-    log_level = "DEBUG" if args.debug else "INFO"
-    setup_logging(log_level)
+    setup_logging(args.debug, args.quiet)
 
-    # Print banner
-    print_banner()
-
-    # Load optimized configuration
     try:
+        # Setup configuration
         config = CrawlerConfig.from_env_file()
-        print("✅ Using OPTIMIZED configuration for maximum speed")
+        config.max_workers = args.workers
 
-        # Apply command line overrides if provided
         if args.output_dir:
             config.output_dir = Path(args.output_dir)
-            print(f"📁 Output directory overridden: {config.output_dir}")
+            config.output_dir.mkdir(parents=True, exist_ok=True)
 
-        if args.max_urls:
-            # For testing - limit URLs but keep all other optimizations
-            config.sitemap_max_total_urls = args.max_urls
-            print(f"⚠️  Testing mode: Limited to {args.max_urls} URLs")
+        # Initialize crawler
+        crawler = NEFACCrawler(config)
 
-        # Ensure output directory exists
-        config.output_dir.mkdir(parents=True, exist_ok=True)
+        # Determine crawl mode
+        if args.youtube_only:
+            mode = "youtube"
+        elif args.wordpress_only:  # This catches both --wordpress-only and --no-youtube
+            mode = "wordpress"
+        else:
+            mode = "full"
 
-        # Show optimized settings
-        print(f"📁 Output directory: {config.output_dir}")
-        print(f"🚀 Max concurrent requests: {config.max_concurrent_requests}")
-        print(f"⚡ Request delay: {config.request_delay}s")
-        print(f"👥 Max workers: {config.max_workers}")
-        print(f"🎯 Crawl4AI batch size: {config.crawl4ai_batch_size}")
+        # Run crawl
+        print(f"🚀 NEFAC Crawler - {mode.title()} Mode")
+        print(f"📁 Output: {config.output_dir}")
+        print(f"👥 Workers: {args.workers}")
 
-    except Exception as e:
-        print(f"❌ Configuration error: {e}")
+        documents = crawler.crawl(mode)
+
+        print(f"🎉 Done: {len(documents)} documents processed")
+
+    except KeyboardInterrupt:
+        print("\n⏹️ Interrupted")
         sys.exit(1)
-
-    # Determine mode and run appropriate crawl
-    if args.youtube_only:
-        print("🎥 Running YouTube-ONLY crawl...")
-        mode = "youtube-only"
-        results = run_youtube_only_crawl(config)
-    elif args.sitemap_only:
-        print("🗺️  Running Sitemap-ONLY crawl...")
-        mode = "sitemap-only"
-        results = run_sitemap_only_crawl(config)
-    elif args.no_youtube:
-        print("🚀 Running MAXIMUM SPEED crawl (no YouTube)...")
-        # Temporarily disable YouTube for maximum speed using new config structure
-        config.youtube.enabled = False
-        config.enable_youtube_integration = False
-        mode = "comprehensive-no-youtube"
-        results = run_comprehensive_crawl(config)
-    else:
-        print("🏆 Running FULL COMPREHENSIVE crawl (optimized)...")
-        mode = "comprehensive"
-        results = run_comprehensive_crawl(config)
-
-    # Print results
-    print_results_summary(results, mode)
-
-    # Exit with appropriate code
-    sys.exit(0 if results.get("success", False) else 1)
 
 
 if __name__ == "__main__":

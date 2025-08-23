@@ -13,6 +13,8 @@ from typing import Literal
 # ============================================================================
 
 # Available model providers and their models
+EMBEEDING_MODEL_NAME = "text-embedding-3-small"
+EMBEEDING_DIMENSIONS = 1536
 OPENAI_MODELS = [
     "openai:gpt-4o",
     "openai:gpt-4o-mini",

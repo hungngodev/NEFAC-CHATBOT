@@ -3,19 +3,23 @@ import os
 from typing import List
 
 from langchain.prompts import ChatPromptTemplate
-from langchain_community.graphs import Neo4jGraph
 from langchain_core.documents import Document
 from langchain_experimental.graph_transformers import LLMGraphTransformer
-from langchain_openai import ChatOpenAI
+from langchain_neo4j import Neo4jGraph
+
+from src.service.ingestion_service.settings import llm_model
 
 # -----------------------------------------------------------------------------
 # --- Logging and Env Vars
 # -----------------------------------------------------------------------------
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-for var in ("NEO4J_URI", "NEO4J_USER", "NEO4J_PASSWORD", "OPENAI_API_KEY"):
-    if not os.getenv(var):
-        raise EnvironmentError(f"Missing required env var: {var}")
+
+NEO4J_URI = os.environ["NEO4J_URI"]
+NEO4J_USER = os.environ["NEO4J_USER"]
+NEO4J_PASSWORD = os.environ["NEO4J_PASSWORD"]
+graph = Neo4jGraph(url=NEO4J_URI, username=NEO4J_USER, password=NEO4J_PASSWORD)
+
 
 # -----------------------------------------------------------------------------
 # --- Entity Aliases and Disambiguation for NEFAC Ecosystem
@@ -137,9 +141,6 @@ def pre_disambiguate_entities(docs: List[Document]) -> List[Document]:
     return fixed_docs
 
 
-# -----------------------------------------------------------------------------
-# --- Allowed Node and Relationship Types (Exhaustive)
-# -----------------------------------------------------------------------------
 allowed_nodes = [
     # Core Organization & People
     "Organization",
@@ -556,12 +557,6 @@ allowed_relationships = [
     "WORKS_FOR",
     "WRITES",
 ]
-
-# -----------------------------------------------------------------------------
-# --- Prompt Template for Rich Property Extraction
-# -----------------------------------------------------------------------------
-# This new prompt combines all instructions into a single, structured template.
-# It explicitly defines which properties to extract for key node types.
 custom_prompt_template = """
 You are an expert information extractor building a complete, typed knowledge graph.
 Your goal is to extract entities and relationships from the provided text, adhering to the specified schema and instructions.
@@ -618,25 +613,65 @@ For the following node types, extract these specific properties if present in th
 custom_prompt = ChatPromptTemplate.from_template(custom_prompt_template)
 
 
-# -----------------------------------------------------------------------------
-# --- Ingest Function: Full Disambiguation Pipeline
-# -----------------------------------------------------------------------------
-def graph_rag_ingest(documents: List[Document]) -> None:
-    graph = Neo4jGraph(
-        url=os.environ["NEO4J_URI"],
-        username=os.environ["NEO4J_USER"],
-        password=os.environ["NEO4J_PASSWORD"],
-    )
-    from src.config.constant import MODEL_NAME
+def sanitize_metadata_for_neo4j(metadata: dict) -> dict:
+    """
+    Clean document metadata to only include primitive types that Neo4j can handle.
+    Neo4j properties can only be: strings, numbers, booleans, or arrays of these types.
+    """
+    sanitized = {}
 
-    llm = ChatOpenAI(temperature=0, model=MODEL_NAME)
-    docs_canonical = pre_disambiguate_entities(documents)
+    for key, value in metadata.items():
+        if value is None:
+            continue
+        elif isinstance(value, (str, int, float, bool)):
+            # Primitive types are fine
+            sanitized[key] = value
+        elif isinstance(value, list):
+            # Handle lists - only keep if all elements are primitives
+            if all(isinstance(item, (str, int, float, bool)) for item in value):
+                sanitized[key] = value
+            else:
+                # Convert complex list items to strings
+                sanitized[key] = [str(item) for item in value]
+        elif isinstance(value, dict):
+            # Convert complex objects to JSON strings
+            import json
+
+            try:
+                sanitized[f"{key}_json"] = json.dumps(value)
+            except (TypeError, ValueError):
+                sanitized[f"{key}_str"] = str(value)
+        else:
+            # Convert any other type to string
+            sanitized[f"{key}_str"] = str(value)
+
+    return sanitized
+
+
+def clean_documents_for_neo4j(documents: List[Document]) -> List[Document]:
+    """
+    Create new document instances with sanitized metadata for Neo4j compatibility.
+    """
+    cleaned_docs = []
+    for doc in documents:
+        clean_metadata = sanitize_metadata_for_neo4j(doc.metadata)
+        cleaned_doc = Document(page_content=doc.page_content, metadata=clean_metadata)
+        cleaned_docs.append(cleaned_doc)
+    return cleaned_docs
+
+
+def graph_rag_ingest(documents: List[Document]) -> None:
+    # First clean the metadata to ensure Neo4j compatibility
+    docs_cleaned = clean_documents_for_neo4j(documents)
+
+    # Then apply entity disambiguation
+    docs_canonical = pre_disambiguate_entities(docs_cleaned)
 
     # The LLMGraphTransformer now uses the single, detailed prompt while keeping its own config.
     transformer = LLMGraphTransformer(
-        llm=llm,
-        allowed_nodes=allowed_nodes,
-        allowed_relationships=allowed_relationships,
+        llm=llm_model,
+        # allowed_nodes=allowed_nodes,
+        # allowed_relationships=allowed_relationships,
         node_properties=True,
         relationship_properties=True,
         prompt=custom_prompt.partial(
@@ -651,7 +686,3 @@ def graph_rag_ingest(documents: List[Document]) -> None:
         include_source=True,
     )
     logger.info("NEFAC + ecosystem graph ingestion complete.")
-
-
-# --- Usage Example ---
-# graph_rag_ingest(your_chunked_documents)

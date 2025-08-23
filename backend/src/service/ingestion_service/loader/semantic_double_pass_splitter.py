@@ -3,23 +3,24 @@ import re
 from typing import List, Literal, Optional
 
 import numpy as np
+from langchain.prompts import ChatPromptTemplate
 from langchain.text_splitter import TextSplitter
 from langchain_core.documents import Document
 from langchain_experimental.text_splitter import SemanticChunker
-from langchain_ollama import OllamaEmbeddings, OllamaLLM
 from tqdm import tqdm
 
-from src.config.constant import EMBEEDING_MODEL_NAME, MODEL_NAME
-from src.service.ingestion_service.loader.contextualize import contextualize_chunk
-
-# Global models (match processing.py)
-ollama_llm = OllamaLLM(model=MODEL_NAME)
-ollama_embedding_model = OllamaEmbeddings(model=EMBEEDING_MODEL_NAME)
+from src.service.ingestion_service.settings import embedding_model, llm_model
 
 
 # Fallback: whitespace token count (for demonstration, replace with a real tokenizer for production)
 def count_tokens(text: str) -> int:
     return len(text.split())
+
+
+# Context prompt template for chunk contextualization
+context_prompt_template = ChatPromptTemplate.from_template(
+    """<document>\n{document}\n</document>\nHere is the chunk we want to situate within the whole document\n<chunk>\n{chunk}\n</chunk>\nPlease generate a short succinct context summary to situate this text chunk within the overall document to enhance search retrieval, two or three sentences max. The chunk contains merged content from different document sections, so focus on the main topics and concepts rather than sequential flow. Answer only with the succinct context and nothing else."""
+)
 
 
 class SemanticDoublePassMergingSplitterWithContext(TextSplitter):
@@ -37,8 +38,8 @@ class SemanticDoublePassMergingSplitterWithContext(TextSplitter):
         min_chunk_size = int(min_chunk_size) if min_chunk_size is not None else 100
         max_chunk_size = int(max_chunk_size) if max_chunk_size is not None else 2000
         super().__init__(chunk_size=max_chunk_size, chunk_overlap=0)
-        self.embeddings = ollama_embedding_model
-        self.chat_model = ollama_llm
+        self.embeddings = embedding_model
+        self.chat_model = llm_model
         self.buffer_size = buffer_size
         self.breakpoint_threshold_type = breakpoint_threshold_type
         self.breakpoint_threshold_amount = breakpoint_threshold_amount
@@ -54,12 +55,6 @@ class SemanticDoublePassMergingSplitterWithContext(TextSplitter):
             number_of_chunks=number_of_chunks,
             min_chunk_size=min_chunk_size,
         )
-
-    def split_documents(self, documents: List[Document]) -> List[Document]:
-        split_docs = []
-        for doc in documents:
-            split_docs.extend(self.split_text(doc.page_content, metadata=doc.metadata))
-        return split_docs
 
     def split_text(self, text: str, metadata: Optional[dict] = None) -> List[Document]:
         if not text or text.strip() == "":
@@ -102,8 +97,10 @@ class SemanticDoublePassMergingSplitterWithContext(TextSplitter):
         )
         # Contextualize and return as Document objects
         tqdm.write("[Splitter] Contextualizing chunks...")
+        # Prefer whole-document text for context if provided in metadata
+        doc_text_for_context = (metadata.get("__whole_document") if isinstance(metadata, dict) else None) or text
         return [
-            contextualize_chunk(text, chunk, metadata, self.chat_model)
+            self.contextualize_chunk(doc_text_for_context, chunk, metadata)
             for chunk in tqdm(
                 merged_chunks,
                 desc="Contextualizing",
@@ -111,6 +108,20 @@ class SemanticDoublePassMergingSplitterWithContext(TextSplitter):
                 colour="magenta",
             )
         ]
+
+    def contextualize_chunk(
+        self,
+        whole_document: str,
+        chunk: str,
+        metadata: Optional[dict],
+    ) -> Document:
+        """Contextualize a chunk within the whole document using LLM."""
+        prompt = context_prompt_template.format(document=whole_document, chunk=chunk)
+        response = self.chat_model.invoke(prompt)
+        context = response if isinstance(response, str) else response.content
+        meta = dict(metadata) if metadata else {}
+        meta["context"] = context
+        return Document(page_content=chunk, metadata=meta)
 
     def _second_pass_merge(self, chunks: List[str]) -> List[str]:
         if len(chunks) <= 1:
