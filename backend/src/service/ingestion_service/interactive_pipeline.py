@@ -9,7 +9,6 @@ Usage:
     python interactive_pipeline.py
 """
 
-import asyncio
 import logging
 import os
 import signal
@@ -33,13 +32,13 @@ from rich.text import Text
 from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal, Vertical
-from textual.widgets import Button, Footer, Header, Label, Log, ProgressBar
+from textual.widgets import Button, Footer, Header, Label, ProgressBar, RichLog
 
 # Add the backend src directory to Python path for imports
-sys.path.insert(0, str(Path(__file__).parents[3] / "src"))
+sys.path.insert(0, str(Path(__file__).parents[3]))
 
 # Import database cleaner
-from backend.src.service.ingestion_service.index.database_cleaner import clear_all_databases
+from src.service.ingestion_service.index.database_cleaner import clear_all_databases
 
 
 class PipelineStatus(Enum):
@@ -69,6 +68,19 @@ class BasePipelineManager:
         self.file_types = {"html": FileTypeStatus("HTML"), "pdf": FileTypeStatus("PDF"), "youtube": FileTypeStatus("YouTube")}
         self.stop_requested = False
         self.current_thread: Optional[threading.Thread] = None
+        self.status_callbacks = []
+
+    def add_status_callback(self, callback):
+        """Add a callback function to be called when status changes"""
+        self.status_callbacks.append(callback)
+
+    def _notify_status_change(self):
+        """Notify all status callbacks of status change"""
+        for callback in self.status_callbacks:
+            try:
+                callback()
+            except Exception as e:
+                print(f"Error in status callback: {e}")
 
     def start_pipeline(self, file_types: list = None, limit: int = None, clear_databases: bool = True):
         """Start the pipeline"""
@@ -77,6 +89,7 @@ class BasePipelineManager:
 
         self.status = PipelineStatus.RUNNING
         self.stop_requested = False
+        self._notify_status_change()
 
         # Reset file type statuses
         for ft_status in self.file_types.values():
@@ -95,6 +108,7 @@ class BasePipelineManager:
         if self.status == PipelineStatus.RUNNING:
             self.status = PipelineStatus.STOPPING
             self.stop_requested = True
+            self._notify_status_change()
             return True
         return False
 
@@ -106,7 +120,11 @@ class BasePipelineManager:
 
             # Clear databases if requested
             if clear_databases and not self.stop_requested:
+                self._update_status("Clearing databases...")
                 clear_all_databases()
+                if self.stop_requested:
+                    self._complete_with_status(PipelineStatus.STOPPED)
+                    return
 
             if self.stop_requested:
                 self._complete_with_status(PipelineStatus.STOPPED)
@@ -122,6 +140,8 @@ class BasePipelineManager:
                 ft_status = self.file_types[file_type]
                 ft_status.status = PipelineStatus.RUNNING
                 ft_status.start_time = time.time()
+                self._update_status(f"Processing {file_type} files...")
+                self._notify_status_change()
 
                 try:
                     # Get metadata path
@@ -129,33 +149,52 @@ class BasePipelineManager:
                     if not metadata_path:
                         ft_status.status = PipelineStatus.ERROR
                         ft_status.error_message = f"No metadata path for {file_type}"
+                        self._update_status(f"Error: No metadata path for {file_type}")
+                        self._notify_status_change()
                         continue
 
                     # Run pipeline for this file type
+                    self._update_status(f"Running pipeline for {file_type}...")
                     processed_count = main_pipeline(metadata_path, file_type, limit)
 
                     if not self.stop_requested:
                         ft_status.status = PipelineStatus.COMPLETED
                         ft_status.processed = processed_count
+                        self._update_status(f"Completed {file_type}: {processed_count} documents")
                     else:
                         ft_status.status = PipelineStatus.STOPPED
+                        self._update_status(f"Stopped processing {file_type}")
 
                 except Exception as e:
                     ft_status.status = PipelineStatus.ERROR
                     ft_status.error_message = str(e)[:50]
+                    self._update_status(f"Error processing {file_type}: {str(e)[:50]}")
+
+                self._notify_status_change()
 
             if not self.stop_requested:
                 self._complete_with_status(PipelineStatus.COMPLETED)
             else:
                 self._complete_with_status(PipelineStatus.STOPPED)
 
-        except Exception:
+        except Exception as e:
+            self._update_status(f"Pipeline error: {str(e)[:50]}")
             self._complete_with_status(PipelineStatus.ERROR)
+
+    def _update_status(self, message: str):
+        """Update status message (to be overridden by UI managers)"""
 
     def _complete_with_status(self, status: PipelineStatus):
         """Complete pipeline with given status"""
         self.status = status
         self.stop_requested = False
+        if status == PipelineStatus.COMPLETED:
+            self._update_status("Pipeline completed successfully!")
+        elif status == PipelineStatus.STOPPED:
+            self._update_status("Pipeline stopped by user")
+        elif status == PipelineStatus.ERROR:
+            self._update_status("Pipeline failed with error")
+        self._notify_status_change()
 
 
 # =============================================================================
@@ -169,6 +208,11 @@ class BasicPipelineManager(BasePipelineManager):
     def __init__(self):
         super().__init__()
         self.running = True
+        self.status_message = "Ready to start processing"
+
+    def _update_status(self, message: str):
+        """Update status message for basic interface"""
+        self.status_message = message
 
     def clear_screen(self):
         """Clear the terminal screen"""
@@ -189,6 +233,7 @@ class BasicPipelineManager(BasePipelineManager):
         status_color = {PipelineStatus.IDLE: "⚪", PipelineStatus.RUNNING: "🟢", PipelineStatus.STOPPING: "🟡", PipelineStatus.STOPPED: "🟡", PipelineStatus.COMPLETED: "✅", PipelineStatus.ERROR: "❌"}
 
         print(f"\n📊 Overall Status: {status_color.get(self.status, '⚪')} {self.status.value}")
+        print(f"💬 Status: {self.status_message}")
         print("-" * 40)
 
         # File type statuses
@@ -363,6 +408,11 @@ class RichPipelineManager(BasePipelineManager):
         super().__init__()
         self.console = Console()
         self.Rich = True
+        self.status_message = "Ready to start processing"
+
+    def _update_status(self, message: str):
+        """Update status message for rich interface"""
+        self.status_message = message
 
     def create_status_table(self):
         """Create status table for display"""
@@ -384,7 +434,7 @@ class RichPipelineManager(BasePipelineManager):
         layout = Layout()
 
         # Main status
-        main_status = f"Pipeline Status: {self.status.value.title()}"
+        main_status = f"Pipeline Status: {self.status.value.title()}\nStatus: {self.status_message}"
         status_panel = Panel(main_status, title="Status", border_style="blue")
 
         # File types table
@@ -401,7 +451,7 @@ class RichPipelineManager(BasePipelineManager):
         """
         controls_panel = Panel(controls, title="Controls", border_style="green")
 
-        layout.split_column(Layout(status_panel, size=3), Layout(table, size=10), Layout(controls_panel, size=8))
+        layout.split_column(Layout(status_panel, size=4), Layout(table, size=10), Layout(controls_panel, size=8))
 
         return layout
 
@@ -524,6 +574,11 @@ class TextualPipelineManager(BasePipelineManager):
     def __init__(self):
         super().__init__()
         self.Textual = True
+        self.status_message = "Ready to start processing"
+
+    def _update_status(self, message: str):
+        """Update status message for textual interface"""
+        self.status_message = message
 
     def start_interactive_mode(self):
         """Start the textual TUI mode"""
@@ -541,11 +596,13 @@ class TextualPipelineManager(BasePipelineManager):
             .status-error { color: $error; }
             """
 
-            BINDINGS = [("q", "quit", "Quit"), ("s", "start_pipeline", "Start"), ("x", "stop_pipeline", "Stop")]
+            BINDINGS = [("q", "quit_app", "Quit"), ("s", "start_all", "Start"), ("x", "stop_pipeline", "Stop")]
 
             def __init__(self, manager):
                 super().__init__()
                 self.manager = manager
+                # Add status callback to update UI
+                self.manager.add_status_callback(self.update_ui)
 
             def compose(self) -> ComposeResult:
                 yield Header(show_clock=True)
@@ -554,6 +611,7 @@ class TextualPipelineManager(BasePipelineManager):
                         with Container(classes="status-box"):
                             yield Label("📊 Pipeline Status", id="status-title")
                             yield Label("Idle", id="status-label", classes="status-idle")
+                            yield Label("Ready to start processing", id="status-message")
                         with Horizontal():
                             for file_type in ["html", "pdf", "youtube"]:
                                 with Container(classes="file-type-box"):
@@ -561,7 +619,7 @@ class TextualPipelineManager(BasePipelineManager):
                                     yield Label("Idle", id=f"{file_type}-status", classes="status-idle")
                                     yield Label("0/0 processed", id=f"{file_type}-progress")
                                     yield ProgressBar(total=100, show_eta=False, id=f"{file_type}-bar")
-                        yield Log(highlight=True, markup=True, id="logs")
+                        yield RichLog(highlight=True, markup=True, id="logs")
                     with Container(classes="controls"):
                         with Horizontal():
                             yield Button("🚀 Start All", id="start-all", variant="success")
@@ -574,26 +632,59 @@ class TextualPipelineManager(BasePipelineManager):
             def on_mount(self) -> None:
                 self.update_status("Ready to start processing")
 
+            def update_ui(self):
+                """Update UI elements based on current status"""
+                try:
+                    # Update status label
+                    status_label = self.query_one("#status-label", Label)
+                    status_message = self.query_one("#status-message", Label)
+
+                    # Update status classes
+                    status_classes = {PipelineStatus.IDLE: "status-idle", PipelineStatus.RUNNING: "status-running", PipelineStatus.STOPPING: "status-stopping", PipelineStatus.STOPPED: "status-stopped", PipelineStatus.COMPLETED: "status-completed", PipelineStatus.ERROR: "status-error"}
+
+                    status_label.update(self.manager.status.value)
+                    status_label.remove_class("status-idle status-running status-stopping status-stopped status-completed status-error")
+                    status_label.add_class(status_classes.get(self.manager.status, "status-idle"))
+
+                    status_message.update(self.manager.status_message)
+
+                    # Update file type statuses
+                    for file_type, ft_status in self.manager.file_types.items():
+                        try:
+                            status_widget = self.query_one(f"#{file_type}-status", Label)
+                            progress_widget = self.query_one(f"#{file_type}-progress", Label)
+
+                            status_widget.update(ft_status.status.value)
+                            status_widget.remove_class("status-idle status-running status-stopping status-stopped status-completed status-error")
+                            status_widget.add_class(status_classes.get(ft_status.status, "status-idle"))
+
+                            progress_widget.update(f"{ft_status.processed}/0 processed")
+                        except Exception:
+                            pass  # Widget might not exist yet
+
+                except Exception:
+                    pass  # UI update errors shouldn't crash the app
+
             @on(Button.Pressed, "#start-all")
-            async def start_all(self) -> None:
+            def start_all(self) -> None:
                 if self.manager.start_pipeline():
                     self.update_status("Pipeline started!")
                 else:
                     self.update_status("Pipeline is already running")
 
             @on(Button.Pressed, "#stop")
-            async def stop_pipeline(self) -> None:
+            def stop_pipeline(self) -> None:
                 if self.manager.stop_pipeline():
                     self.update_status("Stopping pipeline...")
                 else:
                     self.update_status("Pipeline is not running")
 
             @on(Button.Pressed, "#clear-logs")
-            async def clear_logs(self) -> None:
-                self.query_one("#logs", Log).clear()
+            def clear_logs(self) -> None:
+                self.query_one("#logs", RichLog).clear()
 
             @on(Button.Pressed, "#clear-db")
-            async def clear_databases(self) -> None:
+            def clear_databases(self) -> None:
                 if self.manager.status == PipelineStatus.RUNNING:
                     self.update_status("Cannot clear databases while pipeline is running")
                     return
@@ -608,18 +699,20 @@ class TextualPipelineManager(BasePipelineManager):
                     self.update_status(f"Error clearing databases: {e}")
 
             @on(Button.Pressed, "#quit")
-            async def quit_app(self) -> None:
+            def quit_app(self) -> None:
                 if self.manager.status == PipelineStatus.RUNNING:
                     self.manager.stop_pipeline()
-                    await asyncio.sleep(1)
-                self.exit()
+                    # Use call_later instead of asyncio.sleep for better Textual integration
+                    self.call_later(self.exit, delay=1.0)
+                else:
+                    self.exit()
 
             def update_status(self, message: str) -> None:
                 status_label = self.query_one("#status-label", Label)
-                log_widget = self.query_one("#logs", Log)
+                log_widget = self.query_one("#logs", RichLog)
                 status_label.update(message)
                 timestamp = time.strftime("%H:%M:%S")
-                log_widget.write_line(f"[{timestamp}] {message}")
+                log_widget.write(f"[{timestamp}] {message}")
 
         app = PipelineApp(self)
         app.run()

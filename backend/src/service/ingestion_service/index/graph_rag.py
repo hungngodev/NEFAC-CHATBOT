@@ -6,6 +6,7 @@ from langchain.prompts import ChatPromptTemplate
 from langchain_core.documents import Document
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 from langchain_neo4j import Neo4jGraph
+from tqdm import tqdm
 
 from src.service.ingestion_service.settings import llm_model
 
@@ -653,7 +654,7 @@ def clean_documents_for_neo4j(documents: List[Document]) -> List[Document]:
     Create new document instances with sanitized metadata for Neo4j compatibility.
     """
     cleaned_docs = []
-    for doc in documents:
+    for doc in tqdm(documents, desc="Cleaning documents for Neo4j", colour="blue"):
         clean_metadata = sanitize_metadata_for_neo4j(doc.metadata)
         cleaned_doc = Document(page_content=doc.page_content, metadata=clean_metadata)
         cleaned_docs.append(cleaned_doc)
@@ -661,28 +662,42 @@ def clean_documents_for_neo4j(documents: List[Document]) -> List[Document]:
 
 
 def graph_rag_ingest(documents: List[Document]) -> None:
-    # First clean the metadata to ensure Neo4j compatibility
-    docs_cleaned = clean_documents_for_neo4j(documents)
+    with tqdm(total=4, desc="Graph RAG ingestion", colour="magenta") as pbar:
+        # First clean the metadata to ensure Neo4j compatibility
+        pbar.set_description("Cleaning documents")
+        docs_cleaned = clean_documents_for_neo4j(documents)
+        pbar.update(1)
 
-    # Then apply entity disambiguation
-    docs_canonical = pre_disambiguate_entities(docs_cleaned)
+        # Then apply entity disambiguation
+        pbar.set_description("Disambiguating entities")
+        docs_canonical = pre_disambiguate_entities(docs_cleaned)
+        pbar.update(1)
 
-    # The LLMGraphTransformer now uses the single, detailed prompt while keeping its own config.
-    transformer = LLMGraphTransformer(
-        llm=llm_model,
-        # allowed_nodes=allowed_nodes,
-        # allowed_relationships=allowed_relationships,
-        node_properties=True,
-        relationship_properties=True,
-        prompt=custom_prompt.partial(
-            alias_map=str(ENTITY_ALIASES),
-        ),
-    )
-    graph_docs = transformer.convert_to_graph_documents(docs_canonical)
-    logger.info(f"Converted {len(graph_docs)} graph documents.")
-    graph.add_graph_documents(
-        graph_docs,
-        baseEntityLabel=True,
-        include_source=True,
-    )
-    logger.info("NEFAC + ecosystem graph ingestion complete.")
+        # The LLMGraphTransformer now uses the single, detailed prompt while keeping its own config.
+        pbar.set_description("Initializing graph transformer")
+        transformer = LLMGraphTransformer(
+            llm=llm_model,
+            # allowed_nodes=allowed_nodes,
+            # allowed_relationships=allowed_relationships,
+            node_properties=True,
+            relationship_properties=True,
+            prompt=custom_prompt.partial(
+                alias_map=str(ENTITY_ALIASES),
+            ),
+        )
+        pbar.update(1)
+
+        # Convert documents to graph documents
+        pbar.set_description("Converting to graph documents")
+        graph_docs = transformer.convert_to_graph_documents(docs_canonical)
+        logger.info(f"Converted {len(graph_docs)} graph documents.")
+        pbar.update(1)
+
+        # Add to Neo4j graph
+        pbar.set_description("Adding to Neo4j graph")
+        graph.add_graph_documents(
+            graph_docs,
+            baseEntityLabel=True,
+            include_source=True,
+        )
+        logger.info("NEFAC + ecosystem graph ingestion complete.")

@@ -116,8 +116,11 @@ def _get_base_metadata(path: str, entry: Dict[str, Any]) -> Dict[str, Any]:
 
 def unstructured_loader(metadata_json_path: str, documents_dir: str, limit: Optional[int] = None) -> List[Document]:
     start_time = time.time()
-    with open(metadata_json_path, "r", encoding="utf-8") as f:
-        entries = [e for e in (json.load(f)[:limit] if limit else json.load(f)) if e.get("filename")]
+
+    with tqdm(total=1, desc="Loading metadata", leave=False) as pbar:
+        with open(metadata_json_path, "r", encoding="utf-8") as f:
+            entries = [e for e in (json.load(f)[:limit] if limit else json.load(f)) if e.get("filename")]
+        pbar.update(1)
 
     logger.info(f"[Unstructured] Processing {len(entries)} files")
 
@@ -131,7 +134,7 @@ def unstructured_loader(metadata_json_path: str, documents_dir: str, limit: Opti
 
     documents = []
 
-    for entry in tqdm(entries, desc="Processing files"):
+    for entry in tqdm(entries, desc="Processing files", colour="yellow"):
         filename = entry["filename"]
         path = Path(documents_dir) / filename if not os.path.isabs(filename) else Path(filename)
         if not path.exists():
@@ -146,30 +149,71 @@ def unstructured_loader(metadata_json_path: str, documents_dir: str, limit: Opti
 
         try:
             # Partitioning
-            if ext == "pdf":
-                elements = partition_pdf(path, include_page_breaks=True, infer_table_structure=True)
-            elif ext in {"html", "htm"}:
-                elements = partition_html(path)
-            else:
-                elements = u_partition(path)
+            with tqdm(total=1, desc=f"Partitioning {filename}", leave=False) as pbar:
+                if ext == "pdf":
+                    try:
+                        # Try with standard options first
+                        elements = partition_pdf(path, include_page_breaks=True, infer_table_structure=True)
+                    except Exception as pdf_error:
+                        logger.warning(f"Standard PDF partitioning failed for {filename}: {pdf_error}")
+
+                        # Try fallback options for corrupted PDFs
+                        try:
+                            logger.info(f"Attempting fallback PDF processing for {filename}")
+                            # Try without table structure inference
+                            elements = partition_pdf(path, include_page_breaks=True, infer_table_structure=False)
+                        except Exception as fallback_error:
+                            logger.warning(f"Fallback PDF partitioning also failed for {filename}: {fallback_error}")
+
+                            # Try with minimal options
+                            try:
+                                logger.info(f"Attempting minimal PDF processing for {filename}")
+                                elements = partition_pdf(path, include_page_breaks=False, infer_table_structure=False)
+                            except Exception as minimal_error:
+                                logger.warning(f"Minimal PDF processing also failed for {filename}: {minimal_error}")
+
+                                # Try with different strategy options
+                                try:
+                                    logger.info(f"Attempting alternative PDF strategy for {filename}")
+                                    elements = partition_pdf(path, include_page_breaks=False, infer_table_structure=False, strategy="fast")
+                                except Exception as strategy_error:
+                                    logger.warning(f"Alternative strategy also failed for {filename}: {strategy_error}")
+
+                                    # Final attempt with auto partitioning
+                                    try:
+                                        logger.info(f"Attempting auto partitioning for {filename}")
+                                        elements = u_partition(path)
+                                    except Exception as auto_error:
+                                        logger.error(f"All unstructured PDF processing attempts failed for {filename}: {auto_error}")
+                                        raise auto_error
+                elif ext in {"html", "htm"}:
+                    elements = partition_html(path)
+                else:
+                    elements = u_partition(path)
+                pbar.update(1)
 
             whole_text = "\n\n".join(str(el).strip() for el in elements if str(el).strip())
             offset_map, is_transcript = None, False
 
             if ext == "txt" and entry.get("transcript_file") and TRANSCRIPT_PATTERN.search(whole_text):
-                clean_text, offset_map = parse_timestamps(whole_text)
-                is_transcript = True
-                with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False, encoding="utf-8") as tmp:
-                    tmp.write(clean_text)
-                    tmp_path = tmp.name
-                try:
-                    elements = u_partition(tmp_path)
-                finally:
-                    os.unlink(tmp_path)
-                whole_text = clean_text
+                with tqdm(total=1, desc=f"Parsing transcript {filename}", leave=False) as pbar:
+                    clean_text, offset_map = parse_timestamps(whole_text)
+                    is_transcript = True
+                    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False, encoding="utf-8") as tmp:
+                        tmp.write(clean_text)
+                        tmp_path = tmp.name
+                    try:
+                        elements = u_partition(tmp_path)
+                    finally:
+                        os.unlink(tmp_path)
+                    whole_text = clean_text
+                    pbar.update(1)
 
-            splitter = splitters["youtube"] if is_transcript else splitters.get(ext, splitters["generic"])
-            chunks = splitter.split_text(whole_text, metadata=dict(entry))
+            with tqdm(total=1, desc=f"Splitting {filename}", leave=False) as pbar:
+                splitter = splitters["youtube"] if is_transcript else splitters.get(ext, splitters["generic"])
+                chunks = splitter.split_text(whole_text, metadata=dict(entry))
+                pbar.update(1)
+
             curr_offset = 0
 
             # Process chunks
@@ -190,7 +234,22 @@ def unstructured_loader(metadata_json_path: str, documents_dir: str, limit: Opti
 
         except Exception as e:
             logger.warning(f"Failed to process {filename}: {e}")
+
+            # Provide more specific error information for PDF issues
+            if ext == "pdf":
+                logger.error(f"PDF processing completely failed for {filename}. This file may be:")
+                logger.error("  1. Corrupted or damaged")
+                logger.error("  2. Password-protected")
+                logger.error("  3. In an unsupported format")
+                logger.error("  4. Empty or contains no text")
+                logger.error(f"  5. Error details: {str(e)}")
+
             continue
+
+    # Count PDF files processed
+    pdf_files_processed = sum(1 for entry in entries if entry.get("filename", "").lower().endswith(".pdf"))
+    if pdf_files_processed > 0:
+        logger.info(f"[Unstructured] PDF processing summary: {pdf_files_processed} PDF files attempted")
 
     logger.info(f"[Unstructured] Processed {len(documents)} chunks, {sum(len(d.page_content.split()) for d in documents)} tokens in {time.time()-start_time:.2f}s")
     return documents

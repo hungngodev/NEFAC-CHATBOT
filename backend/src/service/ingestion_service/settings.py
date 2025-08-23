@@ -6,7 +6,7 @@ from src.config.models import EMBEEDING_MODEL_NAME
 load_dotenv()
 
 
-llm_model = ChatOpenAI(model="gpt-4o", temperature=0)
+llm_model = ChatOpenAI(model="gpt-5-nano")
 embedding_model = OpenAIEmbeddings(model=EMBEEDING_MODEL_NAME)
 # Chunking configuration for all loaders
 CHUNK_SIZE = 1024  # Number of characters per chunk (PDF, HTML)
