@@ -17,11 +17,9 @@ from typing import Any, Dict, List, Optional, Tuple
 from langchain_core.documents import Document
 from tqdm import tqdm
 from unstructured.partition.auto import partition as u_partition
-from unstructured.partition.html import partition_html
-from unstructured.partition.pdf import partition_pdf
 
 from src.service.ingestion_service.loader.semantic_double_pass_splitter import SemanticDoublePassMergingSplitterWithContext
-from src.service.ingestion_service.settings import CHUNK_SIZE, CONTEXT_FORMAT, YOUTUBE_TEXT_SPLIT_CHUNK_SIZE
+from src.service.ingestion_service.settings import CHUNK_SIZE, CONTEXT_FORMAT
 
 logger = logging.getLogger(__name__)
 TRANSCRIPT_PATTERN = re.compile(r"\[(?P<ts>[\d:\.]+)s?\]\s*(?P<txt>.*)")
@@ -124,14 +122,6 @@ def unstructured_loader(metadata_json_path: str, documents_dir: str, limit: Opti
 
     logger.info(f"[Unstructured] Processing {len(entries)} files")
 
-    # Splitters
-    splitters = {
-        "pdf": SemanticDoublePassMergingSplitterWithContext(max_chunk_size=CHUNK_SIZE, min_chunk_size=100),
-        "html": SemanticDoublePassMergingSplitterWithContext(max_chunk_size=CHUNK_SIZE, min_chunk_size=100),
-        "youtube": SemanticDoublePassMergingSplitterWithContext(max_chunk_size=YOUTUBE_TEXT_SPLIT_CHUNK_SIZE, min_chunk_size=100),
-        "generic": SemanticDoublePassMergingSplitterWithContext(max_chunk_size=CHUNK_SIZE, min_chunk_size=100),
-    }
-
     documents = []
 
     for entry in tqdm(entries, desc="Processing files", colour="yellow"):
@@ -150,46 +140,7 @@ def unstructured_loader(metadata_json_path: str, documents_dir: str, limit: Opti
         try:
             # Partitioning
             with tqdm(total=1, desc=f"Partitioning {filename}", leave=False) as pbar:
-                if ext == "pdf":
-                    try:
-                        # Try with standard options first
-                        elements = partition_pdf(path, include_page_breaks=True, infer_table_structure=True)
-                    except Exception as pdf_error:
-                        logger.warning(f"Standard PDF partitioning failed for {filename}: {pdf_error}")
-
-                        # Try fallback options for corrupted PDFs
-                        try:
-                            logger.info(f"Attempting fallback PDF processing for {filename}")
-                            # Try without table structure inference
-                            elements = partition_pdf(path, include_page_breaks=True, infer_table_structure=False)
-                        except Exception as fallback_error:
-                            logger.warning(f"Fallback PDF partitioning also failed for {filename}: {fallback_error}")
-
-                            # Try with minimal options
-                            try:
-                                logger.info(f"Attempting minimal PDF processing for {filename}")
-                                elements = partition_pdf(path, include_page_breaks=False, infer_table_structure=False)
-                            except Exception as minimal_error:
-                                logger.warning(f"Minimal PDF processing also failed for {filename}: {minimal_error}")
-
-                                # Try with different strategy options
-                                try:
-                                    logger.info(f"Attempting alternative PDF strategy for {filename}")
-                                    elements = partition_pdf(path, include_page_breaks=False, infer_table_structure=False, strategy="fast")
-                                except Exception as strategy_error:
-                                    logger.warning(f"Alternative strategy also failed for {filename}: {strategy_error}")
-
-                                    # Final attempt with auto partitioning
-                                    try:
-                                        logger.info(f"Attempting auto partitioning for {filename}")
-                                        elements = u_partition(path)
-                                    except Exception as auto_error:
-                                        logger.error(f"All unstructured PDF processing attempts failed for {filename}: {auto_error}")
-                                        raise auto_error
-                elif ext in {"html", "htm"}:
-                    elements = partition_html(path)
-                else:
-                    elements = u_partition(path)
+                elements = u_partition(path)
                 pbar.update(1)
 
             whole_text = "\n\n".join(str(el).strip() for el in elements if str(el).strip())
@@ -210,7 +161,7 @@ def unstructured_loader(metadata_json_path: str, documents_dir: str, limit: Opti
                     pbar.update(1)
 
             with tqdm(total=1, desc=f"Splitting {filename}", leave=False) as pbar:
-                splitter = splitters["youtube"] if is_transcript else splitters.get(ext, splitters["generic"])
+                splitter = SemanticDoublePassMergingSplitterWithContext(max_chunk_size=CHUNK_SIZE, min_chunk_size=100)
                 chunks = splitter.split_text(whole_text, metadata=dict(entry))
                 pbar.update(1)
 

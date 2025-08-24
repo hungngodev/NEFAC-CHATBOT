@@ -137,13 +137,15 @@ class FileUtils:
         """Create a safe filename by removing/replacing invalid characters."""
         # Remove or replace invalid characters
         filename = re.sub(r'[<>:"/\\|?*]', "_", filename)
-        # Remove multiple consecutive underscores
-        filename = re.sub(r"_+", "_", filename)
+        # Replace spaces with hyphens for better filename compatibility
+        filename = filename.replace(" ", "-")
+        # Remove multiple consecutive underscores or hyphens
+        filename = re.sub(r"[-_]+", lambda m: "-" if "-" in m.group() else "_", filename)
         # Limit length
         if len(filename) > 255:
             name, ext = Path(filename).stem, Path(filename).suffix
             filename = name[: 255 - len(ext)] + ext
-        return filename.strip("_")
+        return filename.strip("_-")
 
     @staticmethod
     def generate_safe_filename(filename: str) -> str:

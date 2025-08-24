@@ -479,6 +479,20 @@ def main_pipeline(
         tqdm.write(f"{Fore.YELLOW}[Pipeline] WARNING: {warning_msg}{Style.RESET_ALL}")
         return 0
 
+    # --- TEMP: Print Chunk Example ---
+    if results["index"]:
+        import json
+
+        print("\n\n" + "=" * 25 + " CHUNK EXAMPLE " + "=" * 25)
+        example_chunk = results["index"][0]
+        print("--- METADATA ---")
+        # Use json.dumps for pretty printing the metadata dictionary
+        print(json.dumps(example_chunk.metadata, indent=2, default=str))
+        print("\n--- CONTENT ---")
+        print(example_chunk.page_content)
+        print("=" * 65 + "\n\n")
+    # --- END TEMP ---
+
     success_msg = f"Completed ingestion and indexing for {metadata_json_path}"
     print_success(success_msg)
     logger.info(success_msg)

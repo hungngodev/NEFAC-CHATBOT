@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 from typing import List
@@ -8,7 +9,7 @@ from langchain_experimental.graph_transformers import LLMGraphTransformer
 from langchain_neo4j import Neo4jGraph
 from tqdm import tqdm
 
-from src.service.ingestion_service.settings import llm_model
+from src.service.ingestion_service.settings import graph_llm_model
 
 # -----------------------------------------------------------------------------
 # --- Logging and Env Vars
@@ -636,8 +637,6 @@ def sanitize_metadata_for_neo4j(metadata: dict) -> dict:
                 sanitized[key] = [str(item) for item in value]
         elif isinstance(value, dict):
             # Convert complex objects to JSON strings
-            import json
-
             try:
                 sanitized[f"{key}_json"] = json.dumps(value)
             except (TypeError, ValueError):
@@ -676,7 +675,7 @@ def graph_rag_ingest(documents: List[Document]) -> None:
         # The LLMGraphTransformer now uses the single, detailed prompt while keeping its own config.
         pbar.set_description("Initializing graph transformer")
         transformer = LLMGraphTransformer(
-            llm=llm_model,
+            llm=graph_llm_model,
             # allowed_nodes=allowed_nodes,
             # allowed_relationships=allowed_relationships,
             node_properties=True,

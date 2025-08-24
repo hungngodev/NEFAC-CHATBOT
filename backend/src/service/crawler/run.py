@@ -12,12 +12,14 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List
 
+import requests
 from tqdm import tqdm
 
 from src.schemas.metadata import BaseMetadata
 from src.service.crawler.core.config import CrawlerConfig
 from src.service.crawler.downloaders.document_downloader import DocumentDownloader
 from src.service.crawler.downloaders.metadata_manager import MetadataManager
+from src.service.crawler.downloaders.rigid_validator import RigidValidator
 from src.service.crawler.extractors.wordpress_extractor import WordPressExtractor
 from src.service.crawler.extractors.youtube_extractor import YouTubeExtractor
 
@@ -106,8 +108,8 @@ class NEFACCrawler:
                     pbar.set_postfix({"✅": self.stats.success, "❌": self.stats.failed})
                     pbar.update(1)
 
-    def crawl(self, mode: str = "full") -> List[BaseMetadata]:
-        """Main crawl orchestrator."""
+    def crawl(self, mode: str = "full", validate_sync: bool = True) -> List[BaseMetadata]:
+        """Main crawl orchestrator with comprehensive validation."""
         logger.info(f"🚀 Starting {mode} crawl...")
 
         # Extract documents based on mode
@@ -128,6 +130,20 @@ class NEFACCrawler:
         # Download and save
         self.download_parallel(all_docs)
         self.metadata_manager.save_documents_metadata(all_docs)
+
+        # Rigid validation (zero tolerance)
+        if validate_sync:
+            validator = RigidValidator(self.config)
+            result = validator.validate(fix_issues=True)
+
+            if result.has_critical_issues:
+                self.metadata_manager.save_documents_metadata(all_docs)
+                raise RuntimeError("Critical synchronization failures - zero tolerance violated")
+            elif result.has_any_issues:
+                self.metadata_manager.save_documents_metadata(all_docs)
+                logger.warning("Non-critical issues detected and fixed")
+            else:
+                logger.info("✅ Perfect synchronization achieved")
 
         self.stats.print_summary()
         return all_docs
@@ -153,6 +169,7 @@ def create_parser() -> argparse.ArgumentParser:
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--youtube-only", action="store_true", help="Crawl only YouTube content")
     mode.add_argument("--wordpress-only", "--no-youtube", action="store_true", help="Crawl only WordPress content (skip YouTube)")
+    mode.add_argument("--sync-only", action="store_true", help="Only run synchronization validation (no crawling)")
 
     # Options
     parser.add_argument("--output-dir", help="Output directory")
@@ -160,7 +177,28 @@ def create_parser() -> argparse.ArgumentParser:
     parser.add_argument("--debug", action="store_true", help="Debug logging")
     parser.add_argument("--quiet", action="store_true", help="Minimal output")
 
+    # Validation options
+    parser.add_argument("--no-validation", action="store_true", help="Skip synchronization validation after crawling")
+    parser.add_argument("--fix-issues", action="store_true", help="Automatically fix synchronization issues")
+
     return parser
+
+
+def _run_pre_flight_check(config: CrawlerConfig) -> bool:
+    """Quick pre-flight check."""
+    try:
+        # Check output directory
+        config.output_dir.mkdir(parents=True, exist_ok=True)
+        test_file = config.output_dir / "test.tmp"
+        test_file.write_text("test")
+        test_file.unlink()
+
+        # Check network
+        requests.get("https://nefac.org", timeout=10)
+        return True
+    except Exception as e:
+        print(f"Pre-flight check failed: {e}")
+        return False
 
 
 def main():
@@ -179,8 +217,19 @@ def main():
             config.output_dir = Path(args.output_dir)
             config.output_dir.mkdir(parents=True, exist_ok=True)
 
+        # Pre-flight check
+        if not _run_pre_flight_check(config):
+            print("❌ Pre-flight checks failed")
+            sys.exit(1)
+
         # Initialize crawler
         crawler = NEFACCrawler(config)
+
+        # Sync-only mode
+        if args.sync_only:
+            validator = RigidValidator(config)
+            result = validator.validate(fix_issues=args.fix_issues)
+            sys.exit(2 if result.has_critical_issues else 1 if result.has_any_issues else 0)
 
         # Determine crawl mode
         if args.youtube_only:
@@ -194,8 +243,10 @@ def main():
         print(f"🚀 NEFAC Crawler - {mode.title()} Mode")
         print(f"📁 Output: {config.output_dir}")
         print(f"👥 Workers: {args.workers}")
+        print(f"🔍 Validation: {'Disabled' if args.no_validation else 'Enabled'}")
 
-        documents = crawler.crawl(mode)
+        validate_sync = not args.no_validation
+        documents = crawler.crawl(mode, validate_sync=validate_sync)
 
         print(f"🎉 Done: {len(documents)} documents processed")
 
