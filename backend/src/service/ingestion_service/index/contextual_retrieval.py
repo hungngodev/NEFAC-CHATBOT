@@ -8,120 +8,144 @@ from langchain_core.documents import Document
 from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams
-from tqdm import tqdm
 
 from src.config.models import EMBEEDING_DIMENSIONS
 
 logger = logging.getLogger(__name__)
 
 
-# --- Qdrant Upload Logic ---
 def upload_to_qdrant(documents: List[Document], embedding_model) -> Any:
+    """Upload documents to Qdrant with systematic progress tracking."""
+    if not documents:
+        logger.warning("No documents to upload to Qdrant")
+        return None
+
     try:
         qdrant_url = os.environ["QDRANT_ENDPOINT"]
         collection_name = os.environ["QDRANT_CLUSTER_ID"]
-        api_key = os.environ.get("QDRANT_API_KEY")  # Will be None for local
+        api_key = os.environ.get("QDRANT_API_KEY")
 
-        # Initialize Qdrant client to check/create collection
-        with tqdm(total=1, desc="Connecting to Qdrant", leave=False) as pbar:
-            if api_key:
-                client = QdrantClient(url=qdrant_url, api_key=api_key)
-            else:
-                # Local Qdrant doesn't need API key
-                client = QdrantClient(url=qdrant_url)
-            pbar.update(1)
+        logger.info(f"Connecting to Qdrant at {qdrant_url}")
+
+        # Initialize Qdrant client
+        if api_key:
+            client = QdrantClient(url=qdrant_url, api_key=api_key)
+        else:
+            client = QdrantClient(url=qdrant_url)
 
         # Check if collection exists, create if it doesn't
         try:
-            with tqdm(total=1, desc="Checking Qdrant collection", leave=False) as pbar:
-                collections = client.get_collections()
-                collection_exists = any(col.name == collection_name for col in collections.collections)
-                pbar.update(1)
+            logger.info(f"Checking Qdrant collection: {collection_name}")
+            collections = client.get_collections()
+            collection_exists = any(col.name == collection_name for col in collections.collections)
 
             if not collection_exists:
-                with tqdm(total=1, desc="Creating Qdrant collection", leave=False) as pbar:
-                    print(f"Creating new collection: {collection_name}")
-                    client.create_collection(collection_name=collection_name, vectors_config=VectorParams(size=EMBEEDING_DIMENSIONS, distance=Distance.COSINE))  # text-embedding-3-small dimension
-                    print(f"Collection {collection_name} created successfully")
-                    pbar.update(1)
-        except Exception as e:
-            print(f"Error checking/creating collection: {e}")
-
-        # Use from_documents with connection parameters instead of passing client
-        with tqdm(total=1, desc="Uploading to Qdrant", leave=False) as pbar:
-            if api_key:
-                vectorstore = QdrantVectorStore.from_documents(
-                    documents,
-                    embedding=embedding_model,
-                    url=qdrant_url,
-                    api_key=api_key,
-                    collection_name=collection_name,
-                )
+                logger.info(f"Creating new Qdrant collection: {collection_name}")
+                client.create_collection(collection_name=collection_name, vectors_config=VectorParams(size=EMBEEDING_DIMENSIONS, distance=Distance.COSINE))
+                logger.info(f"Collection {collection_name} created successfully")
             else:
-                vectorstore = QdrantVectorStore.from_documents(
-                    documents,
-                    embedding=embedding_model,
-                    url=qdrant_url,
-                    collection_name=collection_name,
-                )
-            pbar.update(1)
+                logger.info(f"Collection {collection_name} already exists")
 
-        logger.info(f"✓ Uploaded {len(documents)} vectors to Qdrant collection '{collection_name}' at {qdrant_url}")
+        except Exception as e:
+            logger.error(f"Error checking/creating collection: {e}")
+            raise
+
+        # Upload documents to Qdrant
+        logger.info(f"Uploading {len(documents)} vectors to Qdrant...")
+
+        if api_key:
+            vectorstore = QdrantVectorStore.from_documents(
+                documents,
+                embedding=embedding_model,
+                url=qdrant_url,
+                api_key=api_key,
+                collection_name=collection_name,
+            )
+        else:
+            vectorstore = QdrantVectorStore.from_documents(
+                documents,
+                embedding=embedding_model,
+                url=qdrant_url,
+                collection_name=collection_name,
+            )
+
+        logger.info(f"Successfully uploaded {len(documents)} vectors to Qdrant collection '{collection_name}'")
         return vectorstore
+
     except Exception as e:
-        logger.exception(f"Error uploading to Qdrant: {e}")
+        logger.error(f"Error uploading to Qdrant: {e}")
         raise
 
 
-def save_contextual_elasticsearch_bm25_for_backend(
-    contextualized_documents: List[Document],
-):
+def save_contextual_elasticsearch_bm25_for_backend(contextualized_documents: List[Document]):
+    """Save documents to Elasticsearch with systematic progress tracking."""
+    if not contextualized_documents:
+        logger.warning("No documents to upload to Elasticsearch")
+        return
+
     elasticsearch_url = os.environ["ES_HOST"]
     index_name = os.environ["ES_INDEX"]
-    print("ES_HOST =", os.environ.get("ES_HOST"))
-    print("ES_INDEX =", os.environ.get("ES_INDEX"))
 
-    # Initialize Elasticsearch client
-    with tqdm(total=1, desc="Connecting to Elasticsearch", leave=False) as pbar:
+    logger.info(f"Connecting to Elasticsearch at {elasticsearch_url}")
+    logger.info(f"Target index: {index_name}")
+
+    try:
+        # Initialize Elasticsearch client
         es = Elasticsearch(elasticsearch_url)
-        pbar.update(1)
 
-    with tqdm(total=1, desc="Setting up Elasticsearch index", leave=False) as pbar:
+        # Setup index
+        logger.info(f"Checking Elasticsearch index: {index_name}")
         if not es.indices.exists(index=index_name):
-            # Create index and retriever if index doesn't exist
+            logger.info(f"Creating new Elasticsearch index: {index_name}")
             keyword_retriever = ElasticSearchBM25Retriever.create(elasticsearch_url, index_name)
         else:
-            # Just instantiate the retriever if index already exists
+            logger.info(f"Index {index_name} already exists")
             keyword_retriever = ElasticSearchBM25Retriever(client=es, index_name=index_name)
-        pbar.update(1)
 
-    with tqdm(total=1, desc="Uploading to Elasticsearch", leave=False) as pbar:
+        # Upload documents
+        logger.info(f"Uploading {len(contextualized_documents)} documents to Elasticsearch...")
         texts = [doc.page_content for doc in contextualized_documents]
         keyword_retriever.add_texts(texts)
-        pbar.update(1)
 
-    print(f"Contextualized documents uploaded to Elasticsearch index '{index_name}' at {elasticsearch_url}")
+        logger.info(f"Successfully uploaded {len(contextualized_documents)} documents to Elasticsearch index '{index_name}'")
+
+    except Exception as e:
+        logger.error(f"Error uploading to Elasticsearch: {e}")
+        raise
 
 
-# --- Contextualize and Index Function ---
 def contextualize_and_index_documents(documents, embedding_model=None, test_mode=False) -> Any:
     """
-    Indexes already-contextualized documents into Qdrant and Elasticsearch.
+    Index documents into Qdrant and Elasticsearch with systematic progress tracking.
     Assumes input documents are already contextualized (context + chunk).
     """
+    if not documents:
+        logger.warning("No documents provided for contextual indexing")
+        return []
+
     if embedding_model is None:
-        embedding_model = embedding_model
+        from src.service.ingestion_service.settings import embedding_model as default_embedding_model
 
-    with tqdm(total=2, desc="Indexing documents", colour="green") as pbar:
-        if not test_mode:
-            pbar.set_description("Uploading to Qdrant")
+        embedding_model = default_embedding_model
+
+    logger.info(f"Starting contextual indexing for {len(documents)} documents")
+
+    if not test_mode:
+        try:
+            # Upload to Qdrant
+            logger.info("Uploading to Qdrant vector database")
             upload_to_qdrant(documents, embedding_model)
-            pbar.update(1)
 
-            pbar.set_description("Uploading to Elasticsearch")
+            # Upload to Elasticsearch
+            logger.info("Uploading to Elasticsearch BM25 index")
             save_contextual_elasticsearch_bm25_for_backend(documents)
-            pbar.update(1)
-        else:
-            pbar.update(2)
+
+            logger.info(f"Contextual indexing complete for {len(documents)} documents")
+
+        except Exception as e:
+            logger.error(f"Contextual indexing failed: {e}")
+            raise
+    else:
+        logger.info("Test mode: Skipping actual database uploads")
 
     return documents

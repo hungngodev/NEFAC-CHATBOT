@@ -172,6 +172,17 @@ class RigidValidator:
         metadata_files = set()
 
         for doc in metadata_list:
+            # For YouTube items without transcripts, we don't require a local file
+            try:
+                from src.schemas.metadata import YouTubeMetadata as _YTM
+            except Exception:
+                _YTM = None
+
+            if _YTM and isinstance(doc, _YTM):
+                if not getattr(doc, "transcript_available", False):
+                    # Skip file existence checks for videos without transcripts
+                    continue
+
             file_path_str = getattr(doc, "file_path", None)
             if not file_path_str:
                 expected_path = self.downloader._generate_filepath(doc)
@@ -197,6 +208,15 @@ class RigidValidator:
     def _validate_integrity(self, metadata_list: List[BaseMetadata], result: ValidationResult):
         """Validate file integrity."""
         for doc in tqdm(metadata_list, desc="Validating integrity", unit="files", leave=False):
+            # Skip integrity check for YouTube items without transcripts
+            try:
+                from src.schemas.metadata import YouTubeMetadata as _YTM
+            except Exception:
+                _YTM = None
+
+            if _YTM and isinstance(doc, _YTM) and not getattr(doc, "transcript_available", False):
+                continue
+
             file_path_str = getattr(doc, "file_path", None)
             if not file_path_str:
                 continue
@@ -207,13 +227,18 @@ class RigidValidator:
 
             # Check size
             file_size = file_path.stat().st_size
+            # Relax minimum size for YouTube transcripts
             if file_size < 100:
+                if not (_YTM and isinstance(doc, _YTM)):
+                    result.critical_issues.append(f"Empty: {doc.id} ({file_size}B)")
+                    continue
+            if _YTM and isinstance(doc, _YTM) and file_size == 0:
                 result.critical_issues.append(f"Empty: {doc.id} ({file_size}B)")
                 continue
 
             # Check expected size
             expected_size = getattr(doc, "expected_size", None)
-            if expected_size and expected_size > 0 and file_size != expected_size:
+            if expected_size is not None and expected_size > 0 and file_size != expected_size:
                 result.other_issues.append(f"Size mismatch: {doc.id}")
 
             # Validate content

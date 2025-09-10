@@ -1,11 +1,18 @@
 """
-YouTube Extractor for NEFAC Crawler - Fail-Fast Version
+YouTube Extractor for NEFAC Crawler
+- Crawls the single channel configured (default: https://www.youtube.com/@nefac)
+- Saves transcript files under output_dir/youtube as plain .txt with only "[time] text" lines
+- Returns rich YouTubeMetadata objects; youtube_metadata.json is written by MetadataManager
 """
 
 import json
+import logging
+import os
 import random
 import re
+import tempfile
 import time
+from pathlib import Path
 from typing import Any, Dict, List
 from urllib.parse import parse_qs, urlparse
 
@@ -15,166 +22,335 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from src.schemas.metadata import YouTubeMetadata
 from src.service.crawler.core.config import CrawlerConfig
 from src.service.crawler.core.types import CrawlerSource, ExtractorResult
-from src.service.crawler.downloaders.common import DateUtils
+from src.service.crawler.downloaders.common import DateUtils, FileUtils
 from src.service.crawler.extractors.base import BaseExtractor
+
+logger = logging.getLogger(__name__)
 
 
 class YouTubeExtractor(BaseExtractor):
-    """Fail-fast YouTube extractor."""
+    """YouTube extractor that saves transcripts and emits rich metadata."""
 
     def __init__(self, config: CrawlerConfig):
         super().__init__(config)
         self.youtube_config = config.youtube
         self.youtube_dir = self.config.output_dir / self.youtube_config.output_subdir
+        self.youtube_dir.mkdir(parents=True, exist_ok=True)
 
     @property
     def source_name(self) -> str:
         return CrawlerSource.YOUTUBE.value
 
     def extract(self) -> ExtractorResult:
+        logger.info("YouTube: fetching channel listing: %s", self.youtube_config.channel_url)
         videos = self._get_channel_videos()
-        documents = [self._process_video(v) for v in videos]
+        logger.info("YouTube: found %d videos in channel", len(videos))
+        documents: List[YouTubeMetadata] = []
+
+        for idx, v in enumerate(videos, start=1):
+            try:
+                logger.info("YouTube: processing video %d/%d", idx, len(videos))
+                doc = self._process_video(v)
+                documents.append(doc)
+            except Exception as e:
+                # fail-fast (skip problematic video) if configured
+                if self.youtube_config.skip_on_error:
+                    logger.warning("YouTube: skipping video due to error: %s", e)
+                    continue
+                raise e
+
+            # Politeness delay with slight jitter
+            self._apply_rate_limit(idx)
+
         return ExtractorResult(
             documents=documents,
             metadata={
                 "channel_url": self.youtube_config.channel_url,
                 "videos_found": len(videos),
                 "videos_processed": len(documents),
-                "success_rate": len(documents) / len(videos) if videos else 0,
             },
         )
 
     def _get_channel_videos(self) -> List[Dict[str, Any]]:
+        """Get flat list of channel entries to avoid per-video fetches initially."""
         ydl_opts = self._get_ydl_options()
-        ydl_opts.update({"extract_flat": True, "playlist_items": f"1-{self.youtube_config.max_videos}"})
+        ydl_opts.update(
+            {
+                "extract_flat": True,
+                "playlist_items": f"1-{self.youtube_config.max_videos}",
+            }
+        )
+
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             channel_info = ydl.extract_info(self.youtube_config.channel_url, download=False)
-            return [v for v in channel_info["entries"] if v]
+            entries = channel_info.get("entries", []) if channel_info else []
+            return [v for v in entries if v]
 
     def _process_video(self, video: Dict[str, Any]) -> YouTubeMetadata:
-        video_url = video["url"]
-        video_id = self._extract_video_id(video_url)
-        metadata = self._get_video_metadata(video_url)
-        transcript = self._get_video_transcript(video_id)
-        doc = self._create_document(video_id, video_url, metadata, transcript)
-        if transcript:
-            transcript_file = self._save_transcript(video_id, transcript, metadata)
-            self._update_document_caption(doc, transcript_file, transcript)
-        self._save_metadata(video_id, metadata, bool(transcript))
-        return doc
+        """Build rich metadata, save transcript .txt, and return YouTubeMetadata."""
+        video_url = video.get("url") or video.get("webpage_url")
+        if not video_url:
+            raise ValueError("Missing video URL in channel entry")
 
-    def _create_document(self, video_id: str, video_url: str, metadata: Dict[str, Any], transcript: List[Dict]) -> YouTubeMetadata:
-        upload_date = metadata.get("upload_date", "")
-        iso_date = f"{upload_date[:4]}-{upload_date[4:6]}-{upload_date[6:8]}T00:00:00Z" if upload_date else DateUtils.get_current_iso_string()
-        transcript_word_count = sum(len(entry["text"].split()) for entry in transcript) if transcript else 0
-        return YouTubeMetadata(
+        video_id = self._extract_video_id(video_url) or video.get("id", "")
+        if not video_id:
+            raise ValueError(f"Could not determine video id for {video_url}")
+
+        # Get detailed metadata (best-effort)
+        metadata = self._get_video_metadata(video_url)
+
+        # Fallbacks to flat fields if detailed extraction fails
+        title = metadata.get("title") or video.get("title") or f"YouTube Video {video_id}"
+        upload_date = metadata.get("upload_date") or video.get("upload_date") or ""
+        iso_date = f"{upload_date[:4]}-{upload_date[4:6]}-{upload_date[6:8]}T00:00:00Z" if upload_date and len(upload_date) >= 8 else DateUtils.get_current_iso_string()
+
+        # Try to get transcript
+        transcript = self._get_video_transcript(video_id)
+
+        # Save transcript file (only lines with [time] text)
+        transcript_rel_path = None
+        transcript_word_count = 0
+        if transcript:
+            transcript_rel_path = self._save_transcript(video_id, title, transcript)
+            transcript_word_count = sum(len(e.get("text", "").split()) for e in transcript)
+
+        # Compose filename and file_path using transcript file if available
+        if transcript_rel_path:
+            file_path = transcript_rel_path
+            filename = FileUtils.safe_filename(file_path.split("/")[-1])
+            file_size = (self.config.output_dir / file_path).stat().st_size if (self.config.output_dir / file_path).exists() else None
+        else:
+            # No transcript file created; point to a sensible placeholder in youtube dir
+            filename = self._get_safe_filename(title, video_id, ".txt")
+            file_path = str((self.youtube_dir / filename).relative_to(self.config.output_dir))
+            file_size = None
+
+        # Build YouTubeMetadata
+        doc = YouTubeMetadata(
             id=f"youtube_{video_id}",
-            title=metadata.get("title", "Unknown YouTube Video"),
-            source_url=video_url,
+            title=title,
+            filename=filename,
+            source_url=metadata.get("webpage_url") or video_url,
             mime_type="video/youtube",
             date=iso_date,
             modified=iso_date,
-            source=self.source_name,
-            file_size=0,
+            file_path=file_path,
+            file_size=file_size,
             download_date=DateUtils.get_current_iso_string(),
-            description=metadata.get("description", ""),
+            crawler_version="3.0",
+            source=self.source_name,
+            # Rich fields
+            description=metadata.get("description") or "",
             video_id=video_id,
-            duration=metadata.get("duration", 0),
-            view_count=metadata.get("view_count", 0),
-            uploader=metadata.get("uploader", ""),
-            channel=metadata.get("channel", ""),
-            channel_id=metadata.get("channel_id", ""),
-            tags=metadata.get("tags", []),
-            categories=metadata.get("categories", []),
-            thumbnail=metadata.get("thumbnail", ""),
+            duration=metadata.get("duration") or 0,
+            view_count=metadata.get("view_count") or 0,
+            like_count=metadata.get("like_count"),
+            comment_count=metadata.get("comment_count"),
+            uploader=metadata.get("uploader") or metadata.get("channel") or "",
+            channel=metadata.get("channel") or "",
+            channel_id=metadata.get("channel_id") or "",
+            tags=metadata.get("tags") or [],
+            categories=metadata.get("categories") or [],
+            thumbnail=metadata.get("thumbnail") or "",
+            uploader_url=metadata.get("uploader_url"),
+            availability=metadata.get("availability"),
+            live_status=metadata.get("live_status"),
+            release_timestamp=str(metadata.get("release_timestamp")) if metadata.get("release_timestamp") else None,
+            chapters=metadata.get("chapters") or {},
+            heatmap=metadata.get("heatmap") or {},
             transcript_available=bool(transcript),
-            transcript_word_count=transcript_word_count,
-            caption=json.dumps(
-                {
-                    "video_id": video_id,
-                    "title": metadata.get("title", ""),
-                    "description": metadata.get("description", ""),
-                    "duration": metadata.get("duration", 0),
-                    "view_count": metadata.get("view_count", 0),
-                    "upload_date": metadata.get("upload_date", ""),
-                    "uploader": metadata.get("uploader", ""),
-                    "channel": metadata.get("channel", ""),
-                    "channel_id": metadata.get("channel_id", ""),
-                    "tags": metadata.get("tags", []),
-                    "categories": metadata.get("categories", []),
-                    "thumbnail": metadata.get("thumbnail", ""),
-                    "webpage_url": video_url,
-                    "transcript_available": bool(transcript),
-                    "transcript_length": len(transcript) if transcript else 0,
-                }
-            ),
+            transcript_file=file_path if transcript_rel_path else None,
+            transcript_length=sum(len(e.get("text", "")) for e in transcript) if transcript else None,
+            transcript_word_count=transcript_word_count if transcript else None,
         )
 
+        # Attach file_path so validator uses the transcript file
+        setattr(doc, "file_path", file_path)
+        return doc
+
     def _get_video_metadata(self, video_url: str) -> Dict[str, Any]:
-        with yt_dlp.YoutubeDL(self._get_ydl_options()) as ydl:
-            return ydl.extract_info(video_url, download=False)
+        """Get comprehensive YouTube metadata using yt-dlp; best-effort if blocked."""
+        opts = self._get_ydl_options()
+        try:
+            with yt_dlp.YoutubeDL(opts) as ydl:
+                info = ydl.extract_info(video_url, download=False)
+                return info or {}
+        except Exception:
+            # Fallback: minimal metadata
+            return {"webpage_url": video_url}
 
     def _get_video_transcript(self, video_id: str) -> List[Dict]:
-        api = YouTubeTranscriptApi()
-        transcript_list = api.list(video_id)
-        transcript = transcript_list.find_transcript(["en", "en-US"])
-        return self._normalize_transcript(transcript.fetch()) if transcript else []
+        """Get transcript using multiple methods: API -> yt-dlp -> timedtext XML."""
+        # Method 1: YouTubeTranscriptApi
+        try:
+            transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+            for lang in ["en", "en-US", "en-GB", "en-orig"]:
+                try:
+                    t = transcript_list.find_transcript([lang])
+                    return self._normalize_transcript(t.fetch())
+                except Exception:
+                    continue
+            for t in transcript_list:
+                try:
+                    return self._normalize_transcript(t.fetch())
+                except Exception:
+                    continue
+        except Exception:
+            pass
 
-    def _save_transcript(self, video_id: str, transcript: List[Dict], metadata: Dict[str, Any]) -> str:
-        filename = self._get_safe_filename(metadata["title"], video_id, ".txt")
+        # Method 2: yt-dlp auto-subtitles
+        ytdlp_transcript = self._get_transcript_ytdlp(video_id)
+        if ytdlp_transcript:
+            return ytdlp_transcript
+
+        # Method 3: YouTube timedtext XML
+        xml_transcript = self._get_transcript_timedtext_xml(video_id)
+        if xml_transcript:
+            return xml_transcript
+
+        return []
+
+    def _get_transcript_ytdlp(self, video_id: str) -> List[Dict] | None:
+        """Use yt-dlp to download auto-generated subtitles (json3) and parse them."""
+        video_url = f"https://www.youtube.com/watch?v={video_id}"
+        language_prefs = [["en"], ["en-US"], ["en-GB"], ["en-orig"]]
+
+        for langs in language_prefs:
+            try:
+                with tempfile.TemporaryDirectory() as temp_dir:
+                    ydl_opts: Dict[str, Any] = {
+                        "quiet": True,
+                        "no_warnings": True,
+                        "skip_download": True,
+                        "writeautomaticsub": True,
+                        "subtitleslangs": langs,
+                        "subtitlesformat": "json3",
+                        "outtmpl": f"{temp_dir}/%(id)s.%(ext)s",
+                        "extractor_args": {"youtube": {"player_client": ["android"]}},
+                        "http_headers": {
+                            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X) AppleWebKit/605.1.15",
+                            "Accept-Language": "en-US,en;q=0.9",
+                        },
+                        "noprogress": True,
+                        "retries": 0,
+                        "extractor_retries": 0,
+                    }
+
+                    # Optional cookiefile support
+                    cookiefile = os.getenv("YTDLP_COOKIES_FILE") or os.getenv("YOUTUBE_COOKIES_FILE")
+                    if cookiefile and Path(cookiefile).exists():
+                        ydl_opts["cookiefile"] = cookiefile
+
+                    # Optional proxy support via Webshare credentials
+                    if getattr(self.youtube_config, "webshare_username", None) and getattr(self.youtube_config, "webshare_password", None):
+                        ydl_opts["proxy"] = f"http://{self.youtube_config.webshare_username}:{self.youtube_config.webshare_password}@p.webshare.io:8080"
+
+                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                        ydl.download([video_url])
+                        # Look for generated subtitle json3
+                        subs = list(Path(temp_dir).glob(f"{video_id}.*.json3"))
+                        if not subs:
+                            continue
+                        with open(subs[0], "r", encoding="utf-8") as f:
+                            data = json.load(f)
+                        entries: List[Dict] = []
+                        for event in data.get("events", []):
+                            if "segs" in event:
+                                text = "".join(seg.get("utf8", "") for seg in event["segs"]) or ""
+                                if text.strip():
+                                    entries.append(
+                                        {
+                                            "text": text.strip(),
+                                            "start": event.get("tStartMs", 0) / 1000.0,
+                                            "duration": event.get("dDurationMs", 0) / 1000.0,
+                                        }
+                                    )
+                        if entries:
+                            return entries
+            except Exception:
+                continue
+        return None
+
+    def _get_transcript_timedtext_xml(self, video_id: str) -> List[Dict] | None:
+        """Fetch basic timedtext XML transcript if available."""
+        try:
+            import requests
+
+            url = f"https://www.youtube.com/api/timedtext?v={video_id}&lang=en"
+            r = requests.get(url, timeout=10)
+            if r.status_code != 200 or not r.text.strip():
+                return None
+            # Parse XML
+            from xml.etree import ElementTree
+
+            root = ElementTree.fromstring(r.text)
+            out: List[Dict] = []
+            for el in root.findall(".//text"):
+                start = float(el.get("start", 0))
+                dur = float(el.get("dur", 0))
+                txt = (el.text or "").strip()
+                if txt:
+                    out.append({"text": txt, "start": start, "duration": dur})
+            return out or None
+        except Exception:
+            return None
+
+    def _save_transcript(self, video_id: str, title: str, transcript: List[Dict]) -> str:
+        """Write transcript as plain lines: "[X.XXs] text" and return relative path under output_dir."""
+        filename = self._get_safe_filename(title, video_id, ".txt")
         filepath = self.youtube_dir / filename
         self.youtube_dir.mkdir(parents=True, exist_ok=True)
         with open(filepath, "w", encoding="utf-8") as f:
-            f.write(f"YouTube Video: {metadata['title']}\nVideo ID: {video_id}\nURL: {metadata['webpage_url']}\n")
-            f.write("=" * 60 + "\n\n")
             for entry in transcript:
-                f.write(f"[{entry['start']:.2f}s] {entry['text']}\n")
-        return str(filepath.relative_to(self.config.output_dir))
-
-    def _save_metadata(self, video_id: str, metadata: Dict[str, Any], has_transcript: bool) -> str:
-        filename = self._get_safe_filename(metadata["title"], video_id, "_metadata.json")
-        filepath = self.youtube_dir / filename
-        self.youtube_dir.mkdir(parents=True, exist_ok=True)
-        with open(filepath, "w", encoding="utf-8") as f:
-            json.dump({**metadata, "has_transcript": has_transcript, "extracted_at": DateUtils.get_current_iso_string()}, f, indent=2)
-        return str(filepath.relative_to(self.config.output_dir))
+                start = float(entry.get("start", 0.0))
+                text = entry.get("text", "").strip()
+                if text:
+                    f.write(f"[{start:.2f}s] {text}\n")
+        rel = str(filepath.relative_to(self.config.output_dir))
+        logger.info("YouTube: saved transcript %s", rel)
+        return rel
 
     def _get_ydl_options(self) -> Dict[str, Any]:
         return {
             "quiet": True,
             "no_warnings": True,
             "skip_download": True,
-            "socket_timeout": self.youtube_config.timeout_seconds,
+            # Use Android client to reduce consent/403 issues
+            "extractor_args": {"youtube": {"player_client": ["android"]}},
+            "http_headers": {
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15",
+                "Accept-Language": "en-US,en;q=0.9",
+            },
+            "noprogress": True,
+            "retries": 0,
+            "extractor_retries": 0,
+            "socket_timeout": self.config.request_timeout,
         }
 
     def _extract_video_id(self, video_url: str) -> str:
         parsed = urlparse(video_url)
-        if "youtu.be" in parsed.hostname:
-            return parsed.path[1:]
-        if "youtube.com" in parsed.hostname:
+        host = (parsed.hostname or "").lower()
+        if "youtu.be" in host:
+            return parsed.path.lstrip("/")
+        if "youtube.com" in host:
             if parsed.path == "/watch":
-                return parse_qs(parsed.query)["v"][0]
-            return parsed.path.split("/")[2]
+                return parse_qs(parsed.query).get("v", [""])[0]
+            parts = parsed.path.split("/")
+            return parts[2] if len(parts) > 2 else ""
         return ""
 
     def _normalize_transcript(self, result) -> List[Dict]:
-        return [{"text": x["text"], "start": x["start"], "duration": x["duration"]} for x in result]
+        return [{"text": x.get("text", ""), "start": float(x.get("start", 0.0)), "duration": float(x.get("duration", 0.0))} for x in result]
 
     def _get_safe_filename(self, title: str, video_id: str, suffix: str) -> str:
-        safe_title = re.sub(r"[^\w\s-]", "", title).strip()
-        safe_title = re.sub(r"[-\s]+", "-", safe_title)
+        safe_title = re.sub(r"[^\w\s-]", "", title or "").strip()
+        safe_title = re.sub(r"[-\s]+", "-", safe_title) or "youtube-video"
         return f"{safe_title}_{video_id}{suffix}"
 
-    def _update_document_caption(self, doc: YouTubeMetadata, transcript_file: str, transcript: List[Dict]):
-        caption_data = json.loads(doc.caption)
-        caption_data.update(
-            {
-                "transcript_file": transcript_file,
-                "transcript_word_count": sum(len(entry["text"].split()) for entry in transcript),
-            }
-        )
-        doc.caption = json.dumps(caption_data)
-
-    def _apply_rate_limit(self):
-        delay = random.uniform(self.youtube_config.request_delay, self.youtube_config.request_delay + 20)
-        time.sleep(delay)
+    def _apply_rate_limit(self, index: int):
+        # Progressive backoff with min/max bounds
+        base = max(self.youtube_config.min_delay, self.youtube_config.request_delay)
+        cap = self.youtube_config.max_delay
+        delay = min(base * (self.youtube_config.backoff_multiplier ** max(0, index // 20)), cap)
+        logger.info("YouTube: sleeping for %.1fs", delay)
+        time.sleep(delay + random.uniform(0.5, 2.0))

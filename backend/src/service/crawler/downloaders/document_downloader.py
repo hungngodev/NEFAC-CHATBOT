@@ -41,7 +41,22 @@ class DocumentDownloader:
 
     def download(self, document_info: BaseMetadata) -> bool:
         """Download and validate a document file."""
+        # Skip downloading entirely if global download is disabled
         if not self.config.download_files:
+            return True
+
+        # Special handling for YouTube items: transcripts are created by the extractor
+        source = getattr(document_info, "source", "") or ""
+        if (getattr(document_info, "mime_type", "") or "").lower() == "video/youtube" or "youtube" in source.lower():
+            # If extractor already saved a transcript file, just trust it
+            file_path_str = getattr(document_info, "file_path", None)
+            if file_path_str:
+                transcript_path = self.config.output_dir / file_path_str
+                if transcript_path.exists():
+                    # Update basic metadata
+                    self._update_document_metadata(document_info, transcript_path)
+                    return True
+            # No transcript file detected; nothing to download
             return True
 
         filepath = self._generate_filepath(document_info)
@@ -170,14 +185,19 @@ class DocumentDownloader:
         return True
 
     def _download_file(self, document_info: BaseMetadata, filepath: Path) -> bool:
-        """Download file with robust retry mechanism."""
+        """Download file with retry mechanism - skip WordPress files on first failure."""
         source_url = document_info.source_url
         if not source_url or source_url.strip().lower() in ["", "none"]:
             return False
 
         filepath.parent.mkdir(parents=True, exist_ok=True)
 
-        for attempt in range(10):  # 10 retries for zero tolerance
+        # Check if this is WordPress content - skip retries for WordPress
+        source = getattr(document_info, "source", "")
+        is_wordpress = source in ["wordpress", "wordpress_rest_api"] or "nefac.org" in source_url
+        max_attempts = 1 if is_wordpress else 10
+
+        for attempt in range(max_attempts):
             try:
                 # Progressive timeouts
                 timeout = (20 + attempt * 5, 60 + attempt * 30)
@@ -194,7 +214,7 @@ class DocumentDownloader:
                 # Update metadata
                 if content_type := response.headers.get("content-type"):
                     document_info.mime_type = content_type
-                document_info.expected_size = int(response.headers.get("content-length", 0))
+                document_info.expected_size = int(response.headers.get("content-length", 0)) or None
 
                 # Download
                 with open(filepath, "wb") as f:
@@ -206,14 +226,14 @@ class DocumentDownloader:
                 actual_size = filepath.stat().st_size
                 expected_size = document_info.expected_size
 
-                if expected_size > 0 and actual_size != expected_size:
-                    if attempt < 9:  # Retry if not last attempt
+                if expected_size and expected_size > 0 and actual_size != expected_size:
+                    if attempt < max_attempts - 1:  # Retry if not last attempt
                         filepath.unlink(missing_ok=True)
                         continue
                     return False
 
                 if actual_size < 100:  # Too small
-                    if attempt < 9:
+                    if attempt < max_attempts - 1:
                         filepath.unlink(missing_ok=True)
                         continue
                     return False
@@ -221,15 +241,21 @@ class DocumentDownloader:
                 return True
 
             except (requests.exceptions.RequestException, Exception) as e:
-                logger.warning(f"Download attempt {attempt + 1}/10 failed for {source_url}: {e}")
+                if is_wordpress:
+                    logger.warning(f"WordPress download failed, skipping: {source_url} - {e}")
+                else:
+                    logger.warning(f"Download attempt {attempt + 1}/{max_attempts} failed for {source_url}: {e}")
                 filepath.unlink(missing_ok=True)
 
-                # Exponential backoff
-                if attempt < 9:
+                # Exponential backoff (only for non-WordPress)
+                if attempt < max_attempts - 1 and not is_wordpress:
                     delay = min(2.0 * (2**attempt), 120.0)
                     time.sleep(delay + random.uniform(0.1, 0.3) * delay)
 
-        logger.error(f"Failed to download {source_url} after 10 attempts")
+        if is_wordpress:
+            logger.info(f"Skipped WordPress file after 1 failed attempt: {source_url}")
+        else:
+            logger.error(f"Failed to download {source_url} after {max_attempts} attempts")
         return False
 
     def _validate_downloaded_file(self, file_path: Path, doc: BaseMetadata) -> bool:
@@ -238,7 +264,7 @@ class DocumentDownloader:
             return False
 
         expected_size = getattr(doc, "expected_size", 0)
-        if expected_size > 0 and file_path.stat().st_size != expected_size:
+        if expected_size and expected_size > 0 and file_path.stat().st_size != expected_size:
             logger.warning(
                 "File size mismatch for %s. Expected: %d, Got: %d",
                 file_path,

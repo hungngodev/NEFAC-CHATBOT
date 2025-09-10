@@ -81,6 +81,7 @@ class YouTubeMetadata(BaseMetadata):
     """Metadata for YouTube videos."""
 
     video_id: str = Field(description="YouTube video ID")
+    file_path: str | None = Field(default=None, description="Local file path for transcript or associated file")
     description: str | None = Field(default=None, description="Video description")
     duration: int | None = Field(default=None, description="Video duration in seconds")
     view_count: int | None = Field(default=None, description="Number of views")
@@ -96,8 +97,10 @@ class YouTubeMetadata(BaseMetadata):
     availability: str | None = Field(default=None, description="Video availability status")
     live_status: str | None = Field(default=None, description="Live status")
     release_timestamp: str | None = Field(default=None, description="Original release timestamp")
-    chapters: dict[str, Any] | None = Field(default=None, description="Video chapters")
-    heatmap: dict[str, Any] | None = Field(default=None, description="Video heatmap data")
+    # yt-dlp returns chapters as list[dict] for many videos; accept dict or list
+    chapters: list[dict[str, Any]] | dict[str, Any] | None = Field(default=None, description="Video chapters")
+    # heatmap may be dict or list depending on extractor; accept both
+    heatmap: list[dict[str, Any]] | dict[str, Any] | None = Field(default=None, description="Video heatmap data")
     transcript_available: bool | None = Field(default=None, description="Whether transcript is available")
     transcript_file: str | None = Field(default=None, description="Path to transcript file")
     transcript_length: int | None = Field(default=None, description="Transcript length in characters")

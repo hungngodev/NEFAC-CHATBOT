@@ -35,6 +35,7 @@ venv.bak/
 .ruff_cache/
 
 # Environment Variables
+backups/
 .env
 .env.local
 .env.development

@@ -7,14 +7,9 @@ from langchain.prompts import ChatPromptTemplate
 from langchain_core.documents import Document
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 from langchain_neo4j import Neo4jGraph
-from tqdm import tqdm
 
 from src.service.ingestion_service.settings import graph_llm_model
 
-# -----------------------------------------------------------------------------
-# --- Logging and Env Vars
-# -----------------------------------------------------------------------------
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 NEO4J_URI = os.environ["NEO4J_URI"]
@@ -126,6 +121,8 @@ def pre_disambiguate_entities(docs: List[Document]) -> List[Document]:
     For each Document, replace any known alias (NEFAC, partners, awards, etc.) with its canonical name.
     Attach original mention(s) as property if different.
     """
+    logger.info(f"Disambiguating entities for {len(docs)} documents...")
+
     fixed_docs = []
     for doc in docs:
         meta = dict(getattr(doc, "metadata", {}))
@@ -140,6 +137,8 @@ def pre_disambiguate_entities(docs: List[Document]) -> List[Document]:
             meta.setdefault("original_mentions", []).extend(found_aliases)
         fixed_doc = doc.__class__(page_content=new_content, metadata=meta)
         fixed_docs.append(fixed_doc)
+
+    logger.info(f"Entity disambiguation complete for {len(fixed_docs)} documents")
     return fixed_docs
 
 
@@ -600,6 +599,8 @@ For the following node types, extract these specific properties if present in th
     *   `date` (e.g., "October 26, 2023")
     *   `location` (e.g., "Boston Public Library")
     *   `eventType` (e.g., "Workshop", "Webinar", "Conference")
+Example here: {allowed_nodes}
+Some of the popular relationships you can use are: {allowed_relationships}
 
 **4. General Instructions**
 - Extract all specified node types, relationships, and properties.
@@ -652,51 +653,69 @@ def clean_documents_for_neo4j(documents: List[Document]) -> List[Document]:
     """
     Create new document instances with sanitized metadata for Neo4j compatibility.
     """
+    logger.info(f"Cleaning {len(documents)} documents for Neo4j...")
+
     cleaned_docs = []
-    for doc in tqdm(documents, desc="Cleaning documents for Neo4j", colour="blue"):
+    for doc in documents:
         clean_metadata = sanitize_metadata_for_neo4j(doc.metadata)
         cleaned_doc = Document(page_content=doc.page_content, metadata=clean_metadata)
         cleaned_docs.append(cleaned_doc)
+
+    logger.info(f"Document cleaning complete for {len(cleaned_docs)} documents")
     return cleaned_docs
 
 
-def graph_rag_ingest(documents: List[Document]) -> None:
-    with tqdm(total=4, desc="Graph RAG ingestion", colour="magenta") as pbar:
-        # First clean the metadata to ensure Neo4j compatibility
-        pbar.set_description("Cleaning documents")
+def graph_rag_ingest(documents: List[Document]) -> int:
+    """
+    Graph RAG ingestion with systematic progress tracking.
+    Returns the number of graph documents created/ingested.
+    """
+    if not documents:
+        logger.warning("No documents provided for graph RAG ingestion")
+        return 0
+
+    logger.info(f"Starting Graph RAG ingestion for {len(documents)} documents")
+
+    try:
+        # Step 1: Clean documents for Neo4j compatibility
+        logger.info("Step 1/4: Cleaning documents for Neo4j compatibility")
         docs_cleaned = clean_documents_for_neo4j(documents)
-        pbar.update(1)
 
-        # Then apply entity disambiguation
-        pbar.set_description("Disambiguating entities")
+        # Step 2: Apply entity disambiguation
+        logger.info("Step 2/4: Applying entity disambiguation")
         docs_canonical = pre_disambiguate_entities(docs_cleaned)
-        pbar.update(1)
 
-        # The LLMGraphTransformer now uses the single, detailed prompt while keeping its own config.
-        pbar.set_description("Initializing graph transformer")
+        # Step 3: Initialize graph transformer
+        logger.info("Step 3/4: Initializing graph transformer")
+        model_name = f"{graph_llm_model.model}" if hasattr(graph_llm_model, "model") else str(graph_llm_model)
+        logger.info(f"Using {model_name} for graph document conversion")
+
         transformer = LLMGraphTransformer(
             llm=graph_llm_model,
-            # allowed_nodes=allowed_nodes,
-            # allowed_relationships=allowed_relationships,
             node_properties=True,
             relationship_properties=True,
             prompt=custom_prompt.partial(
                 alias_map=str(ENTITY_ALIASES),
+                allowed_nodes=str(allowed_nodes),
+                allowed_relationships=str(allowed_relationships),
             ),
         )
-        pbar.update(1)
 
-        # Convert documents to graph documents
-        pbar.set_description("Converting to graph documents")
+        # Step 4: Convert documents to graph documents
+        logger.info("Step 4/4: Converting documents to graph format")
         graph_docs = transformer.convert_to_graph_documents(docs_canonical)
-        logger.info(f"Converted {len(graph_docs)} graph documents.")
-        pbar.update(1)
+        logger.info(f"Converted {len(graph_docs)} graph documents")
 
-        # Add to Neo4j graph
-        pbar.set_description("Adding to Neo4j graph")
+        # Step 5: Add to Neo4j graph
+        logger.info("Step 5/4: Adding graph documents to Neo4j")
         graph.add_graph_documents(
             graph_docs,
             baseEntityLabel=True,
             include_source=True,
         )
-        logger.info("NEFAC + ecosystem graph ingestion complete.")
+
+        logger.info(f"Graph RAG ingestion complete for {len(documents)} documents")
+        return len(graph_docs)
+    except Exception as e:
+        logger.error(f"Graph RAG ingestion failed: {e}")
+        raise

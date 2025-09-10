@@ -48,11 +48,16 @@ class YouTubeConfig:
     enabled: bool = True
     channel_url: str = "https://www.youtube.com/@nefac"
     max_videos: int = 1000
-    request_delay: float = 10.0
+    request_delay: float = 45.0  # Increased base delay
+    min_delay: float = 35.0  # Minimum delay between requests
+    max_delay: float = 180.0  # Maximum delay for backoff
+    backoff_multiplier: float = 1.5  # Progressive backoff multiplier
     api_key: str | None = None
     output_subdir: str = "youtube"
     webshare_username: str | None = None
     webshare_password: str | None = None
+    max_retries: int = 3  # Max retries before skipping
+    skip_on_error: bool = True  # Skip videos that fail
 
 
 @dataclass
@@ -116,10 +121,15 @@ class CrawlerConfig:
             enabled=get_bool("YOUTUBE_ENABLED", True),
             channel_url=os.getenv("YOUTUBE_CHANNEL", "https://www.youtube.com/@nefac"),
             max_videos=get_int("YOUTUBE_MAX_VIDEOS", 1000),
-            request_delay=get_float("YOUTUBE_DELAY", 10.0),
+            request_delay=get_float("YOUTUBE_DELAY", 45.0),
+            min_delay=get_float("YOUTUBE_MIN_DELAY", 35.0),
+            max_delay=get_float("YOUTUBE_MAX_DELAY", 180.0),
+            backoff_multiplier=get_float("YOUTUBE_BACKOFF_MULTIPLIER", 1.5),
             api_key=os.getenv("YOUTUBE_API_KEY"),
             webshare_username=os.getenv("WEBSHARE_USERNAME"),
             webshare_password=os.getenv("WEBSHARE_PASSWORD"),
+            max_retries=get_int("YOUTUBE_MAX_RETRIES", 3),
+            skip_on_error=get_bool("YOUTUBE_SKIP_ON_ERROR", True),
         )
 
         return cls(
