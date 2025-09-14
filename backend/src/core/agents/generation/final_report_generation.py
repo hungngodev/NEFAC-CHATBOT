@@ -19,7 +19,7 @@ async def final_report_generation(state: AgentState, config: RunnableConfig):
         "max_tokens": configurable.final_report_model_max_tokens,
         "api_key": get_api_key_for_model(configurable.final_report_model, config),
     }
-    configurable_model = init_chat_model(configurable.final_report_model).with_config(writer_model_config)
+    configurable_model = init_chat_model(configurable.final_report_model, disable_streaming=configurable.disable_streaming).with_config(writer_model_config)
     findings = "\n".join(notes)
     max_retries = 3
     current_retry = 0

@@ -18,10 +18,19 @@ async def supervisor_tools(state: SupervisorState, config: RunnableConfig) -> Su
     completed_research_results = state.get("completed_research_results", [])
     research_tool_calls = state.get("research_tool_calls", [])
 
-    most_recent_message = supervisor_messages[-1]
+    # Safe accessors for tool_calls across message types/providers
+    def _assistant_tool_calls(msg) -> list[dict]:
+        calls = getattr(msg, "tool_calls", None)
+        if calls:
+            return calls
+        ak = getattr(msg, "additional_kwargs", None) or {}
+        return ak.get("tool_calls") or []
+
+    most_recent_message = supervisor_messages[-1] if supervisor_messages else None
     exceeded_allowed_iterations = research_iterations >= configurable.max_researcher_iterations
-    no_tool_calls = not most_recent_message.tool_calls
-    research_complete_tool_call = any(tool_call["name"] == "ResearchComplete" for tool_call in most_recent_message.tool_calls)
+    last_tool_calls = _assistant_tool_calls(most_recent_message) if most_recent_message else []
+    no_tool_calls = len(last_tool_calls) == 0
+    research_complete_tool_call = any((tc or {}).get("name") == "ResearchComplete" for tc in last_tool_calls)
 
     # Process completed research results
     if completed_research_results and research_tool_calls:
@@ -29,10 +38,23 @@ async def supervisor_tools(state: SupervisorState, config: RunnableConfig) -> Su
         raw_notes_parts = []
 
         for research_result, tool_call in zip(completed_research_results, research_tool_calls):
-            tool_messages.append(ToolMessage(content=research_result.compressed_research or "Error synthesizing research report: Maximum retries exceeded", name=tool_call["name"], tool_call_id=tool_call["id"]))
+            # Support both Pydantic object and plain dict forms
+            compressed = getattr(research_result, "compressed_research", None)
+            if compressed is None and isinstance(research_result, dict):
+                compressed = research_result.get("compressed_research")
+            tool_messages.append(
+                ToolMessage(
+                    content=compressed or "Error synthesizing research report: Maximum retries exceeded",
+                    name=tool_call["name"],
+                    tool_call_id=tool_call["id"],
+                )
+            )
 
-            if research_result.raw_notes:
-                raw_notes_parts.extend(research_result.raw_notes)
+            raw_notes_val = getattr(research_result, "raw_notes", None)
+            if raw_notes_val is None and isinstance(research_result, dict):
+                raw_notes_val = research_result.get("raw_notes")
+            if raw_notes_val:
+                raw_notes_parts.extend(raw_notes_val)
 
         return Command(goto=SUPERVISOR_NODE, update={"supervisor_messages": tool_messages, "raw_notes": ["\n".join(raw_notes_parts)], "completed_research_results": [], "research_tool_calls": []})
 
@@ -40,7 +62,7 @@ async def supervisor_tools(state: SupervisorState, config: RunnableConfig) -> Su
         return Command(goto=END, update={"notes": get_notes_from_tool_calls(supervisor_messages), "research_brief": state.get("research_brief", "")})
 
     try:
-        all_conduct_research_calls = [tool_call for tool_call in most_recent_message.tool_calls if tool_call["name"] == "ConductResearch"]
+        all_conduct_research_calls = [tc for tc in last_tool_calls if (tc or {}).get("name") == "ConductResearch"]
 
         max_units = configurable.max_concurrent_research_units
         conduct_research_calls = all_conduct_research_calls[:max_units]
@@ -51,7 +73,8 @@ async def supervisor_tools(state: SupervisorState, config: RunnableConfig) -> Su
         # Handle overflow as error messages
         overflow_messages = [ToolMessage(content=f"Error: Exceeded max concurrent research units ({max_units}). Please try again with fewer units.", name="ConductResearch", tool_call_id=tool_call["id"]) for tool_call in overflow_conduct_research_calls]
 
-        return Command(goto=research_sends, update={"supervisor_messages": supervisor_messages + overflow_messages, "research_tool_calls": conduct_research_calls})
+        # Only append the overflow messages (delta). Avoid re-adding the full history which caused duplication.
+        return Command(goto=research_sends, update={"supervisor_messages": overflow_messages, "research_tool_calls": conduct_research_calls})
 
     except Exception as e:
         if is_token_limit_exceeded(e, configurable.supervisor_model):

@@ -1,3 +1,4 @@
+import os as _os
 from typing import ClassVar, Literal
 
 from langchain.chat_models import init_chat_model
@@ -35,12 +36,16 @@ class MethodSelection(BaseModel):
     method: Literal["multiquery", "decompose", "stepback", "hyde", "ragfusion", "factual", "contextual", "default"] = Field(description="The selected query construction method.")
 
 
-def route_to_transformer(state: QueryTransformerState, config: Configuration) -> str:
-    """Routes to the appropriate query transformation subgraph based on the retrieval method."""
-    llm = init_chat_model(config.query_transformer_model)
-    method_chain = ChatPromptTemplate.from_template(config.query_transformer_prompt) | llm.with_structured_output(MethodSelection)
+async def route_to_transformer(state: QueryTransformerState, config: RunnableConfig) -> str:
+    """Routes to the appropriate query transformation subgraph based on the retrieval method.
+
+    Avoids any potential streaming by using a plain text parser instead of structured output.
+    """
+    configurable = Configuration.from_runnable_config(config)
+    llm = init_chat_model(configurable.query_transformer_model, disable_streaming=configurable.disable_streaming)
+    method_chain = ChatPromptTemplate.from_template(configurable.query_transformer_prompt) | llm.with_structured_output(MethodSelection)
     question = state["transformed_query"]
-    response = method_chain.invoke({"question": question})
+    response = await method_chain.ainvoke({"question": question})
     method = response.method.lower().strip()
 
     if "multiquery" in method:
@@ -56,7 +61,7 @@ def route_to_transformer(state: QueryTransformerState, config: Configuration) ->
     elif "contextual" in method:
         return "contextual_strategy"
     else:
-        return QUERY_TRANSFORMER_DEFAULT_RETRIEVAL
+        return "default_retrieval"
 
 
 def prepare_output(state: QueryTransformerState) -> QueryTransformerOutputState:
@@ -64,7 +69,6 @@ def prepare_output(state: QueryTransformerState) -> QueryTransformerOutputState:
     result = {
         "transformed_context": state.get("transformed_context", ""),
         "method_used": state.get("method_used", "default"),
-        "accumulated_documents": state.get("accumulated_documents", []),
         "_source_tool_call": state.get("_source_tool_call", {}),
         "transformed_query": state.get("transformed_query", ""),
     }
@@ -72,7 +76,7 @@ def prepare_output(state: QueryTransformerState) -> QueryTransformerOutputState:
     return {"_completed_query_results": [result]}
 
 
-workflow = StateGraph(QueryTransformerState, output=QueryTransformerOutputState, config_schema=Configuration)
+workflow = StateGraph(QueryTransformerState, output=QueryTransformerOutputState, context_schema=Configuration)
 
 workflow.add_node(QUERY_TRANSFORMER_MULTI_QUERY, multi_query, metadata={"description": "Multi-query generation strategy for comprehensive retrieval", "type": "strategy_subgraph", "strategy": "multi_query", "parallel_capable": True})
 
@@ -90,15 +94,8 @@ workflow.add_node(QUERY_TRANSFORMER_DEFAULT_RETRIEVAL, default_retrieval, metada
 
 workflow.add_node(QUERY_TRANSFORMER_PREPARE_OUTPUT, prepare_output, metadata={"description": "Prepares final output from selected strategy results", "type": "output_formatting_node", "criticality": "high"})
 
-
-def route_to_transformer_with_config(state: QueryTransformerState, config: RunnableConfig) -> str:
-    """Routes to the appropriate query transformation subgraph based on the retrieval method."""
-    configurable = Configuration.from_runnable_config(config)
-    return route_to_transformer(state, configurable)
-
-
 workflow.set_conditional_entry_point(
-    route_to_transformer_with_config,
+    route_to_transformer,
     {
         "multi_query": QUERY_TRANSFORMER_MULTI_QUERY,
         "decomposition": QUERY_TRANSFORMER_DECOMPOSITION,
@@ -119,4 +116,12 @@ workflow.add_edge(QUERY_TRANSFORMER_CONTEXTUAL_STRATEGY, QUERY_TRANSFORMER_PREPA
 workflow.add_edge(QUERY_TRANSFORMER_DEFAULT_RETRIEVAL, QUERY_TRANSFORMER_PREPARE_OUTPUT)
 workflow.add_edge(QUERY_TRANSFORMER_PREPARE_OUTPUT, END)
 
-query_transformer = workflow.compile(debug=True, name="query_transformation_strategy_router", interrupt_before=None, interrupt_after=None)  # Optimized for performance in query transformation
+_RL = int(_os.getenv("GRAPH_RECURSION_LIMIT", "60"))
+query_transformer = workflow.compile(
+    debug=True,
+    name="query_transformation_strategy_router",
+    interrupt_before=None,
+    interrupt_after=None,
+).with_config(
+    {"recursion_limit": _RL}
+)  # Optimized for performance in query transformation

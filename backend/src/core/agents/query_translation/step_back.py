@@ -29,10 +29,10 @@ class StepBackState(QueryTransformerState):
 
 
 # --- Nodes ---
-def generate_and_dispatch_node(state: StepBackState, config: RunnableConfig) -> StepBackState:
+async def generate_and_dispatch_node(state: StepBackState, config: RunnableConfig) -> StepBackState:
     """Generates a step-back question and dispatches retrieval for both questions in parallel."""
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.step_back_generate_model)
+    llm = init_chat_model(configuration.step_back_generate_model, disable_streaming=configuration.disable_streaming)
 
     original_question = state["transformed_query"]
 
@@ -45,7 +45,7 @@ def generate_and_dispatch_node(state: StepBackState, config: RunnableConfig) -> 
     step_back_prompt = ChatPromptTemplate.from_messages([("system", configuration.step_back_generate_prompt), few_shot_prompt, ("user", "{question}")])
 
     chain = step_back_prompt | llm | StrOutputParser()
-    step_back_question = chain.invoke({"question": original_question})
+    step_back_question = await chain.ainvoke({"question": original_question})
     return {"step_back_question": step_back_question, "retrieval_query": step_back_question}
 
 
@@ -63,10 +63,10 @@ def process_step_back_context_node(state: StepBackState, config: RunnableConfig)
     return {"step_back_context": formatted_string}
 
 
-def generate_final_response_node(state: StepBackState, config: RunnableConfig) -> QueryTransformerState:
+async def generate_final_response_node(state: StepBackState, config: RunnableConfig) -> QueryTransformerState:
     """Generates a final response using both sets of retrieved documents."""
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.step_back_response_model)
+    llm = init_chat_model(configuration.step_back_response_model, disable_streaming=configuration.disable_streaming)
 
     question = state["transformed_query"]
     normal_context = state["original_context"]
@@ -75,7 +75,7 @@ def generate_final_response_node(state: StepBackState, config: RunnableConfig) -
     response_prompt = ChatPromptTemplate.from_template(configuration.step_back_response_prompt)
     chain = response_prompt | llm | StrOutputParser()
 
-    final_response = chain.invoke({"question": question, "normal_context": normal_context, "step_back_context": step_back_context})
+    final_response = await chain.ainvoke({"question": question, "normal_context": normal_context, "step_back_context": step_back_context})
 
     return {"transformed_context": final_response}
 

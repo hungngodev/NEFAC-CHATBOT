@@ -1,41 +1,43 @@
 from typing import Any
 
 from langchain.chat_models import init_chat_model
-from langchain_core.messages import AnyMessage
+from langchain_core.runnables import RunnableConfig
 from langgraph.graph import MessagesState
 from langmem.short_term import RunningSummary, summarize_messages
 
 from src.config.settings import Configuration
-from src.schemas.state import AgentState
-
-
-class LLMInputState(AgentState):
-    summarized_messages: list[AnyMessage]
-    context: dict[str, Any]
 
 
 class SummaryState(MessagesState):
     summary: RunningSummary | None
 
 
-def summarization_node(state: SummaryState, config: Configuration) -> SummaryState:
+def summarizer(state: SummaryState, config: RunnableConfig | None = None) -> SummaryState:
+    """Update running conversation summary without generating a chat reply.
+
+    This node maintains short-term memory using langmem's summarization utilities.
+    It should not produce an assistant message or answer the user. It only updates
+    the running summary in the graph state when needed.
+    """
+
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.summarizer_model)
+    # Bind summarization-specific token limit from configuration
+    summarization_llm = init_chat_model(configuration.summarization_model, disable_streaming=configuration.disable_streaming)
+    summarization_model = summarization_llm.bind(max_tokens=configuration.summarization_model_max_tokens)
 
     summarization_result = summarize_messages(
         state["messages"],
         running_summary=state.get("summary"),
-        model=llm.bind(max_tokens=128),
-        max_tokens=256,
-        max_tokens_before_summary=256,
-        max_summary_tokens=128,
+        model=summarization_model,
+        max_tokens=configuration.summarization_model_max_tokens,
+        max_tokens_before_summary=configuration.summarization_model_max_tokens,
+        max_summary_tokens=min(128, configuration.summarization_model_max_tokens),
     )
-    response = llm.invoke(summarization_result.messages)
-    state_update = {"messages": [response]}
+
+    # Do not call the chat model here and do not append any messages.
+    # Only update the running summary and expose summarized messages for downstream nodes.
+    state_update: dict[str, Any] = {"summarized_messages": summarization_result.messages}
     if summarization_result.running_summary:
         state_update["summary"] = summarization_result.running_summary
+
     return state_update
-
-
-# Create an alias for the summarizer
-summarizer = summarization_node

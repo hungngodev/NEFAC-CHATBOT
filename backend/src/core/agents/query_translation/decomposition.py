@@ -31,17 +31,17 @@ class DecompositionState(QueryTransformerState):
 
 
 # --- Nodes ---
-def generate_sub_questions_node(state: DecompositionState, config: RunnableConfig) -> DecompositionState:
+async def generate_sub_questions_node(state: DecompositionState, config: RunnableConfig) -> DecompositionState:
     """Decomposes the main question into a series of sub-questions."""
     configuration = Configuration.from_runnable_config(config)
 
-    model = init_chat_model(configuration.decomposition_generate_model)
+    model = init_chat_model(configuration.decomposition_generate_model, disable_streaming=configuration.disable_streaming)
     question = state["transformed_query"]
 
     prompt = ChatPromptTemplate.from_template(configuration.decomposition_generate_prompt)
     chain = prompt | model | StrOutputParser() | (lambda x: x.strip().split("\n"))
 
-    sub_questions = chain.invoke({"question": question})
+    sub_questions = await chain.ainvoke({"question": question})
     sub_questions = [q.strip() for q in sub_questions if q.strip()]
 
     return {"sub_questions": sub_questions}
@@ -49,22 +49,23 @@ def generate_sub_questions_node(state: DecompositionState, config: RunnableConfi
 
 def answer_sub_questions_node(state: DecompositionState) -> RetrievalSubgraphState:
     """Answers each sub-question iteratively, using retrieval for context."""
-    sub_questions = state["sub_questions"]
-    q_a_pairs = state["q_a_pairs"]
+    sub_questions = state.get("sub_questions", [])
+    q_a_pairs = state.get("q_a_pairs", [])
     current_index = len(q_a_pairs)
 
     sub_question = sub_questions[current_index]
     return {"retrieval_query": sub_question}
 
 
-def format_answer_node(state: DecompositionState, config: RunnableConfig) -> DecompositionState:
+async def format_answer_node(state: DecompositionState, config: RunnableConfig) -> DecompositionState:
     """Format the answer for the current sub-question."""
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.decomposition_answer_model)
+    llm = init_chat_model(configuration.decomposition_answer_model, disable_streaming=configuration.disable_streaming)
 
     context_docs = state["documents"]
     context = format_docs(context_docs)
-    q_a_pairs = state["q_a_pairs"]
+    # Accumulate Q&A pairs across iterations to advance the loop index
+    q_a_pairs = state.get("q_a_pairs", [])
     previous_q_a = "\n---\n".join(q_a_pairs)
 
     qa_prompt = ChatPromptTemplate.from_template(configuration.decomposition_qa_template)
@@ -72,30 +73,30 @@ def format_answer_node(state: DecompositionState, config: RunnableConfig) -> Dec
     sub_question = sub_questions[len(q_a_pairs)]
 
     qa_chain = qa_prompt | llm | StrOutputParser()
-    answer = qa_chain.invoke({"sub_question": sub_question, "q_a_pairs": previous_q_a, "context": context})
+    answer = await qa_chain.ainvoke({"sub_question": sub_question, "q_a_pairs": previous_q_a, "context": context})
 
-    return {"q_a_pairs": [f"Question: {sub_question}\nAnswer: {answer}"]}
+    return {"q_a_pairs": q_a_pairs + [f"Question: {sub_question}\nAnswer: {answer}"]}
 
 
-def synthesize_final_answer_node(state: DecompositionState, config: RunnableConfig) -> QueryTransformerState:
+async def synthesize_final_answer_node(state: DecompositionState, config: RunnableConfig) -> QueryTransformerState:
     """Synthesizes the final answer from the Q&A pairs."""
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.decomposition_final_model)
+    llm = init_chat_model(configuration.decomposition_final_model, disable_streaming=configuration.disable_streaming)
 
     question = state["transformed_query"]
-    q_a_pairs_str = "\n---\n".join(state["q_a_pairs"])
+    q_a_pairs_str = "\n---\n".join(state.get("q_a_pairs", []))
 
     synthesis_prompt = ChatPromptTemplate.from_template(configuration.decomposition_synthesis_template)
     synthesis_chain = synthesis_prompt | llm | StrOutputParser()
 
-    final_response = synthesis_chain.invoke({"context": q_a_pairs_str, "question": question})
+    final_response = await synthesis_chain.ainvoke({"context": q_a_pairs_str, "question": question})
 
     return {"transformed_context": final_response}
 
 
 def route_from_format_nodes(state: DecompositionState) -> str:
     """Decide whether to loop back to answer next sub-question or proceed to synthesis."""
-    if len(state["q_a_pairs"]) < len(state["sub_questions"]):
+    if len(state.get("q_a_pairs", [])) < len(state.get("sub_questions", [])):
         return DECOMPOSITION_ANSWER_SUB_QUESTIONS
     else:
         return DECOMPOSITION_SYNTHESIZE_FINAL_ANSWER
@@ -167,7 +168,14 @@ workflow.add_node(
 )
 
 workflow.set_entry_point(DECOMPOSITION_GENERATE_SUB_QUESTIONS)
-workflow.add_edge(DECOMPOSITION_GENERATE_SUB_QUESTIONS, DECOMPOSITION_ANSWER_SUB_QUESTIONS)
+
+
+def _route_after_generate(state: DecompositionState) -> str:
+    """If no sub-questions were generated, skip directly to synthesis."""
+    return DECOMPOSITION_ANSWER_SUB_QUESTIONS if len(state.get("sub_questions", [])) > 0 else DECOMPOSITION_SYNTHESIZE_FINAL_ANSWER
+
+
+workflow.add_conditional_edges(DECOMPOSITION_GENERATE_SUB_QUESTIONS, _route_after_generate)
 workflow.add_edge(DECOMPOSITION_ANSWER_SUB_QUESTIONS, DECOMPOSITION_RETRIEVE_SUBGRAPH)
 workflow.add_edge(DECOMPOSITION_RETRIEVE_SUBGRAPH, DECOMPOSITION_FORMAT_ANSWER)
 workflow.add_conditional_edges(DECOMPOSITION_FORMAT_ANSWER, route_from_format_nodes)

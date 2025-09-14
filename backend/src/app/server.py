@@ -1,3 +1,5 @@
+import os as _os
+
 from langgraph.graph import END, START, StateGraph
 
 from src.config.node_names import MEMORY_SUMMARIZER_NODE, RESEARCH_CLARIFY_WITH_USER, RESEARCH_FINAL_REPORT_GENERATION, RESEARCH_SUPERVISOR, RESEARCH_WRITE_RESEARCH_BRIEF
@@ -9,7 +11,7 @@ from src.core.agents.query_understanding.write_research_brief import write_resea
 from src.core.agents.supervisor.supervisor import supervisor_subgraph
 from src.schemas.state import AgentInputState, AgentState
 
-deep_researcher_builder = StateGraph(state_schema=AgentState, input_schema=AgentInputState, output_schema=AgentState, config_schema=Configuration)
+deep_researcher_builder = StateGraph(state_schema=AgentState, input_schema=AgentInputState, output_schema=AgentState, context_schema=Configuration)
 
 deep_researcher_builder.add_node(
     node=RESEARCH_CLARIFY_WITH_USER,
@@ -23,7 +25,8 @@ deep_researcher_builder.add_node(
         "llm_powered": True,
         "conditional_routing": True,
         "expected_duration": "medium",
-        "dependencies": ["memory_context"],
+        # Uses summarized messages if present; otherwise raw messages
+        "dependencies": ["messages", "summarized_messages"],
         "outputs": ["clarified_intent", "routing_decision"],
     },
     retry_policy=None,
@@ -86,14 +89,15 @@ deep_researcher_builder.add_node(
     node=MEMORY_SUMMARIZER_NODE,
     action=summarizer,
     metadata={
-        "description": "Summarizes conversation history and context for research preparation",
+        "description": "Maintains short-term conversation summary (no user-facing reply)",
         "type": "preprocessing_node",
         "interaction": "internal",
         "criticality": "medium",
         "llm_powered": True,
         "expected_duration": "short",
-        "dependencies": ["conversation_history"],
-        "outputs": ["memory_context", "summarized_history"],
+        # Reads chat history from messages; updates 'summary' and provides 'summarized_messages'
+        "dependencies": ["messages"],
+        "outputs": ["summary", "summarized_messages"],
     },
     retry_policy=None,
     cache_policy=None,
@@ -105,9 +109,10 @@ deep_researcher_builder.add_edge(RESEARCH_WRITE_RESEARCH_BRIEF, RESEARCH_SUPERVI
 deep_researcher_builder.add_edge(RESEARCH_SUPERVISOR, RESEARCH_FINAL_REPORT_GENERATION)
 deep_researcher_builder.add_edge(RESEARCH_FINAL_REPORT_GENERATION, END)
 
+_RL = int(_os.getenv("GRAPH_RECURSION_LIMIT", "60"))
 deep_researcher = deep_researcher_builder.compile(
     debug=True,
     name="deep_researcher_main_graph",
     interrupt_before=None,
     interrupt_after=None,
-)
+).with_config({"recursion_limit": _RL})

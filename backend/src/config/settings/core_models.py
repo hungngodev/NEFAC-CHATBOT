@@ -25,6 +25,15 @@ class CoreModelsConfig(BaseModel):
         },
     )
 
+    summarization_model_max_tokens: int = Field(
+        default=512,
+        description="Maximum generation tokens for the summarization model.",
+        json_schema_extra={
+            "langgraph_nodes": [node_names_module.MEMORY_SUMMARIZER_NODE],
+            "langgraph_type": "number",
+        },
+    )
+
     generator_model: Annotated[
         models_module.ModelType,
         {"__template_metadata__": {"kind": "llm"}},
@@ -64,4 +73,12 @@ class CoreModelsConfig(BaseModel):
     model_kwargs: dict[str, Any] = Field(
         default_factory=dict,
         description="Additional model configuration parameters.",
+    )
+
+    # Global switch to disable model streaming; models should not stream
+    # and callers should not pass stream flags on invoke/ainvoke.
+    disable_streaming: bool = Field(
+        default=True,
+        description="Disable streaming at the model level; all LLM invocations are non-streaming.",
+        json_schema_extra={"langgraph_type": "boolean"},
     )

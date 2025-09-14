@@ -23,17 +23,17 @@ class FactualStrategyState(QueryTransformerState):
 
 
 # --- Nodes ---
-def generate_factual_query_node(state: FactualStrategyState, config: RunnableConfig) -> dict:
+async def generate_factual_query_node(state: FactualStrategyState, config: RunnableConfig) -> dict:
     """Generates a factual query and passes it to the retrieval subgraph."""
     question = state["transformed_query"]
 
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.factual_strategy_model)
+    llm = init_chat_model(configuration.factual_strategy_model, disable_streaming=configuration.disable_streaming)
 
     prompt = ChatPromptTemplate.from_template(configuration.factual_strategy_prompt)
     chain = prompt | llm | StrOutputParser()
 
-    factual_query = chain.invoke({"question": question})
+    factual_query = await chain.ainvoke({"question": question})
     return {"retrieval_query": factual_query}
 
 

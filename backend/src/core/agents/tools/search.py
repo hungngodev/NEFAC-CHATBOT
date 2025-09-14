@@ -20,7 +20,19 @@ TAVILY_SEARCH_DESCRIPTION = "A search engine optimized for comprehensive, accura
 async def summarize_webpage(model: BaseChatModel, webpage_content: str, config: RunnableConfig) -> str:
     try:
         configurable = Configuration.from_runnable_config(config)
-        summary = await asyncio.wait_for(model.ainvoke([HumanMessage(content=configurable.summarize_webpage_prompt.format(webpage_content=webpage_content, date=get_today_str()))]), timeout=60.0)
+        summary = await asyncio.wait_for(
+            model.ainvoke(
+                [
+                    HumanMessage(
+                        content=configurable.summarize_webpage_prompt.format(
+                            webpage_content=webpage_content,
+                            date=get_today_str(),
+                        )
+                    )
+                ]
+            ),
+            timeout=60.0,
+        )
         return f"""<summary>\n{summary.summary}\n</summary>\n\n<key_excerpts>\n{summary.key_excerpts}\n</key_excerpts>"""
     except (asyncio.TimeoutError, Exception) as e:
         print(f"Failed to summarize webpage: {str(e)}")
@@ -52,7 +64,9 @@ async def tavily_search(queries: list[str], max_results: Annotated[int, Injected
     configurable = Configuration.from_runnable_config(config)
     max_char_to_include = 50_000  # NOTE: This can be tuned by the developer. This character count keeps us safely under input token limits for the latest models.
     model_api_key = get_api_key_for_model(configurable.summarization_model, config)
-    summarization_model = init_chat_model(model=configurable.summarization_model, max_tokens=configurable.summarization_model_max_tokens, api_key=model_api_key, tags=["langsmith:nostream"]).with_structured_output(Summary).with_retry(stop_after_attempt=configurable.max_structured_output_retries)
+    summarization_model = (
+        init_chat_model(model=configurable.summarization_model, max_tokens=configurable.summarization_model_max_tokens, api_key=model_api_key, disable_streaming=configurable.disable_streaming).with_structured_output(Summary).with_retry(stop_after_attempt=configurable.max_structured_output_retries)
+    )
 
     async def noop():
         return None

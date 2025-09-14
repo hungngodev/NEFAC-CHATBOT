@@ -8,7 +8,6 @@ from pydantic import BaseModel, Field
 
 import src.config.models as models_module
 import src.config.node_names as node_names_module
-import src.config.prompts as prompts_module
 
 
 class SupervisorConfig(BaseModel):
@@ -23,14 +22,5 @@ class SupervisorConfig(BaseModel):
         json_schema_extra={
             "langgraph_nodes": [node_names_module.RESEARCH_SUPERVISOR],
             "langgraph_type": "model",
-        },
-    )
-
-    supervisor_prompt: str = Field(
-        default=prompts_module.DEFAULT_SUPERVISOR_PROMPT,
-        description="Prompt for the supervisor to decide which worker to use.",
-        json_schema_extra={
-            "langgraph_nodes": [node_names_module.RESEARCH_SUPERVISOR],
-            "langgraph_type": "prompt",
         },
     )

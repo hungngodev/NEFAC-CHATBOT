@@ -14,9 +14,7 @@ from src.core.agents.retrieval.subgraph import retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.state import QueryTransformerState
 
-# Create a default configuration for backward compatibility
-default_config = Configuration()
-llm = init_chat_model(default_config.hyde_model)
+# Remove premature LLM construction; use per-call configuration with streaming disabled
 
 
 # --- Subgraph State ---
@@ -28,33 +26,33 @@ class HydeState(QueryTransformerState):
 
 
 # --- Nodes ---
-def generate_hypothetical_document_node(state: HydeState, config: RunnableConfig) -> dict:
+async def generate_hypothetical_document_node(state: HydeState, config: RunnableConfig) -> dict:
     """Generates a hypothetical document and passes it to the retrieval subgraph."""
     question = state["transformed_query"]
 
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.hyde_model)
+    llm = init_chat_model(configuration.hyde_model, disable_streaming=configuration.disable_streaming)
 
-    prompt = ChatPromptTemplate.from_template(configuration.hyde_prompt)
+    prompt = ChatPromptTemplate.from_template(configuration.hyde_generation_prompt)
     chain = prompt | llm | StrOutputParser()
 
-    hypothetical_document = chain.invoke({"question": question})
+    hypothetical_document = await chain.ainvoke({"question": question})
     return {"retrieval_query": hypothetical_document}
 
 
-def generate_final_response_node(state: HydeState, config: RunnableConfig) -> dict:
+async def generate_final_response_node(state: HydeState, config: RunnableConfig) -> dict:
     """Generates the final response using the retrieved documents."""
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.hyde_model)
+    llm = init_chat_model(configuration.hyde_model, disable_streaming=configuration.disable_streaming)
 
     question = state["transformed_query"]
     documents = state["documents"]
     context = format_docs(documents)
 
-    response_prompt = ChatPromptTemplate.from_template(configuration.hyde_response_prompt)
+    response_prompt = ChatPromptTemplate.from_template(configuration.hyde_final_prompt)
     chain = response_prompt | llm | StrOutputParser()
 
-    final_response = chain.invoke({"question": question, "context": context})
+    final_response = await chain.ainvoke({"question": question, "context": context})
 
     return {"transformed_context": final_response}
 

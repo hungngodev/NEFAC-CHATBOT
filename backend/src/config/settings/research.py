@@ -18,7 +18,7 @@ class ResearchConfig(BaseModel):
     max_structured_output_retries: int = Field(default=3, metadata={"x_oap_ui_config": {"type": "number", "default": 3, "min": 1, "max": 10, "description": "Maximum number of retries for structured output calls from models"}})
     allow_clarification: bool = Field(default=True, metadata={"x_oap_ui_config": {"type": "boolean", "default": True, "description": "Whether to allow the researcher to ask the user clarifying questions before starting research"}})
     max_concurrent_research_units: int = Field(
-        default=5,
+        default=3,
         metadata={
             "x_oap_ui_config": {
                 "type": "slider",
@@ -46,7 +46,38 @@ class ResearchConfig(BaseModel):
         default=3,
         metadata={"x_oap_ui_config": {"type": "slider", "default": 3, "min": 1, "max": 10, "step": 1, "description": "Maximum number of research iterations for the Research Supervisor. This is the number of times the Research Supervisor will reflect on the research and ask follow-up questions."}},
     )
-    max_react_tool_calls: int = Field(default=5, metadata={"x_oap_ui_config": {"type": "slider", "default": 5, "min": 1, "max": 30, "step": 1, "description": "Maximum number of tool calling iterations to make in a single researcher step."}})
+    max_react_tool_calls: int = Field(default=3, metadata={"x_oap_ui_config": {"type": "slider", "default": 3, "min": 1, "max": 30, "step": 1, "description": "Maximum number of tool calling iterations to make in a single researcher step."}})
+
+    # Hard limit on how many InternalDocumentSearch calls are processed per iteration.
+    # Additional calls in the same assistant message will be deferred with a ToolMessage.
+    max_internal_search_calls_per_turn: int = Field(
+        default=4,
+        metadata={
+            "x_oap_ui_config": {
+                "type": "slider",
+                "default": 4,
+                "min": 1,
+                "max": 10,
+                "step": 1,
+                "description": "Maximum number of InternalDocumentSearch calls to process per researcher iteration.",
+            }
+        },
+    )
+
+    # Graph recursion limit for LangGraph runloops (prevents infinite bouncing)
+    graph_recursion_limit: int = Field(
+        default=60,
+        metadata={
+            "x_oap_ui_config": {
+                "type": "slider",
+                "default": 60,
+                "min": 10,
+                "max": 200,
+                "step": 5,
+                "description": "Maximum recursion depth for graph execution before aborting (LangGraph recursion_limit).",
+            }
+        },
+    )
 
 
 class ResearchModelsConfig(BaseModel):
@@ -64,9 +95,10 @@ class ResearchModelsConfig(BaseModel):
         },
     )
 
-    clarify_with_user_instructions: str = Field(
+    # Alias commonly used in code
+    clarify_with_user_prompt: str = Field(
         default=prompts_module.DEFAULT_CLARIFY_WITH_USER_INSTRUCTIONS,
-        description="Instructions for clarifying user queries before research.",
+        description="Prompt for clarifying user queries before research (alias of instructions).",
         json_schema_extra={
             "langgraph_nodes": [node_names_module.RESEARCH_CLARIFY_WITH_USER],
             "langgraph_type": "prompt",
@@ -88,6 +120,36 @@ class ResearchModelsConfig(BaseModel):
     transform_messages_into_research_topic_prompt: str = Field(
         default=prompts_module.DEFAULT_TRANSFORM_MESSAGES_INTO_RESEARCH_TOPIC_PROMPT,
         description="Prompt for transforming conversation messages into research topics.",
+        json_schema_extra={
+            "langgraph_nodes": [node_names_module.RESEARCH_WRITE_RESEARCH_BRIEF],
+            "langgraph_type": "prompt",
+        },
+    )
+
+    research_model: Annotated[
+        models_module.ModelType,
+        {"__template_metadata__": {"kind": "llm"}},
+    ] = Field(
+        default=models_module.DEFAULT_RESEARCH_MODEL,
+        description="Model for the main researcher agent.",
+        json_schema_extra={
+            "langgraph_nodes": [node_names_module.RESEARCH_RESEARCHER],
+            "langgraph_type": "model",
+        },
+    )
+
+    research_system_prompt: str = Field(
+        default=prompts_module.DEFAULT_RESEARCH_SYSTEM_PROMPT,
+        description="System prompt for the main researcher agent.",
+        json_schema_extra={
+            "langgraph_nodes": [node_names_module.RESEARCH_RESEARCHER],
+            "langgraph_type": "prompt",
+        },
+    )
+
+    lead_researcher_prompt: str = Field(
+        default=prompts_module.DEFAULT_LEAD_RESEARCHER_PROMPT,
+        description="Prompt given to the supervisor/lead researcher to coordinate research.",
         json_schema_extra={
             "langgraph_nodes": [node_names_module.RESEARCH_WRITE_RESEARCH_BRIEF],
             "langgraph_type": "prompt",
@@ -133,5 +195,38 @@ class ResearchModelsConfig(BaseModel):
         json_schema_extra={
             "langgraph_nodes": [node_names_module.RESEARCH_FINAL_REPORT_GENERATION],
             "langgraph_type": "model",
+        },
+    )
+
+    # === Max token budgets ===
+    research_model_max_tokens: int = Field(
+        default=1024,
+        description="Maximum generation tokens for research-oriented model calls (also used for clarify step).",
+    )
+    compression_model_max_tokens: int = Field(
+        default=1024,
+        description="Maximum generation tokens for the research compression model.",
+    )
+    final_report_model_max_tokens: int = Field(
+        default=2048,
+        description="Maximum generation tokens for the final report generation model.",
+    )
+
+    # === Additional prompts used in research workflow ===
+    final_report_generation_prompt: str = Field(
+        default=prompts_module.DEFAULT_FINAL_REPORT_GENERATION_PROMPT,
+        description="Prompt template for generating the final report from collected notes and brief.",
+        json_schema_extra={
+            "langgraph_nodes": [node_names_module.RESEARCH_FINAL_REPORT_GENERATION],
+            "langgraph_type": "prompt",
+        },
+    )
+
+    summarize_webpage_prompt: str = Field(
+        default=prompts_module.DEFAULT_SUMMARIZE_WEBPAGE_PROMPT,
+        description="Prompt template for summarizing raw webpage content from external search results.",
+        json_schema_extra={
+            "langgraph_nodes": [node_names_module.RESEARCH_RESEARCHER],
+            "langgraph_type": "prompt",
         },
     )

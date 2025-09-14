@@ -4,6 +4,7 @@ from typing import Any
 from langchain_core.runnables import RunnableConfig
 from pydantic import BaseModel, Field
 
+import src.config.models as models_module
 from src.config.settings.base import MCPConfig
 from src.config.settings.core_models import CoreModelsConfig
 from src.config.settings.query_transformation import (
@@ -43,7 +44,36 @@ class Configuration(
         """Create a Configuration instance from a RunnableConfig."""
         configurable = config.get("configurable", {}) if config else {}
         field_names = list(cls.model_fields.keys())
-        values: dict[str, Any] = {field_name: os.environ.get(field_name.upper(), configurable.get(field_name)) for field_name in field_names}
+
+        # Build a suffix->full mapping for supported model names
+        try:
+            _suffix_to_full = {m.split(":", 1)[1]: m for m in getattr(models_module, "SUPPORTED_MODELS", []) if ":" in m}
+        except Exception:
+            _suffix_to_full = {}
+
+        def _normalize_model(value: Any) -> Any:
+            if not isinstance(value, str):
+                return value
+            if ":" in value:
+                return value
+            # Try exact suffix match first
+            if value in _suffix_to_full:
+                return _suffix_to_full[value]
+            # Heuristic provider prefix based on common patterns
+            if value.startswith("gpt-"):
+                return f"openai:{value}"
+            if value.startswith("claude-"):
+                return f"anthropic:{value}"
+            return value
+
+        values: dict[str, Any] = {}
+        for field_name in field_names:
+            raw = os.environ.get(field_name.upper(), configurable.get(field_name))
+            # Normalize any *_model fields to provider-prefixed values
+            if isinstance(raw, str) and field_name.endswith("_model"):
+                raw = _normalize_model(raw)
+            values[field_name] = raw
+
         return cls(**{k: v for k, v in values.items() if v is not None})
 
     class Config:

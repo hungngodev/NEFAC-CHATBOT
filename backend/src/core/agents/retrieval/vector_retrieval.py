@@ -53,9 +53,9 @@ def vector_search(query: str, top_k: int = 10) -> list[Document]:
     Performs semantic search on a Qdrant vector store to find documents
     conceptually related to the query. Best for broad, conceptual questions.
     """
-    retriever = vector_retriever
-    # Pass top_k to the underlying retriever
-    documents = retriever.invoke(query, search_kwargs={"k": top_k})
+    # Build a retriever configured with k for this call to avoid version-specific kwargs errors
+    local_retriever = vectorstore.as_retriever(search_kwargs={"k": top_k})
+    documents = local_retriever.invoke(query)
 
     # Add metadata tag for identification
     for doc in documents:

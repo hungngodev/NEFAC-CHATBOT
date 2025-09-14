@@ -27,18 +27,17 @@ Given a question and context retrieved from the knowledge graph, your task is to
 Question: {question}
 Context: {context}"""
 
-DEFAULT_CYPHER_GENERATION_TEMPLATE = """You are a Neo4j Cypher expert. Your task is to generate an efficient and accurate Cypher query to answer the given question, utilizing the provided graph schema. Focus on returning only the Cypher statement, without Any additional text or explanations.
+DEFAULT_CYPHER_GENERATION_TEMPLATE = """You are a Neo4j Cypher expert. Your task is to generate an efficient and accurate Cypher query to answer the given question, utilizing the provided graph schema. Return only the Cypher statement — no commentary, code fences, or explanations.
 
-**Instructions for Cypher Generation:**
-1.  **Prioritize Graph Traversal:** Whenever possible, use graph patterns (MATCH, OPTIONAL MATCH) to find relationships between entities.
-2.  **Use Properties:** Filter nodes and relationships using their properties (e.g., `n.name = '...'`, `r.date > '...'`).
-3.  **Aggregations:** Use aggregation functions (e.g., `COUNT`, `SUM`, `AVG`, `COLLECT`) when the question implies a summary or count.
-4.  **Pathfinding:** For questions asking about connections or relationships between two entities, consider `shortestPath` or `allShortestPaths`.
-5.  **Filtering:** Apply `WHERE` clauses to narrow down results based on conditions in the question.
-6.  **Ordering and Limiting:** Use `ORDER BY` and `LIMIT` for structured results, especially if the question asks for "top N" or "most recent."
-7.  **Return Relevant Data:** Ensure the `RETURN` clause includes all necessary information to answer the question.
-8.  **Schema Adherence:** Strictly adhere to the provided schema for node labels, relationship types, and properties.
-9.  **No Explanations:** Only output the Cypher query.
+Strict Output Rules:
+1. Use only English Cypher keywords and identifiers. Do not insert non-English words (e.g., 'oder', 'und').
+2. In the RETURN clause, every alias must be a single token using camelCase or snake_case (ASCII letters, digits, underscore only). Never include spaces or punctuation in aliases. Examples: `dateFiledOrDocketed`, `caseName`, `event_date`.
+3. Do not translate or alter property names; use them exactly as defined in the schema.
+4. Use logical operators only in clauses (WHERE, etc.), not in aliases. Never write words like 'or' inside an alias; instead, combine words in camelCase or snake_case.
+5. Prefer graph patterns (MATCH/OPTIONAL MATCH) and adhere strictly to labels, relationship types, and properties from the schema.
+6. Apply filtering in WHERE, order with ORDER BY, and limit results with LIMIT when relevant.
+7. When the question implies aggregation, use proper aggregations (COUNT, SUM, AVG, COLLECT).
+8. Output must be a single valid Cypher query only, with no surrounding text.
 
 Schema:
 {schema}
@@ -46,16 +45,16 @@ Schema:
 Cypher examples:
 # Find all organizations NEFAC has partnered with and the nature of their partnership.
 MATCH (n:Organization {{name: 'NEFAC'}})-[r:PARTNERS_WITH]->(p:Organization)
-RETURN p.name AS Partner, type(r) AS PartnershipType
+RETURN p.name AS partner, type(r) AS partnershipType
 
 # List all events hosted by NEFAC in 2023.
 MATCH (e:Event)-[:HOSTED_BY]->(o:Organization {{name: 'NEFAC'}})
 WHERE e.date STARTS WITH '2023'
-RETURN e.name AS EventName, e.date AS EventDate
+RETURN e.name AS eventName, e.date AS eventDate
 
 # What legal cases is 'John Doe' involved in, and in what capacity?
 MATCH (p:Person {{name: 'John Doe'}})-[r]-(c:Case)
-RETURN c.name AS CaseName, type(r) AS Role
+RETURN c.name AS caseName, type(r) AS role
 
 # Find the shortest path between 'NEFAC' and 'ACLU'.
 MATCH p = shortestPath((n1:Organization {{name: 'NEFAC'}})-[*..5]-(n2:Organization {{name: 'ACLU'}}))
@@ -63,16 +62,16 @@ RETURN p
 
 # Count the number of articles published by 'Jane Smith'.
 MATCH (a:Article)-[:AUTHORED_BY]->(p:Person {{name: 'Jane Smith'}})
-RETURN COUNT(a) AS NumberOfArticles
+RETURN COUNT(a) AS numberOfArticles
 
 # Which statutes are cited in cases decided by 'Supreme Court'?
 MATCH (s:Statute)-[:CITED_IN]->(c:Case)-[:DECIDED_BY]->(o:Organization {{name: 'Supreme Court'}})
-RETURN s.title, s.citation
+RETURN s.title AS statuteTitle, s.citation AS statuteCitation
 
 # What are the names of all staff members of NEFAC and their titles?
 MATCH (p:Person)-[:WORKS_FOR]->(o:Organization {{name: 'NEFAC'}})
 WHERE 'StaffMember' IN labels(p)
-RETURN p.name AS StaffMemberName, p.title AS Title
+RETURN p.name AS staffMemberName, p.title AS title
 
 Question: {question}"""
 

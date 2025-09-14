@@ -3,7 +3,7 @@
   "graphs": {
     "agent": {
       "path": "src.app.server:deep_researcher",
-      "config_schema": "src.app.server:Configuration"
+      "config_schema": "src.config.settings:Configuration"
     }
   },
   "env": "../.env"

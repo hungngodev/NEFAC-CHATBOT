@@ -1,4 +1,7 @@
+import os as _os
+
 from langchain.chat_models import init_chat_model
+from langchain_core.messages import ToolMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, START, StateGraph
 
@@ -10,18 +13,52 @@ from src.core.agents.tools.misc_utils import get_api_key_for_model
 from src.schemas.state import ConductResearch, ResearchComplete, SupervisorState
 
 
+def _has_pending_tool_calls(messages: list) -> bool:
+    if not messages:
+        return False
+    last_ai_idx = None
+    last_ai_tool_calls = None
+    for idx in range(len(messages) - 1, -1, -1):
+        msg = messages[idx]
+        tc = getattr(msg, "tool_calls", None)
+        if tc:
+            last_ai_idx = idx
+            last_ai_tool_calls = tc
+            break
+    if last_ai_idx is None or not last_ai_tool_calls:
+        return False
+    expected_ids = {call.get("id") for call in last_ai_tool_calls if isinstance(call, dict)}
+    if not expected_ids:
+        return False
+    observed_ids = set()
+    for j in range(last_ai_idx + 1, len(messages)):
+        m = messages[j]
+        if not isinstance(m, ToolMessage) and getattr(m, "type", None) != "tool":
+            break
+        tool_call_id = getattr(m, "tool_call_id", None)
+        if tool_call_id:
+            observed_ids.add(tool_call_id)
+    return not expected_ids.issubset(observed_ids)
+
+
 async def supervisor(state: SupervisorState, config: RunnableConfig) -> dict:
     configurable = Configuration.from_runnable_config(config)
-    supervisor_model_config = {"model": configurable.supervisor_model, "max_tokens": configurable.research_model_max_tokens, "api_key": get_api_key_for_model(configurable.supervisor_model, config), "tags": ["langsmith:nostream"]}
-    configurable_model = init_chat_model(configurable.supervisor_model).bind(**supervisor_model_config)
+    supervisor_model_config = {"model": configurable.supervisor_model, "max_tokens": configurable.research_model_max_tokens, "api_key": get_api_key_for_model(configurable.supervisor_model, config)}
+    configurable_model = init_chat_model(configurable.supervisor_model, disable_streaming=configurable.disable_streaming).bind(**supervisor_model_config)
     lead_researcher_tools = [ConductResearch, ResearchComplete]
     supervisor_model = configurable_model.bind_tools(lead_researcher_tools).with_retry(stop_after_attempt=configurable.max_structured_output_retries).with_config(supervisor_model_config)
     supervisor_messages = state.get("supervisor_messages", [])
+    # If there are any pending tool calls in history, route to tools first
+    if _has_pending_tool_calls(supervisor_messages):
+        from langgraph.types import Command  # Local import to avoid circulars at module import time
+
+        return Command(goto=SUPERVISOR_TOOLS_NODE)
+    # Use native async client path
     response = await supervisor_model.ainvoke(supervisor_messages)
     return {"supervisor_messages": [response], "research_iterations": state.get("research_iterations", 0) + 1}
 
 
-supervisor_builder = StateGraph(state_schema=SupervisorState, input_schema=SupervisorState, output_schema=SupervisorState, config_schema=Configuration)
+supervisor_builder = StateGraph(state_schema=SupervisorState, input_schema=SupervisorState, output_schema=SupervisorState, context_schema=Configuration)
 
 # Add nodes with comprehensive operational xmetadata
 supervisor_builder.add_node(
@@ -79,9 +116,10 @@ supervisor_builder.add_edge(START, SUPERVISOR_NODE)
 supervisor_builder.add_edge(SUPERVISOR_NODE, SUPERVISOR_TOOLS_NODE)
 supervisor_builder.add_edge(RESEARCH_TEAM, SUPERVISOR_TOOLS_NODE)
 
+_RL = int(_os.getenv("GRAPH_RECURSION_LIMIT", "60"))
 supervisor_subgraph = supervisor_builder.compile(
     debug=True,
     name="supervisor_coordination_graph",
     interrupt_before=None,
     interrupt_after=None,
-)
+).with_config({"recursion_limit": _RL})

@@ -10,13 +10,13 @@ from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.state import QueryTransformerState
 
 
-def retrieve_node(state: QueryTransformerState, config: RunnableConfig) -> QueryTransformerState:
+async def retrieve_node(state: QueryTransformerState, config: RunnableConfig) -> QueryTransformerState:
     """
     Direct retrieval using the original query without transformation.
     """
     query = state["transformed_query"]
 
-    result = retrieval_subgraph.invoke({"retrieval_query": query}, config)
+    result = await retrieval_subgraph.ainvoke({"retrieval_query": query})
 
     documents = result.get("documents", [])
 

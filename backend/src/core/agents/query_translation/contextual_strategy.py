@@ -21,17 +21,17 @@ class ContextualStrategyState(QueryTransformerState):
 
 
 # --- Nodes ---
-def generate_contextual_query_node(state: ContextualStrategyState, config: RunnableConfig) -> dict:
+async def generate_contextual_query_node(state: ContextualStrategyState, config: RunnableConfig) -> dict:
     """Generates a contextual query and passes it to the retrieval subgraph."""
     question = state["transformed_query"]
 
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.contextual_strategy_model)
+    llm = init_chat_model(configuration.contextual_strategy_model, disable_streaming=configuration.disable_streaming)
 
     prompt = ChatPromptTemplate.from_template(configuration.contextual_strategy_prompt)
     chain = prompt | llm | StrOutputParser()
 
-    contextual_query = chain.invoke({"question": question})
+    contextual_query = await chain.ainvoke({"question": question})
     return {"retrieval_query": contextual_query}
 
 

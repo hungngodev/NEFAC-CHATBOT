@@ -43,16 +43,20 @@ class Summary(BaseModel):
 ###################
 # State Definitions
 ###################
-class DocumentSearchParamsModel(BaseModel):
-    weights: dict[str, float]
-    vector_k: int
-    keyword_k: int
-    ensemble_k: int
 
 
 class RetrievalPlanModel(BaseModel):
-    methods: list[str]
-    doc_search_params: DocumentSearchParamsModel
+    """Flattened plan schema for provider-compatible structured output.
+
+    The retrieval planner produces these top-level fields, which the node then
+    reshapes into the nested runtime format expected elsewhere.
+    """
+
+    keyword_weight: float
+    vector_weight: float
+    vector_k: int
+    keyword_k: int
+    graph_k: int
     rerank_k: int
 
 
@@ -65,7 +69,6 @@ class RetrievalSubgraphState(TypedDict):
     graph_documents: list[Document] = []
     document_search_documents: list[Document] = []
     documents: list[Document] = []  # Final combined list
-    accumulated_documents: Annotated[list[Document], add] = Field(default_factory=list, description="Final list of retrieved documents")
 
 
 class QueryTransformerState(RetrievalSubgraphState):
@@ -125,13 +128,23 @@ class ResearcherState(TypedDict):
     research_topic: str
     compressed_research: str
     raw_notes: Annotated[list[str], override_reducer] = []
-    # ✅ CORRECTED: Simplified query transformer integration fields
-    _completed_query_results: Annotated[list[dict], operator.add] = []  # Aggregated query transformer results
+    _completed_query_results: Annotated[list[dict], override_reducer] = []  # Aggregated query transformer results (supports override clears)
+    _answered_tool_call_ids: Annotated[list[str], operator.add] = []
 
 
 class ResearcherOutputState(BaseModel):
     compressed_research: str
     raw_notes: Annotated[list[str], override_reducer] = []
+
+
+class ResearcherSendOutputState(TypedDict):
+    """Output envelope for Send() aggregation from the research_team subgraph.
+
+    Aggregates individual researcher outputs so the supervisor can match them
+    back to ConductResearch tool calls using `completed_research_results`.
+    """
+
+    completed_research_results: Annotated[list["ResearcherOutputState"], operator.add]
 
 
 # Import metadata schemas for crawler compatibility

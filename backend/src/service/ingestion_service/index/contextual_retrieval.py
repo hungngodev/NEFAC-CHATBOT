@@ -2,7 +2,6 @@ import logging
 import os
 from typing import Any, List
 
-from elasticsearch import Elasticsearch
 from langchain_community.retrievers import ElasticSearchBM25Retriever
 from langchain_core.documents import Document
 from langchain_qdrant import QdrantVectorStore
@@ -90,22 +89,18 @@ def save_contextual_elasticsearch_bm25_for_backend(contextualized_documents: Lis
     logger.info(f"Target index: {index_name}")
 
     try:
-        # Initialize Elasticsearch client
-        es = Elasticsearch(elasticsearch_url)
-
-        # Setup index
-        logger.info(f"Checking Elasticsearch index: {index_name}")
-        if not es.indices.exists(index=index_name):
-            logger.info(f"Creating new Elasticsearch index: {index_name}")
-            keyword_retriever = ElasticSearchBM25Retriever.create(elasticsearch_url, index_name)
-        else:
-            logger.info(f"Index {index_name} already exists")
-            keyword_retriever = ElasticSearchBM25Retriever(client=es, index_name=index_name)
-
-        # Upload documents
-        logger.info(f"Uploading {len(contextualized_documents)} documents to Elasticsearch...")
+        # Upload documents (content + metadata) so downstream retrieval preserves metadata
+        logger.info(f"Uploading {len(contextualized_documents)} documents to Elasticsearch with metadata (from_texts)...")
         texts = [doc.page_content for doc in contextualized_documents]
-        keyword_retriever.add_texts(texts)
+        metadatas = [getattr(doc, "metadata", {}) or {} for doc in contextualized_documents]
+
+        # Preferred API: build retriever with metadata via from_texts (creates index if missing)
+        ElasticSearchBM25Retriever.from_texts(
+            texts=texts,
+            metadatas=metadatas,
+            index_name=index_name,
+            es_url=elasticsearch_url,
+        )
 
         logger.info(f"Successfully uploaded {len(contextualized_documents)} documents to Elasticsearch index '{index_name}'")
 
