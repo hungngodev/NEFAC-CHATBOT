@@ -20,7 +20,7 @@ from unstructured.partition.auto import partition as u_partition
 
 from src.service.ingestion_service.loader.semantic_double_pass_splitter import SemanticDoublePassMergingSplitterWithContext
 from src.service.ingestion_service.progress_tracker import get_tracker
-from src.service.ingestion_service.settings import CHUNK_SIZE, CONTEXT_FORMAT
+from src.service.ingestion_service.settings import CONTEXT_FORMAT
 
 logger = logging.getLogger(__name__)
 TRANSCRIPT_PATTERN = re.compile(r"\[(?P<ts>[\d:\.]+)s?\]\s*(?P<txt>.*)")
@@ -203,7 +203,7 @@ def unstructured_loader(
                 xlsx_chunks = process_xlsx_intelligently(path, entry)
 
                 # Process each spreadsheet sheet as a structured document
-                splitter = SemanticDoublePassMergingSplitterWithContext(max_chunk_size=CHUNK_SIZE, min_chunk_size=100)
+                splitter = SemanticDoublePassMergingSplitterWithContext()
                 total_file_chunks = 0
 
                 for chunk_idx, (sheet_text, sheet_meta) in enumerate(xlsx_chunks):
@@ -259,7 +259,7 @@ def unstructured_loader(
                         os.unlink(tmp_path)
 
                 # Chunking and contextualization
-                splitter = SemanticDoublePassMergingSplitterWithContext(max_chunk_size=CHUNK_SIZE, min_chunk_size=100)
+                splitter = SemanticDoublePassMergingSplitterWithContext()
                 chunks = splitter.split_text(whole_text, metadata=dict(entry))
                 chunk_count += len(chunks)
                 curr_offset = 0

@@ -9,11 +9,25 @@ from langchain_core.documents import Document
 
 
 def _parse_date_from_metadata(doc_metadata: dict[str, str | int | float | bool]) -> datetime.date | None:
-    """Safely parse a date from document metadata."""
+    """Safely parse a date from document metadata.
+
+    Accepts either YYYY-MM-DD or ISO-8601 timestamps like YYYY-MM-DDTHH:MM:SS[.fff][Z].
+    """
     doc_date_str = doc_metadata.get("date")
-    if doc_date_str and isinstance(doc_date_str, str):
-        return datetime.datetime.strptime(doc_date_str, "%Y-%m-%d").date()
-    return None
+    if not (doc_date_str and isinstance(doc_date_str, str)):
+        return None
+    s = doc_date_str.strip()
+    # Fast path for simple date
+    try:
+        return datetime.datetime.strptime(s, "%Y-%m-%d").date()
+    except Exception:
+        pass
+    # Tolerate full ISO strings: split by 'T' and parse the date component
+    try:
+        date_part = s.split("T", 1)[0]
+        return datetime.datetime.strptime(date_part, "%Y-%m-%d").date()
+    except Exception:
+        return None
 
 
 def _matches_filters(doc: Document, filters: dict[str, str | int | float | bool | list[str, tuple]]) -> bool:

@@ -1,21 +1,70 @@
 import json
 import logging
 import os
-from typing import List
+import random
+import time
+from typing import Iterable, List
 
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.documents import Document
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 from langchain_neo4j import Neo4jGraph
+from tenacity import RetryError, retry, stop_after_attempt, wait_exponential
 
 from src.service.ingestion_service.settings import graph_llm_model
 
 logger = logging.getLogger(__name__)
 
+
+def _batched(iterable: Iterable[Document], size: int) -> Iterable[list[Document]]:
+    batch: list[Document] = []
+    for item in iterable:
+        batch.append(item)
+        if len(batch) >= size:
+            yield batch
+            batch = []
+    if batch:
+        yield batch
+
+
 NEO4J_URI = os.environ["NEO4J_URI"]
 NEO4J_USER = os.environ["NEO4J_USER"]
 NEO4J_PASSWORD = os.environ["NEO4J_PASSWORD"]
 graph = Neo4jGraph(url=NEO4J_URI, username=NEO4J_USER, password=NEO4J_PASSWORD)
+
+
+def _get_env_int(name: str, default: int) -> int:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    try:
+        return int(value)
+    except ValueError:
+        return default
+
+
+def _get_env_float(name: str, default: float) -> float:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    try:
+        return float(value)
+    except ValueError:
+        return default
+
+
+GRAPH_RAG_CONVERSION_RETRIES = max(
+    1,
+    _get_env_int(
+        "GRAPH_RAG_CONVERSION_RETRIES",
+        _get_env_int("GRAPH_LLM_MAX_RETRIES", 2),
+    ),
+)
+GRAPH_RAG_RETRY_WAIT_MIN_SECONDS = max(0.5, _get_env_float("GRAPH_RAG_RETRY_WAIT_MIN_SECONDS", 1.0))
+GRAPH_RAG_RETRY_WAIT_MAX_SECONDS = max(
+    GRAPH_RAG_RETRY_WAIT_MIN_SECONDS,
+    _get_env_float("GRAPH_RAG_RETRY_WAIT_MAX_SECONDS", 20.0),
+)
 
 
 # -----------------------------------------------------------------------------
@@ -701,21 +750,84 @@ def graph_rag_ingest(documents: List[Document]) -> int:
             ),
         )
 
-        # Step 4: Convert documents to graph documents
-        logger.info("Step 4/4: Converting documents to graph format")
-        graph_docs = transformer.convert_to_graph_documents(docs_canonical)
-        logger.info(f"Converted {len(graph_docs)} graph documents")
+        total_graph_docs = 0
+        failed_docs = 0
+        delay = float(os.getenv("GRAPH_RAG_BATCH_DELAY", "2.0"))
+        jitter = float(os.getenv("GRAPH_RAG_BATCH_JITTER", "0.5"))
 
-        # Step 5: Add to Neo4j graph
-        logger.info("Step 5/4: Adding graph documents to Neo4j")
-        graph.add_graph_documents(
-            graph_docs,
-            baseEntityLabel=True,
-            include_source=True,
+        @retry(
+            wait=wait_exponential(
+                min=GRAPH_RAG_RETRY_WAIT_MIN_SECONDS,
+                max=GRAPH_RAG_RETRY_WAIT_MAX_SECONDS,
+            ),
+            stop=stop_after_attempt(GRAPH_RAG_CONVERSION_RETRIES),
         )
+        def _convert_single(doc: Document) -> list:
+            return transformer.convert_to_graph_documents([doc])
 
-        logger.info(f"Graph RAG ingestion complete for {len(documents)} documents")
-        return len(graph_docs)
+        logger.info("Step 4/4: Converting documents to graph format one by one")
+
+        for doc_index, doc in enumerate(docs_canonical, start=1):
+            try:
+                logger.info("Document %d: converting to graph format", doc_index)
+                graph_docs_single = _convert_single(doc)
+                total_graph_docs += len(graph_docs_single)
+                logger.info(
+                    "Document %d: converted %d graph documents (running total=%d)",
+                    doc_index,
+                    len(graph_docs_single),
+                    total_graph_docs,
+                )
+
+                graph.add_graph_documents(
+                    graph_docs_single,
+                    baseEntityLabel=True,
+                    include_source=True,
+                )
+                if delay > 0:
+                    sleep_time = delay + (random.random() * jitter if jitter > 0 else 0)
+                    time.sleep(sleep_time)
+            except RetryError as retry_error:
+                last_exc = retry_error.last_attempt.exception() if retry_error.last_attempt else retry_error
+                logger.error(
+                    "Document %d failed during graph conversion after %d attempts: %s",
+                    doc_index,
+                    GRAPH_RAG_CONVERSION_RETRIES,
+                    last_exc,
+                )
+                failed_docs += 1
+                continue
+            except Exception as batch_error:
+                logger.error("Document %d failed during graph conversion/ingest: %s", doc_index, batch_error)
+                raise
+
+        if total_graph_docs:
+            try:
+                graph.query(
+                    """
+                    MATCH (s:Source)
+                    OPTIONAL MATCH (d1:Document {title: s.sourcedocument})
+                    OPTIONAL MATCH (d2:Document {title: s.sourcedocumenttitle})
+                    WITH s, coalesce(d1, d2) AS d
+                    WHERE d IS NOT NULL
+                    MERGE (s)-[:SOURCE_OF]->(d)
+                    """
+                )
+            except Exception as link_error:
+                logger.warning(f"Provenance linking skipped/failed: {link_error}")
+
+        if failed_docs:
+            logger.warning(
+                "Graph RAG ingestion skipped %d documents after repeated conversion failures",
+                failed_docs,
+            )
+
+        logger.info(
+            "Graph RAG ingestion complete for %d documents (%d graph documents ingested)",
+            len(documents),
+            total_graph_docs,
+        )
+        return total_graph_docs
     except Exception as e:
         logger.error(f"Graph RAG ingestion failed: {e}")
         raise

@@ -2,8 +2,8 @@ import logging
 import os
 from typing import Any, List
 
-from langchain_community.retrievers import ElasticSearchBM25Retriever
 from langchain_core.documents import Document
+from langchain_elasticsearch import BM25Strategy, ElasticsearchStore
 from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams
@@ -89,20 +89,29 @@ def save_contextual_elasticsearch_bm25_for_backend(contextualized_documents: Lis
     logger.info(f"Target index: {index_name}")
 
     try:
-        # Upload documents (content + metadata) so downstream retrieval preserves metadata
-        logger.info(f"Uploading {len(contextualized_documents)} documents to Elasticsearch with metadata (from_texts)...")
-        texts = [doc.page_content for doc in contextualized_documents]
-        metadatas = [getattr(doc, "metadata", {}) or {} for doc in contextualized_documents]
-
-        # Preferred API: build retriever with metadata via from_texts (creates index if missing)
-        ElasticSearchBM25Retriever.from_texts(
-            texts=texts,
-            metadatas=metadatas,
+        store = ElasticsearchStore(
             index_name=index_name,
             es_url=elasticsearch_url,
+            query_field="content",
+            strategy=BM25Strategy(),
         )
 
-        logger.info(f"Successfully uploaded {len(contextualized_documents)} documents to Elasticsearch index '{index_name}'")
+        documents_with_metadata: list[Document] = []
+        ids: list[str] = []
+        for idx, doc in enumerate(contextualized_documents):
+            metadata = dict(getattr(doc, "metadata", {}) or {})
+            base_id = str(metadata.get("id") or metadata.get("filename") or "chunk")
+            chunk_index = metadata.get("chunk_index")
+            if chunk_index is None:
+                chunk_index = idx
+                metadata["chunk_index"] = chunk_index
+            stable_id = f"{base_id}:{chunk_index}"
+            documents_with_metadata.append(Document(page_content=doc.page_content, metadata=metadata))
+            ids.append(stable_id)
+
+        if documents_with_metadata:
+            store.add_documents(documents_with_metadata, ids=ids)
+        logger.info(f"Successfully indexed {len(contextualized_documents)} documents into Elasticsearch index '{index_name}' using BM25Strategy")
 
     except Exception as e:
         logger.error(f"Error uploading to Elasticsearch: {e}")

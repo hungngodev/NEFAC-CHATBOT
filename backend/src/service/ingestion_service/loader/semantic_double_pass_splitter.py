@@ -8,9 +8,10 @@ from langchain.prompts import ChatPromptTemplate
 from langchain.text_splitter import TextSplitter
 from langchain_core.documents import Document
 from langchain_experimental.text_splitter import SemanticChunker
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from src.service.ingestion_service.progress_tracker import get_tracker
-from src.service.ingestion_service.settings import embedding_model, llm_model
+from src.service.ingestion_service.settings import CHUNK_SIZE, embedding_model, llm_model
 
 logger = logging.getLogger(__name__)
 
@@ -32,13 +33,17 @@ class SemanticDoublePassMergingSplitterWithContext(TextSplitter):
         breakpoint_threshold_type: Literal["percentile", "standard_deviation", "interquartile", "gradient"] = "percentile",
         breakpoint_threshold_amount: Optional[float] = None,
         number_of_chunks: Optional[int] = None,
-        min_chunk_size: Optional[int] = 256,
-        max_chunk_size: Optional[int] = 1024,
+        min_chunk_size: Optional[int] = None,
+        max_chunk_size: Optional[int] = None,
         second_pass_threshold: float = 0.8,
         **kwargs,
     ):
-        min_chunk_size = int(min_chunk_size) if min_chunk_size is not None else 100
-        max_chunk_size = int(max_chunk_size) if max_chunk_size is not None else 2000
+        if min_chunk_size is None:
+            min_chunk_size = max(100, int(CHUNK_SIZE // 2))
+        if max_chunk_size is None:
+            max_chunk_size = int(CHUNK_SIZE)
+        min_chunk_size = int(min_chunk_size)
+        max_chunk_size = int(max_chunk_size)
         super().__init__(chunk_size=max_chunk_size, chunk_overlap=0)
         self.embeddings = embedding_model
         self.chat_model = llm_model
@@ -56,6 +61,12 @@ class SemanticDoublePassMergingSplitterWithContext(TextSplitter):
             number_of_chunks=number_of_chunks,
             min_chunk_size=min_chunk_size,
         )
+        self._max_semantic_input_chars = 120_000  # ≈50k tokens safeguard
+        self._pre_semantic_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=self._max_semantic_input_chars,
+            chunk_overlap=4_000,
+            separators=["\n\n", "\n", " ", ""],
+        )
 
     def split_text(self, text: str, metadata: Optional[dict] = None) -> List[Document]:
         if not text or text.strip() == "":
@@ -69,23 +80,38 @@ class SemanticDoublePassMergingSplitterWithContext(TextSplitter):
 
         # First pass: semantic chunking
         tracker.log_file_phase("Semantic chunking", model_name=embedding_model_name)
-        docs = self.semantic_chunker.create_documents([text])
-        chunks = [doc.page_content for doc in docs]
-
-        # Second pass: merge similar chunks
-        tracker.log_file_phase("Merging similar chunks")
-        merged_chunks = self._second_pass_merge(chunks)
-
-        # Apply size constraints
-        tracker.log_file_phase("Applying size constraints")
-        merged_chunks = self._apply_size_constraints(merged_chunks)
-
-        # Contextualize chunks
-        tracker.log_file_phase("Contextualizing chunks", len(merged_chunks), llm_model_name)
-
-        # Use whole-document text for context if provided in metadata
+        chunked_docs: list[Document] = []
         doc_text_for_context = (metadata.get("__whole_document") if isinstance(metadata, dict) else None) or text
-        return [self.contextualize_chunk(doc_text_for_context, chunk, metadata) for chunk in merged_chunks]
+        total_chunks = 0
+        total_tokens = 0
+        for segment in self._split_for_semantic_pass(text):
+            docs = self.semantic_chunker.create_documents([segment])
+            chunks = [doc.page_content for doc in docs]
+
+            # Second pass: merge similar chunks
+            tracker.log_file_phase("Merging similar chunks")
+            merged_chunks = self._second_pass_merge(chunks)
+
+            # Apply size constraints
+            tracker.log_file_phase("Applying size constraints")
+            merged_chunks = self._apply_size_constraints(merged_chunks)
+
+            # Contextualize chunks
+            tracker.log_file_phase("Contextualizing chunks", len(merged_chunks), llm_model_name)
+            for chunk in merged_chunks:
+                chunked_docs.append(self.contextualize_chunk(doc_text_for_context, chunk, metadata))
+                total_chunks += 1
+                total_tokens += count_tokens(chunk)
+
+        tracker.log_file_phase(
+            "Chunks finalized",
+            count=total_chunks,
+            model_name=f"~{total_tokens} words",
+        )
+        tracker.track_phase_stats("document", "chunks_created", total_chunks)
+        tracker.track_phase_stats("document", "chunk_tokens", total_tokens)
+
+        return chunked_docs
 
     def contextualize_chunk(self, whole_document: str, chunk: str, metadata: Optional[dict]) -> Document:
         """Contextualize a chunk within the whole document using LLM."""
@@ -95,6 +121,11 @@ class SemanticDoublePassMergingSplitterWithContext(TextSplitter):
         meta = dict(metadata) if metadata else {}
         meta["context"] = context
         return Document(page_content=chunk, metadata=meta)
+
+    def _split_for_semantic_pass(self, text: str) -> List[str]:
+        if len(text) <= self._max_semantic_input_chars:
+            return [text]
+        return self._pre_semantic_splitter.split_text(text)
 
     def _second_pass_merge(self, chunks: List[str]) -> List[str]:
         if len(chunks) <= 1:

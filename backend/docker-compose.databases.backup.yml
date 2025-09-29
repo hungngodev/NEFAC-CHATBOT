@@ -1,0 +1,119 @@
+version: "3.8"
+
+volumes:
+  esdata-source:
+    external: true
+    name: backend_esdata
+  esdata-backup:
+    name: esdata-backup
+
+  qdrant-data-source:
+    external: true
+    name: backend_qdrant-data
+  qdrant-data-backup:
+    name: qdrant-data-backup
+
+  neo4j-data-source:
+    external: true
+    name: backend_neo4j-data
+  neo4j-data-backup:
+    name: neo4j-data-backup
+
+services:
+  es-volume-clone:
+    image: alpine:3.19
+    command: ["/bin/sh", "-c", "cp -a /source/. /backup/"]
+    volumes:
+      - esdata-source:/source:ro
+      - esdata-backup:/backup
+    restart: "no"
+    profiles:
+      - copy
+    networks:
+      - nefacnet-backup
+
+  qdrant-volume-clone:
+    image: alpine:3.19
+    command: ["/bin/sh", "-c", "cp -a /source/. /backup/"]
+    volumes:
+      - qdrant-data-source:/source:ro
+      - qdrant-data-backup:/backup
+    restart: "no"
+    profiles:
+      - copy
+    networks:
+      - nefacnet-backup
+
+  neo4j-volume-clone:
+    image: alpine:3.19
+    command: ["/bin/sh", "-c", "cp -a /source/. /backup/"]
+    volumes:
+      - neo4j-data-source:/source:ro
+      - neo4j-data-backup:/backup
+    restart: "no"
+    profiles:
+      - copy
+    networks:
+      - nefacnet-backup
+
+  elasticsearch-backup:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.1.2
+    container_name: elasticsearch-backup
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    ports:
+      - "19200:9200"
+    volumes:
+      - esdata-backup:/usr/share/elasticsearch/data
+    networks:
+      - nefacnet-backup
+
+  kibana-backup:
+    image: docker.elastic.co/kibana/kibana:9.1.2
+    container_name: kibana-backup
+    ports:
+      - "15601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch-backup:9200
+      - XPACK_SECURITY_ENABLED=false
+      - XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY=a7a6311933d3503b89bc2dbc36572c33a6c10925682e591bffcab6911c06786d
+    depends_on:
+      - elasticsearch-backup
+    networks:
+      - nefacnet-backup
+
+  qdrant-backup:
+    image: qdrant/qdrant:latest
+    container_name: qdrant-backup
+    ports:
+      - "16333:6333"
+      - "16334:6334"
+    volumes:
+      - qdrant-data-backup:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__HTTP_PORT=6333
+      - QDRANT__SERVICE__GRPC_PORT=6334
+    networks:
+      - nefacnet-backup
+
+  neo4j-backup:
+    image: neo4j:5.15
+    container_name: neo4j-backup
+    ports:
+      - "17474:7474"
+      - "17687:7687"
+    volumes:
+      - neo4j-data-backup:/data
+    environment:
+      - NEO4J_AUTH=neo4j/password123
+      - NEO4J_PLUGINS=["apoc", "graph-data-science"]
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*,gds.*
+      - NEO4J_dbms_security_procedures_allowlist=apoc.*,gds.*
+    networks:
+      - nefacnet-backup
+
+networks:
+  nefacnet-backup:
+    driver: bridge

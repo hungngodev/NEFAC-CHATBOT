@@ -56,7 +56,7 @@ def ensemble_retrieval_node(state: RetrievalSubgraphState) -> RetrievalSubgraphS
     retrievers = []
     weights = []
     if keyword_k > 0:
-        retrievers.append(keyword_retriever.bind(top_k=keyword_k))
+        retrievers.append(keyword_retriever.bind(k=keyword_k))
         weights.append(kw_weight)
     if vector_k > 0:
         retrievers.append(vector_retriever.bind(k=vector_k))
