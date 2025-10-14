@@ -1,7 +1,9 @@
 import os
 
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from llama_index.core import Settings
+from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.llms.openai import OpenAI
 
 from src.config.models import EMBEEDING_MODEL_NAME
 
@@ -28,24 +30,25 @@ def _get_env_int(name: str, default: int) -> int:
         return default
 
 
-embedding_model = OpenAIEmbeddings(model=EMBEEDING_MODEL_NAME)
+embedding_model = OpenAIEmbedding(model=EMBEEDING_MODEL_NAME, api_key=os.getenv("OPENAI_API_KEY"))
+Settings.embed_model = embedding_model
 
-llm_model = ChatOpenAI(
-    model="gpt-5-nano",
-    disable_streaming=True,
+llm_model_name = os.getenv("INGESTION_LLM_MODEL", "gpt-4o-mini")
+llm_model = OpenAI(
+    model=llm_model_name,
     timeout=_get_env_float("INGESTION_LLM_TIMEOUT", 60.0),
     max_retries=_get_env_int("INGESTION_LLM_MAX_RETRIES", 3),
 )
+Settings.llm = llm_model
 
-# llm_model = ChatOllama(model = "llama3.3:70b")
-# llm_model = ChatOllama(model="alibayram/Qwen3-30B-A3B-Instruct-2507:latest")
-# graph_llm_model = ChatOllama(model="llama3.3:70b")
-graph_llm_model = ChatOpenAI(
-    model="gpt-5-mini",
-    disable_streaming=True,
+graph_llm_model_name = os.getenv("GRAPH_LLM_MODEL", "gpt-4o")
+graph_llm_model = OpenAI(
+    model=graph_llm_model_name,
     timeout=_get_env_float("GRAPH_LLM_TIMEOUT", 150.0),
     max_retries=_get_env_int("GRAPH_LLM_MAX_RETRIES", 2),
 )
-# embedding_model = OllamaEmbeddings(model="dengcao/Qwen3-Embedding-8B:Q5_K_M")
+
+LLM_MODEL_NAME = llm_model_name
+GRAPH_LLM_MODEL_NAME = graph_llm_model_name
 CHUNK_SIZE = 320
 CONTEXT_FORMAT = "Context: {context}\n\nChunk: {chunk}"

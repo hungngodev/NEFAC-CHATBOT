@@ -14,16 +14,35 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-import pandas as pd
-from langchain_core.documents import Document
+from llama_index.core.schema import BaseNode, TextNode
 from unstructured.partition.auto import partition as u_partition
 
-from src.service.ingestion_service.loader.semantic_double_pass_splitter import SemanticDoublePassMergingSplitterWithContext
+from src.service.ingestion_service.llamaindex.node_parser import (
+    build_nodes_from_text,
+)
+from src.service.ingestion_service.llamaindex.document_loader import (
+    UnifiedDocumentLoader,
+)
 from src.service.ingestion_service.progress_tracker import get_tracker
 from src.service.ingestion_service.settings import CONTEXT_FORMAT
+from .spreadsheet_utils import process_xlsx_intelligently
 
 logger = logging.getLogger(__name__)
 TRANSCRIPT_PATTERN = re.compile(r"\[(?P<ts>[\d:\.]+)s?\]\s*(?P<txt>.*)")
+_TRUTHY = {"1", "true", "yes", "on"}
+
+USE_LLAMAINDEX_READERS = os.getenv("USE_LLAMAINDEX_READERS", "true").lower() in _TRUTHY
+LLAMAPARSE_ENABLED = os.getenv("LLAMAPARSE_ENABLE", "false").lower() in _TRUTHY
+SUPPORTED_LI_EXTS = {"pdf", "html", "htm", "docx", "doc", "ppt", "pptx", "txt"}
+
+LLAMA_LOADER: Optional[UnifiedDocumentLoader]
+if USE_LLAMAINDEX_READERS:
+    LLAMA_LOADER = UnifiedDocumentLoader(
+        use_llamaparse=LLAMAPARSE_ENABLED,
+        fallback_to_unstructured=True,
+    )
+else:
+    LLAMA_LOADER = None
 
 # -------------------- Helpers -------------------- #
 
@@ -58,55 +77,6 @@ def parse_timestamps(transcript_text: str) -> Tuple[str, List[Dict[str, Any]]]:
     return clean_text.strip(), offset_map
 
 
-def process_xlsx_intelligently(file_path: str, entry: Dict[str, Any]) -> List[Tuple[str, Dict[str, Any]]]:
-    """Enhanced XLSX processing that preserves tabular structure and creates logical chunks."""
-    try:
-        excel_file = pd.ExcelFile(file_path)
-        chunks = []
-
-        for sheet_name in excel_file.sheet_names:
-            df = pd.read_excel(file_path, sheet_name=sheet_name)
-
-            if df.empty:
-                continue
-
-            # Clean the dataframe - remove completely empty rows/columns
-            df = df.dropna(how="all").dropna(axis=1, how="all")
-
-            if df.empty:
-                continue
-
-            headers = [str(col).strip() for col in df.columns]
-            total_rows = len(df)
-
-            # Create structured text representation of the entire sheet
-            sheet_text = f"Sheet: {sheet_name}\nColumns: {', '.join(headers)}\n\n"
-
-            # Convert all rows to structured text format
-            for idx, row in df.iterrows():
-                row_data = [f"{header}: {str(value).strip()}" for header, value in zip(headers, row) if pd.notna(value) and str(value).strip()]
-
-                if row_data:
-                    sheet_text += f"Row {idx + 1}: {' | '.join(row_data)}\n"
-
-            # Create single chunk per sheet with rich metadata
-            chunk_metadata = {"document_type": "spreadsheet", "spreadsheet_format": "xlsx", "sheet_name": sheet_name, "total_rows": total_rows, "headers": headers, "processing_method": "intelligent_sheet_conversion"}
-
-            chunks.append((sheet_text.strip(), chunk_metadata))
-
-        return chunks or [("Empty spreadsheet with no processable data.", {"document_type": "spreadsheet", "spreadsheet_format": "xlsx", "processing_method": "empty"})]
-
-    except Exception as e:
-        logger.warning(f"Intelligent XLSX processing failed: {e}, using fallback")
-        try:
-            elements = u_partition(file_path)
-            text = "\n\n".join(str(el).strip() for el in elements if str(el).strip())
-            return [(text, {"document_type": "spreadsheet", "spreadsheet_format": "xlsx", "processing_method": "unstructured_fallback"})]
-        except Exception as fallback_error:
-            logger.error(f"Both intelligent and fallback XLSX processing failed: {fallback_error}")
-            return [("Failed to process spreadsheet content.", {"document_type": "spreadsheet", "spreadsheet_format": "xlsx", "processing_method": "failed", "error": str(fallback_error)})]
-
-
 def get_chunk_times(chunk_text: str, full_text: str, offset_map: Optional[List[Dict[str, Any]]], curr_offset: int) -> Tuple[float, float, int]:
     """Map chunk to YouTube transcript timestamps."""
     start = max(full_text.find(chunk_text, curr_offset), curr_offset)
@@ -114,17 +84,84 @@ def get_chunk_times(chunk_text: str, full_text: str, offset_map: Optional[List[D
     start_time = end_time = 0.0
 
     if offset_map:
-        # Find start time
-        start_time = next((float(seg["start_time"]) for seg in offset_map if start >= seg["start_char"] <= seg["end_char"]), 0.0)
-        # Find end time
-        end_time = next((float(seg["end_time"] or start_time) for seg in reversed(offset_map) if end >= seg["start_char"] <= seg["end_char"]), start_time)
+        # Find start time: segment whose char span covers 'start'
+        start_time = next(
+            (float(seg["start_time"]) for seg in offset_map if seg["start_char"] <= start <= seg["end_char"]),
+            0.0,
+        )
+        # Find end time: segment whose char span covers 'end'
+        end_time = next(
+            (float(seg["end_time"] or start_time) for seg in reversed(offset_map) if seg["start_char"] <= end <= seg["end_char"]),
+            start_time,
+        )
 
     return start_time, end_time, end
 
 
-def _create_document(chunk_text: str, base_meta: Dict[str, Any], chunk_meta: Dict[str, Any], context: str) -> Document:
+def _parse_pdf_with_llamaparse(file_path: str) -> Optional[str]:
+    """Parse PDF into text using LlamaParse if available and configured."""
+
+    try:
+        from llama_parse import LlamaParse  # type: ignore[import-not-found]
+    except Exception as exc:  # pragma: no cover - optional dependency
+        logger.warning("LlamaParse unavailable: %s", exc)
+        return None
+
+    api_key = os.getenv("LLAMAPARSE_API_KEY") or os.getenv("LLAMA_CLOUD_API_KEY")
+    if not api_key:
+        logger.warning("LLAMAPARSE_API_KEY not set; skipping LlamaParse")
+        return None
+
+    try:
+        parser = LlamaParse(api_key=api_key, result_type="text")
+        results = parser.load_data(file_path)
+        texts: List[str] = []
+        for result in results:
+            text = getattr(result, "text", None)
+            if callable(text):  # Some versions expose text as callable property
+                text = text()
+            if not text:
+                maybe_get_content = getattr(result, "get_content", None)
+                if callable(maybe_get_content):
+                    text = maybe_get_content()
+            if text:
+                stripped = str(text).strip()
+                if stripped:
+                    texts.append(stripped)
+
+        joined = "\n\n".join(texts)
+        return joined or None
+    except Exception as exc:  # pragma: no cover - network/service failures
+        logger.error("LlamaParse failed for %s: %s", file_path, exc)
+        return None
+
+
+def _create_node(
+    chunk_text: str,
+    base_meta: Dict[str, Any],
+    chunk_meta: Dict[str, Any],
+    context: str,
+    raw_node: Optional[BaseNode] = None,
+) -> TextNode:
+    metadata = {**base_meta, **chunk_meta}
     content = CONTEXT_FORMAT.format(context=context, chunk=chunk_text)
-    return Document(page_content=content, metadata={**base_meta, **chunk_meta})
+    node = TextNode(
+        text=content,
+        metadata=metadata,
+        id_=getattr(raw_node, "node_id", None) if raw_node is not None else None,
+        relationships=getattr(raw_node, "relationships", None) if raw_node is not None else None,
+    )
+
+    if raw_node is not None:
+        embedding = getattr(raw_node, "embedding", None)
+        if embedding is not None:
+            node.embedding = embedding
+        for attr in ("excluded_embed_metadata_keys", "excluded_llm_metadata_keys"):
+            value = getattr(raw_node, attr, None)
+            if value:
+                setattr(node, attr, value)
+
+    return node
 
 
 def _get_base_metadata(path: str, entry: Dict[str, Any]) -> Dict[str, Any]:
@@ -163,7 +200,8 @@ def unstructured_loader(
     documents_dir: str,
     limit: Optional[int] = None,
     offset: int = 0,
-) -> List[Document]:
+    file_type: Optional[str] = None,
+) -> List[TextNode]:
     start_time = time.time()
     tracker = get_tracker()
 
@@ -176,12 +214,11 @@ def unstructured_loader(
         entries = [e for e in window if e.get("filename")]
 
     logger.info(f"    ├── Loading {len(entries)} files from metadata")
-    documents = []
+    nodes: List[TextNode] = []
     chunk_count = 0
-
     for i, entry in enumerate(entries, 1):
         filename = entry["filename"]
-        tracker.log_file_start("document", filename, i, len(entries))
+        tracker.log_file_start(file_type or "document", filename, i, len(entries))
 
         path = Path(documents_dir) / filename if not os.path.isabs(filename) else Path(filename)
         if not path.exists():
@@ -195,51 +232,166 @@ def unstructured_loader(
             continue
 
         base_meta = _get_base_metadata(path_str, entry)
+        document_base_meta = base_meta.copy()
+        document_base_meta.update({k: v for k, v in (entry or {}).items() if v is not None})
 
         try:
-            # Handle different file types with specific processing
             if ext in {"xlsx", "xls", "csv"}:
                 tracker.log_file_phase("Parsing spreadsheet structure")
                 xlsx_chunks = process_xlsx_intelligently(path, entry)
 
                 # Process each spreadsheet sheet as a structured document
-                splitter = SemanticDoublePassMergingSplitterWithContext()
                 total_file_chunks = 0
+                file_tokens = 0
 
                 for chunk_idx, (sheet_text, sheet_meta) in enumerate(xlsx_chunks):
-                    chunk_base_meta = base_meta.copy()
+                    chunk_base_meta = document_base_meta.copy()
                     chunk_base_meta.update(sheet_meta)
 
-                    # Apply semantic chunking to the structured sheet text
-                    # This allows proper chunking while preserving spreadsheet context
-                    # Pass the whole sheet text as context for better contextualization
-                    sheet_chunks = splitter.split_text(sheet_text, metadata={**chunk_base_meta, "__whole_document": sheet_text})
+                    sheet_nodes = build_nodes_from_text(sheet_text, chunk_base_meta)
+                    total_file_chunks += len(sheet_nodes)
+                    file_tokens += sum(len(raw_node.get_content().split()) for raw_node in sheet_nodes)
 
-                    # Add each semantic chunk from this sheet
-                    for semantic_chunk in sheet_chunks:
-                        chunk_meta = dict(semantic_chunk.metadata)
-                        chunk_meta.update({"sheet_index": chunk_idx, "total_sheets": len(xlsx_chunks), "chunk_size": len(semantic_chunk.page_content), "chunk_word_count": len(semantic_chunk.page_content.split())})
+                    for idx, raw_node in enumerate(sheet_nodes):
+                        chunk_text = raw_node.get_content()
+                        node_meta = dict(raw_node.metadata or {})
+                        chunk_meta = {
+                            **node_meta,
+                            "sheet_index": chunk_idx,
+                            "total_sheets": len(xlsx_chunks),
+                            "chunk_index": idx,
+                            "total_chunks": len(sheet_nodes),
+                            "chunk_size": len(chunk_text),
+                            "chunk_word_count": len(chunk_text.split()),
+                        }
 
-                        # Create enhanced context for spreadsheet chunk
                         context_parts = [f"Document: {base_meta['title']}"]
                         if sheet_meta.get("sheet_name"):
                             context_parts.append(f"Sheet: {sheet_meta['sheet_name']}")
-                        if chunk_meta.get("context"):
-                            context_parts.append(chunk_meta["context"])
+                        summary = node_meta.get("section_summary") or node_meta.get("window")
+                        if summary:
+                            context_parts.append(str(summary))
 
                         context = " | ".join(context_parts)
-                        documents.append(_create_document(semantic_chunk.page_content, chunk_base_meta, chunk_meta, context))
+                        nodes.append(_create_node(chunk_text, chunk_base_meta, chunk_meta, context, raw_node=raw_node))
 
-                    total_file_chunks += len(sheet_chunks)
+            elif ext == "txt" and entry.get("transcript_file"):
+                tracker.log_file_phase("Parsing transcript timestamps")
+                with open(path_str, "r", encoding="utf-8") as transcript_file:
+                    raw_transcript = transcript_file.read()
 
-                chunk_count += total_file_chunks
-                file_tokens = sum(len(chunk_text.split()) for chunk_text, _ in xlsx_chunks)
+                clean_text, offset_map = parse_timestamps(raw_transcript)
+                base_meta.update({"transcript_type": "youtube", "has_timestamps": True})
+
+                raw_nodes = build_nodes_from_text(clean_text, document_base_meta)
+                total_file_chunks = len(raw_nodes)
+                file_tokens = sum(len(raw_node.get_content().split()) for raw_node in raw_nodes)
+                curr_offset = 0
+
+                for idx, raw_node in enumerate(raw_nodes):
+                    chunk_text = raw_node.get_content()
+                    node_meta = dict(raw_node.metadata or {})
+                    chunk_meta = {
+                        **node_meta,
+                        "chunk_index": idx,
+                        "total_chunks": total_file_chunks,
+                        "chunk_size": len(chunk_text),
+                        "chunk_word_count": len(chunk_text.split()),
+                    }
+
+                    start_time_ts, end_time_ts, curr_offset = get_chunk_times(
+                        chunk_text,
+                        clean_text,
+                        offset_map,
+                        curr_offset,
+                    )
+                    chunk_meta.update(
+                        {
+                            "start_time": start_time_ts,
+                            "end_time": end_time_ts,
+                            "duration": max(0, end_time_ts - start_time_ts),
+                        }
+                    )
+
+                    context_parts = [f"Document: {base_meta['title']}"]
+                    summary = node_meta.get("section_summary") or node_meta.get("window")
+                    if summary:
+                        context_parts.append(str(summary))
+                    context_parts.append(f"Transcript segment ({start_time_ts:.1f}s-{end_time_ts:.1f}s)")
+                    context = " | ".join(context_parts)
+                    nodes.append(
+                        _create_node(
+                            chunk_text,
+                            document_base_meta,
+                            chunk_meta,
+                            context,
+                            raw_node=raw_node,
+                        )
+                    )
+
+            elif LLAMA_LOADER and ext in SUPPORTED_LI_EXTS:
+                tracker.log_file_phase("LlamaIndex reader ingestion")
+                li_docs = LLAMA_LOADER.load_file(path_str, extra_info=document_base_meta)
+
+                raw_nodes: List[BaseNode] = []
+                for doc in li_docs:
+                    doc_nodes = build_nodes_from_text(
+                        doc.get_content(),
+                        doc.metadata or document_base_meta,
+                    )
+                    raw_nodes.extend(doc_nodes)
+
+                total_file_chunks = len(raw_nodes)
+                file_tokens = sum(len(raw_node.get_content().split()) for raw_node in raw_nodes)
+
+                for idx, raw_node in enumerate(raw_nodes):
+                    chunk_text = raw_node.get_content()
+                    node_meta = dict(raw_node.metadata or {})
+                    chunk_meta = {
+                        **node_meta,
+                        "chunk_index": idx,
+                        "total_chunks": total_file_chunks,
+                        "chunk_size": len(chunk_text),
+                        "chunk_word_count": len(chunk_text.split()),
+                    }
+
+                    context_parts = [
+                        f"Document: {node_meta.get('title') or document_base_meta.get('title') or base_meta.get('title') or filename}"
+                    ]
+                    summary = (
+                        node_meta.get("contextual_summary")
+                        or node_meta.get("section_summary")
+                        or node_meta.get("window")
+                    )
+                    if summary:
+                        context_parts.append(str(summary))
+
+                    context = " | ".join(part for part in context_parts if part)
+                    nodes.append(
+                        _create_node(
+                            chunk_text,
+                            document_base_meta,
+                            chunk_meta,
+                            context,
+                            raw_node=raw_node,
+                        )
+                    )
 
             else:
                 # Standard unstructured processing for other file types
                 tracker.log_file_phase("Extracting content")
-                elements = u_partition(path_str)
-                whole_text = "\n\n".join(str(el).strip() for el in elements if str(el).strip())
+                whole_text = None
+                # Try LlamaParse first for PDFs if enabled
+                if ext == "pdf" and LLAMAPARSE_ENABLED:
+                    tracker.log_file_phase("LlamaParse PDF extraction")
+                    whole_text = _parse_pdf_with_llamaparse(path_str)
+                    if not whole_text:
+                        logger.warning("LlamaParse did not return content; falling back to Unstructured")
+
+                # Fallback to Unstructured if no text yet
+                if not whole_text:
+                    elements = u_partition(path_str)
+                    whole_text = "\n\n".join(str(el).strip() for el in elements if str(el).strip())
                 offset_map = is_transcript = None
 
                 # Handle YouTube transcripts
@@ -258,41 +410,38 @@ def unstructured_loader(
                     finally:
                         os.unlink(tmp_path)
 
-                # Chunking and contextualization
-                splitter = SemanticDoublePassMergingSplitterWithContext()
-                chunks = splitter.split_text(whole_text, metadata=dict(entry))
-                chunk_count += len(chunks)
+                raw_nodes = build_nodes_from_text(whole_text, document_base_meta)
+                total_file_chunks = len(raw_nodes)
+                file_tokens = sum(len(raw_node.get_content().split()) for raw_node in raw_nodes)
                 curr_offset = 0
 
-                # Process chunks with enhanced metadata
-                for idx, chunk_doc in enumerate(chunks):
-                    chunk_text = chunk_doc.page_content
-                    chunk_meta = dict(chunk_doc.metadata)
-                    chunk_meta.pop("__whole_document", None)
-
-                    # Add chunk-specific metadata
-                    chunk_meta.update({"chunk_index": idx, "total_chunks": len(chunks), "chunk_size": len(chunk_text), "chunk_word_count": len(chunk_text.split())})
+                for idx, raw_node in enumerate(raw_nodes):
+                    chunk_text = raw_node.get_content()
+                    node_meta = dict(raw_node.metadata or {})
+                    chunk_meta = {
+                        **node_meta,
+                        "chunk_index": idx,
+                        "total_chunks": total_file_chunks,
+                        "chunk_size": len(chunk_text),
+                        "chunk_word_count": len(chunk_text.split()),
+                    }
 
                     if is_transcript:
                         start_time_ts, end_time_ts, curr_offset = get_chunk_times(chunk_text, whole_text, offset_map, curr_offset)
                         duration = max(0, end_time_ts - start_time_ts)
                         chunk_meta.update({"start_time": start_time_ts, "end_time": end_time_ts, "duration": duration})
 
-                    # Create enhanced context with file metadata
                     context_parts = [f"Document: {base_meta['title']}"]
-                    if chunk_meta.get("context"):
-                        context_parts.append(chunk_meta["context"])
-                    if is_transcript:
+                    summary = node_meta.get("section_summary") or node_meta.get("window")
+                    if summary:
+                        context_parts.append(str(summary))
+                    if is_transcript and offset_map:
                         context_parts.append(f"Transcript segment ({start_time_ts:.1f}s-{end_time_ts:.1f}s)")
                     context = " | ".join(context_parts)
-                    documents.append(_create_document(chunk_text, base_meta, chunk_meta, context))
+                    nodes.append(_create_node(chunk_text, document_base_meta, chunk_meta, context, raw_node=raw_node))
 
-                # Log file completion
-                file_tokens = sum(len(chunk.page_content.split()) for chunk in chunks)
-
-            # Calculate chunks for this file
-            file_chunks = total_file_chunks if ext in {"xlsx", "xls", "csv"} else len(chunks)
-            tracker.log_file_complete(filename, file_chunks, file_tokens)
+            chunk_count += total_file_chunks
+            tracker.log_file_complete(filename, total_file_chunks, file_tokens)
 
         except Exception as e:
             logger.warning(f"  │   └── ❌ Failed to process {filename}: {e}")
@@ -301,17 +450,17 @@ def unstructured_loader(
             continue
 
     # Enhanced summary logging
-    total_tokens = sum(len(d.page_content.split()) for d in documents)
+    total_tokens = sum(len(node.get_content().split()) for node in nodes)
     duration = time.time() - start_time
 
-    logger.info(f"  └── ✅ Processed {len(documents)} chunks, {total_tokens} tokens in {duration:.2f}s")
+    logger.info(f"  └── ✅ Processed {len(nodes)} chunks, {total_tokens} tokens in {duration:.2f}s")
 
     # Update global tracker stats
     tracker.track_phase_stats("global", "chunks_created", chunk_count)
-    tracker.track_phase_stats("global", "chunks_contextualized", len(documents))
+    tracker.track_phase_stats("global", "chunks_contextualized", len(nodes))
     tracker.track_phase_stats("global", "total_tokens", total_tokens)
 
-    return documents
+    return nodes
 
 
 __all__ = ["unstructured_loader"]
