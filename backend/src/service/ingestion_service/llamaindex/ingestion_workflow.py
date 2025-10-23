@@ -9,6 +9,7 @@ import logging
 from typing import Any, Dict, List, Optional
 
 from llama_index.core import Document as LIDocument
+from llama_index.core import Settings
 from llama_index.core.schema import BaseNode
 from llama_index.core.workflow import (
     Context,
@@ -18,16 +19,32 @@ from llama_index.core.workflow import (
     Workflow,
     step,
 )
+from llama_index.llms.openai import OpenAI
 from pydantic import Field
 
 from ..settings import (
     GRAPH_MODE,
     LLAMAPARSE_API_KEY,
     LLAMAPARSE_AUTO_MODE,
+    LLAMAPARSE_BBOX_BOTTOM,
+    LLAMAPARSE_BBOX_TOP,
+    LLAMAPARSE_DO_NOT_UNROLL_COLUMNS,
     LLAMAPARSE_ENABLE,
     LLAMAPARSE_EXTRACT_CHARTS,
+    LLAMAPARSE_INVALIDATE_CACHE,
+    LLAMAPARSE_LANGUAGE,
     LLAMAPARSE_RESULT_TYPE,
+    LLAMAPARSE_SKIP_DIAGONAL_TEXT,
+    LLAMAPARSE_TARGET_PAGES,
+    LLAMAPARSE_USER_PROMPT,
+    WORKFLOW_ENABLE_MODEL_FALLBACK,
+    WORKFLOW_ENABLE_VALIDATION,
+    WORKFLOW_FALLBACK_MODEL,
+    WORKFLOW_MAX_RETRIES,
 )
+from .document_loader import UnifiedDocumentLoader
+from .indexer import index_nodes_to_elasticsearch, index_nodes_to_neo4j, index_nodes_to_qdrant
+from .node_parser import ContextualNodeParser
 
 logger = logging.getLogger(__name__)
 
@@ -141,18 +158,6 @@ class IngestionWorkflow(Workflow):
     def loader(self):
         """Lazy load document loader with all LlamaParse options."""
         if self._loader is None:
-            from ..settings import (
-                LLAMAPARSE_BBOX_BOTTOM,
-                LLAMAPARSE_BBOX_TOP,
-                LLAMAPARSE_DO_NOT_UNROLL_COLUMNS,
-                LLAMAPARSE_INVALIDATE_CACHE,
-                LLAMAPARSE_LANGUAGE,
-                LLAMAPARSE_SKIP_DIAGONAL_TEXT,
-                LLAMAPARSE_TARGET_PAGES,
-                LLAMAPARSE_USER_PROMPT,
-            )
-            from .document_loader import UnifiedDocumentLoader
-
             self._loader = UnifiedDocumentLoader(
                 use_llamaparse=self.use_llamaparse or LLAMAPARSE_ENABLE,
                 llamaparse_api_key=LLAMAPARSE_API_KEY,
@@ -175,8 +180,6 @@ class IngestionWorkflow(Workflow):
     def parser(self):
         """Lazy load contextual node parser."""
         if self._parser is None:
-            from .node_parser import ContextualNodeParser
-
             self._parser = ContextualNodeParser(
                 enable_contextual_retrieval=self.enable_contextual_retrieval,
                 enable_metadata_extraction=self.enable_metadata_extraction,
@@ -188,8 +191,6 @@ class IngestionWorkflow(Workflow):
         """Lazy load Qdrant indexer."""
         if self._qdrant_indexer is None and self.enable_qdrant:
             try:
-                from .indexer import index_nodes_to_qdrant
-
                 self._qdrant_indexer = index_nodes_to_qdrant
             except ImportError as e:
                 logger.warning(f"Qdrant indexer not available: {e}")
@@ -200,8 +201,6 @@ class IngestionWorkflow(Workflow):
         """Lazy load Elasticsearch indexer."""
         if self._es_indexer is None and self.enable_elasticsearch:
             try:
-                from .indexer import index_nodes_to_elasticsearch
-
                 self._es_indexer = index_nodes_to_elasticsearch
             except ImportError as e:
                 logger.warning(f"Elasticsearch indexer not available: {e}")
@@ -212,8 +211,6 @@ class IngestionWorkflow(Workflow):
         """Lazy load graph ingestor."""
         if self._graph_ingestor is None and self.enable_neo4j:
             try:
-                from .indexer import index_nodes_to_neo4j
-
                 self._graph_ingestor = index_nodes_to_neo4j
             except ImportError as e:
                 logger.warning(f"Graph ingestor not available: {e}")
@@ -266,8 +263,6 @@ class IngestionWorkflow(Workflow):
         Input: DocumentLoadedEvent or RetryParsingEvent
         Output: NodesCreatedEvent with parsed nodes, or RetryParsingEvent, or StopEvent
         """
-        from ..settings import WORKFLOW_ENABLE_MODEL_FALLBACK, WORKFLOW_FALLBACK_MODEL, WORKFLOW_MAX_RETRIES
-
         # Handle both event types
         if isinstance(ev, RetryParsingEvent):
             documents = ev.documents
@@ -285,9 +280,6 @@ class IngestionWorkflow(Workflow):
             if use_fallback and WORKFLOW_ENABLE_MODEL_FALLBACK:
                 logger.info(f"[Workflow] Using fallback model: {WORKFLOW_FALLBACK_MODEL}")
                 # Switch to fallback model temporarily
-                from llama_index.core import Settings
-                from llama_index.llms.openai import OpenAI
-
                 original_llm = Settings.llm
                 Settings.llm = OpenAI(model=WORKFLOW_FALLBACK_MODEL)
                 try:
@@ -331,8 +323,6 @@ class IngestionWorkflow(Workflow):
         Input: NodeValidationEvent
         Output: NodesCreatedEvent if valid, RetryParsingEvent if needs retry, StopEvent if failed
         """
-        from ..settings import WORKFLOW_ENABLE_VALIDATION, WORKFLOW_MAX_RETRIES
-
         nodes = ev.nodes
         retry_count = ev.retry_count
 

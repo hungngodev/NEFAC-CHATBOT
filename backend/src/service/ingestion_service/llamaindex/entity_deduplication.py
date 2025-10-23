@@ -25,6 +25,12 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+from src.service.ingestion_service.llamaindex.property_graph_ingestor import LegalPropertyGraphIngestor
+from src.service.ingestion_service.settings import (
+    GRAPH_ENTITY_SIMILARITY_THRESHOLD,
+    GRAPH_WORD_DISTANCE_THRESHOLD,
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -435,8 +441,6 @@ def analyze_duplicates(
     backend_dir = Path(__file__).resolve().parent.parent.parent.parent
     sys.path.insert(0, str(backend_dir))
 
-    from src.service.ingestion_service.llamaindex.property_graph_ingestor import LegalPropertyGraphIngestor
-
     logger.info("=" * 80)
     logger.info("Entity Deduplication Analysis")
     logger.info("=" * 80)
@@ -491,8 +495,6 @@ def dry_run_deduplication(
     backend_dir = Path(__file__).resolve().parent.parent.parent.parent
     sys.path.insert(0, str(backend_dir))
 
-    from src.service.ingestion_service.llamaindex.property_graph_ingestor import LegalPropertyGraphIngestor
-
     logger.info("=" * 80)
     logger.info("Entity Deduplication Dry Run")
     logger.info("=" * 80)
@@ -528,8 +530,6 @@ def perform_deduplication(
     # Add backend to path for imports
     backend_dir = Path(__file__).resolve().parent.parent.parent.parent
     sys.path.insert(0, str(backend_dir))
-
-    from src.service.ingestion_service.llamaindex.property_graph_ingestor import LegalPropertyGraphIngestor
 
     logger.info("=" * 80)
     logger.info("Entity Deduplication - LIVE MODE")
@@ -578,11 +578,6 @@ def main():
     # Add backend to path for imports
     backend_dir = Path(__file__).resolve().parent.parent.parent.parent
     sys.path.insert(0, str(backend_dir))
-
-    from src.service.ingestion_service.settings import (
-        GRAPH_ENTITY_SIMILARITY_THRESHOLD,
-        GRAPH_WORD_DISTANCE_THRESHOLD,
-    )
 
     # Setup logging
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")

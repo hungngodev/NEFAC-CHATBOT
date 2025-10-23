@@ -15,7 +15,12 @@ from llama_index.core.schema import BaseNode, TextNode
 from llama_index.core.storage.docstore import SimpleDocumentStore
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.graph_stores.neo4j import Neo4jPropertyGraphStore
-from llama_index.vector_stores.elasticsearch import ElasticsearchStore
+from llama_index.vector_stores.elasticsearch import (
+    AsyncBM25Strategy,
+    AsyncDenseVectorStrategy,
+    AsyncSparseVectorStrategy,
+    ElasticsearchStore,
+)
 from llama_index.vector_stores.qdrant import QdrantVectorStore
 
 from .property_graph_ingestor import LegalPropertyGraphIngestor
@@ -219,15 +224,8 @@ def create_elasticsearch_store(
 
     logger.info(f"Creating Elasticsearch store: {index_name} with strategy: {strategy}")
 
-    # Import strategies
+    # Map strategy names to implementations
     try:
-        from llama_index.vector_stores.elasticsearch import (
-            AsyncBM25Strategy,
-            AsyncDenseVectorStrategy,
-            AsyncSparseVectorStrategy,
-        )
-
-        # Map strategy names to implementations
         strategy_map = {
             "dense": AsyncDenseVectorStrategy(),
             "bm25": AsyncBM25Strategy(),

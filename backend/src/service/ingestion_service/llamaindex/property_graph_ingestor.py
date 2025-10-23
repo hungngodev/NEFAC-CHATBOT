@@ -10,11 +10,21 @@ import logging
 import os
 from typing import List, Literal, Optional
 
-from llama_index.core import PropertyGraphIndex
+from llama_index.core import KnowledgeGraphIndex, PropertyGraphIndex, Settings
 from llama_index.core.indices.property_graph import SchemaLLMPathExtractor
 from llama_index.core.schema import BaseNode
 from llama_index.core.schema import Document as LIDocument
-from llama_index.graph_stores.neo4j import Neo4jPropertyGraphStore
+from llama_index.graph_stores.neo4j import Neo4jGraphStore, Neo4jPropertyGraphStore
+
+from src.service.ingestion_service.settings import (
+    GRAPH_ENABLE_ENTITY_DEDUPLICATION,
+    GRAPH_ENTITY_SIMILARITY_THRESHOLD,
+    GRAPH_MAX_TRIPLETS_PER_CHUNK,
+    GRAPH_NUM_WORKERS,
+    GRAPH_USE_WORD_DISTANCE,
+    GRAPH_WORD_DISTANCE_THRESHOLD,
+    OPENAI_EMBED_MODEL_DIM,
+)
 
 from .entity_deduplication import EntityDeduplicator
 
@@ -144,8 +154,6 @@ class LegalPropertyGraphIngestor:
             enable_validation: Enable schema validation
             llm: Language model for extraction (defaults to Settings.llm)
         """
-        from llama_index.core import Settings
-
         self.neo4j_url = neo4j_url or os.getenv("NEO4J_URI", "bolt://localhost:7687")
         self.neo4j_user = neo4j_user or os.getenv("NEO4J_USERNAME") or os.getenv("NEO4J_USER") or "neo4j"
         self.neo4j_password = neo4j_password or os.getenv("NEO4J_PASSWORD", "password")
@@ -175,15 +183,6 @@ class LegalPropertyGraphIngestor:
         Enhanced with entity deduplication from tutorial:
         https://developers.llamaindex.ai/python/examples/property_graph/property_graph_neo4j/
         """
-        from src.service.ingestion_service.settings import (
-            GRAPH_ENABLE_ENTITY_DEDUPLICATION,
-            GRAPH_ENTITY_SIMILARITY_THRESHOLD,
-            GRAPH_MAX_TRIPLETS_PER_CHUNK,
-            GRAPH_NUM_WORKERS,
-            GRAPH_USE_WORD_DISTANCE,
-            GRAPH_WORD_DISTANCE_THRESHOLD,
-        )
-
         logger.info("Creating SchemaLLMPathExtractor with legal domain schema")
         logger.info(f"Entity deduplication: {GRAPH_ENABLE_ENTITY_DEDUPLICATION}")
 
@@ -286,12 +285,6 @@ class LegalPropertyGraphIngestor:
 
             # Run entity deduplication if enabled
             if run_deduplication:
-                from src.service.ingestion_service.settings import (
-                    GRAPH_ENABLE_ENTITY_DEDUPLICATION,
-                    GRAPH_ENTITY_SIMILARITY_THRESHOLD,
-                    GRAPH_WORD_DISTANCE_THRESHOLD,
-                )
-
                 if GRAPH_ENABLE_ENTITY_DEDUPLICATION:
                     logger.info("Starting entity deduplication...")
                     self.deduplicate_entities(
@@ -338,8 +331,6 @@ class LegalPropertyGraphIngestor:
             )
 
             # Create vector index for efficient similarity search
-            from src.service.ingestion_service.settings import OPENAI_EMBED_MODEL_DIM
-
             deduplicator.create_vector_index(embedding_dimension=OPENAI_EMBED_MODEL_DIM)
 
             # Get initial stats
@@ -438,8 +429,6 @@ def graph_rag_ingest_llamaindex(nodes: List[BaseNode], use_property_graph: bool 
     else:
         # Fallback to old KnowledgeGraphIndex
         logger.warning("Using legacy KnowledgeGraphIndex (consider upgrading to PropertyGraphIndex)")
-        from llama_index.core import KnowledgeGraphIndex
-        from llama_index.graph_stores.neo4j import Neo4jGraphStore
 
         neo4j_url = os.getenv("NEO4J_URI", "bolt://localhost:7687")
         neo4j_user = os.getenv("NEO4J_USERNAME") or os.getenv("NEO4J_USER") or "neo4j"

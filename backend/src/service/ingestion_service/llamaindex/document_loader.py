@@ -14,6 +14,11 @@ from urllib.parse import parse_qs, urlparse
 
 from llama_index.core import Document as LIDocument
 from llama_index.core import SimpleDirectoryReader
+from llama_index.readers.file import DocxReader, PyMuPDFReader, UnstructuredReader
+from llama_index.readers.web import BeautifulSoupWebReader
+from llama_index.readers.youtube_transcript import YoutubeTranscriptReader
+from llama_parse import LlamaParse
+from youtube_transcript_api import YouTubeTranscriptApi
 
 from src.service.ingestion_service.loader.spreadsheet_utils import (
     process_xlsx_intelligently,
@@ -47,12 +52,6 @@ class UnifiedDocumentLoader:
         video_url: str,
         extra_info: Optional[dict] = None,
     ) -> List[LIDocument]:
-        try:
-            from youtube_transcript_api import YouTubeTranscriptApi  # type: ignore[import-not-found]
-        except ImportError as exc:  # pragma: no cover - optional dependency
-            logger.error("YouTube transcript fallback unavailable: %s", exc)
-            raise
-
         video_id = self._extract_youtube_video_id(video_url)
 
         try:
@@ -160,8 +159,6 @@ class UnifiedDocumentLoader:
         """
         if self.use_llamaparse and self.llamaparse_api_key:
             try:
-                from llama_parse import LlamaParse
-
                 if "llamaparse" not in self._readers_cache:
                     # Build kwargs for LlamaParse with all advanced options
                     parser_kwargs = {
@@ -213,8 +210,6 @@ class UnifiedDocumentLoader:
 
         # Fallback to PyMuPDF
         try:
-            from llama_index.readers.file import PyMuPDFReader
-
             if "pymupdf" not in self._readers_cache:
                 self._readers_cache["pymupdf"] = PyMuPDFReader()
                 logger.info("Using PyMuPDF for PDF parsing")
@@ -228,8 +223,6 @@ class UnifiedDocumentLoader:
     def _get_html_reader(self):
         """Get HTML reader."""
         try:
-            from llama_index.readers.web import BeautifulSoupWebReader  # type: ignore[import-not-found]
-
             if "html" not in self._readers_cache:
                 self._readers_cache["html"] = BeautifulSoupWebReader()
                 logger.info("Using BeautifulSoupWebReader for HTML parsing")
@@ -243,8 +236,6 @@ class UnifiedDocumentLoader:
     def _get_docx_reader(self):
         """Get DOCX reader."""
         try:
-            from llama_index.readers.file import DocxReader
-
             if "docx" not in self._readers_cache:
                 self._readers_cache["docx"] = DocxReader()
                 logger.info("Using DocxReader for DOCX parsing")
@@ -258,8 +249,6 @@ class UnifiedDocumentLoader:
     def _load_excel_intelligently(self, file_path: Path, extra_info: Optional[dict] = None) -> List[LIDocument]:
         """Load Excel with intelligent table processing (preserves structure)."""
         try:
-            import pandas as pd  # noqa: F401
-
             logger.info("Using spreadsheet utils for XLSX conversion")
             chunks = process_xlsx_intelligently(str(file_path), extra_info or {})
 
@@ -281,8 +270,6 @@ class UnifiedDocumentLoader:
     def _get_youtube_reader(self):
         """Get YouTube transcript reader."""
         try:
-            from llama_index.readers.youtube_transcript import YoutubeTranscriptReader  # type: ignore[import-not-found]
-
             if "youtube" not in self._readers_cache:
                 self._readers_cache["youtube"] = YoutubeTranscriptReader()
                 logger.info("Using YoutubeTranscriptReader for YouTube videos")
@@ -296,8 +283,6 @@ class UnifiedDocumentLoader:
     def _fallback_unstructured(self, file_path: Union[str, Path], extra_info: Optional[dict] = None) -> List[LIDocument]:
         """Fallback to Unstructured.io loader."""
         try:
-            from llama_index.readers.file import UnstructuredReader
-
             logger.warning("Falling back to UnstructuredReader for %s", file_path)
             reader = UnstructuredReader()
             docs = reader.load_data(file=str(file_path), extra_info=extra_info)

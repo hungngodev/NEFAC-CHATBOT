@@ -26,6 +26,12 @@ from llama_index.core.schema import BaseNode
 
 from src.service.ingestion_service.llamaindex import ensure_llamaindex_ready
 from src.service.ingestion_service.llamaindex.database_cleaner import clear_all_databases
+from src.service.ingestion_service.llamaindex.indexer import (
+    index_nodes_to_elasticsearch,
+    index_nodes_to_neo4j,
+    index_nodes_to_qdrant,
+)
+from src.service.ingestion_service.llamaindex.ingestion_workflow import run_ingestion_workflow
 from src.service.ingestion_service.loader.unstructured_loader import (
     _get_base_metadata,
     unstructured_loader,
@@ -151,8 +157,6 @@ def _ingest_with_workflow(
     offset: int,
     include_only: Optional[Set[str]] = None,
 ) -> None:
-    from src.service.ingestion_service.llamaindex.ingestion_workflow import run_ingestion_workflow
-
     _configure_logging()
     tracker = get_tracker()
     entries = _load_metadata_entries(metadata_json_path, limit, offset, include_only)
@@ -234,8 +238,6 @@ def graph_rag_ingest(nodes: List[BaseNode], file_type: str) -> None:
             return
 
         if os.getenv("GRAPH_LI_ENABLE", "true").lower() in _TRUTHY:
-            from src.service.ingestion_service.llamaindex.indexer import index_nodes_to_neo4j
-
             use_property_graph = GRAPH_MODE in {"property", "legal", "schema"}
             ingested_count = index_nodes_to_neo4j(nodes, use_property_graph=use_property_graph)
             tracker.track_db_upload(file_type, "Neo4j", ingested_count)
@@ -255,11 +257,6 @@ def contextual_indexing(nodes: List[BaseNode], file_type: str) -> None:
     tracker.log_pipeline_step("Contextual Indexing", getattr(embedding_model, "model_name", LLM_MODEL_NAME))
 
     try:
-        from src.service.ingestion_service.llamaindex.indexer import (
-            index_nodes_to_elasticsearch,
-            index_nodes_to_qdrant,
-        )
-
         index_nodes_to_qdrant(nodes, embedding_model)
         tracker.track_db_upload(file_type, "Qdrant", len(nodes))
 

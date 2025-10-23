@@ -9,9 +9,12 @@ import logging
 from collections import defaultdict
 from typing import Callable, Dict, List, Optional
 
+import Stemmer
 from llama_index.core import VectorStoreIndex
 from llama_index.core.retrievers import BaseRetriever, VectorIndexRetriever
 from llama_index.core.schema import NodeWithScore, QueryBundle
+from llama_index.postprocessor.cohere_rerank import CohereRerank
+from llama_index.retrievers.bm25 import BM25Retriever
 
 from src.service.ingestion_service.settings import (
     COHERE_API_KEY,
@@ -110,9 +113,6 @@ class HybridRetriever(BaseRetriever):
         # 2. BM25 sparse retriever (if enabled)
         if self.enable_bm25:
             try:
-                import Stemmer  # type: ignore[import]
-                from llama_index.retrievers.bm25 import BM25Retriever  # type: ignore[import]
-
                 # Get all nodes from index
                 nodes = list(self.vector_index.docstore.docs.values())
 
@@ -131,8 +131,6 @@ class HybridRetriever(BaseRetriever):
         # 4. Reranker (if enabled)
         if self.enable_rerank:
             try:
-                from llama_index.postprocessor.cohere_rerank import CohereRerank  # type: ignore[import]
-
                 if not COHERE_API_KEY:
                     logger.warning("COHERE_API_KEY not set, reranking disabled")
                     self.enable_rerank = False

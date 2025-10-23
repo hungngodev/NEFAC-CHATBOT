@@ -15,7 +15,10 @@ import os
 from functools import lru_cache
 from typing import List
 
+import spacy
+import spacy.cli
 from llama_index.core import Document as LIDocument
+from llama_index.core import Settings
 from llama_index.core.extractors import (
     KeywordExtractor,
     QuestionsAnsweredExtractor,
@@ -35,6 +38,7 @@ from llama_index.core.schema import BaseNode
 from src.service.ingestion_service.settings import (
     ENABLE_CONTEXTUAL_RETRIEVAL,
     ENABLE_METADATA_EXTRACTION,
+    SEMANTIC_SPLITTER_AUTO_DOWNLOAD,
 )
 
 logger = logging.getLogger(__name__)
@@ -205,26 +209,18 @@ def _create_semantic_splitter(
     Enhanced with auto-download from settings.
     """
     try:
-        import spacy  # type: ignore[import-not-found]
-
-        from src.service.ingestion_service.settings import SEMANTIC_SPLITTER_AUTO_DOWNLOAD
-
         # Auto-download spaCy model if not available
         if SEMANTIC_SPLITTER_AUTO_DOWNLOAD:
             try:
                 spacy.load(spacy_model)
             except OSError:
                 logger.info(f"Downloading spaCy model: {spacy_model}")
-                import spacy.cli
-
                 spacy.cli.download(spacy_model)
                 logger.info(f"Successfully downloaded {spacy_model}")
     except ImportError:
         logger.warning("spacy not available")
 
     try:
-        import spacy  # type: ignore[import-not-found]
-
         # Try to load the specified model
         try:
             spacy.load(spacy_model)
@@ -316,8 +312,6 @@ Please give a short succinct context to situate this chunk within the overall do
         enable_prompt_caching: bool = True,
         max_doc_context_length: int = 100_000,
     ) -> None:
-        from llama_index.core import Settings
-
         self.llm: LLM | None = llm or Settings.llm
         self.enable_contextual = enable_contextual_retrieval and self.llm is not None
         self.enable_metadata = enable_metadata_extraction and self.llm is not None
