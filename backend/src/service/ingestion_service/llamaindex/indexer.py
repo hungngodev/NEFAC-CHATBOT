@@ -10,7 +10,7 @@ import logging
 import os
 from typing import List, Optional
 
-from llama_index.core import StorageContext, VectorStoreIndex
+from llama_index.core import Settings, StorageContext, VectorStoreIndex
 from llama_index.core.schema import BaseNode, TextNode
 from llama_index.core.storage.docstore import SimpleDocumentStore
 from llama_index.embeddings.openai import OpenAIEmbedding
@@ -81,22 +81,69 @@ def create_storage_context(
 # Vector Store Creation
 # ============================================================================
 
+def relative_score_fusion(dense_scores, sparse_scores, alpha: float = 0.5):
+    """Relative score fusion algorithm for hybrid search.
+    
+    Based on: https://developers.llamaindex.ai/python/examples/vector_stores/qdrant_hybrid/
+    
+    Normalizes scores to [0,1] and combines with weighted average.
+    
+    Args:
+        dense_scores: List of (id, dense_score) tuples
+        sparse_scores: List of (id, sparse_score) tuples  
+        alpha: Weight for dense scores (1-alpha for sparse). Range [0,1]
+               alpha=1.0 means pure dense, alpha=0.0 means pure sparse
+    
+    Returns:
+        List of (id, combined_score) tuples sorted by score descending
+    """
+    if not dense_scores and not sparse_scores:
+        return []
+    
+    # Normalize dense scores
+    max_dense = max((score for _, score in dense_scores), default=1.0)
+    dense_normalized = {id_: score / max_dense for id_, score in dense_scores} if max_dense > 0 else {}
+    
+    # Normalize sparse scores
+    max_sparse = max((score for _, score in sparse_scores), default=1.0)
+    sparse_normalized = {id_: score / max_sparse for id_, score in sparse_scores} if max_sparse > 0 else {}
+    
+    # Combine with weighted average
+    all_ids = set(dense_normalized.keys()) | set(sparse_normalized.keys())
+    combined = {}
+    
+    for id_ in all_ids:
+        dense_score = dense_normalized.get(id_, 0.0)
+        sparse_score = sparse_normalized.get(id_, 0.0)
+        combined[id_] = alpha * dense_score + (1 - alpha) * sparse_score
+    
+    # Sort by score descending
+    return sorted(combined.items(), key=lambda x: x[1], reverse=True)
+
+
 def create_qdrant_store(
     collection_name: Optional[str] = None,
     url: Optional[str] = None,
     api_key: Optional[str] = None,
     enable_hybrid: Optional[bool] = None,
+    sparse_top_k: Optional[int] = None,
+    hybrid_fusion_fn: Optional[object] = None,
 ) -> QdrantVectorStore:
     """Create Qdrant vector store with optional hybrid search.
+    
+    Enhanced with custom fusion from tutorial:
+    https://developers.llamaindex.ai/python/examples/vector_stores/qdrant_hybrid/
     
     Args:
         collection_name: Collection name (default from env)
         url: Qdrant URL (default from env)
         api_key: API key (default from env)
         enable_hybrid: Enable hybrid search with sparse vectors (default from env)
+        sparse_top_k: Number of sparse results to retrieve (default from env)
+        hybrid_fusion_fn: Custom fusion function (default: relative_score_fusion)
         
     Returns:
-        Configured QdrantVectorStore
+        Configured QdrantVectorStore with hybrid search support
     """
     collection_name = collection_name or os.getenv("QDRANT_CLUSTER_ID", "documents")
     url = url or os.getenv("QDRANT_ENDPOINT", "http://localhost:6333")
@@ -105,41 +152,113 @@ def create_qdrant_store(
     if enable_hybrid is None:
         enable_hybrid = _get_bool_env("QDRANT_ENABLE_HYBRID", False)
     
-    sparse_model = os.getenv("QDRANT_SPARSE_MODEL", "Qdrant/bm25") if enable_hybrid else None
+    if enable_hybrid:
+        sparse_model = os.getenv("QDRANT_SPARSE_MODEL", "Qdrant/bm25")
+        sparse_top_k = sparse_top_k or int(os.getenv("QDRANT_SPARSE_TOP_K", "100"))
+        
+        # Use custom fusion function if provided, otherwise use relative score fusion with alpha
+        if hybrid_fusion_fn is None:
+            alpha = float(os.getenv("QDRANT_HYBRID_ALPHA", "0.5"))
+            fusion_algorithm = os.getenv("QDRANT_FUSION_ALGORITHM", "relative_score")
+            
+            if fusion_algorithm == "relative_score":
+                hybrid_fusion_fn = lambda dense, sparse: relative_score_fusion(dense, sparse, alpha)
+                logger.info(f"Using relative score fusion with alpha={alpha}")
+            # Note: RRF fusion would be handled by Qdrant internally if supported
+        
+        logger.info(f"Creating Qdrant store: {collection_name} (hybrid=True, sparse_top_k={sparse_top_k})")
+        
+        kwargs = {
+            "collection_name": collection_name,
+            "url": url,
+            "api_key": api_key,
+            "enable_hybrid": True,
+            "fastembed_sparse_model": sparse_model,
+            "sparse_top_k": sparse_top_k,
+        }
+        
+        # Add fusion function if supported by the version
+        try:
+            kwargs["hybrid_fusion_fn"] = hybrid_fusion_fn
+        except TypeError:
+            logger.debug("hybrid_fusion_fn not supported by this Qdrant version")
+        
+        return QdrantVectorStore(**kwargs)
     
-    logger.info(f"Creating Qdrant store: {collection_name} (hybrid={enable_hybrid})")
-    
-    return QdrantVectorStore(
-        collection_name=collection_name,
-        url=url,
-        api_key=api_key,
-        enable_hybrid=enable_hybrid,
-        fastembed_sparse_model=sparse_model,
-    )
+    else:
+        logger.info(f"Creating Qdrant store: {collection_name} (hybrid=False)")
+        return QdrantVectorStore(
+            collection_name=collection_name,
+            url=url,
+            api_key=api_key,
+            enable_hybrid=False,
+        )
 
 
 def create_elasticsearch_store(
     index_name: Optional[str] = None,
     es_url: Optional[str] = None,
+    strategy: Optional[str] = None,
 ) -> ElasticsearchStore:
-    """Create Elasticsearch vector store.
+    """Create Elasticsearch vector store with retrieval strategy.
+    
+    Based on: https://www.elastic.co/search-labs/blog/elasticsearch-llamaindex-ingest-data
     
     Args:
         index_name: Index name (default from env)
         es_url: Elasticsearch URL (default from env)
+        strategy: Retrieval strategy: 'dense' | 'bm25' | 'sparse' | 'hybrid' (default from env)
         
     Returns:
-        Configured ElasticsearchStore
+        Configured ElasticsearchStore with strategy
     """
     index_name = index_name or os.getenv("ES_INDEX", "documents")
     es_url = es_url or os.getenv("ES_HOST", "http://localhost:9200")
+    strategy = strategy or os.getenv("ELASTICSEARCH_STRATEGY", "hybrid")
     
-    logger.info(f"Creating Elasticsearch store: {index_name}")
+    logger.info(f"Creating Elasticsearch store: {index_name} with strategy: {strategy}")
     
-    return ElasticsearchStore(
-        index_name=index_name,
-        es_url=es_url,
-    )
+    # Import strategies
+    try:
+        from llama_index.vector_stores.elasticsearch import (
+            AsyncDenseVectorStrategy,
+            AsyncBM25Strategy,
+            AsyncSparseVectorStrategy,
+        )
+        
+        # Map strategy names to implementations
+        strategy_map = {
+            "dense": AsyncDenseVectorStrategy(),
+            "bm25": AsyncBM25Strategy(),
+            "sparse": AsyncSparseVectorStrategy(),
+        }
+        
+        if strategy == "hybrid":
+            # Hybrid uses both dense vectors and BM25
+            retrieval_strategy = [
+                AsyncDenseVectorStrategy(),
+                AsyncBM25Strategy(),
+            ]
+            logger.info("Using hybrid strategy: Dense + BM25")
+        elif strategy in strategy_map:
+            retrieval_strategy = strategy_map[strategy]
+            logger.info(f"Using single strategy: {strategy}")
+        else:
+            logger.warning(f"Unknown strategy '{strategy}', falling back to dense")
+            retrieval_strategy = AsyncDenseVectorStrategy()
+        
+        return ElasticsearchStore(
+            index_name=index_name,
+            es_url=es_url,
+            retrieval_strategy=retrieval_strategy,
+        )
+    
+    except ImportError as e:
+        logger.warning(f"Elasticsearch strategies not available: {e}, using basic store")
+        return ElasticsearchStore(
+            index_name=index_name,
+            es_url=es_url,
+        )
 
 
 # ============================================================================
@@ -176,17 +295,17 @@ def index_nodes_to_qdrant(
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         
         # Create embedder
-        embedder = None
-        if embed_model is not None:
-            model_name = (
-                getattr(embed_model, "model", None) or
-                getattr(embed_model, "model_name", None) or
-                "text-embedding-3-small"
-            )
-            embedder = OpenAIEmbedding(
-                model_name=model_name,
-                api_key=os.getenv("OPENAI_API_KEY")
-            )
+        embedder = embed_model or Settings.embed_model
+
+        if embedder is None:
+            api_key = os.getenv("OPENAI_API_KEY")
+            model_name = os.getenv("OPENAI_EMBED_MODEL", "text-embedding-3-small")
+
+            if api_key:
+                embedder = OpenAIEmbedding(model=model_name, api_key=api_key)
+            else:
+                logger.error("No embedding model configured; skipping Qdrant indexing")
+                return None
         
         # Convert to TextNodes
         text_nodes = [_ensure_text_node(node) for node in nodes]
@@ -236,17 +355,17 @@ def index_nodes_to_elasticsearch(
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         
         # Create embedder
-        embedder = None
-        if embed_model is not None:
-            model_name = (
-                getattr(embed_model, "model", None) or
-                getattr(embed_model, "model_name", None) or
-                "text-embedding-3-small"
-            )
-            embedder = OpenAIEmbedding(
-                model_name=model_name,
-                api_key=os.getenv("OPENAI_API_KEY")
-            )
+        embedder = embed_model or Settings.embed_model
+
+        if embedder is None:
+            api_key = os.getenv("OPENAI_API_KEY")
+            model_name = os.getenv("OPENAI_EMBED_MODEL", "text-embedding-3-small")
+
+            if api_key:
+                embedder = OpenAIEmbedding(model=model_name, api_key=api_key)
+            else:
+                logger.error("No embedding model configured; skipping Elasticsearch indexing")
+                return None
         
         # Convert to TextNodes
         text_nodes = [_ensure_text_node(node) for node in nodes]
@@ -290,9 +409,11 @@ def index_nodes_to_neo4j(
     
     try:
         if use_property_graph:
-            # Use legal domain property graph
+            # Use legal domain property graph. We return a count to keep
+            # downstream tracker logic simple (they expect an integer).
             ingestor = LegalPropertyGraphIngestor()
-            return ingestor.ingest_nodes(nodes)
+            ingestor.ingest_nodes(nodes)
+            return len(nodes)
         else:
             # Fallback to basic graph indexing (not implemented here)
             logger.warning("Basic graph indexing not implemented, use property_graph=True")
