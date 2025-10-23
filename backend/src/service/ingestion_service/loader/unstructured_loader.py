@@ -12,19 +12,27 @@ import tempfile
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 from llama_index.core.schema import BaseNode, TextNode
 from unstructured.partition.auto import partition as u_partition
 
-from src.service.ingestion_service.llamaindex.node_parser import (
-    build_nodes_from_text,
-)
 from src.service.ingestion_service.llamaindex.document_loader import (
     UnifiedDocumentLoader,
 )
+from src.service.ingestion_service.llamaindex.node_parser import (
+    build_nodes_from_text,
+)
 from src.service.ingestion_service.progress_tracker import get_tracker
-from src.service.ingestion_service.settings import CONTEXT_FORMAT
+from src.service.ingestion_service.settings import (
+    CONTEXT_FORMAT,
+    LLAMAPARSE_API_KEY,
+    LLAMAPARSE_AUTO_MODE,
+    LLAMAPARSE_ENABLE,
+    LLAMAPARSE_EXTRACT_CHARTS,
+    LLAMAPARSE_RESULT_TYPE,
+)
+
 from .spreadsheet_utils import process_xlsx_intelligently
 
 logger = logging.getLogger(__name__)
@@ -32,13 +40,17 @@ TRANSCRIPT_PATTERN = re.compile(r"\[(?P<ts>[\d:\.]+)s?\]\s*(?P<txt>.*)")
 _TRUTHY = {"1", "true", "yes", "on"}
 
 USE_LLAMAINDEX_READERS = os.getenv("USE_LLAMAINDEX_READERS", "true").lower() in _TRUTHY
-LLAMAPARSE_ENABLED = os.getenv("LLAMAPARSE_ENABLE", "false").lower() in _TRUTHY
+LLAMAPARSE_ENABLED = LLAMAPARSE_ENABLE
 SUPPORTED_LI_EXTS = {"pdf", "html", "htm", "docx", "doc", "ppt", "pptx", "txt"}
 
 LLAMA_LOADER: Optional[UnifiedDocumentLoader]
 if USE_LLAMAINDEX_READERS:
     LLAMA_LOADER = UnifiedDocumentLoader(
         use_llamaparse=LLAMAPARSE_ENABLED,
+        llamaparse_api_key=LLAMAPARSE_API_KEY,
+        llamaparse_auto_mode=LLAMAPARSE_AUTO_MODE,
+        llamaparse_extract_charts=LLAMAPARSE_EXTRACT_CHARTS,
+        llamaparse_result_type=LLAMAPARSE_RESULT_TYPE,
         fallback_to_unstructured=True,
     )
 else:
@@ -106,14 +118,34 @@ def _parse_pdf_with_llamaparse(file_path: str) -> Optional[str]:
     except Exception as exc:  # pragma: no cover - optional dependency
         logger.warning("LlamaParse unavailable: %s", exc)
         return None
-
-    api_key = os.getenv("LLAMAPARSE_API_KEY") or os.getenv("LLAMA_CLOUD_API_KEY")
+    api_key = LLAMAPARSE_API_KEY
     if not api_key:
         logger.warning("LLAMAPARSE_API_KEY not set; skipping LlamaParse")
         return None
 
     try:
-        parser = LlamaParse(api_key=api_key, result_type="text")
+        parser_kwargs = {
+            "api_key": api_key,
+            "result_type": LLAMAPARSE_RESULT_TYPE or "text",
+        }
+        parser = LlamaParse(**parser_kwargs)
+
+        optional_flags = {
+            "auto_mode": LLAMAPARSE_AUTO_MODE,
+            "extract_charts": LLAMAPARSE_EXTRACT_CHARTS,
+        }
+        parsing_config = getattr(parser, "parsing_config", None)
+        if isinstance(parsing_config, dict):  # pragma: no branch - recent versions expose dict
+            parsing_config.update({k: v for k, v in optional_flags.items() if v is not None})
+        else:  # pragma: no cover - depends on llama-parse version
+            for key, value in optional_flags.items():
+                if value is None:
+                    continue
+                try:
+                    setattr(parser, key, value)
+                except AttributeError:
+                    logger.debug("LlamaParse option '%s' not supported on this version", key)
+
         results = parser.load_data(file_path)
         texts: List[str] = []
         for result in results:
@@ -201,6 +233,8 @@ def unstructured_loader(
     limit: Optional[int] = None,
     offset: int = 0,
     file_type: Optional[str] = None,
+    include_only: Optional[Set[str]] = None,
+    processed_filenames: Optional[Set[str]] = None,
 ) -> List[TextNode]:
     start_time = time.time()
     tracker = get_tracker()
@@ -212,6 +246,12 @@ def unstructured_loader(
             raw = raw[offset:]
         window = raw[:limit] if limit else raw
         entries = [e for e in window if e.get("filename")]
+
+    if include_only:
+        normalized_targets = {str(name) for name in include_only}
+        entries = [entry for entry in entries if entry["filename"] in normalized_targets]
+        if not entries:
+            logger.info("    ├── No matching documents found in include_only filter")
 
     logger.info(f"    ├── Loading {len(entries)} files from metadata")
     nodes: List[TextNode] = []
@@ -355,14 +395,8 @@ def unstructured_loader(
                         "chunk_word_count": len(chunk_text.split()),
                     }
 
-                    context_parts = [
-                        f"Document: {node_meta.get('title') or document_base_meta.get('title') or base_meta.get('title') or filename}"
-                    ]
-                    summary = (
-                        node_meta.get("contextual_summary")
-                        or node_meta.get("section_summary")
-                        or node_meta.get("window")
-                    )
+                    context_parts = [f"Document: {node_meta.get('title') or document_base_meta.get('title') or base_meta.get('title') or filename}"]
+                    summary = node_meta.get("contextual_summary") or node_meta.get("section_summary") or node_meta.get("window")
                     if summary:
                         context_parts.append(str(summary))
 
@@ -441,6 +475,8 @@ def unstructured_loader(
                     nodes.append(_create_node(chunk_text, document_base_meta, chunk_meta, context, raw_node=raw_node))
 
             chunk_count += total_file_chunks
+            if processed_filenames is not None:
+                processed_filenames.add(filename)
             tracker.log_file_complete(filename, total_file_chunks, file_tokens)
 
         except Exception as e:

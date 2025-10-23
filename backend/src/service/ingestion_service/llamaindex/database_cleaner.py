@@ -81,10 +81,12 @@ def clear_elasticsearch_index() -> bool:
 def clear_neo4j_database() -> bool:
     try:
         uri = os.environ["NEO4J_URI"]
-        user = os.environ["NEO4J_USER"]
+        username = os.environ.get("NEO4J_USERNAME") or os.environ.get("NEO4J_USER")
+        if not username:
+            raise KeyError("NEO4J_USERNAME")
         password = os.environ["NEO4J_PASSWORD"]
 
-        store = Neo4jGraphStore(url=uri, username=user, password=password)
+        store = Neo4jGraphStore(url=uri, username=username, password=password)
         driver = getattr(store, "driver", None) or getattr(store, "_driver", None)
         if driver is None:
             raise RuntimeError("Neo4jGraphStore did not expose a driver")

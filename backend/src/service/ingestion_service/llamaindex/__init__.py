@@ -1,7 +1,5 @@
-"""
-LlamaIndex integration layer for the ingestion service.
+"""LlamaIndex integration layer for the ingestion service."""
 
-This package contains adapters that bridge existing LangChain-based
-documents and settings to LlamaIndex components (vector stores, graph stores,
-workflows) without changing public ingestion APIs.
-"""
+from .diagnostics import ensure_llamaindex_ready
+
+__all__ = ["ensure_llamaindex_ready"]

@@ -14,9 +14,11 @@ from langchain_neo4j import GraphCypherQAChain, Neo4jGraph
 from src.config.settings import Configuration
 
 NEO4J_URI = os.environ["NEO4J_URI"]
-NEO4J_USER = os.environ["NEO4J_USER"]
+NEO4J_USERNAME = os.environ.get("NEO4J_USERNAME") or os.environ.get("NEO4J_USER")
+if not NEO4J_USERNAME:
+    raise KeyError("NEO4J_USERNAME")
 NEO4J_PASSWORD = os.environ["NEO4J_PASSWORD"]
-graph = Neo4jGraph(url=NEO4J_URI, username=NEO4J_USER, password=NEO4J_PASSWORD)
+graph = Neo4jGraph(url=NEO4J_URI, username=NEO4J_USERNAME, password=NEO4J_PASSWORD)
 
 
 @tool()
