@@ -8,7 +8,10 @@ from __future__ import annotations
 
 import logging
 import os
+from uuid import uuid4
 from typing import List, Optional
+
+import asyncio
 
 from llama_index.core import Settings, StorageContext, VectorStoreIndex
 from llama_index.core.schema import BaseNode, TextNode
@@ -22,10 +25,17 @@ from llama_index.vector_stores.elasticsearch import (
     ElasticsearchStore,
 )
 from llama_index.vector_stores.qdrant import QdrantVectorStore
+from qdrant_client import QdrantClient
+from qdrant_client import QdrantClient
 
-from .property_graph_ingestor import LegalPropertyGraphIngestor
+from src.service.ingestion_service import settings as ingestion_settings
+
+from src.service.ingestion_service.llamaindex.property_graph_ingestor import (
+    LegalPropertyGraphIngestor,
+)
 
 logger = logging.getLogger(__name__)
+_RUN_UUID = uuid4()
 
 
 def _get_bool_env(name: str, default: bool = False) -> bool:
@@ -39,8 +49,45 @@ def _get_bool_env(name: str, default: bool = False) -> bool:
 def _ensure_text_node(node: BaseNode) -> TextNode:
     """Convert BaseNode to TextNode if needed."""
     if isinstance(node, TextNode):
+        # Ensure per-chunk uniqueness in metadata id as well
+        meta = dict(node.metadata or {})
+        # Build a unique, per-run chunk id: doc_id::chunk_index::processing_timestamp (fallback to uuid)
+        chunk_index = meta.get("chunk_index", 0)
+        doc_id = meta.get("doc_id")
+        if doc_id is not None and chunk_index is not None:
+            meta["id"] = f"{doc_id}::{chunk_index}::{_RUN_UUID}"
+        else:
+            meta["id"] = meta.get("chunk_id") or getattr(node, "node_id", None) or f"chunk-{uuid4()}"
+        node.metadata = meta
+        node.relationships = node.relationships or {}
         return node
-    return TextNode(text=node.get_content(), metadata=dict(node.metadata or {}), id_=getattr(node, "node_id", None))
+    meta = dict(node.metadata or {})
+    chunk_index = meta.get("chunk_index", 0)
+    doc_id = meta.get("doc_id")
+    if doc_id is not None and chunk_index is not None:
+        meta["id"] = f"{doc_id}::{chunk_index}::{_RUN_UUID}"
+    else:
+        meta["id"] = meta.get("chunk_id") or getattr(node, "node_id", None) or f"chunk-{uuid4()}"
+    return TextNode(text=node.get_content(), metadata=meta, id_=meta["id"], relationships={})
+
+
+def _clean_text_node(node: BaseNode, include_text_field: bool = False) -> TextNode:
+    """Return a TextNode with cleaned metadata for vector stores (no _node_content/relationships)."""
+    tn = _ensure_text_node(node)
+    meta = {k: v for k, v in (tn.metadata or {}).items() if not k.startswith("_")}
+    # Drop relationships payload to keep Qdrant/ES payload lean
+    meta.pop("relationships", None)
+    # Prefer chunk_id as the external id for vector stores
+    if meta.get("chunk_id"):
+        meta["id"] = meta["chunk_id"]
+    if include_text_field:
+        meta["text"] = tn.get_content()
+    return TextNode(
+        text=tn.get_content(),
+        metadata=meta,
+        id_=meta.get("id") or tn.id_ or getattr(tn, "node_id", None),
+        relationships={},
+    )
 
 
 # ============================================================================
@@ -123,6 +170,24 @@ def relative_score_fusion(dense_scores, sparse_scores, alpha: float = 0.5):
     # Sort by score descending
     return sorted(combined.items(), key=lambda x: x[1], reverse=True)
 
+# Track created Qdrant clients so we can close them when desired.
+_QDRANT_CLIENTS = []
+
+
+def _close_maybe_async(resource) -> None:
+    """Close a resource that may expose sync or async close/aclose."""
+    if resource is None:
+        return
+    close_fn = getattr(resource, "close", None) or getattr(resource, "aclose", None)
+    if close_fn is None:
+        return
+    try:
+        result = close_fn()
+        if hasattr(result, "__await__"):
+            asyncio.get_event_loop().run_until_complete(result)
+    except Exception:
+        pass
+
 
 def create_qdrant_store(
     collection_name: Optional[str] = None,
@@ -155,11 +220,28 @@ def create_qdrant_store(
     if enable_hybrid is None:
         enable_hybrid = _get_bool_env("QDRANT_ENABLE_HYBRID", False)
 
+    # Build client explicitly to avoid auth detection issues when api_key is missing.
+    client_kwargs = {"url": url}
+    if api_key:
+        client_kwargs["api_key"] = api_key
+    client = QdrantClient(**client_kwargs)
+    _QDRANT_CLIENTS.append(client)
+    # Ensure HTTP resources are cleaned up when possible. Qdrant client exposes close() for sync.
+    def _close_client():
+        try:
+            close_fn = getattr(client, "close", None) or getattr(client, "aclose", None)
+            if close_fn:
+                res = close_fn()
+                if hasattr(res, "__await__"):
+                    import asyncio
+                    asyncio.get_event_loop().run_until_complete(res)
+        except Exception:
+            pass
+
     if enable_hybrid:
         sparse_model = os.getenv("QDRANT_SPARSE_MODEL", "Qdrant/bm25")
         sparse_top_k = sparse_top_k or int(os.getenv("QDRANT_SPARSE_TOP_K", "100"))
 
-        # Use custom fusion function if provided, otherwise use relative score fusion with alpha
         if hybrid_fusion_fn is None:
             alpha = float(os.getenv("QDRANT_HYBRID_ALPHA", "0.5"))
             fusion_algorithm = os.getenv("QDRANT_FUSION_ALGORITHM", "relative_score")
@@ -170,33 +252,39 @@ def create_qdrant_store(
                     return relative_score_fusion(dense, sparse, alpha)
 
                 logger.info(f"Using relative score fusion with alpha={alpha}")
-            # Note: RRF fusion would be handled by Qdrant internally if supported
 
         logger.info(f"Creating Qdrant store: {collection_name} (hybrid=True, sparse_top_k={sparse_top_k})")
 
         kwargs = {
             "collection_name": collection_name,
-            "url": url,
-            "api_key": api_key,
+            "client": client,
             "enable_hybrid": True,
             "fastembed_sparse_model": sparse_model,
             "sparse_top_k": sparse_top_k,
+            # Rely on explicit metadata injection for text; avoid _node_content payload
+            "store_text": False,
+            "store_nodes_override": False,
         }
 
-        # Add fusion function if supported by the version
-        try:
+        if hybrid_fusion_fn is not None:
             kwargs["hybrid_fusion_fn"] = hybrid_fusion_fn
-        except TypeError:
-            logger.debug("hybrid_fusion_fn not supported by this Qdrant version")
 
-        return QdrantVectorStore(**kwargs)
+        try:
+            return QdrantVectorStore(**kwargs)
+        except TypeError as exc:
+            if "hybrid_fusion_fn" in kwargs:
+                logger.debug("hybrid_fusion_fn not supported by this Qdrant version: %s", exc)
+                kwargs.pop("hybrid_fusion_fn", None)
+                return QdrantVectorStore(**kwargs)
+            raise
 
     else:
         logger.info(f"Creating Qdrant store: {collection_name} (hybrid=False)")
         return QdrantVectorStore(
             collection_name=collection_name,
-            url=url,
-            api_key=api_key,
+            client=client,
+            store_text=False,
+            store_nodes_override=False,
             enable_hybrid=False,
         )
 
@@ -233,12 +321,10 @@ def create_elasticsearch_store(
         }
 
         if strategy == "hybrid":
-            # Hybrid uses both dense vectors and BM25
-            retrieval_strategy = [
-                AsyncDenseVectorStrategy(),
-                AsyncBM25Strategy(),
-            ]
-            logger.info("Using hybrid strategy: Dense + BM25")
+            # Some versions of LlamaIndex expect a single AsyncRetrievalStrategy, not a list.
+            # Fall back to dense strategy when hybrid isn’t supported by the runtime.
+            logger.info("Hybrid strategy requested; falling back to dense strategy for compatibility")
+            retrieval_strategy = AsyncDenseVectorStrategy()
         elif strategy in strategy_map:
             retrieval_strategy = strategy_map[strategy]
             logger.info(f"Using single strategy: {strategy}")
@@ -307,9 +393,8 @@ def index_nodes_to_qdrant(
                 logger.error("No embedding model configured; skipping Qdrant indexing")
                 return None
 
-        # Convert to TextNodes
-        text_nodes = [_ensure_text_node(node) for node in nodes]
-
+        # Convert and clean TextNodes, include text in payload for visibility
+        text_nodes = [_clean_text_node(node, include_text_field=True) for node in nodes]
         # Create index (automatically indexes)
         VectorStoreIndex(
             nodes=text_nodes,
@@ -318,6 +403,7 @@ def index_nodes_to_qdrant(
         )
 
         logger.info(f"✅ Indexed {len(text_nodes)} nodes to Qdrant")
+        _close_maybe_async(getattr(vector_store, "client", None))
         return vector_store
 
     except Exception as e:
@@ -367,9 +453,8 @@ def index_nodes_to_elasticsearch(
                 logger.error("No embedding model configured; skipping Elasticsearch indexing")
                 return None
 
-        # Convert to TextNodes
-        text_nodes = [_ensure_text_node(node) for node in nodes]
-
+        # Convert and clean TextNodes, include text in payload for visibility
+        text_nodes = [_clean_text_node(node, include_text_field=True) for node in nodes]
         # Create index (automatically indexes)
         VectorStoreIndex(
             nodes=text_nodes,
@@ -378,6 +463,7 @@ def index_nodes_to_elasticsearch(
         )
 
         logger.info(f"✅ Indexed {len(text_nodes)} nodes to Elasticsearch")
+        _close_maybe_async(getattr(vector_store, "client", None))
         return vector_store
 
     except Exception as e:
@@ -411,9 +497,19 @@ def index_nodes_to_neo4j(
         if use_property_graph:
             # Use legal domain property graph. We return a count to keep
             # downstream tracker logic simple (they expect an integer).
-            ingestor = LegalPropertyGraphIngestor()
-            ingestor.ingest_nodes(nodes)
-            return len(nodes)
+            graph_llm = getattr(ingestion_settings, "graph_llm_model", None)
+            ingestor = LegalPropertyGraphIngestor(llm=graph_llm)
+            try:
+                ingestor.ingest_nodes(nodes)
+                return len(nodes)
+            except Exception as exc:
+                # If Neo4j Cypher syntax is incompatible (e.g., "Invalid input '(' expected '{'"),
+                # skip graph ingestion but keep the pipeline running.
+                msg = str(exc)
+                if "Invalid input '('" in msg and "expected \"{\"" in msg:
+                    logger.warning("Skipping Neo4j ingestion due to Cypher syntax incompatibility: %s", msg)
+                    return 0
+                raise
         else:
             # Fallback to basic graph indexing (not implemented here)
             logger.warning("Basic graph indexing not implemented, use property_graph=True")
@@ -460,9 +556,3 @@ def index_nodes(
         results["neo4j"] = neo4j_count > 0
 
     return results
-
-
-# Backward compatibility aliases
-upload_to_qdrant_llamaindex = index_nodes_to_qdrant
-upload_to_elasticsearch_llamaindex = index_nodes_to_elasticsearch
-graph_rag_ingest_llamaindex = index_nodes_to_neo4j

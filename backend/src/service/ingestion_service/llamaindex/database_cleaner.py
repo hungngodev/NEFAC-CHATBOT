@@ -15,6 +15,7 @@ from typing import Dict
 from llama_index.graph_stores.neo4j import Neo4jGraphStore
 from llama_index.vector_stores.elasticsearch import ElasticsearchStore
 from llama_index.vector_stores.qdrant import QdrantVectorStore
+from qdrant_client import QdrantClient
 
 logger = logging.getLogger(__name__)
 
@@ -25,12 +26,17 @@ def clear_qdrant_collection() -> bool:
         collection_name = os.environ["QDRANT_CLUSTER_ID"]
         api_key = os.environ.get("QDRANT_API_KEY")
 
+        # Build client explicitly so auth-less setups work and URL is always provided.
+        client_kwargs = {"url": qdrant_url}
+        if api_key:
+            client_kwargs["api_key"] = api_key
+        qdrant_client = QdrantClient(**client_kwargs)
+
         store = QdrantVectorStore(
             collection_name=collection_name,
-            url=qdrant_url,
-            api_key=api_key,
+            client=qdrant_client,
         )
-        client = getattr(store, "client", None)
+        client = getattr(store, "client", None) or qdrant_client
         if client is None:
             raise RuntimeError("QdrantVectorStore did not expose a client")
 
@@ -63,12 +69,36 @@ def clear_elasticsearch_index() -> bool:
             raise RuntimeError("ElasticsearchStore did not expose a client")
 
         logger.info("Connecting to Elasticsearch: %s", es_url)
-        if client.indices.exists(index=index_name):
+
+        # Client may be async; normalize to sync calls when possible.
+        exists_fn = getattr(client.indices, "exists", None)
+        delete_fn = getattr(client.indices, "delete", None)
+        close_fn = getattr(client, "close", None) or getattr(client, "aclose", None)
+
+        if exists_fn is None or delete_fn is None:
+            raise RuntimeError("Elasticsearch client does not expose indices.exists/delete")
+
+        # Handle coroutine or sync functions transparently.
+        def _maybe_await(result):
+            if hasattr(result, "__await__"):
+                import asyncio
+                return asyncio.get_event_loop().run_until_complete(result)
+            return result
+
+        exists = _maybe_await(exists_fn(index=index_name))
+        if exists:
             logger.info("Deleting Elasticsearch index: %s", index_name)
-            client.indices.delete(index=index_name)
+            _maybe_await(delete_fn(index=index_name))
             logger.info("Cleared Elasticsearch index '%s'", index_name)
         else:
             logger.info("Elasticsearch index '%s' does not exist", index_name)
+
+        # Close client/connector if supported to avoid unclosed session warnings
+        if close_fn is not None:
+            try:
+                _maybe_await(close_fn())
+            except Exception:
+                pass
         return True
     except KeyError as exc:
         logger.error("Missing environment variable: %s", exc)

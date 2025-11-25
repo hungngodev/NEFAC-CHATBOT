@@ -2,14 +2,11 @@
 
 Augmented with durable retry support inspired by the Elastic + LlamaIndex
 workflow reference so failed files can be replayed safely.
+
+Run with `PYTHONPATH=backend` so absolute imports resolve.
 """
 
 from __future__ import annotations
-
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).parents[3]))
 
 import argparse
 import asyncio
@@ -19,41 +16,24 @@ import os
 import traceback
 from collections import defaultdict
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Set
 
 from dotenv import load_dotenv
-from llama_index.core.schema import BaseNode
-
+from load_env import load_env as load_env_from_root
 from src.service.ingestion_service.llamaindex import ensure_llamaindex_ready
 from src.service.ingestion_service.llamaindex.database_cleaner import clear_all_databases
-from src.service.ingestion_service.llamaindex.indexer import (
-    index_nodes_to_elasticsearch,
-    index_nodes_to_neo4j,
-    index_nodes_to_qdrant,
-)
 from src.service.ingestion_service.llamaindex.ingestion_workflow import run_ingestion_workflow
-from src.service.ingestion_service.loader.unstructured_loader import (
-    _get_base_metadata,
-    unstructured_loader,
-)
+from src.service.ingestion_service.llamaindex.metadata_utils import _get_base_metadata
 from src.service.ingestion_service.progress_tracker import (
     FailureRecord,
     PipelineTracker,
     get_tracker,
     reset_tracker,
 )
-from src.service.ingestion_service.settings import (
-    ENABLE_CONTEXTUAL_RETRIEVAL,
-    ENABLE_METADATA_EXTRACTION,
-    GRAPH_LLM_MODEL_NAME,
-    GRAPH_MODE,
-    LLAMAPARSE_ENABLE,
-    LLM_MODEL_NAME,
-    USE_LLAMAINDEX_WORKFLOW,
-    embedding_model,
-)
 
-load_dotenv()
+# Load env using shared helper (supports ENV_FILE override, repo root, cwd search)
+load_env_from_root()
 
 # Centralized logging (configured lazily so imports do not create files)
 logger = logging.getLogger(__name__)
@@ -138,8 +118,7 @@ def _load_metadata_entries(
 
 
 def _resolve_file_path(documents_dir: str, filename: str) -> Path:
-    path = Path(documents_dir) / filename if not os.path.isabs(filename) else Path(filename)
-    return path
+    return Path(documents_dir) / filename if not os.path.isabs(filename) else Path(filename)
 
 
 def _group_failures_by_type(failures: Iterable[FailureRecord]) -> Dict[str, Set[str]]:
@@ -165,11 +144,8 @@ def _ingest_with_workflow(
         logger.warning(f"No documents found for {file_type} via workflow. Skipping.")
         return
 
-    contextual_enabled = ENABLE_CONTEXTUAL_RETRIEVAL
-    metadata_enabled = ENABLE_METADATA_EXTRACTION
     es_enabled = os.getenv("ES_LI_ENABLE", "true").lower() in _TRUTHY
     graph_enabled = os.getenv("GRAPH_LI_ENABLE", "true").lower() in _TRUTHY
-    llamaparse_enabled = LLAMAPARSE_ENABLE
 
     total_nodes = 0
 
@@ -186,6 +162,7 @@ def _ingest_with_workflow(
         base_meta = _get_base_metadata(str(path), entry)
         document_meta = base_meta.copy()
         document_meta.update({k: v for k, v in (entry or {}).items() if v is not None})
+        document_meta["file_type"] = file_type
 
         try:
             result = asyncio.run(
@@ -195,9 +172,6 @@ def _ingest_with_workflow(
                     enable_qdrant=True,
                     enable_elasticsearch=es_enabled,
                     enable_neo4j=graph_enabled,
-                    enable_contextual_retrieval=contextual_enabled,
-                    enable_metadata_extraction=metadata_enabled,
-                    use_llamaparse=llamaparse_enabled,
                     return_nodes=False,
                 )
             )
@@ -225,57 +199,10 @@ def _ingest_with_workflow(
     tracker.track_phase_stats("global", "chunks_contextualized", total_nodes)
 
 
-def graph_rag_ingest(nodes: List[BaseNode], file_type: str) -> None:
-    if not nodes:
-        return
-
-    tracker = get_tracker()
-    tracker.log_pipeline_step("Graph RAG Ingestion", GRAPH_LLM_MODEL_NAME)
-
-    try:
-        if GRAPH_MODE == "off":
-            logger.info("Graph mode 'off' - skipping graph ingestion")
-            return
-
-        if os.getenv("GRAPH_LI_ENABLE", "true").lower() in _TRUTHY:
-            use_property_graph = GRAPH_MODE in {"property", "legal", "schema"}
-            ingested_count = index_nodes_to_neo4j(nodes, use_property_graph=use_property_graph)
-            tracker.track_db_upload(file_type, "Neo4j", ingested_count)
-        else:
-            logger.info("GRAPH_LI_ENABLE disabled - skipping graph ingestion")
-
-    except Exception as e:
-        logger.error(f"Graph RAG ingestion failed: {e}")
-        raise
-
-
-def contextual_indexing(nodes: List[BaseNode], file_type: str) -> None:
-    if not nodes:
-        return
-
-    tracker = get_tracker()
-    tracker.log_pipeline_step("Contextual Indexing", getattr(embedding_model, "model_name", LLM_MODEL_NAME))
-
-    try:
-        index_nodes_to_qdrant(nodes, embedding_model)
-        tracker.track_db_upload(file_type, "Qdrant", len(nodes))
-
-        if os.getenv("ES_LI_ENABLE", "true").lower() in _TRUTHY:
-            index_nodes_to_elasticsearch(nodes, embedding_model)
-            tracker.track_db_upload(file_type, "Elasticsearch", len(nodes))
-        else:
-            logger.info("ES_LI_ENABLE disabled - skipping Elasticsearch ingestion")
-
-    except Exception as e:
-        logger.error(f"Contextual indexing failed: {e}")
-        raise
-
-
 def process_file_type(
     file_type: str,
     limit: Optional[int] = None,
     offset: int = 0,
-    use_workflow: bool = False,
     include_only: Optional[Set[str]] = None,
 ) -> None:
     _ensure_startup_ready()
@@ -284,54 +211,17 @@ def process_file_type(
     tracker.log_phase_start(f"Processing {file_type.upper()} files")
 
     try:
-        env_workflow = USE_LLAMAINDEX_WORKFLOW
-        effective_use_workflow = use_workflow or env_workflow
-
         metadata_path = get_metadata_path(file_type)
         documents_dir = str(DOCS_BASE_DIR / file_type)
 
-        if include_only and not effective_use_workflow:
-            logger.warning(
-                "Retry targets supplied for %s but workflow mode is disabled; " "falling back to legacy loader for matching files only.",
-                file_type,
-            )
-
-        if effective_use_workflow:
-            _ingest_with_workflow(
-                file_type,
-                metadata_path,
-                documents_dir,
-                limit,
-                offset,
-                include_only,
-            )
-            return
-
-        processed_filenames: Optional[Set[str]] = set() if include_only else None
-        nodes = unstructured_loader(
+        _ingest_with_workflow(
+            file_type,
             metadata_path,
             documents_dir,
             limit,
             offset,
-            file_type=file_type,
-            include_only=include_only,
-            processed_filenames=processed_filenames,
+            include_only,
         )
-
-        if not nodes:
-            logger.warning(f"No documents found for {file_type}. Skipping.")
-            return
-
-        contextual_indexing(nodes, file_type)
-        graph_rag_ingest(nodes, file_type)
-
-        if include_only and processed_filenames is not None:
-            for filename in processed_filenames:
-                tracker.mark_success(file_type, filename)
-
-            missing = include_only - processed_filenames
-            for filename in missing:
-                logger.warning("Retry target %s was not processed", filename)
 
     except Exception as e:
         logger.error(f"Failed processing {file_type}: {e}")
@@ -345,7 +235,6 @@ def process_all_file_types(
     limit: Optional[int] = None,
     offset: int = 0,
     clear_databases: bool = False,
-    use_workflow: bool = False,
     failures_file: Path = DEFAULT_FAILURE_LOG,
     retry_failures: bool = False,
 ) -> None:
@@ -378,7 +267,6 @@ def process_all_file_types(
             file_type,
             limit,
             offset,
-            use_workflow=use_workflow,
             include_only=include_only,
         )
 
@@ -394,7 +282,6 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=None, help="Limit number of documents to process")
     parser.add_argument("--offset", type=int, default=0, help="Skip the first X documents")
     parser.add_argument("--clear", action="store_true", help="Clear existing database data before processing")
-    parser.add_argument("--workflow", action="store_true", help="Run ingestion via LlamaIndex Workflow")
     parser.add_argument(
         "--retry-failures",
         action="store_true",
@@ -413,7 +300,6 @@ def main() -> None:
             limit=args.limit,
             offset=args.offset,
             clear_databases=args.clear,
-            use_workflow=args.workflow,
             failures_file=args.failures_file,
             retry_failures=args.retry_failures,
         )
@@ -437,7 +323,6 @@ def main() -> None:
             args.file_type,
             args.limit,
             args.offset,
-            use_workflow=args.workflow,
             include_only=include_only,
         )
 

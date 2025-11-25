@@ -3,8 +3,8 @@
 This module wraps the SemanticDoubleMergingSplitterNodeParser example from the
 LlamaIndex docs and layers on Anthropic-style contextual summaries plus optional
 LLM-driven metadata extraction. The default entry point
-``build_nodes_from_text`` preserves backward compatibility while enabling the
-enhanced behaviour when the relevant environment flags are set.
+``build_nodes_from_text`` enables the enhanced behaviour when the relevant
+environment flags are set.
 """
 
 from __future__ import annotations
@@ -57,7 +57,7 @@ def _env_float(name: str, default: float) -> float:
 SEMANTIC_SPLITTER_PRESETS = {
     # English presets
     "legal_documents": {
-        "language": "english",
+        "language": "en",
         "spacy_model": "en_core_web_md",
         "initial_threshold": 0.4,
         "appending_threshold": 0.5,
@@ -66,7 +66,7 @@ SEMANTIC_SPLITTER_PRESETS = {
         "description": "Optimized for legal documents with complex terminology",
     },
     "technical_docs": {
-        "language": "english",
+        "language": "en",
         "spacy_model": "en_core_web_md",
         "initial_threshold": 0.35,
         "appending_threshold": 0.45,
@@ -75,7 +75,7 @@ SEMANTIC_SPLITTER_PRESETS = {
         "description": "Optimized for technical docs with code snippets",
     },
     "general": {
-        "language": "english",
+        "language": "en",
         "spacy_model": "en_core_web_sm",
         "initial_threshold": 0.5,
         "appending_threshold": 0.6,
@@ -84,7 +84,7 @@ SEMANTIC_SPLITTER_PRESETS = {
         "description": "General-purpose configuration for standard documents",
     },
     "academic": {
-        "language": "english",
+        "language": "en",
         "spacy_model": "en_core_web_md",
         "initial_threshold": 0.45,
         "appending_threshold": 0.55,
@@ -186,7 +186,7 @@ def get_semantic_splitter_for_domain(domain: str = "legal_documents", **override
     logger.info(f"Using semantic splitter preset: {domain} - {desc}")
 
     return _create_semantic_splitter(
-        language=config.get("language", "english"),
+        language=config.get("language", "en"),
         spacy_model=config.get("spacy_model", "en_core_web_sm"),
         initial_threshold=config.get("initial_threshold", 0.4),
         appending_threshold=config.get("appending_threshold", 0.5),
@@ -195,8 +195,68 @@ def get_semantic_splitter_for_domain(domain: str = "legal_documents", **override
     )
 
 
+def _build_language_config(language: str, spacy_model: str) -> LanguageConfig:
+    """Return LanguageConfig, relaxing spaCy validation when necessary."""
+
+    try:
+        return LanguageConfig(language=language, spacy_model=spacy_model)
+    except ValueError as exc:
+        mismatch = "model is not matching your language" in str(exc)
+        if not mismatch:
+            raise
+
+        logger.warning(
+            "spaCy model %s is not in the approved list for %s, disabling validation",
+            spacy_model,
+            language,
+        )
+        return LanguageConfig(language=language, spacy_model=spacy_model, model_validation=False)
+
+
+def _normalize_language(language: str) -> str:
+    """Normalize language inputs to the values LanguageConfig understands."""
+
+    lang = (language or "").strip().lower()
+    if not lang:
+        return "english"
+
+    lang = lang.replace("-", "_")
+    primary = lang.split("_", 1)[0]
+
+    # Map ISO codes and common aliases to the long-form names expected by
+    # SemanticDoubleMergingSplitterNodeParser/LanguageConfig.
+    language_map = {
+        # English
+        "en": "english",
+        "eng": "english",
+        "english": "english",
+        # Spanish
+        "es": "spanish",
+        "esp": "spanish",
+        "spa": "spanish",
+        "spanish": "spanish",
+        # German
+        "de": "german",
+        "ger": "german",
+        "deu": "german",
+        "german": "german",
+        # French
+        "fr": "french",
+        "fra": "french",
+        "fre": "french",
+        "french": "french",
+        # Chinese
+        "zh": "chinese",
+        "zho": "chinese",
+        "chi": "chinese",
+        "chinese": "chinese",
+    }
+
+    return language_map.get(lang, language_map.get(primary, lang))
+
+
 def _create_semantic_splitter(
-    language: str = "english",
+    language: str = "en",
     spacy_model: str = "en_core_web_sm",
     initial_threshold: float = 0.4,
     appending_threshold: float = 0.5,
@@ -208,6 +268,8 @@ def _create_semantic_splitter(
     Internal helper that handles spaCy model loading and fallback.
     Enhanced with auto-download from settings.
     """
+    language = _normalize_language(language)
+
     try:
         # Auto-download spaCy model if not available
         if SEMANTIC_SPLITTER_AUTO_DOWNLOAD:
@@ -232,7 +294,7 @@ def _create_semantic_splitter(
             spacy.load(fallback_model)
             spacy_model = fallback_model
 
-        config = LanguageConfig(language=language, spacy_model=spacy_model)
+        config = _build_language_config(language=language, spacy_model=spacy_model)
 
         logger.info(f"Initializing SemanticDoubleMergingSplitterNodeParser: " f"lang={language}, model={spacy_model}, " f"thresholds=({initial_threshold}/" f"{appending_threshold}/{merging_threshold}), " f"max_chunk={max_chunk_size}")
 
@@ -256,9 +318,9 @@ def get_semantic_splitter() -> NodeParser:
     https://developers.llamaindex.ai/python/examples/node_parsers/semantic_double_merging_chunking/
     """
 
-    language = os.getenv("SEMANTIC_SPLITTER_LANGUAGE", "english")
-    spacy_model = os.getenv("SEMANTIC_SPLITTER_SPACY_MODEL", "en_core_web_sm")
-    config = LanguageConfig(language=language, spacy_model=spacy_model)
+    language = _normalize_language(os.getenv("SEMANTIC_SPLITTER_LANGUAGE", "en"))
+    spacy_model = os.getenv("SEMANTIC_SPLITTER_SPACY_MODEL", "en_core_web_lg")
+    config = _build_language_config(language=language, spacy_model=spacy_model)
 
     initial_threshold = _env_float("SEMANTIC_SPLITTER_INITIAL_THRESHOLD", 0.4)
     appending_threshold = _env_float("SEMANTIC_SPLITTER_APPEND_THRESHOLD", 0.5)
@@ -301,7 +363,7 @@ Here is the chunk we want to situate within the whole document:
 {chunk}
 </chunk>
 
-Please give a short succinct context to situate this chunk within the overall document for the purposes of improving search retrieval of the chunk. Answer only with the succinct context and nothing else."""
+Please generate a short succinct context summary to situate this text chunk within the overall document to enhance search retrieval, two or three sentences max. The chunk contains merged content from different document sections, so focus on the main topics and concepts rather than sequential flow. Answer only with the succinct context and nothing else."""
 
     def __init__(
         self,

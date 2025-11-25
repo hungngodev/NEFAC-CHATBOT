@@ -6,10 +6,9 @@ Based on: https://www.elastic.co/search-labs/blog/llamaindex-workflows-with-elas
 from __future__ import annotations
 
 import logging
+import time
 from typing import Any, Dict, List, Optional
 
-from llama_index.core import Document as LIDocument
-from llama_index.core import Settings
 from llama_index.core.schema import BaseNode
 from llama_index.core.workflow import (
     Context,
@@ -19,81 +18,65 @@ from llama_index.core.workflow import (
     Workflow,
     step,
 )
-from llama_index.llms.openai import OpenAI
-from pydantic import Field
 
-from ..settings import (
-    GRAPH_MODE,
-    LLAMAPARSE_API_KEY,
-    LLAMAPARSE_AUTO_MODE,
-    LLAMAPARSE_BBOX_BOTTOM,
-    LLAMAPARSE_BBOX_TOP,
-    LLAMAPARSE_DO_NOT_UNROLL_COLUMNS,
-    LLAMAPARSE_ENABLE,
-    LLAMAPARSE_EXTRACT_CHARTS,
-    LLAMAPARSE_INVALIDATE_CACHE,
-    LLAMAPARSE_LANGUAGE,
-    LLAMAPARSE_RESULT_TYPE,
-    LLAMAPARSE_SKIP_DIAGONAL_TEXT,
-    LLAMAPARSE_TARGET_PAGES,
-    LLAMAPARSE_USER_PROMPT,
-    WORKFLOW_ENABLE_MODEL_FALLBACK,
-    WORKFLOW_ENABLE_VALIDATION,
-    WORKFLOW_FALLBACK_MODEL,
-    WORKFLOW_MAX_RETRIES,
+from src.service.ingestion_service.loader.unstructured_loader import load_document_nodes
+from src.service.ingestion_service.settings import GRAPH_MODE, WORKFLOW_ENABLE_VALIDATION
+from src.service.ingestion_service.llamaindex.indexer import (
+    index_nodes_to_elasticsearch,
+    index_nodes_to_neo4j,
+    index_nodes_to_qdrant,
 )
-from .document_loader import UnifiedDocumentLoader
-from .indexer import index_nodes_to_elasticsearch, index_nodes_to_neo4j, index_nodes_to_qdrant
-from .node_parser import ContextualNodeParser
-
+from src.service.ingestion_service.progress_tracker import get_tracker
 logger = logging.getLogger(__name__)
 
 
 # Custom Events for workflow steps
-class DocumentLoadedEvent(Event):
-    """Event emitted when documents are loaded."""
-
-    documents: List[LIDocument]
-    file_path: str
-
-
 class NodesCreatedEvent(Event):
     """Event emitted when nodes are created from documents."""
 
     nodes: List[BaseNode]
+    file_path: str
+    metadata: Dict[str, Any]
 
 
-class NodeValidationEvent(Event):
-    """Event emitted for node validation with retry support."""
+class ParsedNodesEvent(Event):
+    """Event emitted after parse step (pass-through here)."""
 
     nodes: List[BaseNode]
-    retry_count: int = 0
-    validation_errors: List[str] = Field(default_factory=list)
+    file_path: str
+    metadata: Dict[str, Any]
 
 
-class RetryParsingEvent(Event):
-    """Event emitted when parsing needs retry with fallback model."""
+class ValidatedNodesEvent(Event):
+    """Event emitted after validation to avoid re-processing loops."""
 
-    documents: List[LIDocument]
-    retry_count: int
-    error: str
-    use_fallback_model: bool = False
-
-
-class VectorIndexingCompleteEvent(Event):
-    """Event emitted when vector indexing completes."""
-
-    success: bool
-    message: str
-    node_count: int
+    nodes: List[BaseNode]
+    file_path: str
+    metadata: Dict[str, Any]
 
 
-class GraphIndexingCompleteEvent(Event):
-    """Event emitted when graph indexing completes."""
+class QdrantIndexedEvent(Event):
+    """Event emitted after Qdrant indexing (or skip)."""
 
-    success: bool
-    message: str
-    node_count: int
+    nodes: List[BaseNode]
+    file_path: str
+    metadata: Dict[str, Any]
+
+
+class ElasticsearchIndexedEvent(Event):
+    """Event emitted after Elasticsearch indexing (or skip)."""
+
+    nodes: List[BaseNode]
+    file_path: str
+    metadata: Dict[str, Any]
+
+
+class Neo4jIndexedEvent(Event):
+    """Event emitted after Neo4j indexing (or skip)."""
+
+    nodes: List[BaseNode]
+    file_path: str
+    metadata: Dict[str, Any]
 
 
 class IngestionWorkflow(Workflow):
@@ -118,9 +101,6 @@ class IngestionWorkflow(Workflow):
         enable_qdrant: bool = True,
         enable_elasticsearch: bool = True,
         enable_neo4j: bool = True,
-        enable_contextual_retrieval: bool = True,
-        enable_metadata_extraction: bool = False,
-        use_llamaparse: bool = False,
         timeout: int = 3600,
         return_nodes: bool = False,
         **kwargs,
@@ -131,9 +111,6 @@ class IngestionWorkflow(Workflow):
             enable_qdrant: Enable Qdrant vector indexing
             enable_elasticsearch: Enable Elasticsearch hybrid indexing
             enable_neo4j: Enable Neo4j knowledge graph
-            enable_contextual_retrieval: Enable contextual summaries
-            enable_metadata_extraction: Enable LLM metadata extraction
-            use_llamaparse: Use LlamaParse for PDFs
             timeout: Workflow timeout in seconds
             return_nodes: Include parsed nodes in the final StopEvent payload
         """
@@ -142,49 +119,12 @@ class IngestionWorkflow(Workflow):
         self.enable_qdrant = enable_qdrant
         self.enable_elasticsearch = enable_elasticsearch
         self.enable_neo4j = enable_neo4j
-        self.enable_contextual_retrieval = enable_contextual_retrieval
-        self.enable_metadata_extraction = enable_metadata_extraction
-        self.use_llamaparse = use_llamaparse
         self.return_nodes = return_nodes
 
         # Lazy init components (only when needed)
-        self._loader = None
-        self._parser = None
         self._qdrant_indexer = None
         self._es_indexer = None
         self._graph_ingestor = None
-
-    @property
-    def loader(self):
-        """Lazy load document loader with all LlamaParse options."""
-        if self._loader is None:
-            self._loader = UnifiedDocumentLoader(
-                use_llamaparse=self.use_llamaparse or LLAMAPARSE_ENABLE,
-                llamaparse_api_key=LLAMAPARSE_API_KEY,
-                llamaparse_auto_mode=LLAMAPARSE_AUTO_MODE,
-                llamaparse_extract_charts=LLAMAPARSE_EXTRACT_CHARTS,
-                llamaparse_result_type=LLAMAPARSE_RESULT_TYPE,
-                llamaparse_target_pages=LLAMAPARSE_TARGET_PAGES,
-                llamaparse_bbox_top=LLAMAPARSE_BBOX_TOP,
-                llamaparse_bbox_bottom=LLAMAPARSE_BBOX_BOTTOM,
-                llamaparse_user_prompt=LLAMAPARSE_USER_PROMPT,
-                llamaparse_invalidate_cache=LLAMAPARSE_INVALIDATE_CACHE,
-                llamaparse_language=LLAMAPARSE_LANGUAGE,
-                llamaparse_skip_diagonal_text=LLAMAPARSE_SKIP_DIAGONAL_TEXT,
-                llamaparse_do_not_unroll_columns=LLAMAPARSE_DO_NOT_UNROLL_COLUMNS,
-                fallback_to_unstructured=True,
-            )
-        return self._loader
-
-    @property
-    def parser(self):
-        """Lazy load contextual node parser."""
-        if self._parser is None:
-            self._parser = ContextualNodeParser(
-                enable_contextual_retrieval=self.enable_contextual_retrieval,
-                enable_metadata_extraction=self.enable_metadata_extraction,
-            )
-        return self._parser
 
     @property
     def qdrant_indexer(self):
@@ -217,12 +157,8 @@ class IngestionWorkflow(Workflow):
         return self._graph_ingestor
 
     @step
-    async def load_documents(self, ctx: Context, ev: StartEvent) -> DocumentLoadedEvent | StopEvent:
-        """Step 1: Load documents from file path.
-
-        Input: file_path, metadata
-        Output: DocumentLoadedEvent with loaded documents
-        """
+    async def load_documents(self, ctx: Context, ev: StartEvent) -> NodesCreatedEvent | StopEvent:
+        """Step 1: Load documents using the enhanced unstructured loader."""
 
         file_path = ev.get("file_path")
         metadata = ev.get("metadata", {})
@@ -230,245 +166,171 @@ class IngestionWorkflow(Workflow):
         if not file_path:
             return StopEvent(result={"success": False, "error": "No file_path provided"})
 
-        logger.info(f"[Workflow] Loading document: {file_path}")
+        logger.info(f"[Workflow] Loading document via unstructured loader: {file_path}")
 
         try:
-            # Check if it's a YouTube URL
-            if "youtube.com" in str(file_path) or "youtu.be" in str(file_path):
-                documents = self.loader.load_youtube(file_path, extra_info=metadata)
-            else:
-                documents = self.loader.load_file(file_path, extra_info=metadata)
+            nodes, total_chunks, _ = load_document_nodes(file_path, metadata)
+        except Exception as exc:
+            logger.error(f"[Workflow] Failed to load document %s: %s", file_path, exc)
+            return StopEvent(result={"success": False, "error": str(exc)})
 
-            if not documents:
-                return StopEvent(result={"success": False, "error": "No documents loaded"})
+        if not nodes:
+            return StopEvent(result={"success": False, "error": "Loader returned no nodes"})
 
-            await ctx.set("documents", documents)
-            await ctx.set("file_path", file_path)
+        logger.info("[Workflow] Loader produced %d nodes", len(nodes))
 
-            logger.info(f"[Workflow] Loaded {len(documents)} documents")
-
-            return DocumentLoadedEvent(documents=documents, file_path=str(file_path))
-
-        except Exception as e:
-            logger.error(f"[Workflow] Failed to load documents: {e}")
-            return StopEvent(result={"success": False, "error": str(e)})
+        return NodesCreatedEvent(nodes=nodes, file_path=file_path, metadata=metadata)
 
     @step
-    async def parse_nodes(self, ctx: Context, ev: DocumentLoadedEvent | RetryParsingEvent) -> NodesCreatedEvent | RetryParsingEvent | StopEvent:
-        """Step 2: Parse documents into nodes with contextual summaries.
-
-        Enhanced with model fallback from tutorial:
-        https://www.elastic.co/search-labs/blog/llamaindex-workflows-with-elasticsearch
-
-        Input: DocumentLoadedEvent or RetryParsingEvent
-        Output: NodesCreatedEvent with parsed nodes, or RetryParsingEvent, or StopEvent
-        """
-        # Handle both event types
-        if isinstance(ev, RetryParsingEvent):
-            documents = ev.documents
-            retry_count = ev.retry_count
-            use_fallback = ev.use_fallback_model
-        else:
-            documents = ev.documents
-            retry_count = 0
-            use_fallback = False
-
-        logger.info(f"[Workflow] Parsing {len(documents)} documents into nodes (retry={retry_count})")
-
-        try:
-            # Use fallback model if requested and enabled
-            if use_fallback and WORKFLOW_ENABLE_MODEL_FALLBACK:
-                logger.info(f"[Workflow] Using fallback model: {WORKFLOW_FALLBACK_MODEL}")
-                # Switch to fallback model temporarily
-                original_llm = Settings.llm
-                Settings.llm = OpenAI(model=WORKFLOW_FALLBACK_MODEL)
-                try:
-                    nodes = self.parser.build_nodes_from_documents(documents, show_progress=True)
-                finally:
-                    Settings.llm = original_llm
-            else:
-                nodes = self.parser.build_nodes_from_documents(documents, show_progress=True)
-
-            if not nodes:
-                # Retry if under limit
-                if retry_count < WORKFLOW_MAX_RETRIES:
-                    logger.warning(f"[Workflow] No nodes created, retrying ({retry_count + 1}/{WORKFLOW_MAX_RETRIES})")
-                    return RetryParsingEvent(documents=documents, retry_count=retry_count + 1, error="No nodes created", use_fallback_model=WORKFLOW_ENABLE_MODEL_FALLBACK and not use_fallback)
-                else:
-                    return StopEvent(result={"success": False, "error": "No nodes created after max retries"})
-
-            await ctx.set("nodes", nodes)
-            logger.info(f"[Workflow] Created {len(nodes)} nodes")
-
-            # Validate nodes before proceeding
-            return NodeValidationEvent(nodes=nodes, retry_count=0)
-
-        except Exception as e:
-            logger.error(f"[Workflow] Failed to parse nodes: {e}")
-
-            # Retry with fallback model if enabled and not already using it
-            if retry_count < WORKFLOW_MAX_RETRIES and WORKFLOW_ENABLE_MODEL_FALLBACK and not use_fallback:
-                logger.warning("[Workflow] Retrying with fallback model")
-                return RetryParsingEvent(documents=documents, retry_count=retry_count + 1, error=str(e), use_fallback_model=True)
-
-            return StopEvent(result={"success": False, "error": str(e)})
+    async def parse_nodes(self, ctx: Context, ev: NodesCreatedEvent) -> ParsedNodesEvent:
+        """Step 2: Pass-through parsing (nodes already generated)."""
+        step_start = time.perf_counter()
+        file_path = ev.file_path
+        node_count = len(ev.nodes)
+        logger.info("[Workflow] Entering parse step for %s (%d nodes)", file_path, node_count)
+        logger.debug(
+            "[Workflow] Skipping parse step for %s; nodes supplied by loader (%d nodes)",
+            file_path,
+            node_count,
+        )
+        logger.info(
+            "[Workflow] Parse step finished in %.2fs",
+            time.perf_counter() - step_start,
+        )
+        return ParsedNodesEvent(nodes=ev.nodes, file_path=ev.file_path, metadata=ev.metadata)
 
     @step
-    async def validate_nodes(self, ctx: Context, ev: NodeValidationEvent) -> NodesCreatedEvent | RetryParsingEvent | StopEvent:
-        """Step 2.5: Validate nodes with auto-correction.
-
-        Enhanced with validation from tutorial:
-        https://www.elastic.co/search-labs/blog/llamaindex-workflows-with-elasticsearch
-
-        Input: NodeValidationEvent
-        Output: NodesCreatedEvent if valid, RetryParsingEvent if needs retry, StopEvent if failed
-        """
-        nodes = ev.nodes
-        retry_count = ev.retry_count
-
+    async def validate_nodes(self, ctx: Context, ev: ParsedNodesEvent) -> ValidatedNodesEvent:
+        """Step 2.5: Optional validation (currently no-op)."""
+        step_start = time.perf_counter()
         if not WORKFLOW_ENABLE_VALIDATION:
-            logger.info("[Workflow] Node validation disabled, skipping")
-            return NodesCreatedEvent(nodes=nodes)
+            logger.info("[Workflow] Validation disabled; skipping (%.2fs)", time.perf_counter() - step_start)
+            return ValidatedNodesEvent(nodes=ev.nodes, file_path=ev.file_path, metadata=ev.metadata)
 
-        logger.info(f"[Workflow] Validating {len(nodes)} nodes")
-
-        validation_errors = []
-
-        # Check for empty nodes
-        empty_nodes = [n for n in nodes if not n.get_content().strip()]
-        if empty_nodes:
-            validation_errors.append(f"Found {len(empty_nodes)} empty nodes")
-
-        # Check for extremely short nodes (might indicate parsing issues)
-        short_nodes = [n for n in nodes if len(n.get_content().strip()) < 10]
-        if short_nodes:
-            validation_errors.append(f"Found {len(short_nodes)} nodes with <10 characters")
-
-        if validation_errors:
-            logger.warning(f"[Workflow] Validation issues: {', '.join(validation_errors)}")
-
-            # If we have valid nodes, filter out invalid ones
-            valid_nodes = [n for n in nodes if n.get_content().strip() and len(n.get_content().strip()) >= 10]
-
-            if valid_nodes and len(valid_nodes) > len(nodes) * 0.5:
-                # More than 50% are valid, proceed with valid nodes only
-                logger.info(f"[Workflow] Proceeding with {len(valid_nodes)}/{len(nodes)} valid nodes")
-                return NodesCreatedEvent(nodes=valid_nodes)
-
-            # Too many invalid nodes, retry if under limit
-            if retry_count < WORKFLOW_MAX_RETRIES:
-                logger.warning("[Workflow] Too many invalid nodes, retrying with adjusted settings")
-                # Get original documents for retry
-                documents = await ctx.get("documents", default=[])
-                if documents:
-                    return RetryParsingEvent(documents=documents, retry_count=retry_count + 1, error="; ".join(validation_errors), use_fallback_model=True)
-
-            return StopEvent(result={"success": False, "error": f"Validation failed: {'; '.join(validation_errors)}"})
-
-        logger.info(f"[Workflow] Validation passed for {len(nodes)} nodes")
-        return NodesCreatedEvent(nodes=nodes)
+        valid_nodes = [n for n in ev.nodes if n.get_content().strip()]
+        if len(valid_nodes) != len(ev.nodes):
+            logger.warning("[Workflow] Dropped %d empty nodes during validation", len(ev.nodes) - len(valid_nodes))
+        logger.info(
+            "[Workflow] Validation step finished in %.2fs (%d -> %d nodes)",
+            time.perf_counter() - step_start,
+            len(ev.nodes),
+            len(valid_nodes),
+        )
+        return ValidatedNodesEvent(nodes=valid_nodes, file_path=ev.file_path, metadata=ev.metadata)
 
     @step
-    async def index_qdrant(self, ctx: Context, ev: NodesCreatedEvent) -> VectorIndexingCompleteEvent:
-        """Step 3: Index nodes in Qdrant (optional).
+    async def index_qdrant(self, ctx: Context, ev: ValidatedNodesEvent) -> QdrantIndexedEvent:
+        """Step 3: Index nodes in Qdrant (optional)."""
 
-        Input: NodesCreatedEvent
-        Output: VectorIndexingCompleteEvent
-        """
+        nodes = ev.nodes
+        step_start = time.perf_counter()
+        logger.info("[Workflow] Entering Qdrant step (enabled=%s)", self.enable_qdrant)
+        tracker = get_tracker()
+        file_type = ev.metadata.get("file_type", "document")
 
         if not self.enable_qdrant or not self.qdrant_indexer:
-            logger.info("[Workflow] Qdrant indexing disabled, skipping")
-            return VectorIndexingCompleteEvent(success=True, message="Qdrant indexing skipped (disabled)", node_count=0)
-
-        nodes = ev.nodes
+            logger.info(
+                "[Workflow] Qdrant indexing disabled, skipping (%.2fs)",
+                time.perf_counter() - step_start,
+            )
+            return QdrantIndexedEvent(nodes=nodes, file_path=ev.file_path, metadata=ev.metadata)
 
         logger.info(f"[Workflow] Indexing {len(nodes)} nodes in Qdrant")
 
         try:
             self.qdrant_indexer(nodes)
-
             logger.info(f"[Workflow] Successfully indexed {len(nodes)} nodes in Qdrant")
-
-            return VectorIndexingCompleteEvent(success=True, message=f"Indexed {len(nodes)} nodes in Qdrant", node_count=len(nodes))
-
+            tracker.track_phase_stats(file_type, "qdrant_uploaded", len(nodes))
         except Exception as e:
             logger.error(f"[Workflow] Failed to index in Qdrant: {e}")
-            # Don't stop workflow, continue to next step
-            return VectorIndexingCompleteEvent(success=False, message=str(e), node_count=0)
+        finally:
+            logger.info(
+                "[Workflow] Qdrant step finished in %.2fs",
+                time.perf_counter() - step_start,
+            )
+
+        return QdrantIndexedEvent(nodes=nodes, file_path=ev.file_path, metadata=ev.metadata)
 
     @step
-    async def index_elasticsearch(self, ctx: Context, ev: NodesCreatedEvent) -> VectorIndexingCompleteEvent:
-        """Step 4: Index nodes in Elasticsearch (optional).
-
-        Input: NodesCreatedEvent
-        Output: VectorIndexingCompleteEvent
-        """
-
-        if not self.enable_elasticsearch or not self.es_indexer:
-            logger.info("[Workflow] Elasticsearch indexing disabled, skipping")
-            return VectorIndexingCompleteEvent(success=True, message="Elasticsearch indexing skipped (disabled)", node_count=0)
+    async def index_elasticsearch(self, ctx: Context, ev: QdrantIndexedEvent) -> ElasticsearchIndexedEvent:
+        """Step 4: Index nodes in Elasticsearch (optional)."""
 
         nodes = ev.nodes
+        step_start = time.perf_counter()
+        logger.info("[Workflow] Entering Elasticsearch step (enabled=%s)", self.enable_elasticsearch)
+        tracker = get_tracker()
+        file_type = ev.metadata.get("file_type", "document")
+
+        if not self.enable_elasticsearch or not self.es_indexer:
+            logger.info(
+                "[Workflow] Elasticsearch indexing disabled, skipping (%.2fs)",
+                time.perf_counter() - step_start,
+            )
+            return ElasticsearchIndexedEvent(nodes=nodes, file_path=ev.file_path, metadata=ev.metadata)
 
         logger.info(f"[Workflow] Indexing {len(nodes)} nodes in Elasticsearch")
 
         try:
             self.es_indexer(nodes)
-
             logger.info(f"[Workflow] Successfully indexed {len(nodes)} nodes in Elasticsearch")
-
-            return VectorIndexingCompleteEvent(success=True, message=f"Indexed {len(nodes)} nodes in Elasticsearch", node_count=len(nodes))
-
+            tracker.track_phase_stats(file_type, "elasticsearch_uploaded", len(nodes))
         except Exception as e:
             logger.error(f"[Workflow] Failed to index in Elasticsearch: {e}")
-            return VectorIndexingCompleteEvent(success=False, message=str(e), node_count=0)
-
-    @step
-    async def index_neo4j(self, ctx: Context, ev: NodesCreatedEvent) -> GraphIndexingCompleteEvent:
-        """Step 5: Index nodes in Neo4j knowledge graph (optional).
-
-        Input: NodesCreatedEvent
-        Output: GraphIndexingCompleteEvent
-        """
-
-        if GRAPH_MODE == "off":
-            logger.info("[Workflow] Graph mode set to 'off'; skipping")
-            return GraphIndexingCompleteEvent(
-                success=True,
-                message="Graph indexing skipped (mode=off)",
-                node_count=0,
+        finally:
+            logger.info(
+                "[Workflow] Elasticsearch step finished in %.2fs",
+                time.perf_counter() - step_start,
             )
 
-        if not self.enable_neo4j or not self.graph_ingestor:
-            logger.info("[Workflow] Neo4j indexing disabled, skipping")
-            return GraphIndexingCompleteEvent(success=True, message="Neo4j indexing skipped (disabled)", node_count=0)
+        return ElasticsearchIndexedEvent(nodes=nodes, file_path=ev.file_path, metadata=ev.metadata)
+
+    @step
+    async def index_neo4j(self, ctx: Context, ev: ElasticsearchIndexedEvent) -> Neo4jIndexedEvent:
+        """Step 5: Index nodes in Neo4j knowledge graph (optional)."""
 
         nodes = ev.nodes
+        step_start = time.perf_counter()
+        logger.info("[Workflow] Entering Neo4j step (enabled=%s, mode=%s)", self.enable_neo4j, GRAPH_MODE)
+        tracker = get_tracker()
+        file_type = ev.metadata.get("file_type", "document")
+
+        if GRAPH_MODE == "off":
+            logger.info(
+                "[Workflow] Graph mode set to 'off'; skipping (%.2fs)",
+                time.perf_counter() - step_start,
+            )
+            return Neo4jIndexedEvent(nodes=nodes, file_path=ev.file_path, metadata=ev.metadata)
+
+        if not self.enable_neo4j or not self.graph_ingestor:
+            logger.info(
+                "[Workflow] Neo4j indexing disabled, skipping (%.2fs)",
+                time.perf_counter() - step_start,
+            )
+            return Neo4jIndexedEvent(nodes=nodes, file_path=ev.file_path, metadata=ev.metadata)
 
         logger.info(f"[Workflow] Indexing {len(nodes)} nodes in Neo4j")
 
         try:
             use_property_graph = GRAPH_MODE in {"property", "legal", "schema"}
             self.graph_ingestor(nodes, use_property_graph=use_property_graph)
-
             logger.info(f"[Workflow] Successfully indexed {len(nodes)} nodes in Neo4j")
-
-            return GraphIndexingCompleteEvent(success=True, message=f"Indexed {len(nodes)} nodes in Neo4j", node_count=len(nodes))
-
+            tracker.track_phase_stats(file_type, "neo4j_uploaded", len(nodes))
         except Exception as e:
             logger.error(f"[Workflow] Failed to index in Neo4j: {e}")
-            return GraphIndexingCompleteEvent(success=False, message=str(e), node_count=0)
+        finally:
+            logger.info(
+                "[Workflow] Neo4j step finished in %.2fs",
+                time.perf_counter() - step_start,
+            )
+
+        return Neo4jIndexedEvent(nodes=nodes, file_path=ev.file_path, metadata=ev.metadata)
 
     @step
-    async def finalize(self, ctx: Context, ev: VectorIndexingCompleteEvent | GraphIndexingCompleteEvent) -> StopEvent:
-        """Final step: Collect results and return.
-
-        Input: Any completion event
-        Output: StopEvent with final results
-        """
-
-        nodes = await ctx.get("nodes", default=[])
-        file_path = await ctx.get("file_path", default="unknown")
+    async def finalize(self, ctx: Context, ev: Neo4jIndexedEvent) -> StopEvent:
+        """Final step: Collect results and return."""
+        step_start = time.perf_counter()
+        nodes = ev.nodes or []
+        file_path = ev.file_path
 
         result = {
             "success": True,
@@ -482,6 +344,10 @@ class IngestionWorkflow(Workflow):
             result["nodes"] = nodes
 
         logger.info(f"[Workflow] {result['message']}")
+        logger.info(
+            "[Workflow] Finalize step finished in %.2fs",
+            time.perf_counter() - step_start,
+        )
 
         return StopEvent(result=result)
 
@@ -507,7 +373,6 @@ async def run_ingestion_workflow(
         >>> result = await run_ingestion_workflow(
         ...     file_path="/path/to/document.pdf",
         ...     metadata={"source": "upload", "author": "John Doe"},
-        ...     enable_contextual_retrieval=True,
         ...     enable_qdrant=True,
         ...     enable_neo4j=True,
         ... )
@@ -544,11 +409,7 @@ class SimpleIngestionPipeline:
         >>> print(f"Created {len(nodes)} nodes")
 
     Example - With Options:
-        >>> pipeline = SimpleIngestionPipeline(
-        ...     enable_contextual_retrieval=True,
-        ...     enable_qdrant=True,
-        ...     enable_neo4j=True,
-        ... )
+        >>> pipeline = SimpleIngestionPipeline(enable_qdrant=True, enable_neo4j=True)
         >>> nodes = await pipeline.run_batch(file_paths=["doc1.pdf", "doc2.pdf"])
     """
 
@@ -622,9 +483,6 @@ def create_simple_pipeline(**options) -> SimpleIngestionPipeline:
         Configured SimpleIngestionPipeline
 
     Example:
-        >>> pipeline = create_simple_pipeline(
-        ...     enable_qdrant=True,
-        ...     enable_contextual_retrieval=True
-        ... )
+        >>> pipeline = create_simple_pipeline(enable_qdrant=True)
     """
     return SimpleIngestionPipeline(**options)

@@ -1,15 +1,18 @@
 import logging
 import os
+from pathlib import Path
 from typing import Dict
 
 from dotenv import load_dotenv
+from load_env import load_env as load_env_from_root
 from llama_index.core import Settings
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.llms.openai import OpenAI
 
 from src.config.models import EMBEEDING_MODEL_NAME
 
-load_dotenv()
+# Load env using shared helper (supports ENV_FILE override, repo root, cwd search)
+load_env_from_root()
 
 logger = logging.getLogger(__name__)
 
@@ -83,28 +86,11 @@ else:
 
 ENABLE_CONTEXTUAL_RETRIEVAL = _get_env_bool("ENABLE_CONTEXTUAL_RETRIEVAL", True)
 ENABLE_METADATA_EXTRACTION = _get_env_bool("ENABLE_METADATA_EXTRACTION", False)
-USE_LLAMAINDEX_WORKFLOW = _get_env_bool("USE_LLAMAINDEX_WORKFLOW", False)
-
-# LlamaParse configuration (ingestion only)
-# Based on: https://developers.llamaindex.ai/python/framework/llama_cloud/llama_parse/
-LLAMAPARSE_ENABLE = _get_env_bool("LLAMAPARSE_ENABLE", False)
-LLAMAPARSE_AUTO_MODE = _get_env_bool("LLAMAPARSE_AUTO_MODE", True)
 
 # Embedding model dimensions
 # Based on: https://platform.openai.com/docs/guides/embeddings
 OPENAI_EMBED_MODEL = os.getenv("OPENAI_EMBED_MODEL", "text-embedding-3-small")
 OPENAI_EMBED_MODEL_DIM = _get_env_int("OPENAI_EMBED_MODEL_DIM", 1536)  # text-embedding-3-small
-LLAMAPARSE_EXTRACT_CHARTS = _get_env_bool("LLAMAPARSE_EXTRACT_CHARTS", True)
-LLAMAPARSE_RESULT_TYPE = os.getenv("LLAMAPARSE_RESULT_TYPE", "markdown")
-LLAMAPARSE_API_KEY = os.getenv("LLAMAPARSE_API_KEY") or os.getenv("LLAMA_CLOUD_API_KEY")
-LLAMAPARSE_TARGET_PAGES = os.getenv("LLAMAPARSE_TARGET_PAGES")  # e.g., "1-5,7,10-15"
-LLAMAPARSE_BBOX_TOP = _get_env_int("LLAMAPARSE_BBOX_TOP", 0)  # Filter header pixels
-LLAMAPARSE_BBOX_BOTTOM = _get_env_int("LLAMAPARSE_BBOX_BOTTOM", 0)  # Filter footer pixels
-LLAMAPARSE_USER_PROMPT = os.getenv("LLAMAPARSE_USER_PROMPT")  # Custom parsing instructions
-LLAMAPARSE_INVALIDATE_CACHE = _get_env_bool("LLAMAPARSE_INVALIDATE_CACHE", False)  # Force re-parse
-LLAMAPARSE_LANGUAGE = os.getenv("LLAMAPARSE_LANGUAGE", "en")  # Language code
-LLAMAPARSE_SKIP_DIAGONAL_TEXT = _get_env_bool("LLAMAPARSE_SKIP_DIAGONAL_TEXT", False)
-LLAMAPARSE_DO_NOT_UNROLL_COLUMNS = _get_env_bool("LLAMAPARSE_DO_NOT_UNROLL_COLUMNS", False)
 
 # Hybrid retriever defaults inspired by the multi-doc tutorial
 # https://developers.llamaindex.ai/python/examples/retrievers/multi_doc_together_hybrid/

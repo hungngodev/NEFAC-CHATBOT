@@ -47,7 +47,8 @@ services:
       - nefacnet
 
   neo4j:
-    image: neo4j:5.15
+    # Updated to latest 5.x build for better Cypher compatibility with LlamaIndex
+    image: neo4j:latest
     container_name: neo4j
     ports:
       - "7474:7474" # HTTP

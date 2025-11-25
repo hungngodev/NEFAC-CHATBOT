@@ -17,44 +17,20 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 from llama_index.core.schema import BaseNode, TextNode
 from unstructured.partition.auto import partition as u_partition
 
-from src.service.ingestion_service.llamaindex.document_loader import (
-    UnifiedDocumentLoader,
-)
-from src.service.ingestion_service.llamaindex.node_parser import (
-    build_nodes_from_text,
-)
+from src.service.ingestion_service.llamaindex.node_parser import build_nodes_from_text
 from src.service.ingestion_service.progress_tracker import get_tracker
-from src.service.ingestion_service.settings import (
-    CONTEXT_FORMAT,
-    LLAMAPARSE_API_KEY,
-    LLAMAPARSE_AUTO_MODE,
-    LLAMAPARSE_ENABLE,
-    LLAMAPARSE_EXTRACT_CHARTS,
-    LLAMAPARSE_RESULT_TYPE,
-)
+from src.service.ingestion_service import settings as ingestion_settings
 
-from .spreadsheet_utils import process_xlsx_intelligently
+from src.service.ingestion_service.loader.spreadsheet_utils import process_xlsx_intelligently
 
 logger = logging.getLogger(__name__)
 TRANSCRIPT_PATTERN = re.compile(r"\[(?P<ts>[\d:\.]+)s?\]\s*(?P<txt>.*)")
-_TRUTHY = {"1", "true", "yes", "on"}
 
-USE_LLAMAINDEX_READERS = os.getenv("USE_LLAMAINDEX_READERS", "true").lower() in _TRUTHY
-LLAMAPARSE_ENABLED = LLAMAPARSE_ENABLE
-SUPPORTED_LI_EXTS = {"pdf", "html", "htm", "docx", "doc", "ppt", "pptx", "txt"}
-
-LLAMA_LOADER: Optional[UnifiedDocumentLoader]
-if USE_LLAMAINDEX_READERS:
-    LLAMA_LOADER = UnifiedDocumentLoader(
-        use_llamaparse=LLAMAPARSE_ENABLED,
-        llamaparse_api_key=LLAMAPARSE_API_KEY,
-        llamaparse_auto_mode=LLAMAPARSE_AUTO_MODE,
-        llamaparse_extract_charts=LLAMAPARSE_EXTRACT_CHARTS,
-        llamaparse_result_type=LLAMAPARSE_RESULT_TYPE,
-        fallback_to_unstructured=True,
-    )
-else:
-    LLAMA_LOADER = None
+CONTEXT_FORMAT = getattr(
+    ingestion_settings,
+    "CONTEXT_FORMAT",
+    "Context: {context}\n\nChunk: {chunk}",
+)
 
 # -------------------- Helpers -------------------- #
 
@@ -110,64 +86,6 @@ def get_chunk_times(chunk_text: str, full_text: str, offset_map: Optional[List[D
     return start_time, end_time, end
 
 
-def _parse_pdf_with_llamaparse(file_path: str) -> Optional[str]:
-    """Parse PDF into text using LlamaParse if available and configured."""
-
-    try:
-        from llama_parse import LlamaParse  # type: ignore[import-not-found]
-    except Exception as exc:  # pragma: no cover - optional dependency
-        logger.warning("LlamaParse unavailable: %s", exc)
-        return None
-    api_key = LLAMAPARSE_API_KEY
-    if not api_key:
-        logger.warning("LLAMAPARSE_API_KEY not set; skipping LlamaParse")
-        return None
-
-    try:
-        parser_kwargs = {
-            "api_key": api_key,
-            "result_type": LLAMAPARSE_RESULT_TYPE or "text",
-        }
-        parser = LlamaParse(**parser_kwargs)
-
-        optional_flags = {
-            "auto_mode": LLAMAPARSE_AUTO_MODE,
-            "extract_charts": LLAMAPARSE_EXTRACT_CHARTS,
-        }
-        parsing_config = getattr(parser, "parsing_config", None)
-        if isinstance(parsing_config, dict):  # pragma: no branch - recent versions expose dict
-            parsing_config.update({k: v for k, v in optional_flags.items() if v is not None})
-        else:  # pragma: no cover - depends on llama-parse version
-            for key, value in optional_flags.items():
-                if value is None:
-                    continue
-                try:
-                    setattr(parser, key, value)
-                except AttributeError:
-                    logger.debug("LlamaParse option '%s' not supported on this version", key)
-
-        results = parser.load_data(file_path)
-        texts: List[str] = []
-        for result in results:
-            text = getattr(result, "text", None)
-            if callable(text):  # Some versions expose text as callable property
-                text = text()
-            if not text:
-                maybe_get_content = getattr(result, "get_content", None)
-                if callable(maybe_get_content):
-                    text = maybe_get_content()
-            if text:
-                stripped = str(text).strip()
-                if stripped:
-                    texts.append(stripped)
-
-        joined = "\n\n".join(texts)
-        return joined or None
-    except Exception as exc:  # pragma: no cover - network/service failures
-        logger.error("LlamaParse failed for %s: %s", file_path, exc)
-        return None
-
-
 def _create_node(
     chunk_text: str,
     base_meta: Dict[str, Any],
@@ -176,6 +94,7 @@ def _create_node(
     raw_node: Optional[BaseNode] = None,
 ) -> TextNode:
     metadata = {**base_meta, **chunk_meta}
+    metadata["id"] = raw_node.node_id if raw_node is not None else metadata.get("id")
     content = CONTEXT_FORMAT.format(context=context, chunk=chunk_text)
     node = TextNode(
         text=content,
@@ -235,6 +154,7 @@ def unstructured_loader(
     file_type: Optional[str] = None,
     include_only: Optional[Set[str]] = None,
     processed_filenames: Optional[Set[str]] = None,
+    failed_filenames: Optional[Dict[str, str]] = None,
 ) -> List[TextNode]:
     start_time = time.time()
     tracker = get_tracker()
@@ -263,12 +183,16 @@ def unstructured_loader(
         path = Path(documents_dir) / filename if not os.path.isabs(filename) else Path(filename)
         if not path.exists():
             logger.warning(f"  │   └── ❌ File not found: {filename}")
+            if failed_filenames is not None:
+                failed_filenames[filename] = "file not found"
             continue
 
         path_str = str(path)
         ext = os.path.splitext(path_str)[1].lower().lstrip(".")
         supported_exts = {"pdf", "html", "htm", "xlsx", "xls", "txt", "docx", "doc", "pptx", "ppt", "csv"}
         if ext not in supported_exts:
+            if failed_filenames is not None:
+                failed_filenames[filename] = f"unsupported extension: .{ext}"
             continue
 
         base_meta = _get_base_metadata(path_str, entry)
@@ -276,204 +200,14 @@ def unstructured_loader(
         document_base_meta.update({k: v for k, v in (entry or {}).items() if v is not None})
 
         try:
-            if ext in {"xlsx", "xls", "csv"}:
-                tracker.log_file_phase("Parsing spreadsheet structure")
-                xlsx_chunks = process_xlsx_intelligently(path, entry)
+            file_nodes, total_file_chunks, file_tokens = load_document_nodes(
+                path,
+                entry,
+                tracker=tracker,
+                file_type=file_type,
+            )
 
-                # Process each spreadsheet sheet as a structured document
-                total_file_chunks = 0
-                file_tokens = 0
-
-                for chunk_idx, (sheet_text, sheet_meta) in enumerate(xlsx_chunks):
-                    chunk_base_meta = document_base_meta.copy()
-                    chunk_base_meta.update(sheet_meta)
-
-                    sheet_nodes = build_nodes_from_text(sheet_text, chunk_base_meta)
-                    total_file_chunks += len(sheet_nodes)
-                    file_tokens += sum(len(raw_node.get_content().split()) for raw_node in sheet_nodes)
-
-                    for idx, raw_node in enumerate(sheet_nodes):
-                        chunk_text = raw_node.get_content()
-                        node_meta = dict(raw_node.metadata or {})
-                        chunk_meta = {
-                            **node_meta,
-                            "sheet_index": chunk_idx,
-                            "total_sheets": len(xlsx_chunks),
-                            "chunk_index": idx,
-                            "total_chunks": len(sheet_nodes),
-                            "chunk_size": len(chunk_text),
-                            "chunk_word_count": len(chunk_text.split()),
-                        }
-
-                        context_parts = [f"Document: {base_meta['title']}"]
-                        if sheet_meta.get("sheet_name"):
-                            context_parts.append(f"Sheet: {sheet_meta['sheet_name']}")
-                        summary = node_meta.get("section_summary") or node_meta.get("window")
-                        if summary:
-                            context_parts.append(str(summary))
-
-                        context = " | ".join(context_parts)
-                        nodes.append(_create_node(chunk_text, chunk_base_meta, chunk_meta, context, raw_node=raw_node))
-
-            elif ext == "txt" and entry.get("transcript_file"):
-                tracker.log_file_phase("Parsing transcript timestamps")
-                with open(path_str, "r", encoding="utf-8") as transcript_file:
-                    raw_transcript = transcript_file.read()
-
-                clean_text, offset_map = parse_timestamps(raw_transcript)
-                base_meta.update({"transcript_type": "youtube", "has_timestamps": True})
-
-                raw_nodes = build_nodes_from_text(clean_text, document_base_meta)
-                total_file_chunks = len(raw_nodes)
-                file_tokens = sum(len(raw_node.get_content().split()) for raw_node in raw_nodes)
-                curr_offset = 0
-
-                for idx, raw_node in enumerate(raw_nodes):
-                    chunk_text = raw_node.get_content()
-                    node_meta = dict(raw_node.metadata or {})
-                    chunk_meta = {
-                        **node_meta,
-                        "chunk_index": idx,
-                        "total_chunks": total_file_chunks,
-                        "chunk_size": len(chunk_text),
-                        "chunk_word_count": len(chunk_text.split()),
-                    }
-
-                    start_time_ts, end_time_ts, curr_offset = get_chunk_times(
-                        chunk_text,
-                        clean_text,
-                        offset_map,
-                        curr_offset,
-                    )
-                    chunk_meta.update(
-                        {
-                            "start_time": start_time_ts,
-                            "end_time": end_time_ts,
-                            "duration": max(0, end_time_ts - start_time_ts),
-                        }
-                    )
-
-                    context_parts = [f"Document: {base_meta['title']}"]
-                    summary = node_meta.get("section_summary") or node_meta.get("window")
-                    if summary:
-                        context_parts.append(str(summary))
-                    context_parts.append(f"Transcript segment ({start_time_ts:.1f}s-{end_time_ts:.1f}s)")
-                    context = " | ".join(context_parts)
-                    nodes.append(
-                        _create_node(
-                            chunk_text,
-                            document_base_meta,
-                            chunk_meta,
-                            context,
-                            raw_node=raw_node,
-                        )
-                    )
-
-            elif LLAMA_LOADER and ext in SUPPORTED_LI_EXTS:
-                tracker.log_file_phase("LlamaIndex reader ingestion")
-                li_docs = LLAMA_LOADER.load_file(path_str, extra_info=document_base_meta)
-
-                raw_nodes: List[BaseNode] = []
-                for doc in li_docs:
-                    doc_nodes = build_nodes_from_text(
-                        doc.get_content(),
-                        doc.metadata or document_base_meta,
-                    )
-                    raw_nodes.extend(doc_nodes)
-
-                total_file_chunks = len(raw_nodes)
-                file_tokens = sum(len(raw_node.get_content().split()) for raw_node in raw_nodes)
-
-                for idx, raw_node in enumerate(raw_nodes):
-                    chunk_text = raw_node.get_content()
-                    node_meta = dict(raw_node.metadata or {})
-                    chunk_meta = {
-                        **node_meta,
-                        "chunk_index": idx,
-                        "total_chunks": total_file_chunks,
-                        "chunk_size": len(chunk_text),
-                        "chunk_word_count": len(chunk_text.split()),
-                    }
-
-                    context_parts = [f"Document: {node_meta.get('title') or document_base_meta.get('title') or base_meta.get('title') or filename}"]
-                    summary = node_meta.get("contextual_summary") or node_meta.get("section_summary") or node_meta.get("window")
-                    if summary:
-                        context_parts.append(str(summary))
-
-                    context = " | ".join(part for part in context_parts if part)
-                    nodes.append(
-                        _create_node(
-                            chunk_text,
-                            document_base_meta,
-                            chunk_meta,
-                            context,
-                            raw_node=raw_node,
-                        )
-                    )
-
-            else:
-                # Standard unstructured processing for other file types
-                tracker.log_file_phase("Extracting content")
-                whole_text = None
-                # Try LlamaParse first for PDFs if enabled
-                if ext == "pdf" and LLAMAPARSE_ENABLED:
-                    tracker.log_file_phase("LlamaParse PDF extraction")
-                    whole_text = _parse_pdf_with_llamaparse(path_str)
-                    if not whole_text:
-                        logger.warning("LlamaParse did not return content; falling back to Unstructured")
-
-                # Fallback to Unstructured if no text yet
-                if not whole_text:
-                    elements = u_partition(path_str)
-                    whole_text = "\n\n".join(str(el).strip() for el in elements if str(el).strip())
-                offset_map = is_transcript = None
-
-                # Handle YouTube transcripts
-                if ext == "txt" and entry.get("transcript_file") and TRANSCRIPT_PATTERN.search(whole_text):
-                    tracker.log_file_phase("Parsing transcript timestamps")
-                    clean_text, offset_map = parse_timestamps(whole_text)
-                    is_transcript = True
-                    base_meta.update({"transcript_type": "youtube", "has_timestamps": True})
-
-                    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False, encoding="utf-8") as tmp:
-                        tmp.write(clean_text)
-                        tmp_path = tmp.name
-                    try:
-                        elements = u_partition(tmp_path)
-                        whole_text = clean_text
-                    finally:
-                        os.unlink(tmp_path)
-
-                raw_nodes = build_nodes_from_text(whole_text, document_base_meta)
-                total_file_chunks = len(raw_nodes)
-                file_tokens = sum(len(raw_node.get_content().split()) for raw_node in raw_nodes)
-                curr_offset = 0
-
-                for idx, raw_node in enumerate(raw_nodes):
-                    chunk_text = raw_node.get_content()
-                    node_meta = dict(raw_node.metadata or {})
-                    chunk_meta = {
-                        **node_meta,
-                        "chunk_index": idx,
-                        "total_chunks": total_file_chunks,
-                        "chunk_size": len(chunk_text),
-                        "chunk_word_count": len(chunk_text.split()),
-                    }
-
-                    if is_transcript:
-                        start_time_ts, end_time_ts, curr_offset = get_chunk_times(chunk_text, whole_text, offset_map, curr_offset)
-                        duration = max(0, end_time_ts - start_time_ts)
-                        chunk_meta.update({"start_time": start_time_ts, "end_time": end_time_ts, "duration": duration})
-
-                    context_parts = [f"Document: {base_meta['title']}"]
-                    summary = node_meta.get("section_summary") or node_meta.get("window")
-                    if summary:
-                        context_parts.append(str(summary))
-                    if is_transcript and offset_map:
-                        context_parts.append(f"Transcript segment ({start_time_ts:.1f}s-{end_time_ts:.1f}s)")
-                    context = " | ".join(context_parts)
-                    nodes.append(_create_node(chunk_text, document_base_meta, chunk_meta, context, raw_node=raw_node))
-
+            nodes.extend(file_nodes)
             chunk_count += total_file_chunks
             if processed_filenames is not None:
                 processed_filenames.add(filename)
@@ -483,6 +217,8 @@ def unstructured_loader(
             logger.warning(f"  │   └── ❌ Failed to process {filename}: {e}")
             if ext == "pdf":
                 logger.error("  │       PDF processing failed - file may be corrupted, password-protected, or empty")
+            if failed_filenames is not None:
+                failed_filenames[filename] = str(e)
             continue
 
     # Enhanced summary logging
@@ -499,4 +235,136 @@ def unstructured_loader(
     return nodes
 
 
-__all__ = ["unstructured_loader"]
+__all__ = ["unstructured_loader", "load_document_nodes"]
+
+
+def load_document_nodes(
+    file_path: str | Path,
+    entry: Dict[str, Any],
+    *,
+    tracker=None,
+    file_type: Optional[str] = None,
+) -> Tuple[List[TextNode], int, int]:
+    """Load a single document into TextNodes using the enhanced logic."""
+
+    path = Path(file_path)
+    if not path.exists():
+        raise FileNotFoundError(f"File not found: {path}")
+
+    path_str = str(path)
+    ext = path.suffix.lower().lstrip(".")
+    supported_exts = {"pdf", "html", "htm", "xlsx", "xls", "txt", "docx", "doc", "pptx", "ppt", "csv"}
+    if ext not in supported_exts:
+        raise ValueError(f"Unsupported file extension: .{ext}")
+
+    base_meta = _get_base_metadata(path_str, entry)
+    document_base_meta = base_meta.copy()
+    document_base_meta.update({k: v for k, v in (entry or {}).items() if v is not None})
+
+    nodes: List[TextNode] = []
+    total_file_chunks = 0
+    file_tokens = 0
+
+    def _log_phase(message: str) -> None:
+        if tracker is not None:
+            tracker.log_file_phase(message)
+        else:
+            logger.debug(message)
+
+    try:
+        if ext in {"xlsx", "xls", "csv"}:
+            _log_phase("Parsing spreadsheet structure")
+            xlsx_chunks = process_xlsx_intelligently(path, entry)
+
+            for chunk_idx, (sheet_text, sheet_meta) in enumerate(xlsx_chunks):
+                chunk_base_meta = document_base_meta.copy()
+                chunk_base_meta.update(sheet_meta)
+
+                sheet_nodes = build_nodes_from_text(sheet_text, chunk_base_meta)
+                total_file_chunks += len(sheet_nodes)
+                file_tokens += sum(len(raw_node.get_content().split()) for raw_node in sheet_nodes)
+
+                for idx, raw_node in enumerate(sheet_nodes):
+                    chunk_text = raw_node.get_content()
+                    node_meta = dict(raw_node.metadata or {})
+                    chunk_meta = {
+                        **node_meta,
+                        "sheet_index": chunk_idx,
+                        "total_sheets": len(xlsx_chunks),
+                        "chunk_index": idx,
+                        "total_chunks": len(sheet_nodes),
+                        "chunk_size": len(chunk_text),
+                        "chunk_word_count": len(chunk_text.split()),
+                    }
+
+                    context_parts = [f"Document: {base_meta['title']}"]
+                    if sheet_meta.get("sheet_name"):
+                        context_parts.append(f"Sheet: {sheet_meta['sheet_name']}")
+                    summary = node_meta.get("section_summary") or node_meta.get("window")
+                    if summary:
+                        context_parts.append(str(summary))
+
+                    context = " | ".join(context_parts)
+                    nodes.append(_create_node(chunk_text, chunk_base_meta, chunk_meta, context, raw_node=raw_node))
+
+        else:
+            _log_phase("Extracting content")
+            whole_text = None
+
+            # Handle transcript detection before unstructured fallback
+            is_transcript = False
+            offset_map = None
+
+            if not whole_text:
+                elements = u_partition(path_str)
+                whole_text = "\n\n".join(str(el).strip() for el in elements if str(el).strip())
+
+            if ext == "txt" and entry.get("transcript_file") and TRANSCRIPT_PATTERN.search(whole_text):
+                _log_phase("Parsing transcript timestamps")
+                clean_text, offset_map = parse_timestamps(whole_text)
+                is_transcript = True
+                base_meta.update({"transcript_type": "youtube", "has_timestamps": True})
+
+                with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False, encoding="utf-8") as tmp:
+                    tmp.write(clean_text)
+                    tmp_path = tmp.name
+                try:
+                    elements = u_partition(tmp_path)
+                    whole_text = clean_text
+                finally:
+                    os.unlink(tmp_path)
+
+            raw_nodes = build_nodes_from_text(whole_text, document_base_meta)
+            total_file_chunks = len(raw_nodes)
+            file_tokens = sum(len(raw_node.get_content().split()) for raw_node in raw_nodes)
+            curr_offset = 0
+
+            for idx, raw_node in enumerate(raw_nodes):
+                chunk_text = raw_node.get_content()
+                node_meta = dict(raw_node.metadata or {})
+                chunk_meta = {
+                    **node_meta,
+                    "chunk_index": idx,
+                    "total_chunks": total_file_chunks,
+                    "chunk_size": len(chunk_text),
+                    "chunk_word_count": len(chunk_text.split()),
+                }
+
+                if is_transcript and offset_map:
+                    start_time_ts, end_time_ts, curr_offset = get_chunk_times(chunk_text, whole_text, offset_map, curr_offset)
+                    duration = max(0, end_time_ts - start_time_ts)
+                    chunk_meta.update({"start_time": start_time_ts, "end_time": end_time_ts, "duration": duration})
+
+                context_parts = [f"Document: {base_meta['title']}"]
+                summary = node_meta.get("section_summary") or node_meta.get("window")
+                if summary:
+                    context_parts.append(str(summary))
+                if is_transcript and offset_map:
+                    context_parts.append(f"Transcript segment ({start_time_ts:.1f}s-{end_time_ts:.1f}s)")
+                context = " | ".join(context_parts)
+                nodes.append(_create_node(chunk_text, document_base_meta, chunk_meta, context, raw_node=raw_node))
+
+        return nodes, total_file_chunks, file_tokens
+
+    except Exception:
+        raise

@@ -43,13 +43,6 @@ def _dependency_matrix() -> List[DependencyStatus]:
             install_hint="pip install llama-index",
         ),
         DependencyStatus(
-            name="llama_parse",
-            present=_has_module("llama_parse"),
-            required=_enabled("LLAMAPARSE_ENABLE", False),
-            reason="LLAMAPARSE_ENABLE=True",
-            install_hint="pip install llama-parse",
-        ),
-        DependencyStatus(
             name="spacy",
             present=_has_module("spacy"),
             required=True,
