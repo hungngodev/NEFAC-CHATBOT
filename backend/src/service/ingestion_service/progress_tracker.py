@@ -1,10 +1,3 @@
-"""Progress tracking and durability helpers for the ingestion pipeline.
-
-Inspired by the resilient workflow patterns described in the Elastic
-"LlamaIndex workflows" guide, this tracker records per-file failures so runs
-can be resumed or replayed after addressing issues.
-"""
-
 from __future__ import annotations
 
 import json
@@ -20,8 +13,6 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class FailureRecord:
-    """Structured failure metadata for durable replays."""
-
     file_type: str
     filename: str
     phase: str
@@ -31,15 +22,12 @@ class FailureRecord:
 
 
 class PipelineTracker:
-    """Clean, systematic progress tracking with tree-like indentation and detailed stats."""
-
     def __init__(self):
         self.stats = defaultdict(lambda: defaultdict(int))
         self.model_usage = {}
         self.start_time = time.time()
         self._phase_times = {}
         self._current_file = None
-        # failure_key -> FailureRecord
         self._failures: Dict[Tuple[str, str], FailureRecord] = {}
 
     def log_phase_start(self, phase: str):
@@ -92,7 +80,6 @@ class PipelineTracker:
         logger.info(separator)
         logger.info(f"⏱️ Total execution time: {total_duration:.2f}s")
 
-        # Summary by file type
         for file_type, phases in self.stats.items():
             if phases.get("files_loaded", 0) > 0:
                 logger.info(f"\n📁 {file_type.upper()}")
@@ -106,7 +93,6 @@ class PipelineTracker:
                 ]
                 logger.info("\n".join(stats))
 
-        # Model usage summary
         if self.model_usage:
             logger.info("\n🤖 MODELS USED")
             for phase, model in self.model_usage.items():
@@ -126,20 +112,7 @@ class PipelineTracker:
 
         logger.info(separator)
 
-    # ------------------------------------------------------------------
-    # Failure handling helpers
-    # ------------------------------------------------------------------
-
     def record_failure(self, file_type: str, filename: str, phase: str, error: Exception | str):
-        """Track a failure for later replay.
-
-        Args:
-            file_type: Document cohort (pdf/html/youtube/xlsx/etc.)
-            filename: Failing document name
-            phase: Pipeline phase (workflow, parsing, indexing, etc.)
-            error: Exception instance or formatted message
-        """
-
         key = (file_type, filename)
         message = str(error)
         record = self._failures.get(key)
@@ -159,15 +132,11 @@ class PipelineTracker:
         record.last_timestamp = time.time()
 
     def mark_success(self, file_type: str, filename: str):
-        """Remove a file from the failure set after a successful retry."""
-
         key = (file_type, filename)
         if key in self._failures:
             del self._failures[key]
 
     def export_failures(self, output_path: Path) -> None:
-        """Persist failures to disk so subsequent runs can replay them."""
-
         if not self._failures:
             if output_path.exists():
                 output_path.unlink()
@@ -179,21 +148,15 @@ class PipelineTracker:
             json.dump(serialised, handle, indent=2)
 
     def pending_failures(self) -> List[FailureRecord]:
-        """Return a snapshot of pending failures."""
-
         return list(self._failures.values())
 
     def seed_failures(self, failures: Iterable[FailureRecord]) -> None:
-        """Preload failures from a previous run without incrementing attempts."""
-
         for record in failures:
             key = (record.file_type, record.filename)
             self._failures[key] = record
 
     @staticmethod
     def load_failures(input_path: Path) -> List[FailureRecord]:
-        """Load previously-recorded failures from disk."""
-
         if not input_path.exists():
             return []
 
@@ -205,7 +168,6 @@ class PipelineTracker:
             try:
                 failures.append(FailureRecord(**entry))
             except TypeError:
-                # Skip malformed rows but keep progressing
                 continue
         return failures
 

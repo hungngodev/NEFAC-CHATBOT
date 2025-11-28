@@ -1,5 +1,3 @@
-"""Spreadsheet processing helpers for ingestion pipeline."""
-
 from __future__ import annotations
 
 import logging
@@ -12,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 def process_xlsx_intelligently(file_path: str, entry: Dict[str, Any]) -> List[Tuple[str, Dict[str, Any]]]:
-    """Enhanced XLSX processing that preserves tabular structure and creates logical chunks."""
     try:
         excel_file = pd.ExcelFile(file_path)
         chunks: List[Tuple[str, Dict[str, Any]]] = []
@@ -34,11 +31,7 @@ def process_xlsx_intelligently(file_path: str, entry: Dict[str, Any]) -> List[Tu
             sheet_text = f"Sheet: {sheet_name}\nColumns: {', '.join(headers)}\n\n"
 
             for idx, row in df.iterrows():
-                row_data = [
-                    f"{header}: {str(value).strip()}"
-                    for header, value in zip(headers, row)
-                    if pd.notna(value) and str(value).strip()
-                ]
+                row_data = [f"{header}: {str(value).strip()}" for header, value in zip(headers, row) if pd.notna(value) and str(value).strip()]
 
                 if row_data:
                     sheet_text += f"Row {idx + 1}: {' | '.join(row_data)}\n"

@@ -1,50 +1,12 @@
-"""Enhanced entity deduplication for Neo4j Property Graph.
-
-Based on Neo4j + LlamaIndex tutorial:
-https://neo4j.com/blog/developer/property-graph-index-llamaindex/
-
-Combines vector similarity with word edit distance for robust entity matching.
-Uses APOC functions for advanced text processing.
-
-Usage as module:
-    from entity_deduplication import EntityDeduplicator
-    deduplicator = EntityDeduplicator(graph_store)
-    stats = deduplicator.get_duplicate_stats()
-"""
-
 from __future__ import annotations
 
 import logging
 from typing import Any, Dict, List, Optional, Tuple
 
-from llama_index.graph_stores.neo4j import Neo4jPropertyGraphStore
-
-from src.service.ingestion_service.settings import (
-    GRAPH_ENTITY_SIMILARITY_THRESHOLD,
-    GRAPH_WORD_DISTANCE_THRESHOLD,
-)
-
 logger = logging.getLogger(__name__)
 
 
 class EntityDeduplicator:
-    """Entity deduplication using vector similarity and word distance.
-
-    This class implements the advanced deduplication pattern from the
-    Neo4j tutorial, combining:
-    1. Vector embedding similarity (semantic matching)
-    2. Word edit distance (string similarity)
-    3. Label-based filtering (only merge same entity types)
-    4. Substring matching (partial name matches)
-
-    The algorithm:
-    1. Create vector index on entity embeddings
-    2. For each entity, find similar entities using vector search
-    3. Filter by similarity threshold and word distance
-    4. Group entities that should be merged
-    5. Merge duplicate nodes, preserving all relationships
-    """
-
     def __init__(
         self,
         graph_store,
@@ -52,14 +14,6 @@ class EntityDeduplicator:
         word_edit_distance: int = 5,
         enable_apoc: bool = True,
     ):
-        """Initialize entity deduplicator.
-
-        Args:
-            graph_store: Neo4jPropertyGraphStore instance
-            similarity_threshold: Minimum cosine similarity for duplicates (0-1)
-            word_edit_distance: Maximum Levenshtein distance for duplicates
-            enable_apoc: Use APOC functions if available
-        """
         self.graph_store = graph_store
         self.similarity_threshold = similarity_threshold
         self.word_edit_distance = word_edit_distance
@@ -68,11 +22,6 @@ class EntityDeduplicator:
         logger.info(f"EntityDeduplicator initialized: " f"similarity_threshold={similarity_threshold}, " f"word_edit_distance={word_edit_distance}")
 
     def create_vector_index(self, embedding_dimension: int = 1536):
-        """Create vector index on entity embeddings.
-
-        Args:
-            embedding_dimension: Dimension of embeddings (1536 for OpenAI)
-        """
         try:
             query = """
             CREATE VECTOR INDEX entity IF NOT EXISTS
@@ -93,12 +42,6 @@ class EntityDeduplicator:
             logger.info("Continuing without vector index (may impact performance)")
 
     def find_duplicate_entities(self) -> List[List[str]]:
-        """Find groups of duplicate entities.
-
-        Returns:
-            List of entity name groups that should be merged.
-            Example: [['Microsoft', 'Microsoft Corp'], ['Google', 'Google LLC']]
-        """
         try:
             if self.enable_apoc:
                 return self._find_duplicates_with_apoc()
@@ -109,10 +52,6 @@ class EntityDeduplicator:
             return []
 
     def _find_duplicates_with_apoc(self) -> List[List[str]]:
-        """Find duplicates using APOC functions (recommended).
-
-        This is the exact pattern from the Neo4j tutorial.
-        """
         query = """
         MATCH (e:__Entity__)
         CALL {
@@ -171,10 +110,6 @@ class EntityDeduplicator:
             return self._find_duplicates_without_apoc()
 
     def _find_duplicates_without_apoc(self) -> List[List[str]]:
-        """Find duplicates without APOC (fallback method).
-
-        Uses simpler Cypher without APOC text functions.
-        """
         query = """
         MATCH (e:__Entity__)
         CALL {
@@ -200,7 +135,6 @@ class EntityDeduplicator:
 
             duplicate_groups = [row["combinedResult"] for row in data]
 
-            # Manual post-processing to remove subsets
             filtered_groups = self._remove_subset_groups(duplicate_groups)
 
             logger.info(f"Found {len(filtered_groups)} duplicate entity groups (no APOC)")
@@ -211,14 +145,6 @@ class EntityDeduplicator:
             return []
 
     def _remove_subset_groups(self, groups: List[List[str]]) -> List[List[str]]:
-        """Remove groups that are subsets of other groups.
-
-        Args:
-            groups: List of entity name lists
-
-        Returns:
-            Filtered list without subset groups
-        """
         filtered = []
         for i, group in enumerate(groups):
             is_subset = False
@@ -235,15 +161,6 @@ class EntityDeduplicator:
         duplicate_groups: Optional[List[List[str]]] = None,
         dry_run: bool = False,
     ) -> Dict[str, Any]:
-        """Merge duplicate entities into single canonical entities.
-
-        Args:
-            duplicate_groups: Groups to merge (if None, will find them)
-            dry_run: If True, only report what would be merged
-
-        Returns:
-            Dictionary with merge statistics
-        """
         if duplicate_groups is None:
             duplicate_groups = self.find_duplicate_entities()
 
@@ -280,14 +197,6 @@ class EntityDeduplicator:
         return stats
 
     def _merge_entity_group(self, canonical_name: str, duplicates: List[str]):
-        """Merge a group of duplicate entities into canonical entity.
-
-        Args:
-            canonical_name: The name to keep
-            duplicates: Names to merge into canonical
-        """
-        # Cypher query to merge entities
-        # This preserves all relationships from duplicate nodes
         query = """
         MATCH (canonical:__Entity__ {name: $canonical_name})
         MATCH (duplicate:__Entity__)
@@ -339,24 +248,12 @@ class EntityDeduplicator:
         self,
         duplicate_groups: Optional[List[List[str]]] = None,
     ) -> Tuple[List[List[str]], List[List[str]]]:
-        """Validate duplicate groups and separate true/false positives.
-
-        Args:
-            duplicate_groups: Groups to validate (if None, will find them)
-
-        Returns:
-            Tuple of (validated_groups, false_positives)
-        """
         if duplicate_groups is None:
             duplicate_groups = self.find_duplicate_entities()
 
-        # Known false positive patterns for legal domain
         false_positive_patterns = [
-            # Different years/dates
             (lambda names: any("202" in str(n) for n in names), "Contains different years"),
-            # Draft vs actual
             (lambda names: any("draft" in str(n).lower() for n in names) and any("draft" not in str(n).lower() for n in names), "Mix of draft and non-draft"),
-            # Amended versions
             (lambda names: len(set(str(n).replace("Amended", "").strip() for n in names)) > 1, "Different base documents with amendments"),
         ]
 
@@ -387,18 +284,11 @@ class EntityDeduplicator:
         return validated, false_positives
 
     def get_duplicate_stats(self) -> Dict[str, Any]:
-        """Get statistics about entity duplicates.
-
-        Returns:
-            Dictionary with duplicate statistics
-        """
         try:
-            # Count total entities
             count_query = "MATCH (e:__Entity__) RETURN count(e) as total"
             result = self.graph_store.structured_query(count_query)
             total_entities = result[0]["total"] if result else 0
 
-            # Find duplicates
             duplicate_groups = self.find_duplicate_entities()
             validated, false_positives = self.validate_duplicates(duplicate_groups)
 

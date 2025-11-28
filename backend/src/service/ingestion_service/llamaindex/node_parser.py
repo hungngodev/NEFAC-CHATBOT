@@ -1,12 +1,3 @@
-"""LlamaIndex-powered node parsing utilities with optional contextual retrieval.
-
-This module wraps the SemanticDoubleMergingSplitterNodeParser example from the
-LlamaIndex docs and layers on Anthropic-style contextual summaries plus optional
-LLM-driven metadata extraction. The default entry point
-``build_nodes_from_text`` enables the enhanced behaviour when the relevant
-environment flags are set.
-"""
-
 from __future__ import annotations
 
 import copy
@@ -20,10 +11,7 @@ import spacy.cli
 from llama_index.core import Document as LIDocument
 from llama_index.core import Settings
 from llama_index.core.extractors import (
-    KeywordExtractor,
-    QuestionsAnsweredExtractor,
     SummaryExtractor,
-    TitleExtractor,
 )
 from llama_index.core.ingestion import IngestionPipeline
 from llama_index.core.llms import LLM, ChatMessage
@@ -31,14 +19,19 @@ from llama_index.core.node_parser import (
     LanguageConfig,
     NodeParser,
     SemanticDoubleMergingSplitterNodeParser,
-    SimpleNodeParser,
 )
 from llama_index.core.schema import BaseNode
+from llama_index.core.storage.docstore import SimpleDocumentStore
 
+from src.service.ingestion_service.llamaindex.metadata_utils import (
+    build_chunk_id,
+    sanitize_metadata,
+)
 from src.service.ingestion_service.settings import (
     ENABLE_CONTEXTUAL_RETRIEVAL,
     ENABLE_METADATA_EXTRACTION,
     SEMANTIC_SPLITTER_AUTO_DOWNLOAD,
+    SEMANTIC_SPLITTER_PRESETS,
 )
 
 logger = logging.getLogger(__name__)
@@ -51,139 +44,11 @@ def _env_float(name: str, default: float) -> float:
         return default
 
 
-# Domain-specific semantic splitter presets
-# Based on tutorial: https://developers.llamaindex.ai/python/examples/node_parsers/semantic_double_merging_chunking/
-# Different spaCy models and parameter values perform differently on specific texts
-SEMANTIC_SPLITTER_PRESETS = {
-    # English presets
-    "legal_documents": {
-        "language": "en",
-        "spacy_model": "en_core_web_md",
-        "initial_threshold": 0.4,
-        "appending_threshold": 0.5,
-        "merging_threshold": 0.5,
-        "max_chunk_size": 5000,
-        "description": "Optimized for legal documents with complex terminology",
-    },
-    "technical_docs": {
-        "language": "en",
-        "spacy_model": "en_core_web_md",
-        "initial_threshold": 0.35,
-        "appending_threshold": 0.45,
-        "merging_threshold": 0.45,
-        "max_chunk_size": 3000,
-        "description": "Optimized for technical docs with code snippets",
-    },
-    "general": {
-        "language": "en",
-        "spacy_model": "en_core_web_sm",
-        "initial_threshold": 0.5,
-        "appending_threshold": 0.6,
-        "merging_threshold": 0.6,
-        "max_chunk_size": 2000,
-        "description": "General-purpose configuration for standard documents",
-    },
-    "academic": {
-        "language": "en",
-        "spacy_model": "en_core_web_md",
-        "initial_threshold": 0.45,
-        "appending_threshold": 0.55,
-        "merging_threshold": 0.55,
-        "max_chunk_size": 4000,
-        "description": "Optimized for academic papers with citations",
-    },
-    # French presets
-    "french_legal": {
-        "language": "french",
-        "spacy_model": "fr_core_news_md",
-        "initial_threshold": 0.4,
-        "appending_threshold": 0.5,
-        "merging_threshold": 0.5,
-        "max_chunk_size": 5000,
-        "description": "Optimisé pour documents juridiques français",
-    },
-    "french_general": {
-        "language": "french",
-        "spacy_model": "fr_core_news_sm",
-        "initial_threshold": 0.5,
-        "appending_threshold": 0.6,
-        "merging_threshold": 0.6,
-        "max_chunk_size": 2000,
-        "description": "Configuration générale pour documents français",
-    },
-    # Spanish presets
-    "spanish_legal": {
-        "language": "spanish",
-        "spacy_model": "es_core_news_md",
-        "initial_threshold": 0.4,
-        "appending_threshold": 0.5,
-        "merging_threshold": 0.5,
-        "max_chunk_size": 5000,
-        "description": "Optimizado para documentos legales en español",
-    },
-    "spanish_general": {
-        "language": "spanish",
-        "spacy_model": "es_core_news_sm",
-        "initial_threshold": 0.5,
-        "appending_threshold": 0.6,
-        "merging_threshold": 0.6,
-        "max_chunk_size": 2000,
-        "description": "Configuración general para documentos en español",
-    },
-    # German presets
-    "german_legal": {
-        "language": "german",
-        "spacy_model": "de_core_news_md",
-        "initial_threshold": 0.4,
-        "appending_threshold": 0.5,
-        "merging_threshold": 0.5,
-        "max_chunk_size": 5000,
-        "description": "Optimiert für deutsche Rechtsdokumente",
-    },
-    "german_general": {
-        "language": "german",
-        "spacy_model": "de_core_news_sm",
-        "initial_threshold": 0.5,
-        "appending_threshold": 0.6,
-        "merging_threshold": 0.6,
-        "max_chunk_size": 2000,
-        "description": "Allgemeine Konfiguration für deutsche Dokumente",
-    },
-    # Chinese presets
-    "chinese_general": {
-        "language": "chinese",
-        "spacy_model": "zh_core_web_sm",
-        "initial_threshold": 0.5,
-        "appending_threshold": 0.6,
-        "merging_threshold": 0.6,
-        "max_chunk_size": 2000,
-        "description": "通用中文文档配置",
-    },
-}
-
-
 def get_semantic_splitter_for_domain(domain: str = "legal_documents", **overrides) -> NodeParser:
-    """Get pre-tuned semantic splitter for specific document domains.
-
-    Args:
-        domain: One of 'legal_documents', 'technical_docs',
-            'general', 'academic'
-        **overrides: Override any preset configuration values
-
-    Returns:
-        Configured semantic splitter
-
-    Example:
-        >>> splitter = get_semantic_splitter_for_domain(
-        ...     domain="legal_documents",
-        ...     max_chunk_size=6000  # Override default
-        ... )
-    """
     preset = SEMANTIC_SPLITTER_PRESETS.get(domain, SEMANTIC_SPLITTER_PRESETS["general"])
     config = preset.copy()
     config.update(overrides)
-    desc = config.get("description", "")
-    logger.info(f"Using semantic splitter preset: {domain} - {desc}")
+    logger.info(f"Using semantic splitter preset: {domain}")
 
     return _create_semantic_splitter(
         language=config.get("language", "en"),
@@ -196,8 +61,6 @@ def get_semantic_splitter_for_domain(domain: str = "legal_documents", **override
 
 
 def _build_language_config(language: str, spacy_model: str) -> LanguageConfig:
-    """Return LanguageConfig, relaxing spaCy validation when necessary."""
-
     try:
         return LanguageConfig(language=language, spacy_model=spacy_model)
     except ValueError as exc:
@@ -214,8 +77,6 @@ def _build_language_config(language: str, spacy_model: str) -> LanguageConfig:
 
 
 def _normalize_language(language: str) -> str:
-    """Normalize language inputs to the values LanguageConfig understands."""
-
     lang = (language or "").strip().lower()
     if not lang:
         return "english"
@@ -223,29 +84,22 @@ def _normalize_language(language: str) -> str:
     lang = lang.replace("-", "_")
     primary = lang.split("_", 1)[0]
 
-    # Map ISO codes and common aliases to the long-form names expected by
-    # SemanticDoubleMergingSplitterNodeParser/LanguageConfig.
     language_map = {
-        # English
         "en": "english",
         "eng": "english",
         "english": "english",
-        # Spanish
         "es": "spanish",
         "esp": "spanish",
         "spa": "spanish",
         "spanish": "spanish",
-        # German
         "de": "german",
         "ger": "german",
         "deu": "german",
         "german": "german",
-        # French
         "fr": "french",
         "fra": "french",
         "fre": "french",
         "french": "french",
-        # Chinese
         "zh": "chinese",
         "zho": "chinese",
         "chi": "chinese",
@@ -263,97 +117,48 @@ def _create_semantic_splitter(
     merging_threshold: float = 0.5,
     max_chunk_size: int = 2000,
 ) -> NodeParser:
-    """Create semantic splitter with explicit configuration.
-
-    Internal helper that handles spaCy model loading and fallback.
-    Enhanced with auto-download from settings.
-    """
     language = _normalize_language(language)
 
-    try:
-        # Auto-download spaCy model if not available
-        if SEMANTIC_SPLITTER_AUTO_DOWNLOAD:
-            try:
-                spacy.load(spacy_model)
-            except OSError:
-                logger.info(f"Downloading spaCy model: {spacy_model}")
-                spacy.cli.download(spacy_model)
-                logger.info(f"Successfully downloaded {spacy_model}")
-    except ImportError:
-        logger.warning("spacy not available")
+    if SEMANTIC_SPLITTER_AUTO_DOWNLOAD:
+        spacy.load(spacy_model)
+    else:
+        spacy.load(spacy_model)
 
-    try:
-        # Try to load the specified model
-        try:
-            spacy.load(spacy_model)
-            logger.info(f"Loaded spaCy model: {spacy_model}")
-        except OSError:
-            # Fallback to smaller model
-            fallback_model = "en_core_web_sm"
-            logger.warning(f"Model {spacy_model} not found, " f"falling back to {fallback_model}")
-            spacy.load(fallback_model)
-            spacy_model = fallback_model
+    config = _build_language_config(language=language, spacy_model=spacy_model)
 
-        config = _build_language_config(language=language, spacy_model=spacy_model)
-
-        logger.info(f"Initializing SemanticDoubleMergingSplitterNodeParser: " f"lang={language}, model={spacy_model}, " f"thresholds=({initial_threshold}/" f"{appending_threshold}/{merging_threshold}), " f"max_chunk={max_chunk_size}")
-
-        return SemanticDoubleMergingSplitterNodeParser(
-            language_config=config,
-            initial_threshold=initial_threshold,
-            appending_threshold=appending_threshold,
-            merging_threshold=merging_threshold,
-            max_chunk_size=max_chunk_size,
-        )
-    except Exception as exc:
-        logger.warning(f"Semantic splitter unavailable ({exc}). " "Falling back to SimpleNodeParser.")
-        return SimpleNodeParser.from_defaults(chunk_size=max_chunk_size)
+    return SemanticDoubleMergingSplitterNodeParser(
+        language_config=config,
+        initial_threshold=initial_threshold,
+        appending_threshold=appending_threshold,
+        merging_threshold=merging_threshold,
+        max_chunk_size=max_chunk_size,
+    )
 
 
 @lru_cache(maxsize=1)
 def get_semantic_splitter() -> NodeParser:
-    """Return a configured semantic splitter, falling back to SimpleNodeParser.
-
-    The configuration mirrors the public tutorial:
-    https://developers.llamaindex.ai/python/examples/node_parsers/semantic_double_merging_chunking/
-    """
-
     language = _normalize_language(os.getenv("SEMANTIC_SPLITTER_LANGUAGE", "en"))
     spacy_model = os.getenv("SEMANTIC_SPLITTER_SPACY_MODEL", "en_core_web_lg")
-    config = _build_language_config(language=language, spacy_model=spacy_model)
-
     initial_threshold = _env_float("SEMANTIC_SPLITTER_INITIAL_THRESHOLD", 0.4)
     appending_threshold = _env_float("SEMANTIC_SPLITTER_APPEND_THRESHOLD", 0.5)
     merging_threshold = _env_float("SEMANTIC_SPLITTER_MERGE_THRESHOLD", 0.5)
     max_chunk_size = int(float(os.getenv("SEMANTIC_SPLITTER_MAX_CHUNK", "2000")))
+    return _create_semantic_splitter(
+        language=language,
+        spacy_model=spacy_model,
+        initial_threshold=initial_threshold,
+        appending_threshold=appending_threshold,
+        merging_threshold=merging_threshold,
+        max_chunk_size=max_chunk_size,
+    )
 
-    try:
-        logger.info(
-            "Initializing SemanticDoubleMergingSplitterNodeParser (lang=%s, model=%s)",
-            language,
-            spacy_model,
-        )
-        return SemanticDoubleMergingSplitterNodeParser(
-            language_config=config,
-            initial_threshold=initial_threshold,
-            appending_threshold=appending_threshold,
-            merging_threshold=merging_threshold,
-            max_chunk_size=max_chunk_size,
-        )
-    except Exception as exc:  # pragma: no cover - only hit when spaCy missing
-        logger.warning(
-            "Semantic splitter unavailable (%s). Falling back to SimpleNodeParser.",
-            exc,
-        )
-        return SimpleNodeParser.from_defaults(chunk_size=max_chunk_size)
+
+def _derive_doc_id(node: BaseNode) -> str:
+    meta = node.metadata or {}
+    return meta.get("doc_id") or meta.get("document_id") or meta.get("ref_doc_id") or meta.get("id") or getattr(node, "node_id", None) or getattr(node, "id_", None) or "document"
 
 
 class ContextualNodeParser:
-    """Semantic splitter wrapper that adds contextual summaries.
-
-    Inspired by https://developers.llamaindex.ai/python/examples/cookbooks/contextual_retrieval/
-    """
-
     CONTEXT_PROMPT = """<document>
 {doc}
 </document>
@@ -384,10 +189,7 @@ Please generate a short succinct context summary to situate this text chunk with
         self.extractors = []
         if self.enable_metadata:
             self.extractors = [
-                TitleExtractor(llm=self.llm, nodes=5),
-                QuestionsAnsweredExtractor(llm=self.llm, questions=3),
                 SummaryExtractor(llm=self.llm, summaries=["prev", "self"]),
-                KeywordExtractor(llm=self.llm, keywords=10),
             ]
 
     def _add_context(self, node: BaseNode, document_text: str, document_meta: dict) -> BaseNode:
@@ -433,7 +235,7 @@ Please generate a short succinct context summary to situate this text chunk with
         contextualised.metadata.setdefault("document_title", document_meta.get("title"))
         contextualised.metadata.setdefault("document_source", document_meta.get("source"))
         contextualised.metadata["contextual_summary"] = contextual_summary
-        contextualised.text = f"{contextual_summary}\n\n{chunk_text}"
+        contextualised.text = f"Contextual Summary: {contextual_summary}\n\nOriginal Chunk:\n{chunk_text}"
         return contextualised
 
     def build_nodes_from_documents(
@@ -451,10 +253,25 @@ Please generate a short succinct context summary to situate this text chunk with
                 nodes = [self._add_context(node, doc.get_content(), doc.metadata) for node in nodes]
 
             if self.enable_metadata and self.extractors:
-                pipeline = IngestionPipeline(transformations=self.extractors)
+                pipeline = IngestionPipeline(
+                    transformations=self.extractors,
+                    docstore=SimpleDocumentStore(),
+                )
                 nodes = pipeline.run(nodes=nodes, show_progress=show_progress)
 
-            all_nodes.extend(nodes)
+            normalized_nodes = []
+            for idx, node in enumerate(nodes):
+                doc_id = _derive_doc_id(node)
+                chunk_id = build_chunk_id(doc_id, idx)
+                meta = dict(node.metadata or {})
+                meta["doc_id"] = doc_id
+                meta["chunk_index"] = idx
+                meta["chunk_id"] = chunk_id
+                node.metadata = sanitize_metadata(meta, include_text=False)
+                node.id_ = chunk_id
+                normalized_nodes.append(node)
+
+            all_nodes.extend(normalized_nodes)
 
         return all_nodes
 

@@ -5,7 +5,6 @@ This module defines all model configurations used across different nodes
 in the LangGraph-based agent system, ensuring consistency and maintainability.
 """
 
-import os
 from typing import Literal
 
 # ============================================================================
@@ -29,16 +28,6 @@ ModelType = Literal[
     "anthropic:claude-3-5-haiku-20241022",
     "anthropic:claude-3-opus-20240229",
 ]
-
-# ============================================================================
-# DEFAULT MODEL CONFIGURATIONS
-# ============================================================================
-
-# Environment variable defaults
-DEFAULT_MODEL_PROVIDER = os.getenv("DEFAULT_MODEL_PROVIDER", "openai")
-DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "gpt-4")
-DEFAULT_TEMPERATURE = float(os.getenv("DEFAULT_TEMPERATURE", "0.0"))
-
 # ============================================================================
 # NODE-SPECIFIC MODEL CONFIGURATIONS
 # ============================================================================

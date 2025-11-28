@@ -1,27 +1,20 @@
-"""
-Enhanced Unstructured Loader - Clean, Unified Document Processing
-Supports PDF, HTML, YouTube, XLSX/DOCX with intelligent spreadsheet handling.
-"""
-
 import json
 import logging
-import mimetypes
 import os
 import re
 import tempfile
 import time
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 from llama_index.core.schema import BaseNode, TextNode
 from unstructured.partition.auto import partition as u_partition
 
-from src.service.ingestion_service.llamaindex.node_parser import build_nodes_from_text
-from src.service.ingestion_service.progress_tracker import get_tracker
 from src.service.ingestion_service import settings as ingestion_settings
-
+from src.service.ingestion_service.llamaindex.metadata_utils import _get_base_metadata
+from src.service.ingestion_service.llamaindex.node_parser import build_nodes_from_text
 from src.service.ingestion_service.loader.spreadsheet_utils import process_xlsx_intelligently
+from src.service.ingestion_service.progress_tracker import get_tracker
 
 logger = logging.getLogger(__name__)
 TRANSCRIPT_PATTERN = re.compile(r"\[(?P<ts>[\d:\.]+)s?\]\s*(?P<txt>.*)")
@@ -32,11 +25,8 @@ CONTEXT_FORMAT = getattr(
     "Context: {context}\n\nChunk: {chunk}",
 )
 
-# -------------------- Helpers -------------------- #
-
 
 def parse_timestamps(transcript_text: str) -> Tuple[str, List[Dict[str, Any]]]:
-    """Parse YouTube transcript with timestamps."""
     segments, clean_text, offset_map = [], "", []
     for line in transcript_text.strip().splitlines():
         line = line.strip()
@@ -66,18 +56,15 @@ def parse_timestamps(transcript_text: str) -> Tuple[str, List[Dict[str, Any]]]:
 
 
 def get_chunk_times(chunk_text: str, full_text: str, offset_map: Optional[List[Dict[str, Any]]], curr_offset: int) -> Tuple[float, float, int]:
-    """Map chunk to YouTube transcript timestamps."""
     start = max(full_text.find(chunk_text, curr_offset), curr_offset)
     end = start + len(chunk_text)
     start_time = end_time = 0.0
 
     if offset_map:
-        # Find start time: segment whose char span covers 'start'
         start_time = next(
             (float(seg["start_time"]) for seg in offset_map if seg["start_char"] <= start <= seg["end_char"]),
             0.0,
         )
-        # Find end time: segment whose char span covers 'end'
         end_time = next(
             (float(seg["end_time"] or start_time) for seg in reversed(offset_map) if seg["start_char"] <= end <= seg["end_char"]),
             start_time,
@@ -115,37 +102,6 @@ def _create_node(
     return node
 
 
-def _get_base_metadata(path: str, entry: Dict[str, Any]) -> Dict[str, Any]:
-    stat = os.stat(path)
-    base_name = os.path.basename(path)
-    title = entry.get("title") or os.path.splitext(base_name)[0]
-    abs_path = os.path.abspath(path)
-
-    def to_iso(ts):
-        return datetime.fromtimestamp(ts, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-
-    return {
-        "id": entry.get("id") or entry.get("graphql_id") or base_name,
-        "title": title,
-        "filename": base_name,
-        "source_url": entry.get("source_url") or entry.get("link") or f"file://{abs_path}",
-        "date": entry.get("date") or to_iso(getattr(stat, "st_ctime", stat.st_mtime)),
-        "modified": entry.get("modified") or to_iso(stat.st_mtime),
-        "mime_type": entry.get("mime_type") or mimetypes.guess_type(base_name)[0],
-        "file_size": entry.get("file_size") or stat.st_size,
-        "file_path": entry.get("file_path") or abs_path,
-        "file_extension": os.path.splitext(path)[1].lower().lstrip("."),
-        "source": entry.get("source") or title,
-        "slug": entry.get("slug") or base_name.replace(" ", "-").lower(),
-        "uri": entry.get("uri") or f"file://{abs_path}",
-        "link": entry.get("link") or f"file://{abs_path}",
-        "processing_timestamp": time.time(),
-    }
-
-
-# -------------------- Loader -------------------- #
-
-
 def unstructured_loader(
     metadata_json_path: str,
     documents_dir: str,
@@ -159,7 +115,6 @@ def unstructured_loader(
     start_time = time.time()
     tracker = get_tracker()
 
-    # Load metadata systematically (support offset + limit)
     with open(metadata_json_path, "r", encoding="utf-8") as f:
         raw = json.load(f)
         if offset:
@@ -245,8 +200,6 @@ def load_document_nodes(
     tracker=None,
     file_type: Optional[str] = None,
 ) -> Tuple[List[TextNode], int, int]:
-    """Load a single document into TextNodes using the enhanced logic."""
-
     path = Path(file_path)
     if not path.exists():
         raise FileNotFoundError(f"File not found: {path}")

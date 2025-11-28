@@ -1,5 +1,3 @@
-"""Metadata helpers used by the ingestion workflow."""
-
 from __future__ import annotations
 
 import mimetypes
@@ -7,7 +5,9 @@ import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Optional
+
+MAX_STRING_LEN = 512
 
 
 def _get_base_metadata(path: str, entry: Dict[str, Any]) -> Dict[str, Any]:
@@ -38,4 +38,61 @@ def _get_base_metadata(path: str, entry: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-__all__ = ["_get_base_metadata"]
+def build_chunk_id(doc_id: Optional[str], chunk_index: Optional[int]) -> Optional[str]:
+    if doc_id is None or chunk_index is None:
+        return None
+    return f"{doc_id}::chunk-{int(chunk_index):04d}"
+
+
+def _truncate(value: str) -> str:
+    return value if len(value) <= MAX_STRING_LEN else value[:MAX_STRING_LEN]
+
+
+def sanitize_metadata(
+    meta: Dict[str, Any],
+    include_text: bool = False,
+    keep_summary: bool = False,
+) -> Dict[str, Any]:
+    cleaned = {}
+    for key, value in meta.items():
+        if key.startswith("_") or key == "relationships":
+            continue
+        if isinstance(value, (str, int, float, bool)):
+            if key == "contextual_summary" and not keep_summary:
+                continue
+            cleaned[key] = _truncate(value) if isinstance(value, str) else value
+        elif isinstance(value, list):
+            items = []
+            for item in value:
+                if isinstance(item, str):
+                    items.append(_truncate(item))
+                elif isinstance(item, (int, float, bool)):
+                    items.append(item)
+            if items:
+                cleaned[key] = items
+        elif isinstance(value, dict):
+            sub = {}
+            for k, v in value.items():
+                if isinstance(v, str):
+                    sub[k] = _truncate(v)
+                elif isinstance(v, (int, float, bool)):
+                    sub[k] = v
+            if sub:
+                cleaned[key] = sub
+    chunk_id = cleaned.get("chunk_id") or build_chunk_id(cleaned.get("doc_id"), cleaned.get("chunk_index"))
+    if chunk_id:
+        cleaned.setdefault("chunk_id", chunk_id)
+    if "id" not in cleaned and chunk_id:
+        cleaned["id"] = chunk_id
+    if include_text and "text" in meta and isinstance(meta["text"], str):
+        cleaned["text"] = meta["text"]
+
+    # Preserve specific metadata fields from truncation
+    for field in ["section_summary", "questions_this_excerpt_can_answer", "excerpt_keywords"]:
+        if field in meta and isinstance(meta[field], str):
+            cleaned[field] = meta[field]
+
+    return cleaned
+
+
+__all__ = ["_get_base_metadata", "build_chunk_id", "sanitize_metadata"]

@@ -1,151 +1,272 @@
 import logging
 import os
-from pathlib import Path
-from typing import Dict
 
-from dotenv import load_dotenv
-from load_env import load_env as load_env_from_root
 from llama_index.core import Settings
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.llms.openai import OpenAI
 
-from src.config.models import EMBEEDING_MODEL_NAME
+from load_env import load_env as load_env_from_root
+from src.config.models import EMBEEDING_DIMENSIONS, EMBEEDING_MODEL_NAME
 
-# Load env using shared helper (supports ENV_FILE override, repo root, cwd search)
 load_env_from_root()
-
 logger = logging.getLogger(__name__)
 
+DEFAULT_MODEL_PROVIDER = "openai"
+ENABLE_CONTEXTUAL_RETRIEVAL = True
+ENABLE_METADATA_EXTRACTION = True
+GRAPH_MODE = "property"
+CHUNK_SIZE = 384
+CHUNK_OVERLAP = 38
 
-def _get_env_float(name: str, default: float) -> float:
-    value = os.getenv(name)
-    if value is None:
-        return default
-    try:
-        return float(value)
-    except ValueError:
-        return default
+GRAPH_RATE_LIMIT_BACKOFF = 10.0
+GRAPH_RATE_LIMIT_RETRIES = 4
+GRAPH_MAX_TRIPLETS_PER_CHUNK = 5
+GRAPH_NUM_WORKERS = 1
+GRAPH_ENABLE_ENTITY_DEDUPLICATION = True
+GRAPH_ENTITY_SIMILARITY_THRESHOLD = 0.9
+GRAPH_USE_WORD_DISTANCE = True
+GRAPH_WORD_DISTANCE_THRESHOLD = 2
 
+CONTEXT_FORMAT = "Context: {context}\n\nChunk: {chunk}"
+WORKFLOW_ENABLE_VALIDATION = True
+SEMANTIC_SPLITTER_AUTO_DOWNLOAD = True
 
-def _get_env_int(name: str, default: int) -> int:
-    value = os.getenv(name)
-    if value is None:
-        return default
-    try:
-        return int(value)
-    except ValueError:
-        return default
+Settings.llm = OpenAI(
+    model="gpt-5-nano",
+    max_retries=3,
+    timeout=900.0,
+    additional_kwargs={"service_tier": "flex"},
+    api_key=os.getenv("OPENAI_API_KEY"),
+)
 
+graph_llm_model = OpenAI(
+    model="gpt-5-mini",
+    max_retries=3,
+    timeout=900.0,
+    additional_kwargs={"service_tier": "flex"},
+    api_key=os.getenv("OPENAI_API_KEY"),
+)
+Settings.embed_model = OpenAIEmbedding(
+    model=EMBEEDING_MODEL_NAME,
+    dimensions=EMBEEDING_DIMENSIONS,
+    api_key=os.getenv("OPENAI_API_KEY"),
+)
 
-def _get_env_bool(name: str, default: bool) -> bool:
-    value = os.getenv(name)
-    if value is None:
-        return default
-    return value.lower() in {"1", "true", "yes", "on"}
-
-
-# ---------------------------------------------------------------------------
-# Embedding / LLM configuration with graceful fallbacks
-# ---------------------------------------------------------------------------
-
-openai_api_key = os.getenv("OPENAI_API_KEY")
-
-if openai_api_key:
-    embedding_model = OpenAIEmbedding(model=EMBEEDING_MODEL_NAME, api_key=openai_api_key)
-    Settings.embed_model = embedding_model
-else:
-    embedding_model = None
-    logger.warning("OPENAI_API_KEY is not set; default LlamaIndex embedding configuration will be used.")
-
-llm_model_name = os.getenv("INGESTION_LLM_MODEL", "gpt-4o-mini")
-if openai_api_key:
-    llm_model = OpenAI(
-        model=llm_model_name,
-        timeout=_get_env_float("INGESTION_LLM_TIMEOUT", 60.0),
-        max_retries=_get_env_int("INGESTION_LLM_MAX_RETRIES", 3),
-    )
-    Settings.llm = llm_model
-else:
-    llm_model = None
-    logger.warning("OPENAI_API_KEY missing; ingestion LLM disabled. Set the key to enable contextual retrieval " "(see https://developers.llamaindex.ai/python/examples/cookbooks/contextual_retrieval/).")
-
-graph_llm_model_name = os.getenv("GRAPH_LLM_MODEL", "gpt-4o")
-if openai_api_key:
-    graph_llm_model = OpenAI(
-        model=graph_llm_model_name,
-        timeout=_get_env_float("GRAPH_LLM_TIMEOUT", 150.0),
-        max_retries=_get_env_int("GRAPH_LLM_MAX_RETRIES", 2),
-    )
-else:
-    graph_llm_model = None
-    logger.warning("Graph LLM disabled because OPENAI_API_KEY is not set. Property graph ingestion " "(https://developers.llamaindex.ai/python/examples/property_graph/property_graph_neo4j/) " "will fall back to schema-free mode.")
-
-# ---------------------------------------------------------------------------
-# Feature toggles surfaced via environment variables for discoverability
-# ---------------------------------------------------------------------------
-
-ENABLE_CONTEXTUAL_RETRIEVAL = _get_env_bool("ENABLE_CONTEXTUAL_RETRIEVAL", True)
-ENABLE_METADATA_EXTRACTION = _get_env_bool("ENABLE_METADATA_EXTRACTION", False)
-
-# Embedding model dimensions
-# Based on: https://platform.openai.com/docs/guides/embeddings
-OPENAI_EMBED_MODEL = os.getenv("OPENAI_EMBED_MODEL", "text-embedding-3-small")
-OPENAI_EMBED_MODEL_DIM = _get_env_int("OPENAI_EMBED_MODEL_DIM", 1536)  # text-embedding-3-small
-
-# Hybrid retriever defaults inspired by the multi-doc tutorial
-# https://developers.llamaindex.ai/python/examples/retrievers/multi_doc_together_hybrid/
-HYBRID_FUSION_STRATEGY = os.getenv("HYBRID_FUSION_STRATEGY", "rrf").lower()
-HYBRID_DENSE_WEIGHT = _get_env_float("HYBRID_DENSE_WEIGHT", 1.0)
-HYBRID_SPARSE_WEIGHT = _get_env_float("HYBRID_SPARSE_WEIGHT", 0.75)
-HYBRID_GRAPH_WEIGHT = _get_env_float("HYBRID_GRAPH_WEIGHT", 0.5)
-HYBRID_RRF_K = _get_env_float("HYBRID_RRF_K", 60.0)
-HYBRID_MIN_SCORE = _get_env_float("HYBRID_MIN_SCORE", 0.0)
-HYBRID_RERANK_MODEL = os.getenv("HYBRID_RERANK_MODEL", "rerank-english-v3.0")
-HYBRID_WEIGHTS: Dict[str, float] = {
-    "dense": HYBRID_DENSE_WEIGHT,
-    "sparse": HYBRID_SPARSE_WEIGHT,
-    "graph": HYBRID_GRAPH_WEIGHT,
+SEMANTIC_SPLITTER_PRESETS = {
+    "legal_documents": {
+        "language": "en",
+        "spacy_model": "en_core_web_md",
+        "initial_threshold": 0.4,
+        "appending_threshold": 0.5,
+        "merging_threshold": 0.5,
+        "max_chunk_size": 5000,
+    },
+    "technical_docs": {
+        "language": "en",
+        "spacy_model": "en_core_web_md",
+        "initial_threshold": 0.35,
+        "appending_threshold": 0.45,
+        "merging_threshold": 0.45,
+        "max_chunk_size": 3000,
+    },
+    "general": {
+        "language": "en",
+        "spacy_model": "en_core_web_sm",
+        "initial_threshold": 0.5,
+        "appending_threshold": 0.6,
+        "merging_threshold": 0.6,
+        "max_chunk_size": 2000,
+    },
+    "academic": {
+        "language": "en",
+        "spacy_model": "en_core_web_md",
+        "initial_threshold": 0.45,
+        "appending_threshold": 0.55,
+        "merging_threshold": 0.55,
+        "max_chunk_size": 4000,
+    },
+    "french_legal": {
+        "language": "french",
+        "spacy_model": "fr_core_news_md",
+        "initial_threshold": 0.4,
+        "appending_threshold": 0.5,
+        "merging_threshold": 0.5,
+        "max_chunk_size": 5000,
+    },
+    "french_general": {
+        "language": "french",
+        "spacy_model": "fr_core_news_sm",
+        "initial_threshold": 0.5,
+        "appending_threshold": 0.6,
+        "merging_threshold": 0.6,
+        "max_chunk_size": 2000,
+    },
+    "spanish_legal": {
+        "language": "spanish",
+        "spacy_model": "es_core_news_md",
+        "initial_threshold": 0.4,
+        "appending_threshold": 0.5,
+        "merging_threshold": 0.5,
+        "max_chunk_size": 5000,
+    },
+    "spanish_general": {
+        "language": "spanish",
+        "spacy_model": "es_core_news_sm",
+        "initial_threshold": 0.5,
+        "appending_threshold": 0.6,
+        "merging_threshold": 0.6,
+        "max_chunk_size": 2000,
+    },
+    "german_legal": {
+        "language": "german",
+        "spacy_model": "de_core_news_md",
+        "initial_threshold": 0.4,
+        "appending_threshold": 0.5,
+        "merging_threshold": 0.5,
+        "max_chunk_size": 5000,
+    },
+    "german_general": {
+        "language": "german",
+        "spacy_model": "de_core_news_sm",
+        "initial_threshold": 0.5,
+        "appending_threshold": 0.6,
+        "merging_threshold": 0.6,
+        "max_chunk_size": 2000,
+    },
+    "chinese_general": {
+        "language": "chinese",
+        "spacy_model": "zh_core_web_sm",
+        "initial_threshold": 0.5,
+        "appending_threshold": 0.6,
+        "merging_threshold": 0.6,
+        "max_chunk_size": 2000,
+    },
 }
 
-GRAPH_MODE = os.getenv("GRAPH_MODE", os.getenv("GRAPH_LI_MODE", "property")).lower()
+ENTITY_ALIASES = {
+    "NEFAC": [
+        "NEFAC",
+        "New England First Amendment Coalition",
+        "N.E.F.A.C.",
+        "Nefac",
+        "Kneefac",
+        "Knee Fac",
+        "NEFEC",
+        "NEFA Coalition",
+        "First Amendment Coalition of New England",
+        "The Coalition",
+        "The New England Coalition",
+    ],
+    "NEFAI": [
+        "NEFAI",
+        "New England First Amendment Institute",
+        "First Amendment Institute",
+        "Negri Institute",
+        "Gloria L. Negri First Amendment Institute",
+    ],
+    "MNPA": [
+        "MNPA",
+        "Massachusetts Newspaper Publishers Association",
+        "Massachusetts Newspaper Assoc.",
+        "Mass Newspaper Publishers",
+    ],
+    "NENPA": [
+        "NENPA",
+        "New England Newspaper & Press Association",
+        "New England Newspaper Association",
+        "New England Press Association",
+    ],
+    "ACLU": [
+        "ACLU",
+        "American Civil Liberties Union",
+        "ACLU of Massachusetts",
+        "ACLU of NH",
+        "ACLU of CT",
+        "ACLU Massachusetts",
+    ],
+    "RCFP": [
+        "RCFP",
+        "Reporters Committee for Freedom of the Press",
+        "Reporters Committee",
+    ],
+    "SPJ": [
+        "SPJ",
+        "Society of Professional Journalists",
+        "SPJ New England",
+        "SPJ Foundation",
+    ],
+    "GLAD": [
+        "GLAD",
+        "GLBTQ Legal Advocates & Defenders",
+        "Gay and Lesbian Advocates and Defenders",
+    ],
+    "APRA": ["APRA", "Access to Public Records Act", "Rhode Island APRA", "RI APRA"],
+    "FOI": ["FOI", "Freedom of Information", "Public Records Law", "Right to Know"],
+    "FOIA": ["FOIA", "Freedom of Information Act", "Federal FOIA"],
+    "SLAPP": [
+        "SLAPP",
+        "Strategic Lawsuit Against Public Participation",
+        "anti-SLAPP",
+        "SLAPP suit",
+        "SLAPP law",
+        "Anti-SLAPP law",
+    ],
+    "Sunshine Week": [
+        "Sunshine Week",
+        "Sunshine Week initiative",
+        "National Sunshine Week",
+    ],
+    "WBUR": ["WBUR", "WBUR-FM"],
+    "WCVB": ["WCVB", "WCVB-TV"],
+    "GBH": ["GBH", "WGBH", "GBH News"],
+    "CT Mirror": ["CT Mirror", "Connecticut Mirror"],
+    "VT Digger": ["VT Digger", "VTDigger", "VTDigger.org"],
+    "Union Leader": ["Union Leader", "New Hampshire Union Leader"],
+    "Nackey S. Loeb School": ["Nackey S. Loeb School", "Loeb School"],
+}
 
-# Elasticsearch ingestion strategy configuration
-# Based on: https://www.elastic.co/search-labs/blog/elasticsearch-llamaindex-ingest-data
-ELASTICSEARCH_STRATEGY = os.getenv("ELASTICSEARCH_STRATEGY", "hybrid")  # dense | bm25 | sparse | hybrid
-ELASTICSEARCH_BATCH_SIZE = _get_env_int("ELASTICSEARCH_BATCH_SIZE", 100)
+CANONICAL_ENTITY_LOOKUP = {}
+for canon, aliases in ENTITY_ALIASES.items():
+    for alias in aliases:
+        CANONICAL_ENTITY_LOOKUP[alias.lower()] = canon
 
-# Qdrant ingestion configuration with hybrid search
-# Based on: https://developers.llamaindex.ai/python/examples/vector_stores/qdrant_hybrid/
-QDRANT_SPARSE_TOP_K = _get_env_int("QDRANT_SPARSE_TOP_K", 100)
-QDRANT_HYBRID_ALPHA = _get_env_float("QDRANT_HYBRID_ALPHA", 0.5)  # Balance between dense (1.0) and sparse (0.0)
-QDRANT_FUSION_ALGORITHM = os.getenv("QDRANT_FUSION_ALGORITHM", "relative_score")  # relative_score | rrf
+ALLOWED_NODES = [
+    "Person",
+    "Organization",
+    "Program",
+    "Event",
+    "Document",
+    "MediaAsset",
+    "LegalCase",
+    "LawOrPolicy",
+    "Location",
+    "WebPage",
+    "Dataset",
+    "FundingSource",
+    "Board",
+    "Committee",
+    "SocialProfile",
+]
 
-# Neo4j Property Graph ingestion configuration
-# Based on: https://developers.llamaindex.ai/python/examples/property_graph/property_graph_neo4j/
-GRAPH_ENABLE_ENTITY_DEDUPLICATION = _get_env_bool("GRAPH_ENABLE_ENTITY_DEDUPLICATION", True)
-GRAPH_ENTITY_SIMILARITY_THRESHOLD = _get_env_float("GRAPH_ENTITY_SIMILARITY_THRESHOLD", 0.9)
-GRAPH_USE_WORD_DISTANCE = _get_env_bool("GRAPH_USE_WORD_DISTANCE", True)
-GRAPH_WORD_DISTANCE_THRESHOLD = _get_env_int("GRAPH_WORD_DISTANCE_THRESHOLD", 2)
-GRAPH_MAX_TRIPLETS_PER_CHUNK = _get_env_int("GRAPH_MAX_TRIPLETS_PER_CHUNK", 20)
-GRAPH_NUM_WORKERS = _get_env_int("GRAPH_NUM_WORKERS", 4)
-
-# Workflow retry and fallback configuration
-# Based on: https://www.elastic.co/search-labs/blog/llamaindex-workflows-with-elasticsearch
-WORKFLOW_MAX_RETRIES = _get_env_int("WORKFLOW_MAX_RETRIES", 3)
-WORKFLOW_ENABLE_MODEL_FALLBACK = _get_env_bool("WORKFLOW_ENABLE_MODEL_FALLBACK", True)
-WORKFLOW_FALLBACK_MODEL = os.getenv("WORKFLOW_FALLBACK_MODEL", "gpt-3.5-turbo")
-WORKFLOW_ENABLE_VALIDATION = _get_env_bool("WORKFLOW_ENABLE_VALIDATION", True)
-
-# Semantic splitter language configuration
-# Based on: https://developers.llamaindex.ai/python/examples/node_parsers/semantic_double_merging_chunking/
-SEMANTIC_SPLITTER_LANGUAGE = os.getenv("SEMANTIC_SPLITTER_LANGUAGE", "english")
-SEMANTIC_SPLITTER_AUTO_DOWNLOAD = _get_env_bool("SEMANTIC_SPLITTER_AUTO_DOWNLOAD", True)
-
-COHERE_API_KEY = os.getenv("COHERE_API_KEY")
-if not COHERE_API_KEY:
-    logger.info("COHERE_API_KEY not provided; Cohere reranking remains optional until configured.")
-
-LLM_MODEL_NAME = llm_model_name
-GRAPH_LLM_MODEL_NAME = graph_llm_model_name
-CHUNK_SIZE = 320
-CONTEXT_FORMAT = "Context: {context}\n\nChunk: {chunk}"
+ALLOWED_RELATIONSHIPS = [
+    "WORKS_FOR",
+    "SERVES_ON",
+    "PARTNERS_WITH",
+    "HOSTED_BY",
+    "TAKES_PLACE_IN",
+    "LOCATED_IN",
+    "AUTHORED_BY",
+    "WRITES",
+    "PUBLISHES",
+    "FILES",
+    "DECIDED_BY",
+    "CITES",
+    "REFERENCES",
+    "CHALLENGES",
+    "FUNDS",
+    "ANNOUNCES",
+    "HAS_PAGE",
+    "HAS_SECTION",
+    "LINKS_TO",
+    "HAS_PROFILE",
+]

@@ -1,11 +1,3 @@
-"""Database cleanup utilities implemented with LlamaIndex stores.
-
-These helpers clear Qdrant, Elasticsearch, and Neo4j using the same
-configuration the ingestion pipeline relies on. They prefer the
-LlamaIndex store clients first, and gracefully fall back to native
-clients when needed so existing infrastructure keeps working.
-"""
-
 from __future__ import annotations
 
 import logging
@@ -82,6 +74,7 @@ def clear_elasticsearch_index() -> bool:
         def _maybe_await(result):
             if hasattr(result, "__await__"):
                 import asyncio
+
                 return asyncio.get_event_loop().run_until_complete(result)
             return result
 

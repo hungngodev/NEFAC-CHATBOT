@@ -1,11 +1,3 @@
-"""NEFAC Document Ingestion Pipeline - Clean, Systematic Processing.
-
-Augmented with durable retry support inspired by the Elastic + LlamaIndex
-workflow reference so failed files can be replayed safely.
-
-Run with `PYTHONPATH=backend` so absolute imports resolve.
-"""
-
 from __future__ import annotations
 
 import argparse
@@ -19,9 +11,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Set
 
-from dotenv import load_dotenv
 from load_env import load_env as load_env_from_root
-from src.service.ingestion_service.llamaindex import ensure_llamaindex_ready
 from src.service.ingestion_service.llamaindex.database_cleaner import clear_all_databases
 from src.service.ingestion_service.llamaindex.ingestion_workflow import run_ingestion_workflow
 from src.service.ingestion_service.llamaindex.metadata_utils import _get_base_metadata
@@ -32,17 +22,14 @@ from src.service.ingestion_service.progress_tracker import (
     reset_tracker,
 )
 
-# Load env using shared helper (supports ENV_FILE override, repo root, cwd search)
 load_env_from_root()
 
-# Centralized logging (configured lazily so imports do not create files)
 logger = logging.getLogger(__name__)
 _LOGGING_CONFIGURED = False
 _STARTUP_READY = False
 
 
 def _configure_logging() -> None:
-    """Configure logging once per process."""
     global _LOGGING_CONFIGURED
     if _LOGGING_CONFIGURED:
         return
@@ -72,27 +59,24 @@ def _ensure_startup_ready() -> None:
         _configure_logging()
 
     try:
-        ensure_llamaindex_ready()
+        # ensure_llamaindex_ready()
         _STARTUP_READY = True
     except Exception as exc:
         logger.error("Startup diagnostics failed: %s", exc)
         raise
 
 
-# Supported file types (all handled by unified loader)
 SUPPORTED_FILE_TYPES = ["pdf", "html", "youtube", "xlsx"]
 _TRUTHY = {"1", "true", "yes", "on"}
 
 FAILURES_FILENAME = "ingestion_failures.json"
 DEFAULT_FAILURE_LOG = Path(__file__).parent / FAILURES_FILENAME
 
-# Resolve important directories relative to the backend folder for portability
 BACKEND_DIR = Path(__file__).parents[3]
 DOCS_BASE_DIR = BACKEND_DIR / "src/service/crawler/nefac_documents"
 
 
 def get_metadata_path(file_type: str) -> str:
-    """Return the metadata JSON path for the given file type."""
     return str(DOCS_BASE_DIR / "metadata" / f"{file_type}_metadata.json")
 
 
@@ -278,7 +262,13 @@ def process_all_file_types(
 def main() -> None:
     _configure_logging()
     parser = argparse.ArgumentParser(description="NEFAC Document Ingestion Pipeline")
-    parser.add_argument("--file-type", choices=SUPPORTED_FILE_TYPES + ["all"], default="all", help="Type of documents to process")
+    parser.add_argument(
+        "--file-type",
+        nargs="+",
+        choices=SUPPORTED_FILE_TYPES + ["all"],
+        default=["all"],
+        help="Type of documents to process (can specify multiple)",
+    )
     parser.add_argument("--limit", type=int, default=None, help="Limit number of documents to process")
     parser.add_argument("--offset", type=int, default=0, help="Skip the first X documents")
     parser.add_argument("--clear", action="store_true", help="Clear existing database data before processing")
@@ -295,39 +285,51 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    if args.file_type == "all":
-        process_all_file_types(
-            limit=args.limit,
-            offset=args.offset,
-            clear_databases=args.clear,
-            failures_file=args.failures_file,
-            retry_failures=args.retry_failures,
-        )
-    else:
-        reset_tracker()
-        tracker = get_tracker()
-        if args.clear:
-            logger.info("🧹 Clearing existing database data...")
-            clear_all_databases()
+    # Normalize file_types input
+    file_types = args.file_type
+    if "all" in file_types:
+        file_types = SUPPORTED_FILE_TYPES
 
-        include_only: Optional[Set[str]] = None
-        if args.retry_failures:
-            seeded_failures = PipelineTracker.load_failures(args.failures_file)
-            tracker.seed_failures(seeded_failures)
-            include_map = _group_failures_by_type(seeded_failures)
-            include_only = include_map.get(args.file_type)
-            if not include_only:
-                logger.info("No recorded failures for %s", args.file_type)
+    reset_tracker()
+    tracker = get_tracker()
+    tracker.log_phase_start("NEFAC Document Ingestion Pipeline")
+
+    # 1. Clear databases ONCE if requested
+    if args.clear:
+        logger.info("🧹 Clearing existing database data...")
+        clear_results = clear_all_databases()
+        failed_dbs = [db for db, success in clear_results.items() if not success]
+        if failed_dbs:
+            logger.warning(f"Failed to clear databases: {', '.join(failed_dbs)}")
+        else:
+            logger.info("All databases cleared successfully.")
+
+    # 2. Load failures if needed
+    failure_targets: Dict[str, Set[str]] = {}
+    if args.retry_failures:
+        seeded_failures = PipelineTracker.load_failures(args.failures_file)
+        failure_targets = _group_failures_by_type(seeded_failures)
+        tracker.seed_failures(seeded_failures)
+
+    # 3. Process each requested file type
+    for file_type in file_types:
+        include_only = failure_targets.get(file_type) if args.retry_failures else None
+
+        # If retrying failures and this type has none, skip it
+        if args.retry_failures and not include_only:
+            logger.info("No recorded failures for %s, skipping.", file_type)
+            continue
 
         process_file_type(
-            args.file_type,
-            args.limit,
-            args.offset,
+            file_type,
+            limit=args.limit,
+            offset=args.offset,
             include_only=include_only,
         )
 
-        tracker.log_summary()
-        tracker.export_failures(args.failures_file)
+    tracker.log_phase_end("NEFAC Document Ingestion Pipeline")
+    tracker.log_summary()
+    tracker.export_failures(args.failures_file)
 
 
 if __name__ == "__main__":
