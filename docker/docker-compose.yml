@@ -1,73 +1,152 @@
-version: "3.9"
+version: "3.8"
+
+volumes:
+  esdata:
+  qdrant-data:
+  neo4j-data:
+  langgraph-data:
+
+networks:
+  nefacnet:
+    driver: bridge
+
 services:
-  nginx:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+  # --- Databases & Infrastructure ---
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
     ports:
-      - "80:80"
-    restart: always
-    depends_on:
-      - backend
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
     networks:
-      - app-network
+      - nefacnet
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200 >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.1
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - nefacnet
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant-data:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__HTTP_PORT=6333
+      - QDRANT__SERVICE__GRPC_PORT=6334
+    networks:
+      - nefacnet
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:6333/healthz >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  neo4j:
+    image: neo4j:latest
+    container_name: neo4j
+    ports:
+      - "7474:7474" # HTTP
+      - "7687:7687" # Bolt
+    volumes:
+      - neo4j-data:/data
+    environment:
+      - NEO4J_AUTH=neo4j/password123
+      - NEO4J_PLUGINS=["apoc", "graph-data-science"]
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*,gds.*
+      - NEO4J_dbms_security_procedures_allowlist=apoc.*,gds.*
+    networks:
+      - nefacnet
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:7474 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  langgraph-redis:
+    image: redis:6
+    container_name: langgraph-redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 1s
+      retries: 5
+    networks:
+      - nefacnet
+
+  langgraph-postgres:
+    image: postgres:16
+    container_name: langgraph-postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - langgraph-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      start_period: 10s
+      timeout: 1s
+      retries: 5
+      interval: 5s
+    networks:
+      - nefacnet
+
+  # --- Application ---
 
   backend:
     build:
-      context: ./backend
-      dockerfile: ../docker/Dockerfile
-    restart: always
-    env_file:
-      - ./backend/.env
-    environment:
-      - AWS_ENDPOINT_URL=http://localstack:4566
-      - AWS_ACCESS_KEY_ID=test
-      - AWS_SECRET_ACCESS_KEY=test
-      - AWS_DEFAULT_REGION=us-east-1
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: nefac-backend
+    ports:
+      - "8123:8000"
     depends_on:
-      - localstack
-    networks:
-      - app-network
-      - localstack-network
-    volumes:
-      # Mount backend .env file for development
-      - ./backend/.env:/app/.env:ro
-
-  localstack:
-    image: localstack/localstack:latest
-    ports:
-      - "4566:4566"
+      elasticsearch:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+      neo4j:
+        condition: service_healthy
+      langgraph-redis:
+        condition: service_healthy
+      langgraph-postgres:
+        condition: service_healthy
+    env_file:
+      - ../.env
     environment:
-      - SERVICES=lambda,sqs,s3,ecr,ecs,logs,iam,cloudwatch
-      - DEBUG=1
-      - DATA_DIR=/tmp/localstack/data
-      - DOCKER_HOST=unix:///var/run/docker.sock
-      - AWS_DEFAULT_REGION=us-east-1
-      - LAMBDA_EXECUTOR=docker
-      - LAMBDA_REMOTE_DOCKER=false
-      - LAMBDA_DOCKER_FLAGS=-p 127.0.0.1:9001:9001
-    volumes:
-      - "${TMPDIR:-/tmp}/localstack:/tmp/localstack"
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      # Override hostnames to point to docker service names
+      - REDIS_URI=redis://langgraph-redis:6379/0
+      - POSTGRES_URI=postgres://postgres:postgres@langgraph-postgres:5432/postgres?sslmode=disable
+      - ES_HOST=http://elasticsearch:9200
+      - QDRANT_ENDPOINT=http://qdrant:6333
+      - NEO4J_URI=bolt://neo4j:7687
+      # Ensure these match the service names/auth
+      - NEO4J_USERNAME=neo4j
+      - NEO4J_PASSWORD=password123
     networks:
-      - localstack-network
-
-  # n8n workflow automation service
-  n8n:
-    image: n8nio/n8n:latest
-    ports:
-      - "5678:5678"
-    environment:
-      - GENERIC_TIMEZONE=America/New_York
-      - N8N_BASIC_AUTH_ACTIVE=false
-    volumes:
-      - ./n8n_data:/home/node/.n8n
-    restart: unless-stopped
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge
-  localstack-network:
-    driver: bridge
+      - nefacnet
