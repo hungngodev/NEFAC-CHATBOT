@@ -226,6 +226,10 @@ def _ingest_with_workflow(
 
             tracker.log_file_phase("Workflow ingestion", count=nodes_count)
             tracker.log_file_complete(filename, nodes_count, 0)
+
+            if nodes_count == 0:
+                tracker.track_phase_stats(file_type, "files_skipped", 1)
+
             tracker.mark_success(file_type, filename)
 
         except Exception as exc:

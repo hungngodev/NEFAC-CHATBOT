@@ -41,19 +41,7 @@ async def summarize_webpage(model: BaseChatModel, webpage_content: str, config: 
 
 @lc_tool(description=TAVILY_SEARCH_DESCRIPTION)
 async def tavily_search(queries: list[str], max_results: Annotated[int, InjectedToolArg] = 5, topic: Annotated[Literal["general", "news", "finance"], InjectedToolArg] = "general", config: RunnableConfig = None) -> str:
-    """
-    Fetches results from Tavily search API.
-
-    Args
-        queries (list[str]): List of search queries, you can pass in as mAny queries as you need.
-        max_results (int): Maximum number of results to return
-        topic (Literal['general', 'news', 'finance']): Topic to filter results by
-
-    Returns:
-        str: A formatted string of search results
-    """
     search_results = await tavily_search_async(queries, max_results=max_results, topic=topic, include_raw_content=True, config=config)
-    # Format the search results and deduplicate results by URL
     formatted_output = "Search results: \n\n"
     unique_results = {}
     for response in search_results:
@@ -62,7 +50,7 @@ async def tavily_search(queries: list[str], max_results: Annotated[int, Injected
             if url not in unique_results:
                 unique_results[url] = {**result, "query": response["query"]}
     configurable = Configuration.from_runnable_config(config)
-    max_char_to_include = 50_000  # NOTE: This can be tuned by the developer. This character count keeps us safely under input token limits for the latest models.
+    max_char_to_include = 50_000
     model_api_key = get_api_key_for_model(configurable.summarization_model, config)
     summarization_model = (
         init_chat_model(model=configurable.summarization_model, max_tokens=configurable.summarization_model_max_tokens, api_key=model_api_key, disable_streaming=configurable.disable_streaming).with_structured_output(Summary).with_retry(stop_after_attempt=configurable.max_structured_output_retries)

@@ -189,7 +189,17 @@ def index_nodes_to_qdrant(
         )
 
         cleaned_nodes = [_clean_text_node(node, include_text_field=True) for node in nodes]
-        pipeline.run(nodes=cleaned_nodes)
+        batch_size = 20
+        total_nodes = len(cleaned_nodes)
+
+        for i in range(0, total_nodes, batch_size):
+            batch = cleaned_nodes[i : i + batch_size]
+            try:
+                pipeline.run(nodes=batch)
+                logger.info(f"Indexed batch {i//batch_size + 1}/{(total_nodes + batch_size - 1)//batch_size} ({len(batch)} nodes)")
+            except Exception as e:
+                logger.error(f"Failed to index batch {i}: {e}")
+                raise e
 
         logger.info(f"✅ Indexed {len(cleaned_nodes)} nodes to Qdrant")
         _close_maybe_async(getattr(vector_store, "client", None))

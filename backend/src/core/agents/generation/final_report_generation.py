@@ -41,6 +41,5 @@ async def final_report_generation(state: AgentState, config: RunnableConfig):
                 findings = findings[:findings_token_limit]
                 current_retry += 1
             else:
-                # If not a token limit exceeded error, then we just throw an error.
                 return {"final_report": f"Error generating final report: {e}", **cleared_state}
     return {"final_report": "Error generating final report: Maximum retries exceeded", "messages": [final_report], **cleared_state}

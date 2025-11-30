@@ -4,6 +4,7 @@ import os
 from llama_index.core import Settings
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.llms.openai import OpenAI
+
 from load_env import load_env as load_env_from_root
 from src.config.models import EMBEDDING_DIMENSIONS, EMBEDDING_MODEL_NAME
 
@@ -51,14 +52,13 @@ graph_llm_model = OpenAI(
     max_retries=3,
     timeout=900.0,
     additional_kwargs={"service_tier": "flex"},
-    api_key=os.getenv("OPENAI_API_KEY"),   
+    api_key=os.getenv("OPENAI_API_KEY"),
 )
 Settings.embed_model = OpenAIEmbedding(
     model=EMBEDDING_MODEL_NAME,
     dimensions=EMBEDDING_DIMENSIONS,
     api_key=os.getenv("OPENAI_API_KEY"),
 )
-
 
 
 ENTITY_ALIASES = {
@@ -202,10 +202,31 @@ ALLOWED_RELATIONSHIPS = [
 ]
 
 EXCLUDED_METADATA_KEYS = [
-    "file_path", "file_size", "processing_timestamp", "mime_type",
-    "chunk_index", "total_chunks", "chunk_size", "chunk_word_count",
-    "start_char", "end_char", "id", "filename", "source_url", "link", 
-    "uri", "slug", "modified", "transcript_type", "has_timestamps",
-    "start_time", "end_time", "duration", "sheet_index", "total_sheets",
-    "description", "summary", "abstract"
+    "file_path",
+    "file_size",
+    "processing_timestamp",
+    "mime_type",
+    "chunk_index",
+    "total_chunks",
+    "chunk_size",
+    "chunk_word_count",
+    "start_char",
+    "end_char",
+    "id",
+    "filename",
+    "source_url",
+    "link",
+    "uri",
+    "slug",
+    "modified",
+    "transcript_type",
+    "has_timestamps",
+    "start_time",
+    "end_time",
+    "duration",
+    "sheet_index",
+    "total_sheets",
+    "description",
+    "summary",
+    "abstract",
 ]

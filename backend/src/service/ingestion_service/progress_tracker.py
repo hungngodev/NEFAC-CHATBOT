@@ -85,6 +85,7 @@ class PipelineTracker:
                 logger.info(f"\n📁 {file_type.upper()}")
                 stats = [
                     f"  Files Processed: {phases.get('files_loaded', 0)}",
+                    f"  Files Skipped: {phases.get('files_skipped', 0)}",
                     f"  Chunks Created: {phases.get('chunks_created', 0)}",
                     f"  Chunks Contextualized: {phases.get('chunks_contextualized', 0)}",
                     f"  Uploaded to Qdrant: {phases.get('qdrant_uploaded', 0)}",

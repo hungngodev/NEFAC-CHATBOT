@@ -1,9 +1,6 @@
 from langchain_core.messages import AIMessage, MessageLikeRepresentation
 
 
-##########################
-# Token Limit Exceeded Utils
-##########################
 def is_token_limit_exceeded(exception: Exception, model_name: str = None) -> bool:
     error_str = str(exception).lower()
     provider = None
@@ -68,7 +65,6 @@ def _check_gemini_token_limit(exception: Exception, error_str: str) -> bool:
     return False
 
 
-# NOTE: This may be out of date or not applicable to your models. Please update this as needed.
 MODEL_TOKEN_LIMITS = {
     "openai:gpt-4.1-mini": 1047576,
     "openai:gpt-4.1-nano": 1047576,
@@ -115,5 +111,5 @@ def get_model_token_limit(model_string):
 def remove_up_to_last_ai_message(messages: list[MessageLikeRepresentation]) -> list[MessageLikeRepresentation]:
     for i in range(len(messages) - 1, -1, -1):
         if isinstance(messages[i], AIMessage):
-            return messages[:i]  # Return everything up to (but not including) the last AI message
+            return messages[:i]
     return messages

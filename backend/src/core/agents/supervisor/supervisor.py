@@ -4,6 +4,7 @@ from langchain.chat_models import init_chat_model
 from langchain_core.messages import ToolMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, START, StateGraph
+from langgraph.types import Command
 
 from src.config.node_names import RESEARCH_TEAM, SUPERVISOR_NODE, SUPERVISOR_TOOLS_NODE
 from src.config.settings import Configuration
@@ -48,19 +49,14 @@ async def supervisor(state: SupervisorState, config: RunnableConfig) -> dict:
     lead_researcher_tools = [ConductResearch, ResearchComplete]
     supervisor_model = configurable_model.bind_tools(lead_researcher_tools).with_retry(stop_after_attempt=configurable.max_structured_output_retries).with_config(supervisor_model_config)
     supervisor_messages = state.get("supervisor_messages", [])
-    # If there are any pending tool calls in history, route to tools first
     if _has_pending_tool_calls(supervisor_messages):
-        from langgraph.types import Command  # Local import to avoid circulars at module import time
-
         return Command(goto=SUPERVISOR_TOOLS_NODE)
-    # Use native async client path
     response = await supervisor_model.ainvoke(supervisor_messages)
     return {"supervisor_messages": [response], "research_iterations": state.get("research_iterations", 0) + 1}
 
 
 supervisor_builder = StateGraph(state_schema=SupervisorState, input_schema=SupervisorState, output_schema=SupervisorState, context_schema=Configuration)
 
-# Add nodes with comprehensive operational xmetadata
 supervisor_builder.add_node(
     node=SUPERVISOR_TOOLS_NODE,
     action=supervisor_tools,

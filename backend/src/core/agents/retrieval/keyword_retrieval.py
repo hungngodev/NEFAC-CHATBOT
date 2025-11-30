@@ -1,5 +1,3 @@
-"""Keyword-based retrieval against Elasticsearch BM25 with metadata preservation."""
-
 import os
 
 from langchain_core.documents import Document
@@ -21,12 +19,8 @@ bm25_store = ElasticsearchStore(
 keyword_retriever = bm25_store.as_retriever(search_kwargs={"k": 10})
 
 
-@tool
+@tool(description="Performs keyword-based search using BM25.")
 def keyword_search(query: str, top_k: int = 10) -> list[Document]:
-    """Performs a keyword-based search using Elasticsearch BM25.
-
-    Ideal for queries with specific, exact terms, names, or legal citations.
-    """
     documents = keyword_retriever.invoke(query, k=top_k)
 
     for doc in documents:

@@ -22,10 +22,8 @@ from src.schemas.state import RetrievalPlanModel, RetrievalSubgraphState
 
 
 async def plan_retrieval_node(state: RetrievalSubgraphState, config: RunnableConfig) -> dict:
-    # Access TypedDict values via mapping API (state is a plain dict at runtime)
     query = state["retrieval_query"]
     configuration = Configuration.from_runnable_config(config)
-    # Build prompt for structured output planning
     prompt = ChatPromptTemplate.from_messages(
         [
             (
@@ -43,16 +41,13 @@ async def plan_retrieval_node(state: RetrievalSubgraphState, config: RunnableCon
 
 
 def ensemble_retrieval_node(state: RetrievalSubgraphState) -> RetrievalSubgraphState:
-    """Retrieves documents using a dynamically configured ensemble retriever."""
     plan = state["retrieval_plan"]
-    # Read planned knobs (k==0 means: disable that path)
     kw_weight = plan.get("keyword_weight", 0.5)
     vec_weight = plan.get("vector_weight", 0.5)
     vector_k = int(plan.get("vector_k", 10) or 0)
     keyword_k = int(plan.get("keyword_k", 10) or 0)
     rerank_k = plan.get("rerank_k", 5)
     query = state["retrieval_query"]
-    # Build only enabled retrievers and align weights to avoid k=0 errors (e.g., Qdrant limit=0)
     retrievers = []
     weights = []
     if keyword_k > 0:
@@ -66,25 +61,15 @@ def ensemble_retrieval_node(state: RetrievalSubgraphState) -> RetrievalSubgraphS
         return {"document_search_documents": []}
 
     ensemble_retriever = EnsembleRetriever(retrievers=retrievers, weights=weights or None)
-    # Some EnsembleRetriever versions default k=0; force a safe positive top_k
-    try:
-        ensemble_retriever.k = max(1, vector_k, keyword_k)
-    except Exception:
-        pass
+    ensemble_retriever.k = max(1, vector_k, keyword_k)
     compressor = CohereRerank(model="rerank-english-v3.0")
     compression_retriever = ContextualCompressionRetriever(base_compressor=compressor, base_retriever=ensemble_retriever)
-    try:
-        reranked_docs = compression_retriever.invoke(query)
-    except Exception as e:
-        # Graceful fallback if reranker is unavailable / rate-limited
-        print(f"Cohere rerank unavailable or rate-limited; falling back to ensemble results. Error: {e}")
-        reranked_docs = ensemble_retriever.invoke(query)
+    reranked_docs = compression_retriever.invoke(query)
     final_docs = reranked_docs[:rerank_k]
     return {"document_search_documents": final_docs}
 
 
 async def graph_retrieval_node(state: RetrievalSubgraphState, config: RunnableConfig) -> RetrievalSubgraphState:
-    """Retrieves documents using graph search."""
     query = state["retrieval_query"]
     configuration = Configuration.from_runnable_config(config)
     documents = await graph_tool_node.ainvoke({"query": query, "conf": configuration})
@@ -92,7 +77,6 @@ async def graph_retrieval_node(state: RetrievalSubgraphState, config: RunnableCo
 
 
 def combine_documents_node(state: RetrievalSubgraphState) -> RetrievalSubgraphState:
-    """Combines and deduplicates documents from all retrieval sources."""
     all_docs = state.get("document_search_documents", []) + state.get("graph_documents", [])
     return {"documents": all_docs}
 
@@ -170,7 +154,6 @@ workflow.set_entry_point(RETRIEVAL_SUBGRAPH_PLANNER)
 
 
 def route_after_planning(state: RetrievalSubgraphState):
-    """Select retrieval nodes based on k-values in the plan."""
     plan = state.get("retrieval_plan", {})
     vector_k = int(plan.get("vector_k", 0) or 0)
     keyword_k = int(plan.get("keyword_k", 0) or 0)
