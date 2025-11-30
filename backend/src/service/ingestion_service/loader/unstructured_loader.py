@@ -1,12 +1,10 @@
-import json
+import hashlib
 import logging
-import os
 import re
-import tempfile
-import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
+from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.schema import BaseNode, TextNode
 from unstructured.partition.auto import partition as u_partition
 
@@ -14,7 +12,6 @@ from src.service.ingestion_service import settings as ingestion_settings
 from src.service.ingestion_service.llamaindex.metadata_utils import _get_base_metadata
 from src.service.ingestion_service.llamaindex.node_parser import build_nodes_from_text
 from src.service.ingestion_service.loader.spreadsheet_utils import process_xlsx_intelligently
-from src.service.ingestion_service.progress_tracker import get_tracker
 
 logger = logging.getLogger(__name__)
 TRANSCRIPT_PATTERN = re.compile(r"\[(?P<ts>[\d:\.]+)s?\]\s*(?P<txt>.*)")
@@ -47,7 +44,16 @@ def parse_timestamps(transcript_text: str) -> Tuple[str, List[Dict[str, Any]]]:
 
     for i, seg in enumerate(segments):
         start_char = len(clean_text)
-        clean_text += seg["text"] + " "
+        separator = "\n"
+        if i + 1 < len(segments):
+            time_diff = segments[i + 1]["start"] - seg["start"]
+            probability = min(1.0, max(0.0, (time_diff - 0.5) / 2.0))
+            rand_val = int(hashlib.md5(seg["text"].encode()).hexdigest(), 16) % 1000 / 1000.0
+
+            if rand_val < probability:
+                separator = "\n\n"
+
+        clean_text += seg["text"] + separator
         end_char = len(clean_text) - 1
         end_time = segments[i + 1]["start"] if i + 1 < len(segments) else None
         offset_map.append({"start_char": start_char, "end_char": end_char, "start_time": seg["start"], "end_time": end_time})
@@ -98,99 +104,12 @@ def _create_node(
             value = getattr(raw_node, attr, None)
             if value:
                 setattr(node, attr, value)
-
+    node.excluded_embed_metadata_keys.extend(ingestion_settings.EXCLUDED_METADATA_KEYS)
+    node.excluded_llm_metadata_keys.extend(ingestion_settings.EXCLUDED_METADATA_KEYS)
     return node
 
 
-def unstructured_loader(
-    metadata_json_path: str,
-    documents_dir: str,
-    limit: Optional[int] = None,
-    offset: int = 0,
-    file_type: Optional[str] = None,
-    include_only: Optional[Set[str]] = None,
-    processed_filenames: Optional[Set[str]] = None,
-    failed_filenames: Optional[Dict[str, str]] = None,
-) -> List[TextNode]:
-    start_time = time.time()
-    tracker = get_tracker()
-
-    with open(metadata_json_path, "r", encoding="utf-8") as f:
-        raw = json.load(f)
-        if offset:
-            raw = raw[offset:]
-        window = raw[:limit] if limit else raw
-        entries = [e for e in window if e.get("filename")]
-
-    if include_only:
-        normalized_targets = {str(name) for name in include_only}
-        entries = [entry for entry in entries if entry["filename"] in normalized_targets]
-        if not entries:
-            logger.info("    ├── No matching documents found in include_only filter")
-
-    logger.info(f"    ├── Loading {len(entries)} files from metadata")
-    nodes: List[TextNode] = []
-    chunk_count = 0
-    for i, entry in enumerate(entries, 1):
-        filename = entry["filename"]
-        tracker.log_file_start(file_type or "document", filename, i, len(entries))
-
-        path = Path(documents_dir) / filename if not os.path.isabs(filename) else Path(filename)
-        if not path.exists():
-            logger.warning(f"  │   └── ❌ File not found: {filename}")
-            if failed_filenames is not None:
-                failed_filenames[filename] = "file not found"
-            continue
-
-        path_str = str(path)
-        ext = os.path.splitext(path_str)[1].lower().lstrip(".")
-        supported_exts = {"pdf", "html", "htm", "xlsx", "xls", "txt", "docx", "doc", "pptx", "ppt", "csv"}
-        if ext not in supported_exts:
-            if failed_filenames is not None:
-                failed_filenames[filename] = f"unsupported extension: .{ext}"
-            continue
-
-        base_meta = _get_base_metadata(path_str, entry)
-        document_base_meta = base_meta.copy()
-        document_base_meta.update({k: v for k, v in (entry or {}).items() if v is not None})
-
-        try:
-            file_nodes, total_file_chunks, file_tokens = load_document_nodes(
-                path,
-                entry,
-                tracker=tracker,
-                file_type=file_type,
-            )
-
-            nodes.extend(file_nodes)
-            chunk_count += total_file_chunks
-            if processed_filenames is not None:
-                processed_filenames.add(filename)
-            tracker.log_file_complete(filename, total_file_chunks, file_tokens)
-
-        except Exception as e:
-            logger.warning(f"  │   └── ❌ Failed to process {filename}: {e}")
-            if ext == "pdf":
-                logger.error("  │       PDF processing failed - file may be corrupted, password-protected, or empty")
-            if failed_filenames is not None:
-                failed_filenames[filename] = str(e)
-            continue
-
-    # Enhanced summary logging
-    total_tokens = sum(len(node.get_content().split()) for node in nodes)
-    duration = time.time() - start_time
-
-    logger.info(f"  └── ✅ Processed {len(nodes)} chunks, {total_tokens} tokens in {duration:.2f}s")
-
-    # Update global tracker stats
-    tracker.track_phase_stats("global", "chunks_created", chunk_count)
-    tracker.track_phase_stats("global", "chunks_contextualized", len(nodes))
-    tracker.track_phase_stats("global", "total_tokens", total_tokens)
-
-    return nodes
-
-
-__all__ = ["unstructured_loader", "load_document_nodes"]
+__all__ = ["load_document_nodes"]
 
 
 def load_document_nodes(
@@ -269,23 +188,46 @@ def load_document_nodes(
             offset_map = None
 
             if not whole_text:
-                elements = u_partition(path_str)
-                whole_text = "\n\n".join(str(el).strip() for el in elements if str(el).strip())
+                if ext == "txt":
+                    # Optimization: Read text files directly to avoid unstructured overhead/hangs
+                    try:
+                        with open(path, "r", encoding="utf-8") as f:
+                            whole_text = f.read()
+                    except Exception as e:
+                        logger.warning(f"Failed to read text file directly, falling back to partition: {e}")
 
-            if ext == "txt" and entry.get("transcript_file") and TRANSCRIPT_PATTERN.search(whole_text):
+                if not whole_text:
+                    elements = u_partition(path_str)
+                    whole_text = "\n\n".join(str(el).strip() for el in elements if str(el).strip())
+
+            if ext == "txt":
                 _log_phase("Parsing transcript timestamps")
+                logger.info(f"Attempting to parse timestamps for {path.name}. Text len: {len(whole_text)}")
                 clean_text, offset_map = parse_timestamps(whole_text)
-                is_transcript = True
-                base_meta.update({"transcript_type": "youtube", "has_timestamps": True})
+                logger.info(f"Parse result: clean_text len={len(clean_text)}, offset_map len={len(offset_map)}")
 
-                with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False, encoding="utf-8") as tmp:
-                    tmp.write(clean_text)
-                    tmp_path = tmp.name
-                try:
-                    elements = u_partition(tmp_path)
+                # Only treat as transcript if we actually found content
+                if clean_text.strip():
+                    logger.info("✅ Timestamps found! Using clean text.")
+                    is_transcript = True
+                    base_meta.update({"transcript_type": "youtube", "has_timestamps": True})
                     whole_text = clean_text
-                finally:
-                    os.unlink(tmp_path)
+                else:
+                    logger.warning("⚠️ No timestamps found in .txt file (parse returned empty), treating as plain text")
+                    # Log first few lines to see why regex failed
+                    first_lines = whole_text[:500].splitlines()
+                    for i, line in enumerate(first_lines[:5]):
+                        logger.info(f"Line {i}: {line!r}")
+
+                    # Fallback: Check for "dense" text (few newlines) and pre-split if necessary
+                    # This prevents the Semantic Splitter from seeing one giant node
+                    if len(whole_text) > 1000 and whole_text.count("\n") < len(whole_text) / 200:
+                        logger.warning("⚠️ Text file appears dense (few newlines). Applied pre-splitting to aid semantic chunking.")
+                        # Use SentenceSplitter to break into ~200 token chunks, then join with double newlines
+                        pre_splitter = SentenceSplitter(chunk_size=200, chunk_overlap=0)
+                        text_chunks = pre_splitter.split_text(whole_text)
+                        whole_text = "\n\n".join(text_chunks)
+                        logger.info(f"Pre-splitting created {len(text_chunks)} segments.")
 
             raw_nodes = build_nodes_from_text(whole_text, document_base_meta)
             total_file_chunks = len(raw_nodes)

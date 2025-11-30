@@ -100,7 +100,7 @@ def create_qdrant_store(
         logger.info(f"Creating Qdrant collection {collection_name} (dense-only)")
         client.create_collection(
             collection_name=collection_name,
-            vectors_config=models.VectorParams(size=ingestion_settings.EMBEEDING_DIMENSIONS, distance=models.Distance.COSINE),
+            vectors_config=models.VectorParams(size=ingestion_settings.EMBEDDING_DIMENSIONS, distance=models.Distance.COSINE),
         )
 
     logger.info(f"Creating Qdrant store: {collection_name} (hybrid=False)")
@@ -148,19 +148,6 @@ def _close_maybe_async(resource):
             _await_maybe(resource.close())
     except Exception:
         pass
-
-
-def _ensure_es_index(client, index_name: str) -> bool:
-    if client is None:
-        return False
-    try:
-        exists = bool(_await_maybe(client.indices.exists(index=index_name)))
-        if not exists:
-            _await_maybe(client.indices.create(index=index_name, ignore=400))
-        return True
-    except Exception as exc:
-        logger.debug("ES index existence check failed for %s: %s", index_name, exc)
-        return False
 
 
 def index_nodes_to_qdrant(
@@ -213,7 +200,7 @@ def index_nodes_to_qdrant(
         return None
 
 
-def index_nodes_to_elasticsearch(
+async def index_nodes_to_elasticsearch(
     nodes: List[BaseNode],
     embed_model: Optional[object] = None,
     index_name: Optional[str] = None,
@@ -230,29 +217,32 @@ def index_nodes_to_elasticsearch(
     #     return None
 
     client = getattr(vector_store, "client", None)
-    index_exists = _ensure_es_index(client, vector_store.index_name)
 
-    if upsert_doc_id and client and index_exists:
+    if upsert_doc_id and client:
         try:
-            _await_maybe(
-                client.delete_by_query(
-                    index=vector_store.index_name,
-                    body={"query": {"term": {"doc_id": upsert_doc_id}}},
-                    ignore_unavailable=True,
-                )
+            # Try to delete existing documents for this doc_id
+            # If index doesn't exist, this might fail, which is fine (nothing to delete)
+            resp = client.delete_by_query(
+                index=vector_store.index_name,
+                body={"query": {"term": {"doc_id": upsert_doc_id}}},
+                ignore_unavailable=True,
             )
+            if hasattr(resp, "__await__"):
+                await resp
             logger.info("Deleted existing Elasticsearch docs for doc_id=%s", upsert_doc_id)
         except Exception as exc:
+            # Log at debug level as failure here is often just "index not found" or similar benign issues
             logger.debug("Delete ES docs skipped for doc_id=%s: %s", upsert_doc_id, exc)
 
     try:
-        pipeline = IngestionPipeline(
-            transformations=[],  # No embeddings for ES (BM25 only)
-            docstore=SimpleDocumentStore(),
-            vector_store=vector_store,
-        )
+        # pipeline = IngestionPipeline(
+        #     transformations=[],  # No embeddings for ES (BM25 only)
+        #     docstore=SimpleDocumentStore(),
+        #     vector_store=vector_store,
+        # )
         cleaned_nodes = [_clean_text_node(node, include_text_field=True) for node in nodes]
-        pipeline.run(nodes=cleaned_nodes)
+        # await pipeline.arun(nodes=cleaned_nodes)
+        await vector_store.async_add(cleaned_nodes)
 
         logger.info(f"✅ Indexed {len(cleaned_nodes)} nodes to Elasticsearch")
         _close_maybe_async(getattr(vector_store, "client", None))
@@ -266,6 +256,12 @@ def index_nodes_to_neo4j(
     nodes: List[BaseNode],
     use_property_graph: bool = True,
     upsert_doc_id: Optional[str] = None,
+    run_semantic_linking: bool = True,
+    run_community_detection: bool = False,
+    run_topic_extraction: bool = False,
+    run_citation_linking: bool = False,
+    run_temporal_linking: bool = False,
+    run_entity_cooccurrence: bool = False,
 ) -> int:
     if not nodes:
         logger.warning("No nodes to index to Neo4j")
@@ -277,7 +273,15 @@ def index_nodes_to_neo4j(
             ingestor = LegalPropertyGraphIngestor(llm=graph_llm)
             if upsert_doc_id:
                 ingestor.delete_by_doc_id(upsert_doc_id)
-            ingestor.ingest_nodes(nodes)
+            ingestor.ingest_nodes(
+                nodes,
+                run_semantic_linking=run_semantic_linking,
+                run_community_detection=run_community_detection,
+                run_topic_extraction=run_topic_extraction,
+                run_citation_linking=run_citation_linking,
+                run_temporal_linking=run_temporal_linking,
+                run_entity_cooccurrence=run_entity_cooccurrence,
+            )
             return len(nodes)
         else:
             logger.warning("Basic graph indexing not implemented, use property_graph=True")
@@ -288,13 +292,19 @@ def index_nodes_to_neo4j(
         return 0
 
 
-def index_nodes(
+async def index_nodes(
     nodes: List[BaseNode],
     embed_model: Optional[object] = None,
     enable_qdrant: bool = True,
     enable_elasticsearch: bool = False,
     enable_neo4j: bool = False,
     upsert_doc_id: Optional[str] = None,
+    run_semantic_linking: bool = True,
+    run_community_detection: bool = False,
+    run_topic_extraction: bool = False,
+    run_citation_linking: bool = False,
+    run_temporal_linking: bool = False,
+    run_entity_cooccurrence: bool = False,
 ) -> dict:
     results = {}
 
@@ -303,11 +313,20 @@ def index_nodes(
         results["qdrant"] = qdrant_store is not None
 
     if enable_elasticsearch:
-        es_store = index_nodes_to_elasticsearch(nodes, embed_model, upsert_doc_id=upsert_doc_id)
+        es_store = await index_nodes_to_elasticsearch(nodes, embed_model, upsert_doc_id=upsert_doc_id)
         results["elasticsearch"] = es_store is not None
 
     if enable_neo4j:
-        neo4j_count = index_nodes_to_neo4j(nodes, upsert_doc_id=upsert_doc_id)
+        neo4j_count = index_nodes_to_neo4j(
+            nodes,
+            upsert_doc_id=upsert_doc_id,
+            run_semantic_linking=run_semantic_linking,
+            run_community_detection=run_community_detection,
+            run_topic_extraction=run_topic_extraction,
+            run_citation_linking=run_citation_linking,
+            run_temporal_linking=run_temporal_linking,
+            run_entity_cooccurrence=run_entity_cooccurrence,
+        )
         results["neo4j"] = neo4j_count > 0
 
     return results

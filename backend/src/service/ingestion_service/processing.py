@@ -119,6 +119,19 @@ def _ingest_with_workflow(
     limit: Optional[int],
     offset: int,
     include_only: Optional[Set[str]] = None,
+    graph_rag_only: bool = False,
+    skip_graph: bool = False,
+    es_only: bool = False,
+    qdrant_only: bool = False,
+    skip_es: bool = False,
+    skip_qdrant: bool = False,
+    run_semantic_linking: bool = True,
+    run_community_detection: bool = False,
+    run_topic_extraction: bool = False,
+    run_citation_linking: bool = False,
+    run_temporal_linking: bool = False,
+    run_entity_cooccurrence: bool = False,
+    invalidate_cache: bool = False,
 ) -> None:
     _configure_logging()
     tracker = get_tracker()
@@ -128,8 +141,45 @@ def _ingest_with_workflow(
         logger.warning(f"No documents found for {file_type} via workflow. Skipping.")
         return
 
-    es_enabled = os.getenv("ES_LI_ENABLE", "true").lower() in _TRUTHY
-    graph_enabled = os.getenv("GRAPH_LI_ENABLE", "true").lower() in _TRUTHY
+    # Default state: check env vars or default to True
+    default_es = os.getenv("ES_LI_ENABLE", "true").lower() in _TRUTHY
+    default_qdrant = True
+    default_graph = os.getenv("GRAPH_LI_ENABLE", "true").lower() in _TRUTHY
+
+    # Initialize flags
+    es_enabled = default_es
+    qdrant_enabled = default_qdrant
+    graph_enabled = default_graph
+
+    # Apply "ONLY" flags (exclusive)
+    if graph_rag_only:
+        es_enabled = False
+        qdrant_enabled = False
+        graph_enabled = True
+        logger.info("🚀 Running in GRAPH RAG ONLY mode")
+    elif es_only:
+        es_enabled = True
+        qdrant_enabled = False
+        graph_enabled = False
+        logger.info("🚀 Running in ELASTICSEARCH ONLY mode")
+    elif qdrant_only:
+        es_enabled = False
+        qdrant_enabled = True
+        graph_enabled = False
+        logger.info("🚀 Running in QDRANT ONLY mode")
+    elif skip_graph:
+        graph_enabled = False
+        logger.info("🚀 Running in VECTOR STORE ONLY mode (Graph RAG disabled)")
+
+    # Apply "SKIP" flags (subtractive)
+    if skip_es:
+        es_enabled = False
+        logger.info("🚫 Skipping Elasticsearch")
+    if skip_qdrant:
+        qdrant_enabled = False
+        logger.info("🚫 Skipping Qdrant")
+
+    logger.info(f"Configuration: ES={es_enabled}, Qdrant={qdrant_enabled}, Graph={graph_enabled}")
 
     total_nodes = 0
 
@@ -149,14 +199,22 @@ def _ingest_with_workflow(
         document_meta["file_type"] = file_type
 
         try:
+            logger.info(f"DEBUG: Calling workflow with invalidate_cache={invalidate_cache}")
             result = asyncio.run(
                 run_ingestion_workflow(
                     str(path),
                     metadata=document_meta,
-                    enable_qdrant=True,
+                    enable_qdrant=qdrant_enabled,
                     enable_elasticsearch=es_enabled,
                     enable_neo4j=graph_enabled,
                     return_nodes=False,
+                    run_semantic_linking=run_semantic_linking,
+                    run_community_detection=run_community_detection,
+                    run_topic_extraction=run_topic_extraction,
+                    run_citation_linking=run_citation_linking,
+                    run_temporal_linking=run_temporal_linking,
+                    run_entity_cooccurrence=run_entity_cooccurrence,
+                    invalidate_cache=invalidate_cache,
                 )
             )
 
@@ -188,6 +246,19 @@ def process_file_type(
     limit: Optional[int] = None,
     offset: int = 0,
     include_only: Optional[Set[str]] = None,
+    graph_rag_only: bool = False,
+    skip_graph: bool = False,
+    es_only: bool = False,
+    qdrant_only: bool = False,
+    skip_es: bool = False,
+    skip_qdrant: bool = False,
+    run_semantic_linking: bool = True,
+    run_community_detection: bool = False,
+    run_topic_extraction: bool = False,
+    run_citation_linking: bool = False,
+    run_temporal_linking: bool = False,
+    run_entity_cooccurrence: bool = False,
+    invalidate_cache: bool = False,
 ) -> None:
     _ensure_startup_ready()
     _configure_logging()
@@ -205,6 +276,19 @@ def process_file_type(
             limit,
             offset,
             include_only,
+            graph_rag_only=graph_rag_only,
+            skip_graph=skip_graph,
+            es_only=es_only,
+            qdrant_only=qdrant_only,
+            skip_es=skip_es,
+            skip_qdrant=skip_qdrant,
+            run_semantic_linking=run_semantic_linking,
+            run_community_detection=run_community_detection,
+            run_topic_extraction=run_topic_extraction,
+            run_citation_linking=run_citation_linking,
+            run_temporal_linking=run_temporal_linking,
+            run_entity_cooccurrence=run_entity_cooccurrence,
+            invalidate_cache=invalidate_cache,
         )
 
     except Exception as e:
@@ -221,6 +305,15 @@ def process_all_file_types(
     clear_databases: bool = False,
     failures_file: Path = DEFAULT_FAILURE_LOG,
     retry_failures: bool = False,
+    graph_rag_only: bool = False,
+    skip_graph: bool = False,
+    run_semantic_linking: bool = True,
+    run_community_detection: bool = False,
+    run_topic_extraction: bool = False,
+    run_citation_linking: bool = False,
+    run_temporal_linking: bool = False,
+    run_entity_cooccurrence: bool = False,
+    invalidate_cache: bool = False,
 ) -> None:
     _ensure_startup_ready()
     _configure_logging()
@@ -252,6 +345,15 @@ def process_all_file_types(
             limit,
             offset,
             include_only=include_only,
+            graph_rag_only=graph_rag_only,
+            skip_graph=skip_graph,
+            run_semantic_linking=run_semantic_linking,
+            run_community_detection=run_community_detection,
+            run_topic_extraction=run_topic_extraction,
+            run_citation_linking=run_citation_linking,
+            run_temporal_linking=run_temporal_linking,
+            run_entity_cooccurrence=run_entity_cooccurrence,
+            invalidate_cache=invalidate_cache,
         )
 
     tracker.log_phase_end("NEFAC Document Ingestion Pipeline")
@@ -283,7 +385,75 @@ def main() -> None:
         default=DEFAULT_FAILURE_LOG,
         help="Path to the failure log JSON (stores workflow replay metadata)",
     )
+    parser.add_argument(
+        "--graph-rag-only",
+        action="store_true",
+        help="Only perform Graph RAG ingestion (disable vector stores)",
+    )
+    parser.add_argument(
+        "--skip-graph",
+        action="store_true",
+        help="Skip Graph RAG ingestion (Qdrant + Elasticsearch only)",
+    )
+    parser.add_argument(
+        "--es-only",
+        action="store_true",
+        help="Only perform Elasticsearch ingestion",
+    )
+    parser.add_argument(
+        "--qdrant-only",
+        action="store_true",
+        help="Only perform Qdrant ingestion",
+    )
+    parser.add_argument(
+        "--skip-es",
+        action="store_true",
+        help="Skip Elasticsearch ingestion",
+    )
+    parser.add_argument(
+        "--skip-qdrant",
+        action="store_true",
+        help="Skip Qdrant ingestion",
+    )
+    parser.add_argument(
+        "--no-semantic-linking",
+        action="store_true",
+        help="Disable semantic linking (enabled by default)",
+    )
+    parser.add_argument(
+        "--community-detection",
+        action="store_true",
+        help="Enable community detection (Leiden algorithm)",
+    )
+    parser.add_argument(
+        "--topic-extraction",
+        action="store_true",
+        help="Enable LLM-based topic extraction",
+    )
+    parser.add_argument(
+        "--citation-linking",
+        action="store_true",
+        help="Enable legal citation linking",
+    )
+    parser.add_argument(
+        "--temporal-linking",
+        action="store_true",
+        help="Enable temporal linking (NEXT_IN_TIME)",
+    )
+    parser.add_argument(
+        "--entity-cooccurrence",
+        action="store_true",
+        help="Enable entity co-occurrence linking (RELATED_TO)",
+    )
+    parser.add_argument(
+        "--invalidCache",
+        action="store_true",
+        help="Invalidate cache for processed files only",
+    )
     args = parser.parse_args()
+
+    if args.graph_rag_only and args.skip_graph:
+        parser.error("Cannot use both --graph-rag-only and --skip-graph at the same time")
 
     # Normalize file_types input
     file_types = args.file_type
@@ -297,12 +467,45 @@ def main() -> None:
     # 1. Clear databases ONCE if requested
     if args.clear:
         logger.info("🧹 Clearing existing database data...")
-        clear_results = clear_all_databases()
+
+        # Determine what to clear based on flags
+        # Default: clear everything unless specific flags are set
+        clear_es = True
+        clear_qdrant = True
+        clear_graph = True
+
+        # If "only" flags are used, restrict clearing
+        if args.es_only:
+            clear_es = True
+            clear_qdrant = False
+            clear_graph = False
+        elif args.qdrant_only:
+            clear_es = False
+            clear_qdrant = True
+            clear_graph = False
+        elif args.graph_rag_only:
+            clear_es = False
+            clear_qdrant = False
+            clear_graph = True
+
+        # If "skip" flags are used, disable specific clearing
+        if args.skip_es:
+            clear_es = False
+        if args.skip_qdrant:
+            clear_qdrant = False
+        if args.skip_graph:
+            clear_graph = False
+
+        clear_results = clear_all_databases(
+            clear_qdrant=clear_qdrant,
+            clear_elasticsearch=clear_es,
+            clear_neo4j=clear_graph,
+        )
         failed_dbs = [db for db, success in clear_results.items() if not success]
         if failed_dbs:
             logger.warning(f"Failed to clear databases: {', '.join(failed_dbs)}")
         else:
-            logger.info("All databases cleared successfully.")
+            logger.info("All requested databases cleared successfully.")
 
     # 2. Load failures if needed
     failure_targets: Dict[str, Set[str]] = {}
@@ -325,6 +528,19 @@ def main() -> None:
             limit=args.limit,
             offset=args.offset,
             include_only=include_only,
+            graph_rag_only=args.graph_rag_only,
+            skip_graph=args.skip_graph,
+            es_only=args.es_only,
+            qdrant_only=args.qdrant_only,
+            skip_es=args.skip_es,
+            skip_qdrant=args.skip_qdrant,
+            run_semantic_linking=not args.no_semantic_linking,
+            run_community_detection=args.community_detection,
+            run_topic_extraction=args.topic_extraction,
+            run_citation_linking=args.citation_linking,
+            run_temporal_linking=args.temporal_linking,
+            run_entity_cooccurrence=args.entity_cooccurrence,
+            invalidate_cache=args.invalidCache,
         )
 
     tracker.log_phase_end("NEFAC Document Ingestion Pipeline")

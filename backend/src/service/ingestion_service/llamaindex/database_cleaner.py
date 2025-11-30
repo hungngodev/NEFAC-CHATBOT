@@ -129,18 +129,28 @@ def clear_neo4j_database() -> bool:
         return False
 
 
-def clear_all_databases() -> Dict[str, bool]:
+def clear_all_databases(
+    clear_qdrant: bool = True,
+    clear_elasticsearch: bool = True,
+    clear_neo4j: bool = True,
+) -> Dict[str, bool]:
     logger.info("🧹 Starting database cleanup via LlamaIndex stores...")
+    logger.info(f"Targets: Qdrant={clear_qdrant}, ES={clear_elasticsearch}, Neo4j={clear_neo4j}")
 
-    results = {
-        "qdrant": clear_qdrant_collection(),
-        "elasticsearch": clear_elasticsearch_index(),
-        "neo4j": clear_neo4j_database(),
-    }
+    results = {}
+
+    if clear_qdrant:
+        results["qdrant"] = clear_qdrant_collection()
+
+    if clear_elasticsearch:
+        results["elasticsearch"] = clear_elasticsearch_index()
+
+    if clear_neo4j:
+        results["neo4j"] = clear_neo4j_database()
 
     successes = sum(result for result in results.values())
     if successes == len(results):
-        logger.info("✅ Successfully cleared all databases")
+        logger.info("✅ Successfully cleared requested databases")
     else:
         failed = [name for name, ok in results.items() if not ok]
         logger.warning("⚠️ Issues clearing: %s", ", ".join(failed))

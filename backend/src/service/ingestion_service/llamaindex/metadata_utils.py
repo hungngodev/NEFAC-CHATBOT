@@ -19,12 +19,16 @@ def _get_base_metadata(path: str, entry: Dict[str, Any]) -> Dict[str, Any]:
     def to_iso(ts: float) -> str:
         return datetime.fromtimestamp(ts, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
+    # Resolve key metadata fields once to ensure consistency
+    source_url = entry.get("source_url") or entry.get("link") or f"file://{abs_path}"
+    date_val = entry.get("date") or to_iso(getattr(stat, "st_ctime", stat.st_mtime))
+
     return {
         "id": entry.get("id") or entry.get("graphql_id") or base_name,
         "title": title,
         "filename": base_name,
-        "source_url": entry.get("source_url") or entry.get("link") or f"file://{abs_path}",
-        "date": entry.get("date") or to_iso(getattr(stat, "st_ctime", stat.st_mtime)),
+        "source_url": source_url,
+        "date": date_val,
         "modified": entry.get("modified") or to_iso(stat.st_mtime),
         "mime_type": entry.get("mime_type") or mimetypes.guess_type(base_name)[0],
         "file_size": entry.get("file_size") or stat.st_size,

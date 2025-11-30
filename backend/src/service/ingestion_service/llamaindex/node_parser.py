@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import copy
 import logging
-import os
-from functools import lru_cache
 from typing import List
 
 import spacy
@@ -19,9 +17,11 @@ from llama_index.core.node_parser import (
     LanguageConfig,
     NodeParser,
     SemanticDoubleMergingSplitterNodeParser,
+    SentenceSplitter,
 )
 from llama_index.core.schema import BaseNode
 from llama_index.core.storage.docstore import SimpleDocumentStore
+from tqdm import tqdm
 
 from src.service.ingestion_service.llamaindex.metadata_utils import (
     build_chunk_id,
@@ -30,34 +30,17 @@ from src.service.ingestion_service.llamaindex.metadata_utils import (
 from src.service.ingestion_service.settings import (
     ENABLE_CONTEXTUAL_RETRIEVAL,
     ENABLE_METADATA_EXTRACTION,
+    EXCLUDED_METADATA_KEYS,
+    SEMANTIC_SPLITTER_APPEND_THRESHOLD,
     SEMANTIC_SPLITTER_AUTO_DOWNLOAD,
-    SEMANTIC_SPLITTER_PRESETS,
+    SEMANTIC_SPLITTER_INITIAL_THRESHOLD,
+    SEMANTIC_SPLITTER_LANGUAGE,
+    SEMANTIC_SPLITTER_MAX_CHUNK,
+    SEMANTIC_SPLITTER_MERGE_THRESHOLD,
+    SEMANTIC_SPLITTER_SPACY_MODEL,
 )
 
 logger = logging.getLogger(__name__)
-
-
-def _env_float(name: str, default: float) -> float:
-    try:
-        return float(os.getenv(name, default))
-    except (TypeError, ValueError):
-        return default
-
-
-def get_semantic_splitter_for_domain(domain: str = "legal_documents", **overrides) -> NodeParser:
-    preset = SEMANTIC_SPLITTER_PRESETS.get(domain, SEMANTIC_SPLITTER_PRESETS["general"])
-    config = preset.copy()
-    config.update(overrides)
-    logger.info(f"Using semantic splitter preset: {domain}")
-
-    return _create_semantic_splitter(
-        language=config.get("language", "en"),
-        spacy_model=config.get("spacy_model", "en_core_web_sm"),
-        initial_threshold=config.get("initial_threshold", 0.4),
-        appending_threshold=config.get("appending_threshold", 0.5),
-        merging_threshold=config.get("merging_threshold", 0.5),
-        max_chunk_size=config.get("max_chunk_size", 2000),
-    )
 
 
 def _build_language_config(language: str, spacy_model: str) -> LanguageConfig:
@@ -109,18 +92,18 @@ def _normalize_language(language: str) -> str:
     return language_map.get(lang, language_map.get(primary, lang))
 
 
-def _create_semantic_splitter(
-    language: str = "en",
-    spacy_model: str = "en_core_web_sm",
-    initial_threshold: float = 0.4,
-    appending_threshold: float = 0.5,
-    merging_threshold: float = 0.5,
-    max_chunk_size: int = 2000,
-) -> NodeParser:
-    language = _normalize_language(language)
+def get_semantic_splitter() -> NodeParser:
+    language = _normalize_language(SEMANTIC_SPLITTER_LANGUAGE)
+    spacy_model = SEMANTIC_SPLITTER_SPACY_MODEL
 
+    # Ensure model is loaded
     if SEMANTIC_SPLITTER_AUTO_DOWNLOAD:
-        spacy.load(spacy_model)
+        try:
+            spacy.load(spacy_model)
+        except OSError:
+            logger.info("Downloading spaCy model %s...", spacy_model)
+            spacy.cli.download(spacy_model)
+            spacy.load(spacy_model)
     else:
         spacy.load(spacy_model)
 
@@ -128,28 +111,10 @@ def _create_semantic_splitter(
 
     return SemanticDoubleMergingSplitterNodeParser(
         language_config=config,
-        initial_threshold=initial_threshold,
-        appending_threshold=appending_threshold,
-        merging_threshold=merging_threshold,
-        max_chunk_size=max_chunk_size,
-    )
-
-
-@lru_cache(maxsize=1)
-def get_semantic_splitter() -> NodeParser:
-    language = _normalize_language(os.getenv("SEMANTIC_SPLITTER_LANGUAGE", "en"))
-    spacy_model = os.getenv("SEMANTIC_SPLITTER_SPACY_MODEL", "en_core_web_lg")
-    initial_threshold = _env_float("SEMANTIC_SPLITTER_INITIAL_THRESHOLD", 0.4)
-    appending_threshold = _env_float("SEMANTIC_SPLITTER_APPEND_THRESHOLD", 0.5)
-    merging_threshold = _env_float("SEMANTIC_SPLITTER_MERGE_THRESHOLD", 0.5)
-    max_chunk_size = int(float(os.getenv("SEMANTIC_SPLITTER_MAX_CHUNK", "2000")))
-    return _create_semantic_splitter(
-        language=language,
-        spacy_model=spacy_model,
-        initial_threshold=initial_threshold,
-        appending_threshold=appending_threshold,
-        merging_threshold=merging_threshold,
-        max_chunk_size=max_chunk_size,
+        initial_threshold=SEMANTIC_SPLITTER_INITIAL_THRESHOLD,
+        appending_threshold=SEMANTIC_SPLITTER_APPEND_THRESHOLD,
+        merging_threshold=SEMANTIC_SPLITTER_MERGE_THRESHOLD,
+        max_chunk_size=SEMANTIC_SPLITTER_MAX_CHUNK,
     )
 
 
@@ -244,20 +209,54 @@ Please generate a short succinct context summary to situate this text chunk with
         *,
         show_progress: bool = False,
     ) -> List[BaseNode]:
+        safety_splitter = SentenceSplitter(
+            chunk_size=SEMANTIC_SPLITTER_MAX_CHUNK,
+            chunk_overlap=200,
+        )
+
         all_nodes: List[BaseNode] = []
 
         for doc in documents:
-            nodes = list(self.base_parser.get_nodes_from_documents([doc]))
+
+            split_doc = LIDocument(text=doc.get_content(), metadata={"title": doc.metadata.get("title", "")})
+
+            # Step 1: Run Semantic Splitter
+            semantic_pipeline = IngestionPipeline(
+                transformations=[self.base_parser],
+                docstore=SimpleDocumentStore(),
+            )
+            semantic_nodes = semantic_pipeline.run(documents=[split_doc], show_progress=show_progress)
+            logger.info(f"DEBUG: Semantic Splitter produced {len(semantic_nodes)} nodes")
+
+            # Step 2: Run Safety Splitter (SentenceSplitter)
+            safety_pipeline = IngestionPipeline(
+                transformations=[safety_splitter],
+                docstore=SimpleDocumentStore(),
+            )
+            nodes = safety_pipeline.run(documents=semantic_nodes, show_progress=show_progress)
+            logger.info(f"DEBUG: Safety Splitter produced {len(nodes)} nodes")
+            for node in nodes:
+                node.metadata.update(doc.metadata)
+                node.excluded_embed_metadata_keys = list(doc.excluded_embed_metadata_keys)
+                node.excluded_llm_metadata_keys = list(doc.excluded_llm_metadata_keys)
+
+            filename = doc.metadata.get("filename", "")
+            file_path = doc.metadata.get("file_path", "")
+            if filename.lower().endswith(".txt") or file_path.lower().endswith(".txt"):
+                for node in nodes:
+                    if "description" in node.excluded_llm_metadata_keys:
+                        node.excluded_llm_metadata_keys.remove("description")
 
             if self.enable_contextual:
-                nodes = [self._add_context(node, doc.get_content(), doc.metadata) for node in nodes]
+                nodes = [self._add_context(node, doc.get_content(), doc.metadata) for node in tqdm(nodes, desc="Generating contextual summaries")]
 
             if self.enable_metadata and self.extractors:
-                pipeline = IngestionPipeline(
+                logger.info("Starting Metadata Extraction (Summary/Questions)...")
+                extraction_pipeline = IngestionPipeline(
                     transformations=self.extractors,
                     docstore=SimpleDocumentStore(),
                 )
-                nodes = pipeline.run(nodes=nodes, show_progress=show_progress)
+                nodes = extraction_pipeline.run(nodes=nodes, show_progress=show_progress)
 
             normalized_nodes = []
             for idx, node in enumerate(nodes):
@@ -277,7 +276,9 @@ Please generate a short succinct context summary to situate this text chunk with
 
     def build_nodes_from_text(self, text: str, metadata: dict) -> List[BaseNode]:
         li_doc = LIDocument(text=text, metadata=metadata)
-        return self.build_nodes_from_documents([li_doc])
+        li_doc.excluded_embed_metadata_keys.extend(EXCLUDED_METADATA_KEYS)
+        li_doc.excluded_llm_metadata_keys.extend(EXCLUDED_METADATA_KEYS)
+        return self.build_nodes_from_documents([li_doc], show_progress=True)
 
 
 def build_nodes_from_text(text: str, metadata: dict) -> List[BaseNode]:

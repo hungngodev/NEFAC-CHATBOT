@@ -4,9 +4,8 @@ import os
 from llama_index.core import Settings
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.llms.openai import OpenAI
-
 from load_env import load_env as load_env_from_root
-from src.config.models import EMBEEDING_DIMENSIONS, EMBEEDING_MODEL_NAME
+from src.config.models import EMBEDDING_DIMENSIONS, EMBEDDING_MODEL_NAME
 
 load_env_from_root()
 logger = logging.getLogger(__name__)
@@ -18,9 +17,9 @@ GRAPH_MODE = "property"
 CHUNK_SIZE = 384
 CHUNK_OVERLAP = 38
 
-GRAPH_RATE_LIMIT_BACKOFF = 10.0
+GRAPH_RATE_LIMIT_BACKOFF = 3.0
 GRAPH_RATE_LIMIT_RETRIES = 4
-GRAPH_MAX_TRIPLETS_PER_CHUNK = 5
+GRAPH_MAX_TRIPLETS_PER_CHUNK = 4
 GRAPH_NUM_WORKERS = 1
 GRAPH_ENABLE_ENTITY_DEDUPLICATION = True
 GRAPH_ENTITY_SIMILARITY_THRESHOLD = 0.9
@@ -29,7 +28,16 @@ GRAPH_WORD_DISTANCE_THRESHOLD = 2
 
 CONTEXT_FORMAT = "Context: {context}\n\nChunk: {chunk}"
 WORKFLOW_ENABLE_VALIDATION = True
+
 SEMANTIC_SPLITTER_AUTO_DOWNLOAD = True
+
+
+SEMANTIC_SPLITTER_LANGUAGE = "en"
+SEMANTIC_SPLITTER_SPACY_MODEL = "en_core_web_lg"
+SEMANTIC_SPLITTER_INITIAL_THRESHOLD = 0.3
+SEMANTIC_SPLITTER_APPEND_THRESHOLD = 0.5
+SEMANTIC_SPLITTER_MERGE_THRESHOLD = 0.5
+SEMANTIC_SPLITTER_MAX_CHUNK = 384
 
 Settings.llm = OpenAI(
     model="gpt-5-nano",
@@ -38,110 +46,20 @@ Settings.llm = OpenAI(
     additional_kwargs={"service_tier": "flex"},
     api_key=os.getenv("OPENAI_API_KEY"),
 )
-
 graph_llm_model = OpenAI(
-    model="gpt-5-mini",
+    model="gpt-5-nano",
     max_retries=3,
     timeout=900.0,
     additional_kwargs={"service_tier": "flex"},
-    api_key=os.getenv("OPENAI_API_KEY"),
+    api_key=os.getenv("OPENAI_API_KEY"),   
 )
 Settings.embed_model = OpenAIEmbedding(
-    model=EMBEEDING_MODEL_NAME,
-    dimensions=EMBEEDING_DIMENSIONS,
+    model=EMBEDDING_MODEL_NAME,
+    dimensions=EMBEDDING_DIMENSIONS,
     api_key=os.getenv("OPENAI_API_KEY"),
 )
 
-SEMANTIC_SPLITTER_PRESETS = {
-    "legal_documents": {
-        "language": "en",
-        "spacy_model": "en_core_web_md",
-        "initial_threshold": 0.4,
-        "appending_threshold": 0.5,
-        "merging_threshold": 0.5,
-        "max_chunk_size": 5000,
-    },
-    "technical_docs": {
-        "language": "en",
-        "spacy_model": "en_core_web_md",
-        "initial_threshold": 0.35,
-        "appending_threshold": 0.45,
-        "merging_threshold": 0.45,
-        "max_chunk_size": 3000,
-    },
-    "general": {
-        "language": "en",
-        "spacy_model": "en_core_web_sm",
-        "initial_threshold": 0.5,
-        "appending_threshold": 0.6,
-        "merging_threshold": 0.6,
-        "max_chunk_size": 2000,
-    },
-    "academic": {
-        "language": "en",
-        "spacy_model": "en_core_web_md",
-        "initial_threshold": 0.45,
-        "appending_threshold": 0.55,
-        "merging_threshold": 0.55,
-        "max_chunk_size": 4000,
-    },
-    "french_legal": {
-        "language": "french",
-        "spacy_model": "fr_core_news_md",
-        "initial_threshold": 0.4,
-        "appending_threshold": 0.5,
-        "merging_threshold": 0.5,
-        "max_chunk_size": 5000,
-    },
-    "french_general": {
-        "language": "french",
-        "spacy_model": "fr_core_news_sm",
-        "initial_threshold": 0.5,
-        "appending_threshold": 0.6,
-        "merging_threshold": 0.6,
-        "max_chunk_size": 2000,
-    },
-    "spanish_legal": {
-        "language": "spanish",
-        "spacy_model": "es_core_news_md",
-        "initial_threshold": 0.4,
-        "appending_threshold": 0.5,
-        "merging_threshold": 0.5,
-        "max_chunk_size": 5000,
-    },
-    "spanish_general": {
-        "language": "spanish",
-        "spacy_model": "es_core_news_sm",
-        "initial_threshold": 0.5,
-        "appending_threshold": 0.6,
-        "merging_threshold": 0.6,
-        "max_chunk_size": 2000,
-    },
-    "german_legal": {
-        "language": "german",
-        "spacy_model": "de_core_news_md",
-        "initial_threshold": 0.4,
-        "appending_threshold": 0.5,
-        "merging_threshold": 0.5,
-        "max_chunk_size": 5000,
-    },
-    "german_general": {
-        "language": "german",
-        "spacy_model": "de_core_news_sm",
-        "initial_threshold": 0.5,
-        "appending_threshold": 0.6,
-        "merging_threshold": 0.6,
-        "max_chunk_size": 2000,
-    },
-    "chinese_general": {
-        "language": "chinese",
-        "spacy_model": "zh_core_web_sm",
-        "initial_threshold": 0.5,
-        "appending_threshold": 0.6,
-        "merging_threshold": 0.6,
-        "max_chunk_size": 2000,
-    },
-}
+
 
 ENTITY_ALIASES = {
     "NEFAC": [
@@ -246,6 +164,12 @@ ALLOWED_NODES = [
     "Board",
     "Committee",
     "SocialProfile",
+    "Topic",
+    "Concept",
+    "Statute",
+    "LegislativeBill",
+    "Court",
+    "Judge",
 ]
 
 ALLOWED_RELATIONSHIPS = [
@@ -269,4 +193,19 @@ ALLOWED_RELATIONSHIPS = [
     "HAS_SECTION",
     "LINKS_TO",
     "HAS_PROFILE",
+    "CONCERNS",
+    "REGULATES",
+    "ENFORCES",
+    "OPPOSES",
+    "OPPOSES",
+    "SUPPORTS",
+]
+
+EXCLUDED_METADATA_KEYS = [
+    "file_path", "file_size", "processing_timestamp", "mime_type",
+    "chunk_index", "total_chunks", "chunk_size", "chunk_word_count",
+    "start_char", "end_char", "id", "filename", "source_url", "link", 
+    "uri", "slug", "modified", "transcript_type", "has_timestamps",
+    "start_time", "end_time", "duration", "sheet_index", "total_sheets",
+    "description", "summary", "abstract"
 ]
