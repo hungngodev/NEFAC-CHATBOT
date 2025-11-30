@@ -12,8 +12,8 @@ from typing import Literal
 # ============================================================================
 
 # Available model providers and their models
-EMBEEDING_MODEL_NAME = "text-embedding-3-small"
-EMBEEDING_DIMENSIONS = 1536
+EMBEDDING_MODEL_NAME = "text-embedding-3-small"
+EMBEDDING_DIMENSIONS = 1536
 
 # Model type annotation for LangGraph Studio
 ModelType = Literal[

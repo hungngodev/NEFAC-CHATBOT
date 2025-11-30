@@ -104,7 +104,50 @@ class RigidValidator:
 
         # Fix if requested
         if fix_issues and result.has_any_issues:
-            self._fix_issues(metadata_list, result)
+            failed_ids = self._fix_issues(metadata_list, result)
+
+            if failed_ids:
+                logger.warning(f"Pruning {len(failed_ids)} unrecoverable documents (404s/errors)...")
+                # Remove failed docs from metadata
+                metadata_list = [doc for doc in metadata_list if doc.id not in failed_ids]
+                # Save cleaned metadata back to disk
+                self.metadata_manager.save_documents_metadata(metadata_list)
+
+            # Re-validate to confirm fixes
+            logger.info("Re-validating after fixes...")
+            result = ValidationResult()
+            result.start_time = time.time()
+
+            # Re-scan files
+            files_dict = self._scan_files()
+            result.total_metadata = len(metadata_list)
+            result.total_files = len(files_dict)
+
+            self._validate_sync(metadata_list, files_dict, result)
+            self._validate_integrity(metadata_list, result)
+            self._validate_wordpress(metadata_list, result)
+
+            # If STILL has critical issues, prune them too (Aggressive Cleanup)
+            if result.has_critical_issues:
+                persistent_failures = set()
+                for issue in result.critical_issues:
+                    if ":" in issue:
+                        doc_id = issue.split(":")[1].strip().split()[0]
+                        persistent_failures.add(doc_id)
+
+                if persistent_failures:
+                    logger.warning(f"Aggressively pruning {len(persistent_failures)} persistent failures...")
+                    metadata_list = [doc for doc in metadata_list if doc.id not in persistent_failures]
+                    self.metadata_manager.save_documents_metadata(metadata_list)
+
+                    # Final re-validation check (optional, but good for report)
+                    result = ValidationResult()  # Reset result
+                    files_dict = self._scan_files()
+                    result.total_metadata = len(metadata_list)
+                    result.total_files = len(files_dict)
+                    self._validate_sync(metadata_list, files_dict, result)
+                    self._validate_integrity(metadata_list, result)
+                    self._validate_wordpress(metadata_list, result)
 
         result.end_time = time.time()
         result.print_summary()
@@ -257,9 +300,10 @@ class RigidValidator:
                 if filename and "_wordpress" not in filename:
                     result.wordpress_issues.append(f"Missing _wordpress: {doc.id}")
 
-    def _fix_issues(self, metadata_list: List[BaseMetadata], result: ValidationResult):
-        """Fix detected issues."""
+    def _fix_issues(self, metadata_list: List[BaseMetadata], result: ValidationResult) -> set[str]:
+        """Fix detected issues. Returns set of IDs that failed to be fixed."""
         logger.info("Fixing issues...")
+        failed_ids = set()
 
         # Re-download missing/corrupted files
         docs_to_fix = []
@@ -273,9 +317,13 @@ class RigidValidator:
 
         for doc in tqdm(docs_to_fix, desc="Fixing files", unit="files", leave=False):
             try:
-                self.downloader.download(doc)
+                if not self.downloader.download(doc):
+                    failed_ids.add(doc.id)
             except Exception as e:
                 logger.error(f"Failed to fix {doc.id}: {e}")
+                failed_ids.add(doc.id)
+
+        return failed_ids
 
 
 def main():

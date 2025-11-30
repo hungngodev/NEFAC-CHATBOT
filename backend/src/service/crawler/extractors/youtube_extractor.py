@@ -41,13 +41,22 @@ class YouTubeExtractor(BaseExtractor):
     def source_name(self) -> str:
         return CrawlerSource.YOUTUBE.value
 
-    def extract(self) -> ExtractorResult:
+    def extract(self, ignore_ids: set[str] | None = None) -> ExtractorResult:
         logger.info("YouTube: fetching channel listing: %s", self.youtube_config.channel_url)
         videos = self._get_channel_videos()
         logger.info("YouTube: found %d videos in channel", len(videos))
         documents: List[YouTubeMetadata] = []
 
+        if ignore_ids:
+            print(f"🔄 Incremental crawl: Skipping {len(ignore_ids)} existing YouTube videos")
+
         for idx, v in enumerate(videos, start=1):
+            # Check if video is already crawled
+            video_id = v.get("id")
+            if ignore_ids and video_id and video_id in ignore_ids:
+                logger.debug("Skipping existing video: %s", video_id)
+                continue
+
             try:
                 logger.info("YouTube: processing video %d/%d", idx, len(videos))
                 doc = self._process_video(v)

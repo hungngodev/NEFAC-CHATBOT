@@ -22,8 +22,8 @@ share/python-wheels/
 *.egg
 MANIFEST
 *.pkl
-
-/resource
+*.json
+/resources
 # Virtual Environment
 venv/
 env/

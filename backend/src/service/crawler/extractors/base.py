@@ -23,7 +23,7 @@ class BaseExtractor(ABC):
         self.session.headers.update({"User-Agent": "Mozilla/5.0 (compatible; NEFAC-Crawler/1.0)"})
 
     @abstractmethod
-    def extract(self) -> ExtractorResult:
+    def extract(self, **kwargs) -> ExtractorResult:
         """Extract documents from source."""
 
     def _create_document_info(self, id_value: str, title: str, source_url: str, mime_type: str, date: str = "", filename: str | None = None, **kwargs) -> BaseMetadata:

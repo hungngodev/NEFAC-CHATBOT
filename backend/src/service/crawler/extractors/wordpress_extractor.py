@@ -50,16 +50,21 @@ class WordPressExtractor(BaseExtractor):
     def source_name(self) -> str:
         return "wordpress_rest_api"
 
-    def extract(self) -> ExtractorResult:
+    def extract(self, after_date: str | None = None) -> ExtractorResult:
         documents = []
+        params = {"after": after_date} if after_date else None
+
+        if after_date:
+            print(f"🔄 Incremental crawl: Fetching WordPress content modified after {after_date}")
+
         # extract posts/pages/news
         for content_type in ["posts", "pages", "news"]:
-            items = self._extract_content(content_type)
+            items = self._extract_content(content_type, params)
             documents.extend(items)
             self.summary_counts[content_type]["HTML"] = len(items)
 
         # extract media
-        media_items = self._extract_media()
+        media_items = self._extract_media(params)
         documents.extend(media_items)
 
         # print per-type summary
@@ -122,16 +127,16 @@ class WordPressExtractor(BaseExtractor):
 
         return all_items
 
-    def _extract_content(self, content_type: str) -> List[BaseMetadata]:
-        items = self._get(content_type)
+    def _extract_content(self, content_type: str, params: Dict = None) -> List[BaseMetadata]:
+        items = self._get(content_type, params)
         documents = []
         for item in tqdm(items, desc=f"Extracting {content_type}", unit="item"):
             doc = self._create_html_document(item, content_type)
             documents.append(doc)
         return documents
 
-    def _extract_media(self) -> List[BaseMetadata]:
-        items = self._get("media")
+    def _extract_media(self, params: Dict = None) -> List[BaseMetadata]:
+        items = self._get("media", params)
         documents = []
         allowed_extensions = [".pdf", ".xlsx", ".xls", ".csv", ".doc", ".docs"]
         for item in tqdm(items, desc="Extracting media", unit="file"):

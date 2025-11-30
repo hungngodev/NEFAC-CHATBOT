@@ -15,7 +15,6 @@ class CrawlerSource(Enum):
 
     WORDPRESS_REST_API = "wordpress_rest_api"
     YOUTUBE = "youtube"
-    WEB_SCRAPING = "web_scraping"
 
 
 @dataclass

@@ -12,9 +12,9 @@ from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams
 
-from src.config.models import EMBEEDING_DIMENSIONS, EMBEEDING_MODEL_NAME
+from src.config.models import EMBEDDING_DIMENSIONS, EMBEDDING_MODEL_NAME
 
-embedding_model = OpenAIEmbeddings(model=EMBEEDING_MODEL_NAME)
+embedding_model = OpenAIEmbeddings(model=EMBEDDING_MODEL_NAME)
 
 qdrant_url = os.environ["QDRANT_ENDPOINT"]
 collection_name = os.environ["QDRANT_CLUSTER_ID"]
@@ -34,7 +34,7 @@ try:
 
     if not collection_exists:
         print(f"Creating new collection: {collection_name}")
-        client.create_collection(collection_name=collection_name, vectors_config=VectorParams(size=EMBEEDING_DIMENSIONS, distance=Distance.COSINE))  # text-embedding-3-small dimension
+        client.create_collection(collection_name=collection_name, vectors_config=VectorParams(size=EMBEDDING_DIMENSIONS, distance=Distance.COSINE))  # text-embedding-3-small dimension
         print(f"Collection {collection_name} created successfully")
 except Exception as e:
     print(f"Error checking/creating collection: {e}")

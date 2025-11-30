@@ -108,6 +108,44 @@ class MetadataManager:
         filtered_dict = self._filter_dict_for_dataclass(doc_dict, target_class)
         return target_class(**filtered_dict)
 
+    def _merge_and_save(self, new_docs: List[Dict[str, Any]], file_path: Path):
+        """Merge new documents with existing ones and save."""
+        if not new_docs:
+            return
+
+        existing_docs = []
+        if file_path.exists():
+            try:
+                loaded = JSONUtils.load_from_file(file_path)
+                if isinstance(loaded, list):
+                    existing_docs = loaded
+            except Exception as e:
+                logger.warning(f"Failed to load existing metadata from {file_path}: {e}")
+
+        # Map existing docs by ID
+        doc_map = {d.get("id"): d for d in existing_docs if d.get("id")}
+
+        # Update/Insert new docs
+        for doc in new_docs:
+            if doc_id := doc.get("id"):
+                doc_map[doc_id] = doc
+            else:
+                # Fallback for docs without ID (should be rare)
+                existing_docs.append(doc)
+
+        # Reconstruct list
+        final_list = list(doc_map.values())
+
+        # Add back any existing docs that didn't have IDs
+        for d in existing_docs:
+            if not d.get("id"):
+                final_list.append(d)
+
+        # Sort by date descending (newest first) to maintain order
+        final_list.sort(key=lambda x: x.get("date") or "", reverse=True)
+
+        JSONUtils.save_to_file(final_list, file_path)
+
     def save_documents_metadata(self, documents: List[BaseMetadata]):
         """Save document metadata with schema validation to separate files by type."""
         pdf_documents: List[Dict[str, Any]] = []
@@ -132,7 +170,7 @@ class MetadataManager:
             docs = document_lists[category]
             if docs:
                 file_path = self.metadata_dir / filename
-                JSONUtils.save_to_file(docs, file_path)
+                self._merge_and_save(docs, file_path)
 
     def save_youtube_metadata(self, youtube_videos: List[Dict[str, Any]]):
         """Save YouTube video metadata."""
@@ -142,7 +180,7 @@ class MetadataManager:
             youtube_documents.append(validated.model_dump())
 
         youtube_file = self.metadata_dir / "youtube_metadata.json"
-        JSONUtils.save_to_file(youtube_documents, youtube_file)
+        self._merge_and_save(youtube_documents, youtube_file)
 
     def save_images_metadata(self):
         """Save metadata for images."""
@@ -232,3 +270,43 @@ class MetadataManager:
             )
 
         return full_meta
+
+    def get_crawl_state(self) -> tuple[str | None, set[str]]:
+        """
+        Get current crawl state for incremental crawling.
+        Returns:
+            tuple: (latest_wordpress_date, existing_youtube_ids)
+        """
+        latest_date = None
+        youtube_ids = set()
+
+        # Scan all metadata files
+        for metadata_file in self.metadata_dir.glob("*_metadata.json"):
+            try:
+                docs = JSONUtils.load_from_file(metadata_file)
+                if not docs:
+                    continue
+
+                for doc in docs:
+                    # Collect YouTube IDs
+                    if doc.get("source") == "youtube" or doc.get("mime_type") == "video/youtube":
+                        if vid := doc.get("video_id"):
+                            youtube_ids.add(vid)
+                        # Also try to extract from ID if video_id missing
+                        elif doc_id := doc.get("id", ""):
+                            if doc_id.startswith("youtube_"):
+                                youtube_ids.add(doc_id.replace("youtube_", ""))
+
+                    # Find latest WordPress date
+                    # We look at 'modified' date first, then 'date'
+                    if doc.get("source") in ["wordpress", "wordpress_rest_api"]:
+                        doc_date = doc.get("modified") or doc.get("date")
+                        if doc_date:
+                            # Simple string comparison works for ISO8601
+                            if latest_date is None or doc_date > latest_date:
+                                latest_date = doc_date
+
+            except Exception as e:
+                logger.warning(f"Error reading metadata file {metadata_file}: {e}")
+
+        return latest_date, youtube_ids

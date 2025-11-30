@@ -79,7 +79,6 @@ class CrawlerConfig:
 
     # Features
     enable_youtube_integration: bool = True
-    enable_external_crawling: bool = True
 
     # YouTube config
     youtube: YouTubeConfig = field(default_factory=YouTubeConfig)
@@ -143,7 +142,6 @@ class CrawlerConfig:
             max_concurrent_requests=get_int("MAX_CONCURRENT", 10),
             batch_size=get_int("BATCH_SIZE", 50),
             enable_youtube_integration=get_bool("ENABLE_YOUTUBE", True),
-            enable_external_crawling=get_bool("ENABLE_EXTERNAL", True),
             youtube=youtube_config,
             faust_username=os.getenv("FAUST_USERNAME"),
             faust_password=os.getenv("FAUST_PASSWORD"),

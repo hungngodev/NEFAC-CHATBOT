@@ -108,20 +108,32 @@ class NEFACCrawler:
                     pbar.set_postfix({"✅": self.stats.success, "❌": self.stats.failed})
                     pbar.update(1)
 
-    def crawl(self, mode: str = "full", validate_sync: bool = True) -> List[BaseMetadata]:
+    def crawl(self, mode: str = "full", validate_sync: bool = True, incremental: bool = False) -> List[BaseMetadata]:
         """Main crawl orchestrator with comprehensive validation."""
-        logger.info(f"🚀 Starting {mode} crawl...")
+        logger.info(f"🚀 Starting {mode} crawl (Incremental: {incremental})...")
+
+        # Get incremental state if needed
+        after_date = None
+        ignore_ids = None
+        if incremental:
+            after_date, ignore_ids = self.metadata_manager.get_crawl_state()
+            if after_date:
+                logger.info(f"📅 Incremental: WordPress after {after_date}")
+            if ignore_ids:
+                logger.info(f"🎥 Incremental: Skipping {len(ignore_ids)} YouTube videos")
 
         # Extract documents based on mode
         wordpress_docs = []
         youtube_docs = []
 
         if mode in ["full", "wordpress"]:
-            wordpress_docs = self.extract_safe(self.wordpress_extractor.extract, "WordPress")
+            # Pass after_date to WordPress extractor
+            wordpress_docs = self.extract_safe(lambda: self.wordpress_extractor.extract(after_date=after_date), "WordPress")
             self.stats.wordpress = len(wordpress_docs)
 
         if mode in ["full", "youtube"] and self.config.enable_youtube_integration:
-            youtube_docs = self.extract_safe(self.youtube_extractor.extract, "YouTube")
+            # Pass ignore_ids to YouTube extractor
+            youtube_docs = self.extract_safe(lambda: self.youtube_extractor.extract(ignore_ids=ignore_ids), "YouTube")
             self.stats.youtube = len(youtube_docs)
 
         all_docs = wordpress_docs + youtube_docs
@@ -172,6 +184,7 @@ def create_parser() -> argparse.ArgumentParser:
     mode.add_argument("--sync-only", action="store_true", help="Only run synchronization validation (no crawling)")
 
     # Options
+    parser.add_argument("--incremental", action="store_true", help="Incremental crawl (only new content)")
     parser.add_argument("--output-dir", help="Output directory")
     parser.add_argument("--workers", type=int, default=5, help="Parallel workers (default: 5)")
     parser.add_argument("--debug", action="store_true", help="Debug logging")
@@ -246,7 +259,10 @@ def main():
         print(f"🔍 Validation: {'Disabled' if args.no_validation else 'Enabled'}")
 
         validate_sync = not args.no_validation
-        documents = crawler.crawl(mode, validate_sync=validate_sync)
+
+        is_incremental = getattr(args, "incremental", False)
+
+        documents = crawler.crawl(mode, validate_sync=validate_sync, incremental=is_incremental)
 
         print(f"🎉 Done: {len(documents)} documents processed")
 

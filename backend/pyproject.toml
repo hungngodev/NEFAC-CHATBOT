@@ -51,6 +51,8 @@ dependencies = [
     "neo4j (>=5.16.0)",
     "llama-index-core (>=0.14.8,<0.15.0)",
     "llama-index-llms-gemini (>=0.6.1,<0.7.0)",
+    "rapidfuzz (>=3.14.3,<4.0.0)",
+    "deepmultilingualpunctuation (>=1.0.1,<2.0.0)",
 ]
 
 [build-system]

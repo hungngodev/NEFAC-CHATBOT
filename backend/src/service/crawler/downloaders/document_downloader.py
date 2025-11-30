@@ -56,7 +56,12 @@ class DocumentDownloader:
                     # Update basic metadata
                     self._update_document_metadata(document_info, transcript_path)
                     return True
-            # No transcript file detected; nothing to download
+                else:
+                    # File path specified but missing -> Failure to restore
+                    return False
+
+            # If no file path, check if we can find it by ID
+            # (This is a fallback, usually file_path is set)
             return True
 
         filepath = self._generate_filepath(document_info)
