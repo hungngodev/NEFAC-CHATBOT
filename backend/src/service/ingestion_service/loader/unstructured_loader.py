@@ -200,6 +200,9 @@ def load_document_nodes(
                     elements = u_partition(path_str)
                     whole_text = "\n\n".join(str(el).strip() for el in elements if str(el).strip())
 
+                    if ext in {"html", "pdf"}:
+                        logger.info(f"{ext.upper()} Parsed: {path.name} | Elements: {len(elements)} | Text Length: {len(whole_text)} chars")
+
             if ext == "txt":
                 _log_phase("Parsing transcript timestamps")
                 logger.info(f"Attempting to parse timestamps for {path.name}. Text len: {len(whole_text)}")
