@@ -12,6 +12,7 @@ from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.state import QueryTransformerState
+from src.utils.debug import get_debug_mode
 from src.utils.model_factory import init_model
 
 
@@ -69,7 +70,8 @@ workflow.add_edge(FACTUAL_STRATEGY_GENERATE_FACTUAL_QUERY, FACTUAL_STRATEGY_RETR
 workflow.add_edge(FACTUAL_STRATEGY_RETRIEVE_SUBGRAPH, FACTUAL_STRATEGY_FORMAT_DOCUMENTS)
 workflow.add_edge(FACTUAL_STRATEGY_FORMAT_DOCUMENTS, END)
 
+
 factual_strategy = workflow.compile(
-    debug=True,
+    debug=get_debug_mode(),
     name="factual_strategy_sequence",
 )

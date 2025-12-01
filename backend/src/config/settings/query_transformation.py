@@ -39,6 +39,15 @@ class QueryTransformerConfig(BaseModel):
         },
     )
 
+    query_transformer_quick_mode_instruction: str = Field(
+        default=prompts_module.DEFAULT_QUERY_TRANSFORMER_QUICK_MODE_INSTRUCTION,
+        description="Instruction appended to the prompt when in quick research mode.",
+        json_schema_extra={
+            "langgraph_nodes": [node_names_module.QUERY_TRANSFORMER_NODE],
+            "langgraph_type": "prompt",
+        },
+    )
+
 
 class ContextualStrategyConfig(BaseModel):
     """Configuration for contextual strategy query transformation."""

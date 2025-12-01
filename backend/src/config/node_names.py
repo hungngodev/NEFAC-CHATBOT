@@ -78,3 +78,7 @@ RESEARCH_RESEARCHER_TOOLS = "researcher_tools"
 RESEARCH_COMPRESS_RESEARCH = "compress_research"
 RESEARCH_TEAM = "research_team"
 RESEARCH_PACKAGE_OUTPUT = "package_output"
+
+# Quick Agent
+QUICK_AGENT_NODE = "quick_agent"
+QUICK_AGENT_TOOLS_NODE = "quick_agent_tools"

@@ -51,11 +51,11 @@ class ResearchConfig(BaseModel):
     # Hard limit on how many InternalDocumentSearch calls are processed per iteration.
     # Additional calls in the same assistant message will be deferred with a ToolMessage.
     max_internal_search_calls_per_turn: int = Field(
-        default=4,
+        default=2,
         metadata={
             "x_oap_ui_config": {
                 "type": "slider",
-                "default": 4,
+                "default": 2,
                 "min": 1,
                 "max": 10,
                 "step": 1,

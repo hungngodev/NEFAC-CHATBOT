@@ -12,6 +12,7 @@ from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.state import QueryTransformerState
+from src.utils.debug import get_debug_mode
 from src.utils.model_factory import init_model
 
 
@@ -67,7 +68,8 @@ workflow.add_edge(CONTEXTUAL_STRATEGY_GENERATE_CONTEXTUAL_QUERY, CONTEXTUAL_STRA
 workflow.add_edge(CONTEXTUAL_STRATEGY_RETRIEVE_SUBGRAPH, CONTEXTUAL_STRATEGY_FORMAT_DOCUMENTS)
 workflow.add_edge(CONTEXTUAL_STRATEGY_FORMAT_DOCUMENTS, END)
 
+
 contextual_strategy = workflow.compile(
-    debug=True,
+    debug=get_debug_mode(),
     name="contextual_strategy_sequence",
 )

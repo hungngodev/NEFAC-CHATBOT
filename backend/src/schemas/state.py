@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import operator
-from operator import add
 from typing import Annotated, Any, Literal, TypedDict
 
 from langchain_core.documents import Document
@@ -60,6 +59,33 @@ class RetrievalPlanModel(BaseModel):
     rerank_k: int
 
 
+def reduce_documents(current_docs: list[Document] | None, new_docs: list[Document] | None) -> list[Document]:
+    if current_docs is None:
+        current_docs = []
+    if new_docs is None:
+        new_docs = []
+
+    seen = set()
+    unique_docs = []
+
+    # Add existing docs
+    for doc in current_docs:
+        # Use a tuple of content and source as key
+        key = (doc.page_content, str(doc.metadata.get("source", "")))
+        if key not in seen:
+            seen.add(key)
+            unique_docs.append(doc)
+
+    # Add new docs
+    for doc in new_docs:
+        key = (doc.page_content, str(doc.metadata.get("source", "")))
+        if key not in seen:
+            seen.add(key)
+            unique_docs.append(doc)
+
+    return unique_docs
+
+
 class RetrievalSubgraphState(TypedDict):
     """State for the retrieval subgraph."""
 
@@ -68,7 +94,7 @@ class RetrievalSubgraphState(TypedDict):
     retrieval_plan: dict[str, Any] = {}
     graph_documents: list[Document] = []
     document_search_documents: list[Document] = []
-    documents: list[Document] = []  # Final combined list
+    documents: Annotated[list[Document], reduce_documents] = []  # Final combined list
 
 
 class QueryTransformerState(RetrievalSubgraphState):
@@ -98,43 +124,59 @@ def override_reducer(current_value, new_value):
         return operator.add(current_value, new_value)
 
 
+class BaseResearchState(TypedDict):
+    """Base state with common research fields."""
+
+    research_brief: str | None
+    notes: Annotated[list[str], override_reducer]
+    raw_notes: Annotated[list[str], override_reducer]
+    final_documents: Annotated[list[Document], reduce_documents]
+
+
 class AgentInputState(MessagesState):
     """InputState is only 'messages'"""
 
 
 class AgentState(MessagesState):
     supervisor_messages: Annotated[list[MessageLikeRepresentation], override_reducer]
-    research_brief: str | None
-    raw_notes: Annotated[list[str], override_reducer] = []
-    notes: Annotated[list[str], override_reducer] = []
     final_report: str
-    final_documents: Annotated[list[Document], add] = Field(default_factory=list, description="Final list of retrieved documents")
+
+    # BaseResearchState fields explicitly defined to avoid metaclass conflict
+    research_brief: str | None
+    notes: Annotated[list[str], override_reducer]
+    raw_notes: Annotated[list[str], override_reducer]
+    final_documents: Annotated[list[Document], reduce_documents]
 
 
-class SupervisorState(TypedDict):
+class QuickAgentState(AgentState):
+    """State for the Quick Agent subgraph."""
+
+    tool_call_iterations: int = 0
+    final_report: str = ""
+
+
+class SupervisorState(BaseResearchState):
     supervisor_messages: Annotated[list[MessageLikeRepresentation], override_reducer]
-    research_brief: str
-    notes: Annotated[list[str], override_reducer] = []
     research_iterations: int = 0
-    raw_notes: Annotated[list[str], override_reducer] = []
     # Send() API aggregation fields (following legacy pattern)
     completed_research_results: Annotated[list["ResearcherOutputState"], operator.add] = []
     research_tool_calls: list[dict] = []  # Store tool calls for result matching
 
 
-class ResearcherState(TypedDict):
+class ResearcherState(BaseResearchState):
     researcher_messages: Annotated[list[MessageLikeRepresentation], operator.add]
     tool_call_iterations: int = 0
     research_topic: str
     compressed_research: str
-    raw_notes: Annotated[list[str], override_reducer] = []
     _completed_query_results: Annotated[list[dict], override_reducer] = []  # Aggregated query transformer results (supports override clears)
     _answered_tool_call_ids: Annotated[list[str], operator.add] = []
+    documents: Annotated[list[Document], reduce_documents] = []
 
 
 class ResearcherOutputState(BaseModel):
     compressed_research: str
     raw_notes: Annotated[list[str], override_reducer] = []
+    documents: list[Document] = Field(default_factory=list)
 
 
 class ResearcherSendOutputState(TypedDict):

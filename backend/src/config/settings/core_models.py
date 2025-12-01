@@ -53,7 +53,7 @@ class CoreModelsConfig(BaseModel):
     # Global switch to disable model streaming; models should not stream
     # and callers should not pass stream flags on invoke/ainvoke.
     disable_streaming: bool = Field(
-        default=True,
+        default=False,
         description="Disable streaming at the model level; all LLM invocations are non-streaming.",
         json_schema_extra={"langgraph_type": "boolean"},
     )

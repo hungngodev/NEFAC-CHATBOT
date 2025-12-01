@@ -5,21 +5,9 @@ from langgraph.types import Command, Send
 from src.config.node_names import QUERY_TRANSFORMER_NODE, RESEARCH_COMPRESS_RESEARCH, RESEARCH_RESEARCHER
 from src.config.settings import Configuration
 from src.core.agents.tools.main import get_all_tools
+from src.core.agents.tools.misc_utils import execute_tool_safely, safe_get
 from src.core.agents.tools.search import anthropic_websearch_called, openai_websearch_called
 from src.schemas.state import ResearcherState
-
-
-async def execute_tool_safely(tool, args, config):
-    try:
-        return await tool.ainvoke(args, config)
-    except Exception as e:
-        return f"Error executing tool: {str(e)}"
-
-
-def _get_msg_attr(msg, key, default=None):
-    if isinstance(msg, dict):
-        return msg.get(key, default)
-    return getattr(msg, key, default)
 
 
 def _is_tool_message(msg) -> bool:
@@ -28,14 +16,14 @@ def _is_tool_message(msg) -> bool:
     if isinstance(msg, dict):
         role = msg.get("role") or msg.get("type")
         return role == "tool"
-    return getattr(msg, "type", None) == "tool"
+    return safe_get(msg, "type") == "tool"
 
 
 def _assistant_tool_calls(msg) -> list[dict]:
-    calls = _get_msg_attr(msg, "tool_calls")
+    calls = safe_get(msg, "tool_calls")
     if calls:
         return calls
-    ak = _get_msg_attr(msg, "additional_kwargs", {}) or {}
+    ak = safe_get(msg, "additional_kwargs", {}) or {}
     return ak.get("tool_calls") or []
 
 
@@ -63,7 +51,7 @@ def _pending_tool_call_ids(messages: list[object]) -> set[str]:
     for m in messages[last_idx + 1 :]:
         if not _is_tool_message(m):
             break
-        tcid = _get_msg_attr(m, "tool_call_id")
+        tcid = safe_get(m, "tool_call_id")
         if tcid:
             observed.add(tcid)
     return expected - observed
@@ -83,7 +71,7 @@ async def researcher_tools(state: ResearcherState, config: RunnableConfig):
         if not tool_calls:
             return [], []
         tools = await get_all_tools(config)
-        tools_by_name = {getattr(tool, "name", getattr(getattr(tool, "metadata", {}), "get", lambda *_: None)("name") or "web_search"): tool for tool in tools}
+        tools_by_name = {safe_get(tool, "name", safe_get(safe_get(tool, "metadata", {}), "get", lambda *_: None)("name") or "web_search"): tool for tool in tools}
         already_answered = set(state.get("_answered_tool_call_ids", []))
         outputs: list[ToolMessage] = []
         new_answered: list[str] = []
@@ -143,6 +131,7 @@ async def researcher_tools(state: ResearcherState, config: RunnableConfig):
 
     if completed_query_results:
         query_tool_messages: list[ToolMessage] = []
+        collected_documents = []
         strategy_map = {
             "multiquery": "multi-perspective search",
             "decompose": "sub-question analysis",
@@ -155,10 +144,19 @@ async def researcher_tools(state: ResearcherState, config: RunnableConfig):
             source_tool_call = query_result.get("_source_tool_call", {})
             transformed_context = query_result.get("transformed_context", "")
             method_used = query_result.get("method_used", "default")
+            docs = query_result.get("documents", [])
+
+            if docs:
+                collected_documents.extend(docs)
+
             if source_tool_call and transformed_context:
                 strategy_info = f" (using {strategy_map.get(method_used, method_used)})" if method_used != "default" else ""
                 header = f"Internal Document Search Results{strategy_info}"
                 content = f"{header}\n{'='*80}\n{transformed_context}"
+
+                if docs:
+                    content += f"\n\n[System Notification]: Extracted {len(docs)} documents and added to researcher state."
+
                 query_tool_messages.append(
                     ToolMessage(
                         content=content,
@@ -173,6 +171,8 @@ async def researcher_tools(state: ResearcherState, config: RunnableConfig):
                 "researcher_messages": query_tool_messages,
                 # Clear consumed results using override semantics
                 "_completed_query_results": {"type": "override", "value": []},
+                # Update documents in state
+                "documents": collected_documents,
             },
         )
 
@@ -200,7 +200,7 @@ async def researcher_tools(state: ResearcherState, config: RunnableConfig):
                 deduped_internal_calls.append(tc)
 
         # Enforce per-turn cap for internal search
-        cap = max(1, int(getattr(configurable, "max_internal_search_calls_per_turn", 4) or 4))
+        cap = max(2, int(configurable.max_internal_search_calls_per_turn))
         to_dispatch_calls = deduped_internal_calls[:cap]
         overflow_calls = deduped_internal_calls[cap:]
         query_transformer_sends = [

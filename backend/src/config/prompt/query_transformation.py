@@ -52,6 +52,7 @@ Examples of when to use each method:
 - "What is NEFAC?" → default
 Question: {question}
 Respond ONLY with the method name."""
+DEFAULT_QUERY_TRANSFORMER_QUICK_MODE_INSTRUCTION = "\n\nIMPORTANT: You are in 'quick' mode. Prioritize using the 'default' method unless the query is complex or ambiguous. Speed is the priority."
 
 DEFAULT_CONTEXTUAL_STRATEGY_PROMPT = """You are an expert at understanding implied context in user queries, specifically in the domain of First Amendment rights, freedom of information, and government transparency as covered by NEFAC (New England First Amendment Coalition).
 

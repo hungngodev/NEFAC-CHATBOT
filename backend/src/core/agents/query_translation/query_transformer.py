@@ -25,6 +25,7 @@ from src.core.agents.query_translation.hyde import hyde
 from src.core.agents.query_translation.multi_query import multi_query
 from src.core.agents.query_translation.step_back import step_back
 from src.schemas.state import QueryTransformerOutputState, QueryTransformerState
+from src.utils.debug import get_debug_mode
 from src.utils.model_factory import init_model
 
 
@@ -42,8 +43,13 @@ async def route_to_transformer(state: QueryTransformerState, config: RunnableCon
     Avoids any potential streaming by using a plain text parser instead of structured output.
     """
     configurable = Configuration.from_runnable_config(config)
+
+    prompt_template = configurable.query_transformer_prompt
+    if configurable.research_mode == "quick":
+        prompt_template += configurable.query_transformer_quick_mode_instruction
+
     llm = init_model(configurable.query_transformer_model, disable_streaming=configurable.disable_streaming)
-    method_chain = ChatPromptTemplate.from_template(configurable.query_transformer_prompt) | llm.with_structured_output(MethodSelection)
+    method_chain = ChatPromptTemplate.from_template(prompt_template) | llm.with_structured_output(MethodSelection)
     question = state["transformed_query"]
     response = await method_chain.ainvoke({"question": question})
     method = response.method.lower().strip()
@@ -71,6 +77,7 @@ def prepare_output(state: QueryTransformerState) -> QueryTransformerOutputState:
         "method_used": state.get("method_used", "default"),
         "_source_tool_call": state.get("_source_tool_call", {}),
         "transformed_query": state.get("transformed_query", ""),
+        "documents": state.get("documents", []),
     }
 
     return {"_completed_query_results": [result]}
@@ -116,9 +123,10 @@ workflow.add_edge(QUERY_TRANSFORMER_CONTEXTUAL_STRATEGY, QUERY_TRANSFORMER_PREPA
 workflow.add_edge(QUERY_TRANSFORMER_DEFAULT_RETRIEVAL, QUERY_TRANSFORMER_PREPARE_OUTPUT)
 workflow.add_edge(QUERY_TRANSFORMER_PREPARE_OUTPUT, END)
 
+
 _RL = int(_os.getenv("GRAPH_RECURSION_LIMIT", "60"))
 query_transformer = workflow.compile(
-    debug=True,
+    debug=get_debug_mode(),
     name="query_transformation_strategy_router",
     interrupt_before=None,
     interrupt_after=None,

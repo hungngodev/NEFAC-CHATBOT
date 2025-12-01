@@ -19,6 +19,7 @@ from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.state import QueryTransformerState
+from src.utils.debug import get_debug_mode
 from src.utils.model_factory import init_model
 
 
@@ -64,6 +65,7 @@ async def format_answer_node(state: DecompositionState, config: RunnableConfig) 
 
     context_docs = state["documents"]
     context = format_docs(context_docs)
+
     # Accumulate Q&A pairs across iterations to advance the loop index
     q_a_pairs = state.get("q_a_pairs", [])
     previous_q_a = "\n---\n".join(q_a_pairs)
@@ -107,6 +109,7 @@ workflow = StateGraph(DecompositionState)
 workflow.add_node(
     DECOMPOSITION_GENERATE_SUB_QUESTIONS,
     generate_sub_questions_node,
+    destinations=[DECOMPOSITION_ANSWER_SUB_QUESTIONS, DECOMPOSITION_SYNTHESIZE_FINAL_ANSWER],
     metadata={
         "description": "Decomposes complex queries into focused sub-questions for iterative retrieval",
         "dependencies": ["transformed_query"],
@@ -121,6 +124,7 @@ workflow.add_node(
 workflow.add_node(
     DECOMPOSITION_ANSWER_SUB_QUESTIONS,
     answer_sub_questions_node,
+    destinations=[DECOMPOSITION_RETRIEVE_SUBGRAPH],
     metadata={"description": "Prepares retrieval query for current unanswered sub-question", "dependencies": ["sub_questions", "q_a_pairs"], "outputs": ["retrieval_query"], "strategy": "iterative_sub_question_processing", "expected_duration": "0.1-0.5s", "loop_control": "tracks_current_index"},
 )
 
@@ -142,6 +146,7 @@ workflow.add_node(
 workflow.add_node(
     DECOMPOSITION_RETRIEVE_SUBGRAPH,
     retrieval_subgraph,
+    destinations=[DECOMPOSITION_FORMAT_ANSWER],
     metadata={
         "description": "Retrieval subgraph for decomposition strategy sub-questions",
         "dependencies": ["retrieval_query"],
@@ -156,6 +161,7 @@ workflow.add_node(
 workflow.add_node(
     DECOMPOSITION_SYNTHESIZE_FINAL_ANSWER,
     synthesize_final_answer_node,
+    destinations=[END],
     metadata={
         "description": "Synthesizes final comprehensive answer from all Q&A pairs",
         "dependencies": ["q_a_pairs", "transformed_query"],
@@ -181,7 +187,8 @@ workflow.add_edge(DECOMPOSITION_RETRIEVE_SUBGRAPH, DECOMPOSITION_FORMAT_ANSWER)
 workflow.add_conditional_edges(DECOMPOSITION_FORMAT_ANSWER, route_from_format_nodes)
 workflow.add_edge(DECOMPOSITION_SYNTHESIZE_FINAL_ANSWER, END)
 
+
 decomposition = workflow.compile(
-    debug=True,
+    debug=get_debug_mode(),
     name="decomposition_strategy_loop",
 )

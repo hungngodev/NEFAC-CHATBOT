@@ -60,7 +60,7 @@ DEFAULT_RETRIEVAL_PLANNING_PROMPT = """You are a retrieval strategy planner for 
 Retrieval knobs (set any k to 0 to disable that path):
 - Vector search: controlled by `vector_k` (semantic embeddings)
 - Keyword search: controlled by `keyword_k` (BM25/lexical)
-- Graph search: controlled by `graph_k` (Neo4j traversal/QA)
+{graph_knob}
 
 General guidance:
 - Start small. Prefer low totals by default to reduce latency and noise.
@@ -82,18 +82,11 @@ Method Reference (do not include in output):
    - Queries requiring both semantic understanding and exact keyword matches
    - Broad exploratory searches
 
-2) graph_search — Neo4j knowledge graph traversal
-   Process:
-   - Uses Cypher queries to traverse entity relationships and connections
-   Best for:
-   - Connections and relationships between legal entities
-   - Legal precedents and case citations
-   - Structured queries involving specific legal concepts, people, or organizations
-   - Queries like “related to”, “connected with”, “cases involving”, “influenced by”
+{graph_method}
 
 Method selection guidelines:
 - Use document_search when: conceptual/general topics; comprehensive content coverage; semantic similarity is important; descriptive terms/natural language.
-- Use graph_search when: specific entities/relationships; precedents/citations; named entities (people, orgs, cases); structured legal knowledge or citations.
+{graph_guideline}
 - Use both when: complex queries benefit from both; need comprehensive results covering content and relationships; both conceptual and entity-specific elements; maximum recall desired.
 
 ## Parameter Configuration:
@@ -135,9 +128,25 @@ Return a structured retrieval plan that matches this exact schema (flat fields) 
 - `vector_weight`: float (0.3–0.7 typical; default 0.5)
 - `vector_k`: int (3–10), prefer 5–7 unless the query is unusually broad (0 disables vector search)
 - `keyword_k`: int (3–10), prefer 5–7 unless the query is exact-phrase heavy (0 disables keyword search)
-- `graph_k`: int (0–5), set >0 to enable graph retrieval (0 disables graph search)
+{graph_param}
 - `rerank_k`: int (2–6), prefer 3–5 for most queries
 
 Do not include any nested objects, extra keys, or rationale text. Produce only data conforming to the above fields.
 
 Analyze the user's query considering intent, entities, scope, and complexity to determine the optimal retrieval strategy."""
+
+# Graph Search Prompt Components
+GRAPH_SEARCH_KNOB = "- Graph search: controlled by `graph_k` (Neo4j traversal/QA)"
+
+GRAPH_SEARCH_METHOD = """2) graph_search — Neo4j knowledge graph traversal
+   Process:
+   - Uses Cypher queries to traverse entity relationships and connections
+   Best for:
+   - Connections and relationships between legal entities
+   - Legal precedents and case citations
+   - Structured queries involving specific legal concepts, people, or organizations
+   - Queries like “related to”, “connected with”, “cases involving”, “influenced by”"""
+
+GRAPH_SEARCH_GUIDELINE = "- Use graph_search when: specific entities/relationships; precedents/citations; named entities (people, orgs, cases); structured legal knowledge or citations."
+
+GRAPH_SEARCH_PARAM = "- `graph_k`: int (0–5), set >0 to enable graph retrieval (0 disables graph search)"

@@ -10,16 +10,16 @@ from typing import Literal
 EMBEDDING_MODEL_NAME = "text-embedding-3-small"
 EMBEDDING_DIMENSIONS = 1536
 
-# Service Tier Configuration
-# Options: "flex", "standard", "priority"
-# "flex" is cheaper but may have higher latency/lower availability.
-SERVICE_TIER: Literal["flex", "standard", "priority"] = "flex"
+SERVICE_TIER: Literal["flex", "default", "auto", "priority"] = "default"
+ENABLE_STREAMING: bool = True
+DEFAULT_MAX_RETRIES: int = 5
 
 ModelType = Literal[
     "openai:gpt-4o",
     "openai:gpt-4o-mini",
     "openai:gpt-4-turbo",
     "openai:gpt-3.5-turbo",
+    "openai:gpt-5.1",
     "openai:gpt-5",
     "openai:gpt-5-mini",
     "openai:gpt-5-nano",
@@ -48,3 +48,4 @@ DEFAULT_COMPRESS_RESEARCH_MODEL = "openai:gpt-5-mini"
 DEFAULT_SUPERVISOR_MODEL = "openai:gpt-5.1"
 DEFAULT_RESEARCH_MODEL = "openai:gpt-5.1"
 DEFAULT_FINAL_REPORT_MODEL = "openai:gpt-5.1"
+DEFAULT_QUICK_AGENT_MODEL = "openai:gpt-5.1"

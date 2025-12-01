@@ -16,6 +16,7 @@ from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.state import QueryTransformerState
+from src.utils.debug import get_debug_mode
 from src.utils.model_factory import init_model
 
 
@@ -158,7 +159,8 @@ workflow.add_edge(STEP_BACK_RETRIEVE_STEP_BACK, STEP_BACK_PROCESS_STEP_BACK_CONT
 workflow.add_edge(STEP_BACK_PROCESS_STEP_BACK_CONTEXT, STEP_BACK_GENERATE_FINAL_RESPONSE)
 workflow.add_edge(STEP_BACK_GENERATE_FINAL_RESPONSE, END)
 
+
 step_back = workflow.compile(
-    debug=True,
+    debug=get_debug_mode(),
     name="step_back_strategy_parallel",
 )

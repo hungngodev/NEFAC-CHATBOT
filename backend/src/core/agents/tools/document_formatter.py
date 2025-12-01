@@ -2,10 +2,12 @@ import re
 
 from langchain_core.documents import Document
 
+from src.core.agents.tools.misc_utils import safe_get
+
 
 def _safe_meta(doc: Document) -> dict:
     try:
-        return dict(getattr(doc, "metadata", {}) or {})
+        return dict(safe_get(doc, "metadata", {}) or {})
     except Exception:
         return {}
 
@@ -45,12 +47,7 @@ def format_docs(docs: list[Document]) -> str:
             if m:
                 title = m.group(1).strip()
         title = title or "Unknown Source"
-
-        summary = meta.get("summary")
-
         parts = [f"title: {title}"]
-        if summary:
-            parts.append(f"summary: {summary}")
         if link:
             parts.append(f"link: {link}")
         parts.append(f"content: {doc.page_content}")

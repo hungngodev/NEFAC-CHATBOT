@@ -6,6 +6,7 @@ from langgraph.types import Command, Send
 from src.config.node_names import RESEARCH_TEAM, SUPERVISOR_NODE
 from src.config.settings import Configuration
 from src.core.agents.tools.main import get_notes_from_tool_calls
+from src.core.agents.tools.misc_utils import safe_get
 from src.core.agents.tools.token_utils import is_token_limit_exceeded
 from src.schemas.state import SupervisorState
 
@@ -37,26 +38,33 @@ async def supervisor_tools(state: SupervisorState, config: RunnableConfig) -> Su
         tool_messages = []
         raw_notes_parts = []
 
+        batch_docs = []
+
         for research_result, tool_call in zip(completed_research_results, research_tool_calls):
-            # Support both Pydantic object and plain dict forms
-            compressed = getattr(research_result, "compressed_research", None)
-            if compressed is None and isinstance(research_result, dict):
-                compressed = research_result.get("compressed_research")
+            # Extract fields once
+            compressed = safe_get(research_result, "compressed_research")
+            raw_notes_val = safe_get(research_result, "raw_notes")
+            docs = safe_get(research_result, "documents", [])
+
+            # Build ToolMessage content
+            content_parts = [compressed or "Error synthesizing research report: Maximum retries exceeded"]
+
+            if docs:
+                content_parts.append(f"\n\n[System Notification]: Extracted {len(docs)} documents from research and added to final documents.")
+                batch_docs.extend(docs)
+
             tool_messages.append(
                 ToolMessage(
-                    content=compressed or "Error synthesizing research report: Maximum retries exceeded",
+                    content="".join(content_parts),
                     name=tool_call["name"],
                     tool_call_id=tool_call["id"],
                 )
             )
 
-            raw_notes_val = getattr(research_result, "raw_notes", None)
-            if raw_notes_val is None and isinstance(research_result, dict):
-                raw_notes_val = research_result.get("raw_notes")
             if raw_notes_val:
                 raw_notes_parts.extend(raw_notes_val)
 
-        return Command(goto=SUPERVISOR_NODE, update={"supervisor_messages": tool_messages, "raw_notes": ["\n".join(raw_notes_parts)], "completed_research_results": [], "research_tool_calls": []})
+        return Command(goto=SUPERVISOR_NODE, update={"supervisor_messages": tool_messages, "raw_notes": ["\n".join(raw_notes_parts)], "completed_research_results": [], "research_tool_calls": [], "final_documents": batch_docs})
 
     if exceeded_allowed_iterations or no_tool_calls or research_complete_tool_call:
         return Command(goto=END, update={"notes": get_notes_from_tool_calls(supervisor_messages), "research_brief": state.get("research_brief", "")})

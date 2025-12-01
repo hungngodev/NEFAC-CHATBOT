@@ -1,15 +1,25 @@
 import os as _os
 
+from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, START, StateGraph
 
-from src.config.node_names import MEMORY_SUMMARIZER_NODE, RESEARCH_CLARIFY_WITH_USER, RESEARCH_FINAL_REPORT_GENERATION, RESEARCH_SUPERVISOR, RESEARCH_WRITE_RESEARCH_BRIEF
+from src.config.node_names import (
+    MEMORY_SUMMARIZER_NODE,
+    QUICK_AGENT_NODE,
+    RESEARCH_CLARIFY_WITH_USER,
+    RESEARCH_FINAL_REPORT_GENERATION,
+    RESEARCH_SUPERVISOR,
+    RESEARCH_WRITE_RESEARCH_BRIEF,
+)
 from src.config.settings import Configuration
 from src.core.agents.generation.final_report_generation import final_report_generation
 from src.core.agents.memory.summarizer import summarizer
 from src.core.agents.query_understanding.clarification import clarify_with_user
 from src.core.agents.query_understanding.write_research_brief import write_research_brief
+from src.core.agents.quick_agent.quick_agent import quick_agent_subgraph
 from src.core.agents.supervisor.supervisor import supervisor_subgraph
 from src.schemas.state import AgentInputState, AgentState
+from src.utils.debug import get_debug_mode
 
 deep_researcher_builder = StateGraph(state_schema=AgentState, input_schema=AgentInputState, output_schema=AgentState, context_schema=Configuration)
 
@@ -103,15 +113,49 @@ deep_researcher_builder.add_node(
     cache_policy=None,
 )
 
+deep_researcher_builder.add_node(
+    node=QUICK_AGENT_NODE,
+    action=quick_agent_subgraph,
+    metadata={
+        "description": "Quick QA agent subgraph for fast, direct answers",
+        "type": "agent_subgraph",
+        "interaction": "tool_calling",
+        "criticality": "high",
+        "llm_powered": True,
+        "tool_binding": True,
+        "expected_duration": "short",
+        "max_iterations": 5,
+        "dependencies": ["messages", "available_tools"],
+        "outputs": ["final_report", "messages"],
+    },
+)
+
+
+def route_after_summarizer(state: AgentState, config: RunnableConfig) -> str:
+    configurable = Configuration.from_runnable_config(config)
+    if configurable.research_mode == "quick":
+        return QUICK_AGENT_NODE
+    return RESEARCH_CLARIFY_WITH_USER
+
+
 deep_researcher_builder.add_edge(START, MEMORY_SUMMARIZER_NODE)
-deep_researcher_builder.add_edge(MEMORY_SUMMARIZER_NODE, RESEARCH_CLARIFY_WITH_USER)
+deep_researcher_builder.add_conditional_edges(
+    MEMORY_SUMMARIZER_NODE,
+    route_after_summarizer,
+    {
+        QUICK_AGENT_NODE: QUICK_AGENT_NODE,
+        RESEARCH_CLARIFY_WITH_USER: RESEARCH_CLARIFY_WITH_USER,
+    },
+)
 deep_researcher_builder.add_edge(RESEARCH_WRITE_RESEARCH_BRIEF, RESEARCH_SUPERVISOR)
 deep_researcher_builder.add_edge(RESEARCH_SUPERVISOR, RESEARCH_FINAL_REPORT_GENERATION)
 deep_researcher_builder.add_edge(RESEARCH_FINAL_REPORT_GENERATION, END)
+deep_researcher_builder.add_edge(QUICK_AGENT_NODE, END)
+
 
 _RL = int(_os.getenv("GRAPH_RECURSION_LIMIT", "60"))
 deep_researcher = deep_researcher_builder.compile(
-    debug=True,
+    debug=get_debug_mode(),
     name="deep_researcher_main_graph",
     interrupt_before=None,
     interrupt_after=None,

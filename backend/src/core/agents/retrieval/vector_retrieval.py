@@ -33,10 +33,14 @@ class LlamaIndexRetrieverWrapper(BaseRetriever):
             metadata = node.metadata.copy() if node.metadata else {}
             if node.score is not None:
                 metadata["score"] = node.score
-            metadata["stream_tag"] = "vector_retrieved_docs"
-            metadata["retrieval_method"] = "vector_search"
+            # Use full content (including headers) as requested by user
+            content = node.get_content()
 
-            doc = Document(page_content=node.get_content(), metadata=metadata)
+            # Remove 'text' from metadata as it duplicates content and might be dirty
+            metadata.pop("text", None)
+            metadata.pop("_node_content", None)
+
+            doc = Document(page_content=content, metadata=metadata)
             documents.append(doc)
         return documents
 

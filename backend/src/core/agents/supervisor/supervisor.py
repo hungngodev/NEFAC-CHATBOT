@@ -9,8 +9,9 @@ from src.config.node_names import RESEARCH_TEAM, SUPERVISOR_NODE, SUPERVISOR_TOO
 from src.config.settings import Configuration
 from src.core.agents.research.researcher import researcher_subgraph
 from src.core.agents.supervisor.supervisor_tools import supervisor_tools
-from src.core.agents.tools.misc_utils import get_api_key_for_model
+from src.core.agents.tools.misc_utils import get_api_key_for_model, safe_get
 from src.schemas.state import ConductResearch, ResearchComplete, SupervisorState
+from src.utils.debug import get_debug_mode
 from src.utils.model_factory import init_model
 
 
@@ -21,7 +22,7 @@ def _has_pending_tool_calls(messages: list) -> bool:
     last_ai_tool_calls = None
     for idx in range(len(messages) - 1, -1, -1):
         msg = messages[idx]
-        tc = getattr(msg, "tool_calls", None)
+        tc = safe_get(msg, "tool_calls")
         if tc:
             last_ai_idx = idx
             last_ai_tool_calls = tc
@@ -34,9 +35,9 @@ def _has_pending_tool_calls(messages: list) -> bool:
     observed_ids = set()
     for j in range(last_ai_idx + 1, len(messages)):
         m = messages[j]
-        if not isinstance(m, ToolMessage) and getattr(m, "type", None) != "tool":
+        if not isinstance(m, ToolMessage) and safe_get(m, "type") != "tool":
             break
-        tool_call_id = getattr(m, "tool_call_id", None)
+        tool_call_id = safe_get(m, "tool_call_id")
         if tool_call_id:
             observed_ids.add(tool_call_id)
     return not expected_ids.issubset(observed_ids)
@@ -112,10 +113,11 @@ supervisor_builder.add_edge(START, SUPERVISOR_NODE)
 supervisor_builder.add_edge(SUPERVISOR_NODE, SUPERVISOR_TOOLS_NODE)
 supervisor_builder.add_edge(RESEARCH_TEAM, SUPERVISOR_TOOLS_NODE)
 
+
 _RL = int(_os.getenv("GRAPH_RECURSION_LIMIT", "60"))
 supervisor_subgraph = supervisor_builder.compile(
-    debug=True,
-    name="supervisor_coordination_graph",
+    debug=get_debug_mode(),
+    name="supervisor_subgraph",
     interrupt_before=None,
     interrupt_after=None,
 ).with_config({"recursion_limit": _RL})

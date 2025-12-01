@@ -1,5 +1,6 @@
 import os
 
+from langchain_core.runnables import RunnableLambda
 from langchain_elasticsearch import BM25Strategy, ElasticsearchStore
 
 elasticsearch_url = os.environ["ES_HOST"]
@@ -14,4 +15,15 @@ bm25_store = ElasticsearchStore(
     strategy=BM25Strategy(),
 )
 
-keyword_retriever = bm25_store.as_retriever(search_kwargs={"k": 10})
+
+def _clean_docs(docs):
+    for doc in docs:
+        # User wants full content, so we don't clean doc.page_content
+        # But we MUST remove 'text' from metadata as it duplicates content
+        if doc.metadata:
+            doc.metadata.pop("text", None)
+            doc.metadata.pop("_node_content", None)
+    return docs
+
+
+keyword_retriever = bm25_store.as_retriever(search_kwargs={"k": 10}) | RunnableLambda(_clean_docs)

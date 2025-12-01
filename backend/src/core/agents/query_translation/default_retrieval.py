@@ -8,6 +8,7 @@ from src.config.node_names import (
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.state import QueryTransformerState
+from src.utils.debug import get_debug_mode
 
 
 async def retrieve_node(state: QueryTransformerState, config: RunnableConfig) -> QueryTransformerState:
@@ -40,7 +41,8 @@ workflow.add_node(
 workflow.add_edge(START, DEFAULT_RETRIEVAL_RETRIEVE)
 workflow.add_edge(DEFAULT_RETRIEVAL_RETRIEVE, DEFAULT_RETRIEVAL_FORMAT)
 workflow.add_edge(DEFAULT_RETRIEVAL_FORMAT, END)
+
 default_retrieval = workflow.compile(
-    debug=True,
+    debug=get_debug_mode(),
     name="default_retrieval_sequence",
 )

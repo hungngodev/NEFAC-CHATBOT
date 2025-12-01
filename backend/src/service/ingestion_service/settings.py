@@ -42,14 +42,14 @@ SEMANTIC_SPLITTER_MAX_CHUNK = 384
 
 Settings.llm = OpenAI(
     model="gpt-5-nano",
-    max_retries=3,
+    max_retries=30,
     timeout=900.0,
     additional_kwargs={"service_tier": "flex"},
     api_key=os.getenv("OPENAI_API_KEY"),
 )
 graph_llm_model = OpenAI(
     model="gpt-5-nano",
-    max_retries=3,
+    max_retries=30,
     timeout=900.0,
     additional_kwargs={"service_tier": "flex"},
     api_key=os.getenv("OPENAI_API_KEY"),

@@ -12,6 +12,7 @@ from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.state import QueryTransformerState
+from src.utils.debug import get_debug_mode
 from src.utils.model_factory import init_model
 
 # Remove premature LLM construction; use per-call configuration with streaming disabled
@@ -106,7 +107,8 @@ workflow.add_edge(HYDE_GENERATE_HYPOTHETICAL_DOCUMENT, HYDE_RETRIEVE_SUBGRAPH)
 workflow.add_edge(HYDE_RETRIEVE_SUBGRAPH, HYDE_GENERATE_FINAL_RESPONSE)
 workflow.add_edge(HYDE_GENERATE_FINAL_RESPONSE, END)
 
+
 hyde = workflow.compile(
-    debug=True,
+    debug=get_debug_mode(),
     name="hyde_strategy_sequence",
 )

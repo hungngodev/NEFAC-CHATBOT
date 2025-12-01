@@ -1,5 +1,5 @@
 import os
-from typing import Any
+from typing import Any, Literal
 
 from langchain_core.runnables import RunnableConfig
 from pydantic import BaseModel, Field
@@ -16,6 +16,7 @@ from src.config.settings.query_transformation import (
     QueryTransformerConfig,
     StepBackStrategyConfig,
 )
+from src.config.settings.quick_agent import QuickAgentConfig
 from src.config.settings.research import ResearchConfig, ResearchModelsConfig
 from src.config.settings.retrieval import RetrievalConfig
 from src.config.settings.supervisor import SupervisorConfig
@@ -23,7 +24,21 @@ from src.config.settings.system_prompts import SystemPromptsConfig
 
 
 class Configuration(
-    SupervisorConfig, QueryTransformerConfig, ContextualStrategyConfig, DecompositionStrategyConfig, FactualStrategyConfig, HydeStrategyConfig, MultiQueryStrategyConfig, StepBackStrategyConfig, RetrievalConfig, CoreModelsConfig, SystemPromptsConfig, ResearchConfig, ResearchModelsConfig, BaseModel
+    SupervisorConfig,
+    QueryTransformerConfig,
+    ContextualStrategyConfig,
+    DecompositionStrategyConfig,
+    FactualStrategyConfig,
+    HydeStrategyConfig,
+    MultiQueryStrategyConfig,
+    StepBackStrategyConfig,
+    RetrievalConfig,
+    CoreModelsConfig,
+    SystemPromptsConfig,
+    ResearchConfig,
+    ResearchModelsConfig,
+    QuickAgentConfig,
+    BaseModel,
 ):
     """
     Unified configuration for the NEFAC chatbot application.
@@ -38,6 +53,8 @@ class Configuration(
     # MCP server configuration
     mcp_config: MCPConfig | None = Field(default=None, optional=True, metadata={"x_oap_ui_config": {"type": "mcp", "description": "MCP server configuration"}})
     mcp_prompt: str | None = Field(default=None, optional=True, metadata={"x_oap_ui_config": {"type": "text", "description": "Any additional instructions to pass along to the Agent regarding the MCP tools that are available to it."}})
+    research_mode: Literal["deep", "quick"] = Field(default="deep", description="The research mode to use: 'deep' for comprehensive research, 'quick' for fast answers.", metadata={"x_oap_ui_config": {"type": "select", "options": ["deep", "quick"], "label": "Research Mode"}})
+    enable_graph_search: bool = Field(default=False, description="Enable or disable graph-based retrieval.", metadata={"x_oap_ui_config": {"type": "boolean", "label": "Enable Graph Search"}})
 
     @classmethod
     def from_runnable_config(cls, config: RunnableConfig | None = None) -> "Configuration":
@@ -74,7 +91,9 @@ class Configuration(
                 raw = _normalize_model(raw)
             values[field_name] = raw
 
-        return cls(**{k: v for k, v in values.items() if v is not None})
+        # Filter out None values to allow Pydantic defaults to work
+        filtered_values = {k: v for k, v in values.items() if v is not None}
+        return cls(**filtered_values)
 
     class Config:
         arbitrary_types_allowed = True

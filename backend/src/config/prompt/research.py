@@ -221,7 +221,7 @@ You can use Any of the tools provided to you to find resources that can help ans
 <Tool Calling Guidelines>
 - Make sure you review all of the tools you have available to you, match the tools to the user's request, and select the tool that is most likely to be the best fit.
 - In each iteration, select the BEST tool for the job, this may or may not be general websearch.
- - Hard cap: propose at most 3 InternalDocumentSearch tool calls per iteration. Prioritize the highest‑value queries and avoid near‑duplicates; defer secondary variations to later iterations if needed.
+ - Hard cap: propose at most 2 InternalDocumentSearch tool calls per iteration. Prioritize the highest‑value queries and avoid near‑duplicates; defer secondary variations to later iterations if needed.
 
 **PRIORITIZE INTERNAL DOCUMENT SEARCH FIRST**: You have access to a sophisticated internal document search system that should be your PRIMARY research tool. This internal search system uses:
 - **Advanced Hybrid Retrieval**: Combines semantic vector search, keyword/BM25 lexical matching, and knowledge graph traversal
