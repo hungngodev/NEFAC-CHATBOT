@@ -86,7 +86,6 @@ coverage.xml
 logs/
 log/
 .next/
-client/
 # Database
 *.db
 *.sqlite3
