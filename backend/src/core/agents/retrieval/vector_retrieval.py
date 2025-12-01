@@ -1,15 +1,12 @@
 import os
+from typing import Any, List
 
+from langchain_core.callbacks import CallbackManagerForRetrieverRun
 from langchain_core.documents import Document
-from langchain_core.tools import tool
-from langchain_openai import OpenAIEmbeddings
-from langchain_qdrant import QdrantVectorStore
+from langchain_core.retrievers import BaseRetriever
+from llama_index.core import VectorStoreIndex
+from llama_index.vector_stores.qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, VectorParams
-
-from src.config.models import EMBEDDING_DIMENSIONS, EMBEDDING_MODEL_NAME
-
-embedding_model = OpenAIEmbeddings(model=EMBEDDING_MODEL_NAME)
 
 qdrant_url = os.environ["QDRANT_ENDPOINT"]
 collection_name = os.environ["QDRANT_CLUSTER_ID"]
@@ -20,31 +17,28 @@ if api_key:
 else:
     client = QdrantClient(url=qdrant_url)
 
-collections = client.get_collections()
-collection_exists = any(col.name == collection_name for col in collections.collections)
-
-if not collection_exists:
-    print(f"Creating new collection: {collection_name}")
-    client.create_collection(collection_name=collection_name, vectors_config=VectorParams(size=EMBEDDING_DIMENSIONS, distance=Distance.COSINE))
-    print(f"Collection {collection_name} created successfully")
-
-vectorstore = QdrantVectorStore(
-    client=client,
-    collection_name=collection_name,
-    embedding=embedding_model,
-)
-vector_retriever = vectorstore.as_retriever()
+vector_store = QdrantVectorStore(client=client, collection_name=collection_name)
+index = VectorStoreIndex.from_vector_store(vector_store=vector_store)
 
 
-@tool(description="Performs semantic vector search using Qdrant.")
-def vector_search(query: str, top_k: int = 10) -> list[Document]:
-    local_retriever = vectorstore.as_retriever(search_kwargs={"k": top_k})
-    documents = local_retriever.invoke(query)
+class LlamaIndexRetrieverWrapper(BaseRetriever):
+    index: Any
+    similarity_top_k: int = 10
 
-    for doc in documents:
-        if not hasattr(doc, "metadata") or doc.metadata is None:
-            doc.metadata = {}
-        doc.metadata["stream_tag"] = "vector_retrieved_docs"
-        doc.metadata["retrieval_method"] = "vector_search"
+    def _get_relevant_documents(self, query: str, *, run_manager: CallbackManagerForRetrieverRun) -> List[Document]:
+        retriever = self.index.as_retriever(similarity_top_k=self.similarity_top_k)
+        nodes = retriever.retrieve(query)
+        documents = []
+        for node in nodes:
+            metadata = node.metadata.copy() if node.metadata else {}
+            if node.score is not None:
+                metadata["score"] = node.score
+            metadata["stream_tag"] = "vector_retrieved_docs"
+            metadata["retrieval_method"] = "vector_search"
 
-    return documents
+            doc = Document(page_content=node.get_content(), metadata=metadata)
+            documents.append(doc)
+        return documents
+
+
+vector_retriever = LlamaIndexRetrieverWrapper(index=index)

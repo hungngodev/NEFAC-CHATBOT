@@ -1,6 +1,5 @@
 import os as _os
 
-from langchain.chat_models import init_chat_model
 from langchain_core.messages import SystemMessage, ToolMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, START, StateGraph
@@ -20,6 +19,7 @@ from src.core.agents.research.researcher_tools import researcher_tools
 from src.core.agents.tools.main import get_all_tools
 from src.core.agents.tools.misc_utils import get_api_key_for_model, get_today_str
 from src.schemas.state import ResearcherOutputState, ResearcherSendOutputState, ResearcherState
+from src.utils.model_factory import init_model
 
 
 def _has_pending_tool_calls(messages: list) -> bool:
@@ -84,9 +84,9 @@ async def researcher(state: ResearcherState, config: RunnableConfig) -> dict:
     if len(tools) == 0:
         raise ValueError("No tools found to conduct research: Please configure either your search API or add MCP tools to your configuration.")
     research_model_config = {"model": configurable.research_model, "max_tokens": configurable.research_model_max_tokens, "api_key": get_api_key_for_model(configurable.research_model, config)}
-    configurable_model = init_chat_model(configurable.research_model, disable_streaming=configurable.disable_streaming).bind(**research_model_config)
+    llm = init_model(configurable.research_model, disable_streaming=configurable.disable_streaming).bind(**research_model_config)
     researcher_system_prompt = configurable.research_system_prompt.format(mcp_prompt=configurable.mcp_prompt or "", date=get_today_str())
-    research_model = configurable_model.bind_tools(tools).with_retry(stop_after_attempt=configurable.max_structured_output_retries).with_config(research_model_config)
+    research_model = llm.bind_tools(tools).with_retry(stop_after_attempt=configurable.max_structured_output_retries).with_config(research_model_config)
     # Place system prompt first to avoid breaking tool_call reply sequencing
     response = await research_model.ainvoke([SystemMessage(content=researcher_system_prompt)] + researcher_messages)
     return {"researcher_messages": [response], "tool_call_iterations": state.get("tool_call_iterations", 0) + 1}

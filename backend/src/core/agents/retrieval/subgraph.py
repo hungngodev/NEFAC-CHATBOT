@@ -1,6 +1,5 @@
 import os as _os
 
-from langchain.chat_models import init_chat_model
 from langchain.retrievers import EnsembleRetriever
 from langchain.retrievers.contextual_compression import ContextualCompressionRetriever
 from langchain_cohere import CohereRerank
@@ -19,6 +18,7 @@ from src.core.agents.retrieval.graph_retrieval import graph_tool_node
 from src.core.agents.retrieval.keyword_retrieval import keyword_retriever
 from src.core.agents.retrieval.vector_retrieval import vector_retriever
 from src.schemas.state import RetrievalPlanModel, RetrievalSubgraphState
+from src.utils.model_factory import init_model
 
 
 async def plan_retrieval_node(state: RetrievalSubgraphState, config: RunnableConfig) -> dict:
@@ -34,7 +34,7 @@ async def plan_retrieval_node(state: RetrievalSubgraphState, config: RunnableCon
         ]
     )
 
-    llm_struct = init_chat_model(configuration.retriever_worker_model, disable_streaming=configuration.disable_streaming).with_structured_output(RetrievalPlanModel)
+    llm_struct = init_model(configuration.retriever_worker_model, disable_streaming=configuration.disable_streaming).with_structured_output(RetrievalPlanModel)
     plan_model = await (prompt | llm_struct).ainvoke({"query": query})
     plan_dict = plan_model.model_dump() if hasattr(plan_model, "model_dump") else plan_model.dict()
     return {"retrieval_plan": plan_dict}

@@ -23,6 +23,7 @@ share/python-wheels/
 MANIFEST
 *.pkl
 *.json
+!langgraph.json
 /resources
 # Virtual Environment
 venv/

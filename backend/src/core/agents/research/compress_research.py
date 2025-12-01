@@ -1,4 +1,3 @@
-from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage, SystemMessage, filter_messages
 from langchain_core.runnables import RunnableConfig
 
@@ -6,13 +5,14 @@ from src.config.settings import Configuration
 from src.core.agents.tools.misc_utils import get_api_key_for_model, get_today_str
 from src.core.agents.tools.token_utils import is_token_limit_exceeded
 from src.schemas.state import ResearcherState
+from src.utils.model_factory import init_model
 
 
 async def compress_research(state: ResearcherState, config: RunnableConfig):
     configurable = Configuration.from_runnable_config(config)
     synthesis_attempts = 0
-    configurable_model = init_chat_model(configurable.compress_research_model, disable_streaming=configurable.disable_streaming)
-    synthesizer_model = configurable_model.with_config({"model": configurable.compress_research_model, "max_tokens": configurable.compression_model_max_tokens, "api_key": get_api_key_for_model(configurable.compress_research_model, config)})
+    llm = init_model(configurable.compress_research_model, disable_streaming=configurable.disable_streaming)
+    synthesizer_model = llm.with_config({"model": configurable.compress_research_model, "max_tokens": configurable.compression_model_max_tokens, "api_key": get_api_key_for_model(configurable.compress_research_model, config)})
     researcher_messages = state.get("researcher_messages", [])
     # Update the system prompt to now focus on compression rather than research.
     researcher_messages[0] = SystemMessage(content=configurable.compress_research_system_prompt.format(date=get_today_str()))

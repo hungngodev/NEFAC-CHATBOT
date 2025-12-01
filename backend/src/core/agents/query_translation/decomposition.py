@@ -3,7 +3,6 @@ Decomposition query transformation agent.
 Breaks down complex queries into sub-questions for better retrieval.
 """
 
-from langchain.chat_models import init_chat_model
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableConfig
@@ -20,6 +19,7 @@ from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.state import QueryTransformerState
+from src.utils.model_factory import init_model
 
 
 # --- Subgraph State ---
@@ -35,11 +35,11 @@ async def generate_sub_questions_node(state: DecompositionState, config: Runnabl
     """Decomposes the main question into a series of sub-questions."""
     configuration = Configuration.from_runnable_config(config)
 
-    model = init_chat_model(configuration.decomposition_generate_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.decomposition_generate_model, disable_streaming=configuration.disable_streaming)
     question = state["transformed_query"]
 
     prompt = ChatPromptTemplate.from_template(configuration.decomposition_generate_prompt)
-    chain = prompt | model | StrOutputParser() | (lambda x: x.strip().split("\n"))
+    chain = prompt | llm | StrOutputParser() | (lambda x: x.strip().split("\n"))
 
     sub_questions = await chain.ainvoke({"question": question})
     sub_questions = [q.strip() for q in sub_questions if q.strip()]
@@ -60,7 +60,7 @@ def answer_sub_questions_node(state: DecompositionState) -> RetrievalSubgraphSta
 async def format_answer_node(state: DecompositionState, config: RunnableConfig) -> DecompositionState:
     """Format the answer for the current sub-question."""
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.decomposition_answer_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.decomposition_answer_model, disable_streaming=configuration.disable_streaming)
 
     context_docs = state["documents"]
     context = format_docs(context_docs)
@@ -81,7 +81,7 @@ async def format_answer_node(state: DecompositionState, config: RunnableConfig) 
 async def synthesize_final_answer_node(state: DecompositionState, config: RunnableConfig) -> QueryTransformerState:
     """Synthesizes the final answer from the Q&A pairs."""
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.decomposition_final_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.decomposition_final_model, disable_streaming=configuration.disable_streaming)
 
     question = state["transformed_query"]
     q_a_pairs_str = "\n---\n".join(state.get("q_a_pairs", []))

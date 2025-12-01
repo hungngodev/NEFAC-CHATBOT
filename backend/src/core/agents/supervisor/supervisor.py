@@ -1,6 +1,5 @@
 import os as _os
 
-from langchain.chat_models import init_chat_model
 from langchain_core.messages import ToolMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, START, StateGraph
@@ -12,6 +11,7 @@ from src.core.agents.research.researcher import researcher_subgraph
 from src.core.agents.supervisor.supervisor_tools import supervisor_tools
 from src.core.agents.tools.misc_utils import get_api_key_for_model
 from src.schemas.state import ConductResearch, ResearchComplete, SupervisorState
+from src.utils.model_factory import init_model
 
 
 def _has_pending_tool_calls(messages: list) -> bool:
@@ -45,9 +45,9 @@ def _has_pending_tool_calls(messages: list) -> bool:
 async def supervisor(state: SupervisorState, config: RunnableConfig) -> dict:
     configurable = Configuration.from_runnable_config(config)
     supervisor_model_config = {"model": configurable.supervisor_model, "max_tokens": configurable.research_model_max_tokens, "api_key": get_api_key_for_model(configurable.supervisor_model, config)}
-    configurable_model = init_chat_model(configurable.supervisor_model, disable_streaming=configurable.disable_streaming).bind(**supervisor_model_config)
+    llm = init_model(configurable.supervisor_model, disable_streaming=configurable.disable_streaming).bind(**supervisor_model_config)
     lead_researcher_tools = [ConductResearch, ResearchComplete]
-    supervisor_model = configurable_model.bind_tools(lead_researcher_tools).with_retry(stop_after_attempt=configurable.max_structured_output_retries).with_config(supervisor_model_config)
+    supervisor_model = llm.bind_tools(lead_researcher_tools).with_retry(stop_after_attempt=configurable.max_structured_output_retries).with_config(supervisor_model_config)
     supervisor_messages = state.get("supervisor_messages", [])
     if _has_pending_tool_calls(supervisor_messages):
         return Command(goto=SUPERVISOR_TOOLS_NODE)

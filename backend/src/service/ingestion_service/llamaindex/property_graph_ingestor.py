@@ -18,6 +18,7 @@ from llama_index.core.schema import Document as LIDocument
 from llama_index.graph_stores.neo4j import Neo4jPropertyGraphStore
 from openai import RateLimitError
 
+from src.config.models import EMBEDDING_DIMENSIONS
 from src.service.ingestion_service.llamaindex.entity_deduplication import (
     EntityDeduplicator,
 )
@@ -27,7 +28,6 @@ from src.service.ingestion_service.llamaindex.metadata_utils import (
 from src.service.ingestion_service.settings import (
     ALLOWED_NODES,
     ALLOWED_RELATIONSHIPS,
-    EMBEEDING_DIMENSIONS,
     ENTITY_ALIASES,
     GRAPH_ENABLE_ENTITY_DEDUPLICATION,
     GRAPH_ENTITY_SIMILARITY_THRESHOLD,
@@ -309,7 +309,7 @@ class LegalPropertyGraphIngestor:
                 word_edit_distance=word_edit_distance,
                 enable_apoc=enable_apoc,
             )
-            deduplicator.create_vector_index(embedding_dimension=EMBEEDING_DIMENSIONS, name="entity_vec_idx")
+            deduplicator.create_vector_index(embedding_dimension=EMBEDDING_DIMENSIONS, name="entity_vec_idx")
             initial_stats = deduplicator.get_duplicate_stats()
             logger.debug("Duplicate analysis: %s", initial_stats)
             duplicate_groups = deduplicator.find_duplicate_entities()

@@ -1,7 +1,6 @@
 import os as _os
 from typing import ClassVar, Literal
 
-from langchain.chat_models import init_chat_model
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, StateGraph
@@ -26,6 +25,7 @@ from src.core.agents.query_translation.hyde import hyde
 from src.core.agents.query_translation.multi_query import multi_query
 from src.core.agents.query_translation.step_back import step_back
 from src.schemas.state import QueryTransformerOutputState, QueryTransformerState
+from src.utils.model_factory import init_model
 
 
 class MethodSelection(BaseModel):
@@ -42,7 +42,7 @@ async def route_to_transformer(state: QueryTransformerState, config: RunnableCon
     Avoids any potential streaming by using a plain text parser instead of structured output.
     """
     configurable = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configurable.query_transformer_model, disable_streaming=configurable.disable_streaming)
+    llm = init_model(configurable.query_transformer_model, disable_streaming=configurable.disable_streaming)
     method_chain = ChatPromptTemplate.from_template(configurable.query_transformer_prompt) | llm.with_structured_output(MethodSelection)
     question = state["transformed_query"]
     response = await method_chain.ainvoke({"question": question})

@@ -1,4 +1,3 @@
-from langchain.chat_models import init_chat_model
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START, StateGraph
@@ -13,6 +12,7 @@ from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.state import QueryTransformerState
+from src.utils.model_factory import init_model
 
 # Remove premature LLM construction; use per-call configuration with streaming disabled
 
@@ -31,7 +31,7 @@ async def generate_hypothetical_document_node(state: HydeState, config: Runnable
     question = state["transformed_query"]
 
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.hyde_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.hyde_model, disable_streaming=configuration.disable_streaming)
 
     prompt = ChatPromptTemplate.from_template(configuration.hyde_generation_prompt)
     chain = prompt | llm | StrOutputParser()
@@ -43,7 +43,7 @@ async def generate_hypothetical_document_node(state: HydeState, config: Runnable
 async def generate_final_response_node(state: HydeState, config: RunnableConfig) -> dict:
     """Generates the final response using the retrieved documents."""
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.hyde_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.hyde_model, disable_streaming=configuration.disable_streaming)
 
     question = state["transformed_query"]
     documents = state["documents"]

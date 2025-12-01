@@ -1,6 +1,5 @@
 """Multi‑query: generate queries, retrieve, dedup, format."""
 
-from langchain.chat_models import init_chat_model
 from langchain_core.documents import Document
 from langchain_core.load import dumps, loads
 from langchain_core.output_parsers import StrOutputParser
@@ -20,6 +19,7 @@ from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.state import QueryTransformerState
+from src.utils.model_factory import init_model
 
 
 # --- Subgraph State ---
@@ -32,7 +32,7 @@ class MultiQueryState(QueryTransformerState):
 # --- Nodes ---
 async def generate_queries_node(state: MultiQueryState, config: RunnableConfig) -> MultiQueryState:
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.multi_query_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.multi_query_model, disable_streaming=configuration.disable_streaming)
 
     question = state["transformed_query"]
     prompt = ChatPromptTemplate.from_template(configuration.multi_query_perspectives_prompt)

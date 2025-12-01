@@ -1,4 +1,3 @@
-from langchain.chat_models import init_chat_model
 from langchain_core.messages import AIMessage, HumanMessage, get_buffer_string
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END
@@ -9,6 +8,7 @@ from src.config.node_names import RESEARCH_WRITE_RESEARCH_BRIEF
 from src.config.settings import Configuration
 from src.core.agents.tools.misc_utils import get_api_key_for_model, get_today_str
 from src.schemas.state import AgentState
+from src.utils.model_factory import init_model
 
 
 class ClarifyWithUser(BaseModel):
@@ -30,8 +30,8 @@ async def clarify_with_user(state: AgentState, config: RunnableConfig):
     # Prefer summarized messages if available; fall back to full history
     messages = state.get("summarized_messages", state["messages"])
     model_config = {"model": configurable.clarify_with_user_model, "max_tokens": configurable.research_model_max_tokens, "api_key": get_api_key_for_model(configurable.clarify_with_user_model, config)}
-    configurable_model = init_chat_model(configurable.clarify_with_user_model, disable_streaming=configurable.disable_streaming).bind(**model_config)
-    model = configurable_model.with_structured_output(ClarifyWithUser).with_retry(stop_after_attempt=configurable.max_structured_output_retries).with_config(model_config)
+    llm = init_model(configurable.clarify_with_user_model, disable_streaming=configurable.disable_streaming).bind(**model_config)
+    model = llm.with_structured_output(ClarifyWithUser).with_retry(stop_after_attempt=configurable.max_structured_output_retries).with_config(model_config)
     response = await model.ainvoke(
         [
             HumanMessage(

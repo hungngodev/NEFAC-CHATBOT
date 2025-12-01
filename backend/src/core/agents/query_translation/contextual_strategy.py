@@ -1,4 +1,3 @@
-from langchain.chat_models import init_chat_model
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START, StateGraph
@@ -13,6 +12,7 @@ from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.state import QueryTransformerState
+from src.utils.model_factory import init_model
 
 
 # --- Subgraph State ---
@@ -26,7 +26,7 @@ async def generate_contextual_query_node(state: ContextualStrategyState, config:
     question = state["transformed_query"]
 
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.contextual_strategy_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.contextual_strategy_model, disable_streaming=configuration.disable_streaming)
 
     prompt = ChatPromptTemplate.from_template(configuration.contextual_strategy_prompt)
     chain = prompt | llm | StrOutputParser()

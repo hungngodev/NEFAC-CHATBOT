@@ -1,4 +1,3 @@
-from langchain.chat_models import init_chat_model
 from langchain_core.documents import Document
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, FewShotChatMessagePromptTemplate
@@ -17,6 +16,7 @@ from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.state import QueryTransformerState
+from src.utils.model_factory import init_model
 
 
 # --- Subgraph State ---
@@ -32,7 +32,7 @@ class StepBackState(QueryTransformerState):
 async def generate_and_dispatch_node(state: StepBackState, config: RunnableConfig) -> StepBackState:
     """Generates a step-back question and dispatches retrieval for both questions in parallel."""
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.step_back_generate_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.step_back_generate_model, disable_streaming=configuration.disable_streaming)
 
     original_question = state["transformed_query"]
 
@@ -66,7 +66,7 @@ def process_step_back_context_node(state: StepBackState, config: RunnableConfig)
 async def generate_final_response_node(state: StepBackState, config: RunnableConfig) -> QueryTransformerState:
     """Generates a final response using both sets of retrieved documents."""
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.step_back_response_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.step_back_response_model, disable_streaming=configuration.disable_streaming)
 
     question = state["transformed_query"]
     normal_context = state["original_context"]

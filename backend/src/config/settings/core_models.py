@@ -33,31 +33,6 @@ class CoreModelsConfig(BaseModel):
             "langgraph_type": "number",
         },
     )
-
-    generator_model: Annotated[
-        models_module.ModelType,
-        {"__template_metadata__": {"kind": "llm"}},
-    ] = Field(
-        default=models_module.DEFAULT_GENERATOR_MODEL,
-        description="The name of the language model to use for the generator node.",
-        json_schema_extra={
-            "langgraph_nodes": [node_names_module.SUPERVISOR_GENERATOR_AGENT],
-            "langgraph_type": "model",
-        },
-    )
-
-    validation_model: Annotated[
-        models_module.ModelType,
-        {"__template_metadata__": {"kind": "llm"}},
-    ] = Field(
-        default=models_module.DEFAULT_VALIDATION_MODEL,
-        description="The name of the language model to use for the validation node.",
-        json_schema_extra={
-            "langgraph_nodes": [node_names_module.SUPERVISOR_VALIDATION_AGENT],
-            "langgraph_type": "model",
-        },
-    )
-
     retriever_worker_model: Annotated[
         models_module.ModelType,
         {"__template_metadata__": {"kind": "llm"}},
