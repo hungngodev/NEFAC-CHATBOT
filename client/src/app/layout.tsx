@@ -11,8 +11,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Agent Chat",
-  description: "Agent Chat by NEFAC",
+  title: "NEFAC Chat",
+  description: "NEFAC Chat by NEFAC",
+  icons: {
+    icon: "/logo.svg",
+  },
 };
 
 export default function RootLayout({

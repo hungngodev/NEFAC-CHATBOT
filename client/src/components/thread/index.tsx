@@ -1,49 +1,52 @@
-import { v4 as uuidv4 } from "uuid";
-import { ReactNode, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { useStreamContext } from "@/providers/Stream";
-import { useState, FormEvent } from "react";
-import { Button } from "../ui/button";
-import { Checkpoint, Message } from "@langchain/langgraph-sdk";
-import { AssistantMessage, AssistantMessageLoading } from "./messages/ai";
-import { HumanMessage } from "./messages/human";
+import { useFileUpload } from "@/hooks/use-file-upload";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
   DO_NOT_RENDER_ID_PREFIX,
   ensureToolCallsHaveResponses,
 } from "@/lib/ensure-tool-responses";
-import { NEFACLogoSVG } from "../icons/langgraph";
-import { TooltipIconButton } from "./tooltip-icon-button";
+import { cn } from "@/lib/utils";
+import { useStreamContext } from "@/providers/Stream";
+import { Checkpoint, Message } from "@langchain/langgraph-sdk";
+import { motion } from "framer-motion";
 import {
   ArrowDown,
+  FileText,
   LoaderCircle,
-  PanelRightOpen,
   PanelRightClose,
+  PanelRightOpen,
+  Plus,
   SquarePen,
   XIcon,
-  Plus,
 } from "lucide-react";
-import { useQueryState, parseAsBoolean } from "nuqs";
-import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
-import ThreadHistory from "./history";
+import { parseAsBoolean, useQueryState } from "nuqs";
+import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
+import { v4 as uuidv4 } from "uuid";
+import { NEFACLogoSVG } from "../icons/langgraph";
+import { Button } from "../ui/button";
 import { Label } from "../ui/label";
-import { Switch } from "../ui/switch";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
-import { useFileUpload } from "@/hooks/use-file-upload";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
+import { Switch } from "../ui/switch";
 import { ContentBlocksPreview } from "./ContentBlocksPreview";
 import {
-  useArtifactOpen,
   ArtifactContent,
   ArtifactTitle,
   useArtifactContext,
+  useArtifactOpen,
 } from "./artifact";
+import ThreadHistory from "./history";
+import { AssistantMessage, AssistantMessageLoading } from "./messages/ai";
+import { HumanMessage } from "./messages/human";
+import { TooltipIconButton } from "./tooltip-icon-button";
+import { getEnhancedUrl, parseDocumentContent } from "./utils";
+
 
 function StickyToBottomContent(props: {
   content: ReactNode;
@@ -95,8 +98,8 @@ export function Thread() {
     "chatHistoryOpen",
     parseAsBoolean.withDefault(false),
   );
-  const [hideToolCalls, setHideToolCalls] = useQueryState(
-    "hideToolCalls",
+  const [enableToolCalls, setEnableToolCalls] = useQueryState(
+    "enableToolCalls",
     parseAsBoolean.withDefault(false),
   );
   const [isDeepResearch, setIsDeepResearch] = useQueryState(
@@ -119,6 +122,9 @@ export function Thread() {
 
   const stream = useStreamContext();
   const messages = stream.messages;
+
+  const documents =
+    (stream as any).documents || (stream as any).values?.documents;
   const isLoading = stream.isLoading;
 
   const lastError = useRef<string | undefined>(undefined);
@@ -346,12 +352,13 @@ export function Thread() {
                     height={32}
                   />
                   <span className="text-xl font-semibold tracking-tight">
-                    Agent Chat
+                    NEFAC Chat
                   </span>
                 </motion.button>
               </div>
 
               <div className="flex items-center gap-4">
+
                 <TooltipIconButton
                   size="lg"
                   className="p-4"
@@ -416,7 +423,7 @@ export function Thread() {
                     <div className="flex items-center gap-3">
                       <NEFACLogoSVG className="h-8 flex-shrink-0" />
                       <h1 className="text-2xl font-semibold tracking-tight">
-                        Agent Chat
+                        NEFAC Chat
                       </h1>
                     </div>
                   )}
@@ -466,8 +473,8 @@ export function Thread() {
                           <div className="flex items-center space-x-2">
                             <Switch
                               id="render-tool-calls"
-                              checked={hideToolCalls ?? false}
-                              onCheckedChange={setHideToolCalls}
+                              checked={enableToolCalls ?? false}
+                              onCheckedChange={setEnableToolCalls}
                             />
                             <Label
                               htmlFor="render-tool-calls"
@@ -492,7 +499,7 @@ export function Thread() {
                             </Label>
                           </div>
                         </div>
-                        <Label
+                        {/* <Label
                           htmlFor="file-input"
                           className="flex cursor-pointer items-center gap-2"
                         >
@@ -510,7 +517,7 @@ export function Thread() {
                           multiple
                           accept="image/jpeg,image/png,image/gif,image/webp,application/pdf"
                           className="hidden"
-                        />
+                        /> */}
                         {stream.isLoading ? (
                           <Button
                             key="stop"

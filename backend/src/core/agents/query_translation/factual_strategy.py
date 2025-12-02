@@ -7,6 +7,7 @@ from src.config.node_names import (
     FACTUAL_STRATEGY_FORMAT_DOCUMENTS,
     FACTUAL_STRATEGY_GENERATE_FACTUAL_QUERY,
     FACTUAL_STRATEGY_RETRIEVE_SUBGRAPH,
+    QUERY_TRANSFORMER_FACTUAL_STRATEGY,
 )
 from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
@@ -29,7 +30,7 @@ async def generate_factual_query_node(state: FactualStrategyState, config: Runna
     question = state["transformed_query"]
 
     configuration = Configuration.from_runnable_config(config)
-    llm = init_model(configuration.factual_strategy_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.query_transformer_model, disable_streaming=configuration.disable_streaming, node_name=QUERY_TRANSFORMER_FACTUAL_STRATEGY)
 
     prompt = ChatPromptTemplate.from_template(configuration.factual_strategy_prompt)
     chain = prompt | llm | StrOutputParser()

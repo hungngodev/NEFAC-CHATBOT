@@ -4,7 +4,7 @@ from langgraph.graph import END
 from langgraph.types import Command
 from pydantic import BaseModel, Field
 
-from src.config.node_names import RESEARCH_WRITE_RESEARCH_BRIEF
+from src.config.node_names import RESEARCH_CLARIFY_WITH_USER, RESEARCH_WRITE_RESEARCH_BRIEF
 from src.config.settings import Configuration
 from src.core.agents.tools.misc_utils import get_api_key_for_model, get_today_str
 from src.schemas.state import AgentState
@@ -30,7 +30,7 @@ async def clarify_with_user(state: AgentState, config: RunnableConfig):
     # Prefer summarized messages if available; fall back to full history
     messages = state.get("summarized_messages", state["messages"])
     model_config = {"model": configurable.clarify_with_user_model, "max_tokens": configurable.research_model_max_tokens, "api_key": get_api_key_for_model(configurable.clarify_with_user_model, config)}
-    llm = init_model(configurable.clarify_with_user_model, disable_streaming=configurable.disable_streaming).bind(**model_config)
+    llm = init_model(configurable.clarify_with_user_model, disable_streaming=configurable.disable_streaming, node_name=RESEARCH_CLARIFY_WITH_USER).bind(**model_config)
     model = llm.with_structured_output(ClarifyWithUser).with_retry(stop_after_attempt=configurable.max_structured_output_retries).with_config(model_config)
     response = await model.ainvoke(
         [
@@ -40,7 +40,8 @@ async def clarify_with_user(state: AgentState, config: RunnableConfig):
                     date=get_today_str(),
                 )
             )
-        ]
+        ],
+        config={"metadata": {"is_final_response": True}},
     )
     if response.need_clarification:
         return Command(goto=END, update={"messages": [AIMessage(content=response.question)]})

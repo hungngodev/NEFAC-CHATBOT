@@ -3,6 +3,7 @@ from typing import Annotated, Any
 from pydantic import BaseModel, Field, model_validator
 
 import src.config.models as models_module
+import src.config.prompts as prompts_module
 
 
 class QuickAgentConfig(BaseModel):
@@ -17,7 +18,7 @@ class QuickAgentConfig(BaseModel):
     ] = models_module.DEFAULT_QUICK_AGENT_MODEL
 
     quick_agent_system_prompt: str = Field(
-        default=models_module.DEFAULT_QUICK_AGENT_SYSTEM_PROMPT,
+        default=prompts_module.DEFAULT_QUICK_AGENT_SYSTEM_PROMPT,
         description="The system prompt for the Quick Agent.",
         metadata={"x_oap_ui_config": {"type": "prompt_editor", "label": "Quick Agent System Prompt"}},
     )
@@ -27,5 +28,5 @@ class QuickAgentConfig(BaseModel):
     def set_defaults(cls, data: Any) -> Any:
         if isinstance(data, dict):
             if data.get("quick_agent_system_prompt") is None:
-                data["quick_agent_system_prompt"] = models_module.DEFAULT_QUICK_AGENT_SYSTEM_PROMPT
+                data["quick_agent_system_prompt"] = prompts_module.DEFAULT_QUICK_AGENT_SYSTEM_PROMPT
         return data

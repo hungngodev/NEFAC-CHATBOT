@@ -4,6 +4,7 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.graph import MessagesState
 from langmem.short_term import RunningSummary, summarize_messages
 
+from src.config.node_names import MEMORY_SUMMARIZER_NODE
 from src.config.settings import Configuration
 from src.utils.model_factory import init_model
 
@@ -22,7 +23,7 @@ def summarizer(state: SummaryState, config: RunnableConfig | None = None) -> Sum
 
     configuration = Configuration.from_runnable_config(config)
     # Bind summarization-specific token limit from configuration
-    summarization_llm = init_model(configuration.summarization_model, disable_streaming=configuration.disable_streaming)
+    summarization_llm = init_model(configuration.summarization_model, disable_streaming=configuration.disable_streaming, node_name=MEMORY_SUMMARIZER_NODE)
     summarization_model = summarization_llm.bind(max_tokens=configuration.summarization_model_max_tokens)
 
     summarization_result = summarize_messages(

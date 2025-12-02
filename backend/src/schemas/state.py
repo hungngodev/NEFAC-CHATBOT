@@ -59,7 +59,11 @@ class RetrievalPlanModel(BaseModel):
     rerank_k: int
 
 
-def reduce_documents(current_docs: list[Document] | None, new_docs: list[Document] | None) -> list[Document]:
+def reduce_documents(current_docs: list[Document] | None, new_docs: list[Document] | None | dict) -> list[Document]:
+    # Check for override signal
+    if isinstance(new_docs, dict) and new_docs.get("type") == "override":
+        return new_docs.get("value", [])
+
     if current_docs is None:
         current_docs = []
     if new_docs is None:

@@ -7,6 +7,7 @@ from src.config.node_names import (
     CONTEXTUAL_STRATEGY_FORMAT_DOCUMENTS,
     CONTEXTUAL_STRATEGY_GENERATE_CONTEXTUAL_QUERY,
     CONTEXTUAL_STRATEGY_RETRIEVE_SUBGRAPH,
+    QUERY_TRANSFORMER_CONTEXTUAL_STRATEGY,
 )
 from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
@@ -27,7 +28,7 @@ async def generate_contextual_query_node(state: ContextualStrategyState, config:
     question = state["transformed_query"]
 
     configuration = Configuration.from_runnable_config(config)
-    llm = init_model(configuration.contextual_strategy_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.query_transformer_model, disable_streaming=configuration.disable_streaming, node_name=QUERY_TRANSFORMER_CONTEXTUAL_STRATEGY)
 
     prompt = ChatPromptTemplate.from_template(configuration.contextual_strategy_prompt)
     chain = prompt | llm | StrOutputParser()

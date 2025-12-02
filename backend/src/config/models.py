@@ -10,7 +10,7 @@ from typing import Literal
 EMBEDDING_MODEL_NAME = "text-embedding-3-small"
 EMBEDDING_DIMENSIONS = 1536
 
-SERVICE_TIER: Literal["flex", "default", "auto", "priority"] = "default"
+SERVICE_TIER: Literal["flex", "default", "auto", "priority"] = "flex"
 ENABLE_STREAMING: bool = True
 DEFAULT_MAX_RETRIES: int = 5
 

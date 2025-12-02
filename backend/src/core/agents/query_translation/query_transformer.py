@@ -13,6 +13,7 @@ from src.config.node_names import (
     QUERY_TRANSFORMER_FACTUAL_STRATEGY,
     QUERY_TRANSFORMER_HYDE,
     QUERY_TRANSFORMER_MULTI_QUERY,
+    QUERY_TRANSFORMER_NODE,
     QUERY_TRANSFORMER_PREPARE_OUTPUT,
     QUERY_TRANSFORMER_STEP_BACK,
 )
@@ -48,7 +49,7 @@ async def route_to_transformer(state: QueryTransformerState, config: RunnableCon
     if configurable.research_mode == "quick":
         prompt_template += configurable.query_transformer_quick_mode_instruction
 
-    llm = init_model(configurable.query_transformer_model, disable_streaming=configurable.disable_streaming)
+    llm = init_model(configurable.query_transformer_model, disable_streaming=configurable.disable_streaming, node_name=QUERY_TRANSFORMER_NODE)
     method_chain = ChatPromptTemplate.from_template(prompt_template) | llm.with_structured_output(MethodSelection)
     question = state["transformed_query"]
     response = await method_chain.ainvoke({"question": question})

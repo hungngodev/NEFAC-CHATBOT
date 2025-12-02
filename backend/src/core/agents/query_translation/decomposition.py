@@ -14,6 +14,7 @@ from src.config.node_names import (
     DECOMPOSITION_GENERATE_SUB_QUESTIONS,
     DECOMPOSITION_RETRIEVE_SUBGRAPH,
     DECOMPOSITION_SYNTHESIZE_FINAL_ANSWER,
+    QUERY_TRANSFORMER_DECOMPOSITION,
 )
 from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval_subgraph
@@ -61,7 +62,7 @@ def answer_sub_questions_node(state: DecompositionState) -> RetrievalSubgraphSta
 async def format_answer_node(state: DecompositionState, config: RunnableConfig) -> DecompositionState:
     """Format the answer for the current sub-question."""
     configuration = Configuration.from_runnable_config(config)
-    llm = init_model(configuration.decomposition_answer_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.query_transformer_model, disable_streaming=configuration.disable_streaming, node_name=QUERY_TRANSFORMER_DECOMPOSITION)
 
     context_docs = state["documents"]
     context = format_docs(context_docs)

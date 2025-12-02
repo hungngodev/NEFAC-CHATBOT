@@ -5,6 +5,7 @@ from langgraph.graph import END, StateGraph
 from langgraph.types import RunnableConfig
 
 from src.config.node_names import (
+    QUERY_TRANSFORMER_STEP_BACK,
     STEP_BACK_GENERATE_AND_DISPATCH,
     STEP_BACK_GENERATE_FINAL_RESPONSE,
     STEP_BACK_PROCESS_ORIGINAL_CONTEXT,
@@ -33,7 +34,7 @@ class StepBackState(QueryTransformerState):
 async def generate_and_dispatch_node(state: StepBackState, config: RunnableConfig) -> StepBackState:
     """Generates a step-back question and dispatches retrieval for both questions in parallel."""
     configuration = Configuration.from_runnable_config(config)
-    llm = init_model(configuration.step_back_generate_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.query_transformer_model, disable_streaming=configuration.disable_streaming, node_name=QUERY_TRANSFORMER_STEP_BACK)
 
     original_question = state["transformed_query"]
 

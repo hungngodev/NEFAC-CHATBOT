@@ -32,7 +32,7 @@ async def generate_hypothetical_document_node(state: HydeState, config: Runnable
     question = state["transformed_query"]
 
     configuration = Configuration.from_runnable_config(config)
-    llm = init_model(configuration.hyde_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.hyde_model, disable_streaming=configuration.disable_streaming, node_name=HYDE_GENERATE_HYPOTHETICAL_DOCUMENT)
 
     prompt = ChatPromptTemplate.from_template(configuration.hyde_generation_prompt)
     chain = prompt | llm | StrOutputParser()
@@ -44,7 +44,7 @@ async def generate_hypothetical_document_node(state: HydeState, config: Runnable
 async def generate_final_response_node(state: HydeState, config: RunnableConfig) -> dict:
     """Generates the final response using the retrieved documents."""
     configuration = Configuration.from_runnable_config(config)
-    llm = init_model(configuration.hyde_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.hyde_model, disable_streaming=configuration.disable_streaming, node_name=HYDE_GENERATE_FINAL_RESPONSE)
 
     question = state["transformed_query"]
     documents = state["documents"]

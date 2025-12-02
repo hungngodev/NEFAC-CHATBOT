@@ -4,6 +4,7 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, START, StateGraph
 
 from src.config.node_names import (
+    CLEANUP_NODE,
     MEMORY_SUMMARIZER_NODE,
     QUICK_AGENT_NODE,
     RESEARCH_CLARIFY_WITH_USER,
@@ -131,6 +132,29 @@ deep_researcher_builder.add_node(
 )
 
 
+def cleanup_node(state: AgentState) -> dict:
+    """Cleans up state at the end of a turn."""
+    return {
+        "final_documents": {"type": "override", "value": []},
+        "supervisor_messages": {"type": "override", "value": []},
+    }
+
+
+deep_researcher_builder.add_node(
+    node=CLEANUP_NODE,
+    action=cleanup_node,
+    metadata={
+        "description": "Cleans up state (documents, internal messages) at the end of a turn",
+        "type": "cleanup_node",
+        "interaction": "internal",
+        "criticality": "medium",
+        "expected_duration": "short",
+        "dependencies": [],
+        "outputs": ["final_documents", "supervisor_messages"],
+    },
+)
+
+
 def route_after_summarizer(state: AgentState, config: RunnableConfig) -> str:
     configurable = Configuration.from_runnable_config(config)
     if configurable.research_mode == "quick":
@@ -149,8 +173,9 @@ deep_researcher_builder.add_conditional_edges(
 )
 deep_researcher_builder.add_edge(RESEARCH_WRITE_RESEARCH_BRIEF, RESEARCH_SUPERVISOR)
 deep_researcher_builder.add_edge(RESEARCH_SUPERVISOR, RESEARCH_FINAL_REPORT_GENERATION)
-deep_researcher_builder.add_edge(RESEARCH_FINAL_REPORT_GENERATION, END)
-deep_researcher_builder.add_edge(QUICK_AGENT_NODE, END)
+deep_researcher_builder.add_edge(RESEARCH_FINAL_REPORT_GENERATION, CLEANUP_NODE)
+deep_researcher_builder.add_edge(QUICK_AGENT_NODE, CLEANUP_NODE)
+deep_researcher_builder.add_edge(CLEANUP_NODE, END)
 
 
 _RL = int(_os.getenv("GRAPH_RECURSION_LIMIT", "60"))

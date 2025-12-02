@@ -14,6 +14,7 @@ import { ThreadView } from "../agent-inbox";
 import { useQueryState, parseAsBoolean } from "nuqs";
 import { GenericInterruptView } from "./generic-interrupt";
 import { useArtifact } from "../artifact";
+import { DocumentList } from "./document-list";
 
 function CustomComponent({
   message,
@@ -209,6 +210,12 @@ export function AssistantMessage({
                 handleRegenerate={() => handleRegenerate(parentCheckpoint)}
               />
             </div>
+            
+            {message?.additional_kwargs?.final_documents && (
+              <DocumentList
+                documents={message.additional_kwargs.final_documents as any[]}
+              />
+            )}
           </>
         )}
       </div>

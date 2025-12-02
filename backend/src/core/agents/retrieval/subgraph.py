@@ -58,7 +58,8 @@ async def plan_retrieval_node(state: RetrievalSubgraphState, config: RunnableCon
         ]
     )
 
-    llm_struct = init_model(configuration.retriever_worker_model, disable_streaming=configuration.disable_streaming).with_structured_output(RetrievalPlanModel)
+    # Initialize the retrieval planner model
+    llm_struct = init_model(configuration.retrieval_planner_model, disable_streaming=configuration.disable_streaming, node_name=RETRIEVAL_SUBGRAPH_PLANNER).with_structured_output(RetrievalPlanModel)
     plan_model = await (prompt | llm_struct).ainvoke({"query": query})
     plan_dict = plan_model.model_dump() if hasattr(plan_model, "model_dump") else plan_model.dict()
     return {"retrieval_plan": plan_dict}

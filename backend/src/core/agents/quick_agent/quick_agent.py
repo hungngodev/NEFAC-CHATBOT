@@ -28,43 +28,50 @@ async def quick_agent(state: QuickAgentState, config: RunnableConfig) -> dict:
         "model": configurable.quick_agent_model,
         "api_key": get_api_key_for_model(configurable.quick_agent_model, config),
     }
-    llm = init_model(configurable.quick_agent_model, disable_streaming=configurable.disable_streaming).bind(**model_config)
+    llm = init_model(configurable.quick_agent_model, disable_streaming=configurable.disable_streaming, node_name=QUICK_AGENT_NODE).bind(**model_config)
     llm_with_tools = llm.bind_tools(tools)
 
-    # Prepare initial messages
     system_prompt = configurable.quick_agent_system_prompt.format(date=get_today_str())
-    # Ensure system prompt is first
-    messages = [SystemMessage(content=system_prompt)] + [m for m in state.get("messages", []) if not isinstance(m, SystemMessage)]
+
+    supervisor_messages = state.get("supervisor_messages", [])
+    messages = state.get("messages", [])
+    conversation_history = [m for m in messages if not isinstance(m, SystemMessage)]
+    llm_input = [SystemMessage(content=system_prompt)] + conversation_history + supervisor_messages
 
     # Invoke Model
-    response = await llm_with_tools.ainvoke(messages)
+    # Tag this call as the final response so the frontend knows to display it
+    response = await llm_with_tools.ainvoke(llm_input, config={"metadata": {"is_final_response": True}})
 
     # Check for Tool Calls
     if response.tool_calls:
-        return Command(goto=QUICK_AGENT_TOOLS_NODE, update={"messages": [response], "tool_call_iterations": state.get("tool_call_iterations", 0) + 1})
+        return Command(goto=QUICK_AGENT_TOOLS_NODE, update={"supervisor_messages": [response], "tool_call_iterations": state.get("tool_call_iterations", 0) + 1})
 
-    # No tool calls -> Final Answer
-    # No tool calls -> Final Answer
+    # No tool calls -> Final Answert
+    response.additional_kwargs = {
+        "final_documents": state.get("final_documents", []),
+        "supervisor_messages": supervisor_messages,
+    }
+
     return Command(
         goto=END,
         update={
             "final_report": response.content,
             "messages": [response],
+            "supervisor_messages": [response],
         },
     )
 
 
 async def quick_agent_tools(state: QuickAgentState, config: RunnableConfig) -> dict:
-    """
-    Executes tools for the Quick Agent.
-    Handles 'InternalDocumentSearch' by directly invoking the query_transformer.
-    """
-    messages = state.get("messages", [])
+    messages = state.get("supervisor_messages", [])
+    if not messages:
+        messages = state.get("messages", [])
+
     last_message = messages[-1]
     tool_calls = last_message.tool_calls
 
-    tools = await get_all_tools(config)
-    tool_map = {t.name: t for t in tools}
+    all_tools = await get_all_tools(config)
+    tool_map = {t.name: t for t in all_tools}
 
     tool_outputs = []
     collected_documents = []
@@ -75,13 +82,11 @@ async def quick_agent_tools(state: QuickAgentState, config: RunnableConfig) -> d
         tool_call_id = tc["id"]
 
         if name == "InternalDocumentSearch":
-            # Direct invocation of query_transformer
             query = args.get("query")
 
-            # Prepare input for query_transformer
             qt_input = {
                 "transformed_query": query,
-                "method_used": "default",  # Default, will be routed
+                "method_used": "default",
                 "transformed_context": "",
                 "generated_queries": [],
                 "sub_questions": [],
@@ -96,16 +101,19 @@ async def quick_agent_tools(state: QuickAgentState, config: RunnableConfig) -> d
             }
 
             try:
-                # Invoke query_transformer subgraph
-                qt_result = await query_transformer.ainvoke(qt_input, config)
+                # Sanitize config to prevent streaming internal events to the frontend
+                # Explicitly set callbacks to empty list to suppress event emission
+                clean_config = {
+                    "configurable": config.get("configurable", {}),
+                    "callbacks": [],
+                }
+                qt_result = await query_transformer.ainvoke(qt_input, clean_config)
 
-                # Extract results
                 completed_results = qt_result.get("_completed_query_results", [])
                 if completed_results:
                     result = completed_results[0]
                     content = f"Internal Document Search Results:\n{result.get('transformed_context', 'No results found.')}"
 
-                    # Extract documents
                     docs = result.get("documents", [])
                     if docs:
                         collected_documents.extend(docs)
@@ -119,23 +127,18 @@ async def quick_agent_tools(state: QuickAgentState, config: RunnableConfig) -> d
             tool_outputs.append(ToolMessage(content=content, name=name, tool_call_id=tool_call_id))
 
         elif name in tool_map:
-            # Standard tool execution
             tool = tool_map[name]
             content = await execute_tool_safely(tool, args, config)
             tool_outputs.append(ToolMessage(content=str(content), name=name, tool_call_id=tool_call_id))
         else:
             tool_outputs.append(ToolMessage(content=f"Tool {name} not found.", name=name, tool_call_id=tool_call_id))
 
-    if collected_documents:
-        print(f"DEBUG: First Document in final_documents:\n{collected_documents[0]}")
-
     return {
-        "messages": tool_outputs,
+        "supervisor_messages": tool_outputs,
         "final_documents": collected_documents,
     }
 
 
-# Define the subgraph
 quick_agent_builder = StateGraph(state_schema=QuickAgentState, input_schema=QuickAgentState, output_schema=QuickAgentState, context_schema=Configuration)
 
 quick_agent_builder.add_node(
@@ -174,10 +177,8 @@ quick_agent_builder.add_node(
     },
 )
 
-# Define edges
 quick_agent_builder.add_edge(START, QUICK_AGENT_NODE)
 quick_agent_builder.add_edge(QUICK_AGENT_TOOLS_NODE, QUICK_AGENT_NODE)
-# Edges are handled by Command in the nodes
 
 
 _RL = int(_os.getenv("GRAPH_RECURSION_LIMIT", "60"))

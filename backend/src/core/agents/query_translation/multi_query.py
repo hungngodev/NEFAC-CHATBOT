@@ -11,6 +11,7 @@ from src.config.node_names import (
     MULTI_QUERY_GENERATE_QUERIES,
     MULTI_QUERY_NEXT,
     MULTI_QUERY_RETRIEVE_SUBGRAPH,
+    QUERY_TRANSFORMER_MULTI_QUERY,
 )
 from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
@@ -29,7 +30,7 @@ class MultiQueryState(QueryTransformerState):
 # --- Nodes ---
 async def generate_queries_node(state: MultiQueryState, config: RunnableConfig) -> MultiQueryState:
     configuration = Configuration.from_runnable_config(config)
-    llm = init_model(configuration.multi_query_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.query_transformer_model, disable_streaming=configuration.disable_streaming, node_name=QUERY_TRANSFORMER_MULTI_QUERY)
 
     question = state["transformed_query"]
     prompt = ChatPromptTemplate.from_template(configuration.multi_query_perspectives_prompt)

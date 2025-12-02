@@ -12,15 +12,17 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PanelRightOpen, PanelRightClose } from "lucide-react";
+import { PanelRightOpen, PanelRightClose, Trash2 } from "lucide-react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 function ThreadList({
   threads,
   onThreadClick,
+  onDeleteThread,
 }: {
   threads: Thread[];
   onThreadClick?: (threadId: string) => void;
+  onDeleteThread?: (threadId: string) => void;
 }) {
   const [threadId, setThreadId] = useQueryState("threadId");
 
@@ -41,11 +43,11 @@ function ThreadList({
         return (
           <div
             key={t.thread_id}
-            className="w-full px-1"
+            className="w-full px-1 group flex items-center justify-between"
           >
             <Button
               variant="ghost"
-              className="w-[280px] items-start justify-start text-left font-normal"
+              className="flex-1 items-start justify-start text-left font-normal truncate"
               onClick={(e) => {
                 e.preventDefault();
                 onThreadClick?.(t.thread_id);
@@ -54,6 +56,18 @@ function ThreadList({
               }}
             >
               <p className="truncate text-ellipsis">{itemText}</p>
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-muted-foreground hover:text-destructive"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onDeleteThread?.(t.thread_id);
+              }}
+            >
+              <Trash2 className="h-4 w-4" />
             </Button>
           </div>
         );
@@ -82,7 +96,7 @@ export default function ThreadHistory() {
     parseAsBoolean.withDefault(false),
   );
 
-  const { getThreads, threads, setThreads, threadsLoading, setThreadsLoading } =
+  const { getThreads, deleteThread, threads, setThreads, threadsLoading, setThreadsLoading } =
     useThreads();
 
   useEffect(() => {
@@ -109,14 +123,17 @@ export default function ThreadHistory() {
               <PanelRightClose className="size-5" />
             )}
           </Button>
-          <h1 className="text-xl font-semibold tracking-tight">
+          <h1 className="text-xl w-full text-center font-semibold tracking-tight">
             Chat History
           </h1>
         </div>
         {threadsLoading ? (
           <ThreadHistoryLoading />
         ) : (
-          <ThreadList threads={threads} />
+          <ThreadList 
+            threads={threads} 
+            onDeleteThread={deleteThread}
+          />
         )}
       </div>
       <div className="lg:hidden">
@@ -137,6 +154,7 @@ export default function ThreadHistory() {
             <ThreadList
               threads={threads}
               onThreadClick={() => setChatHistoryOpen((o) => !o)}
+              onDeleteThread={deleteThread}
             />
           </SheetContent>
         </Sheet>

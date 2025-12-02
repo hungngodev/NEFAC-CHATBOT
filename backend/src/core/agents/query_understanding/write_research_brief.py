@@ -12,6 +12,10 @@ class ResearchQuestion(BaseModel):
     research_brief: str = Field(
         description="A research question that will be used to guide the research.",
     )
+    urls: list[str] = Field(
+        default=[],
+        description="List of URLs provided by the user in the conversation that should be researched.",
+    )
 
 
 async def write_research_brief(state: AgentState, config: RunnableConfig) -> dict:
@@ -30,7 +34,15 @@ async def write_research_brief(state: AgentState, config: RunnableConfig) -> dic
             )
         ]
     )
+
+    # Append URLs to the research brief or as a separate context for the researcher
+    supervisor_content = [SystemMessage(content=configurable.lead_researcher_prompt.format(date=get_today_str(), max_concurrent_research_units=configurable.max_concurrent_research_units)), HumanMessage(content=response.research_brief)]
+
+    if response.urls:
+        url_list = "\n".join(response.urls)
+        supervisor_content.append(SystemMessage(content=f"User provided the following URLs to research:\n{url_list}"))
+
     return {
         "research_brief": response.research_brief,
-        "supervisor_messages": {"type": "override", "value": [SystemMessage(content=configurable.lead_researcher_prompt.format(date=get_today_str(), max_concurrent_research_units=configurable.max_concurrent_research_units)), HumanMessage(content=response.research_brief)]},
+        "supervisor_messages": {"type": "override", "value": supervisor_content},
     }

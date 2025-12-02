@@ -1,6 +1,7 @@
 from langchain_core.messages import AIMessage, HumanMessage, get_buffer_string
 from langchain_core.runnables import RunnableConfig
 
+from src.config.node_names import RESEARCH_FINAL_REPORT_GENERATION
 from src.config.settings import Configuration
 from src.core.agents.tools.misc_utils import get_api_key_for_model, get_today_str
 from src.core.agents.tools.token_utils import get_model_token_limit, is_token_limit_exceeded
@@ -12,6 +13,8 @@ async def final_report_generation(state: AgentState, config: RunnableConfig):
     notes = state.get("notes", [])
     cleared_state = {
         "notes": {"type": "override", "value": []},
+        "supervisor_messages": {"type": "override", "value": []},
+        "raw_notes": {"type": "override", "value": []},
     }
     configurable = Configuration.from_runnable_config(config)
     writer_model_config = {
@@ -19,14 +22,22 @@ async def final_report_generation(state: AgentState, config: RunnableConfig):
         "max_tokens": configurable.final_report_model_max_tokens,
         "api_key": get_api_key_for_model(configurable.final_report_model, config),
     }
-    llm = init_model(configurable.final_report_model, disable_streaming=configurable.disable_streaming).with_config(writer_model_config)
+    llm = init_model(configurable.final_report_model, disable_streaming=configurable.disable_streaming, node_name=RESEARCH_FINAL_REPORT_GENERATION).with_config(writer_model_config)
     findings = "\n".join(notes)
     max_retries = 3
     current_retry = 0
     while current_retry <= max_retries:
         final_report_prompt = configurable.final_report_generation_prompt.format(research_brief=state.get("research_brief", ""), messages=get_buffer_string(state.get("messages", [])), findings=findings, date=get_today_str())
         try:
-            final_report = await llm.with_config(writer_model_config).ainvoke([HumanMessage(content=final_report_prompt)])
+            # Tag this call as the final response so the frontend knows to display it
+            final_report = await llm.with_config(writer_model_config).ainvoke([HumanMessage(content=final_report_prompt)], config={"metadata": {"is_final_response": True}})
+
+            # Attach context to the final message for UI display
+            final_report.additional_kwargs = {
+                "final_documents": state.get("final_documents", []),
+                "supervisor_messages": state.get("supervisor_messages", []),
+            }
+
             return {"final_report": final_report.content, "messages": [final_report], **cleared_state}
         except Exception as e:
             if is_token_limit_exceeded(e, configurable.final_report_model):

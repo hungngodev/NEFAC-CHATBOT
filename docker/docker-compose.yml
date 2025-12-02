@@ -150,3 +150,19 @@ services:
       - NEO4J_PASSWORD=password123
     networks:
       - nefacnet
+
+  frontend:
+    build:
+      context: ../client
+      dockerfile: Dockerfile
+    container_name: nefac-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8123
+      - NEXT_PUBLIC_ASSISTANT_ID=agent
+    depends_on:
+      backend:
+        condition: service_started
+    networks:
+      - nefacnet
