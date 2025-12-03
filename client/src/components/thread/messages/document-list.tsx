@@ -139,7 +139,6 @@ function DocumentChunk({
 export function DocumentList({ documents }: DocumentListProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  console.log("Documents in DocumentList:", documents);
 
   if (!documents || documents.length === 0) return null;
 

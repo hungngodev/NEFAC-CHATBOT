@@ -19,7 +19,7 @@ import {
   XIcon,
 } from "lucide-react";
 import { parseAsBoolean, useQueryState } from "nuqs";
-import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
+import { FormEvent, ReactNode, useEffect, useRef, useState, useMemo } from "react";
 import { toast } from "sonner";
 import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
 import { v4 as uuidv4 } from "uuid";
@@ -45,7 +45,8 @@ import ThreadHistory from "./history";
 import { AssistantMessage, AssistantMessageLoading } from "./messages/ai";
 import { HumanMessage } from "./messages/human";
 import { TooltipIconButton } from "./tooltip-icon-button";
-import { getEnhancedUrl, parseDocumentContent } from "./utils";
+import { getContentString, getEnhancedUrl, parseDocumentContent } from "./utils";
+import { ReasoningBlock } from "./reasoning-block";
 
 
 function StickyToBottomContent(props: {
@@ -245,6 +246,47 @@ export function Thread() {
     (m) => m.type === "ai" || m.type === "tool",
   );
 
+  const groupedBlocks = useMemo(() => {
+    const filtered = messages.filter(
+      (m) =>
+        !m.id?.startsWith(DO_NOT_RENDER_ID_PREFIX) &&
+        !getContentString(m.content).trim().startsWith("{"),
+    );
+
+    const result = filtered.reduce(
+      (acc, message) => {
+        const isHuman = message.type === "human";
+        const isFinal =
+          message.additional_kwargs?.final_documents ||
+          message.additional_kwargs?.is_final_response;
+
+        if (isHuman || isFinal) {
+          if (acc.currentReasoning.length > 0) {
+            acc.blocks.push({
+              type: "reasoning",
+              messages: acc.currentReasoning,
+            });
+            acc.currentReasoning = [];
+          }
+          acc.blocks.push({ type: "message", message });
+        } else {
+          acc.currentReasoning.push(message);
+        }
+        return acc;
+      },
+      { blocks: [] as any[], currentReasoning: [] as Message[] },
+    );
+
+    if (result.currentReasoning.length > 0) {
+      result.blocks.push({
+        type: "reasoning",
+        messages: result.currentReasoning,
+      });
+    }
+    
+    return result.blocks;
+  }, [messages]);
+
   return (
     <div className="flex h-screen w-full overflow-hidden">
       <div className="relative hidden lg:flex">
@@ -384,24 +426,31 @@ export function Thread() {
               contentClassName="pt-8 pb-16 max-w-3xl mx-auto flex flex-col gap-4 w-full"
               content={
                 <>
-                  {messages
-                    .filter((m) => !m.id?.startsWith(DO_NOT_RENDER_ID_PREFIX))
-                    .map((message, index) =>
-                      message.type === "human" ? (
-                        <HumanMessage
-                          key={message.id || `${message.type}-${index}`}
-                          message={message}
-                          isLoading={isLoading}
+                  {groupedBlocks.map((block, index) => {
+                    if (block.type === "reasoning") {
+                      return (
+                        <ReasoningBlock
+                          key={`reasoning-${index}`}
+                          messages={block.messages}
                         />
-                      ) : (
-                        <AssistantMessage
-                          key={message.id || `${message.type}-${index}`}
-                          message={message}
-                          isLoading={isLoading}
-                          handleRegenerate={handleRegenerate}
-                        />
-                      ),
-                    )}
+                      );
+                    }
+                    const message = block.message;
+                    return message.type === "human" ? (
+                      <HumanMessage
+                        key={message.id || `${message.type}-${index}`}
+                        message={message}
+                        isLoading={isLoading}
+                      />
+                    ) : (
+                      <AssistantMessage
+                        key={message.id || `${message.type}-${index}`}
+                        message={message}
+                        isLoading={isLoading}
+                        handleRegenerate={handleRegenerate}
+                      />
+                    );
+                  })}
                   {/* Special rendering case where there are no AI/tool messages, but there is an interrupt.
                     We need to render it outside of the messages list, since there are no messages to render */}
                   {hasNoAIOrToolMessages && !!stream.interrupt && (
@@ -412,7 +461,7 @@ export function Thread() {
                       handleRegenerate={handleRegenerate}
                     />
                   )}
-                  {isLoading && !firstTokenReceived && (
+                  {isLoading && (
                     <AssistantMessageLoading />
                   )}
                 </>
@@ -469,7 +518,7 @@ export function Thread() {
                       />
 
                       <div className="flex items-center gap-6 p-2 pt-4">
-                        <div>
+                        {/* <div>
                           <div className="flex items-center space-x-2">
                             <Switch
                               id="render-tool-calls"
@@ -483,7 +532,7 @@ export function Thread() {
                               Hide Tool Calls
                             </Label>
                           </div>
-                        </div>
+                        </div> */}
                         <div>
                           <div className="flex items-center space-x-2">
                             <Switch

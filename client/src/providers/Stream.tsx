@@ -121,23 +121,18 @@ const StreamSession = ({
 };
 
 // Default values for the form
-const DEFAULT_API_URL = "http://localhost:2024";
-const DEFAULT_ASSISTANT_ID = "agent";
+const DEFAULT_API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8123";
+const DEFAULT_ASSISTANT_ID = process.env.NEXT_PUBLIC_ASSISTANT_ID || "agent";
 
 export const StreamProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  // Get environment variables
-  const envApiUrl: string | undefined = process.env.NEXT_PUBLIC_API_URL;
-  const envAssistantId: string | undefined =
-    process.env.NEXT_PUBLIC_ASSISTANT_ID;
-
   // Use URL params with env var fallbacks
   const [apiUrl, setApiUrl] = useQueryState("apiUrl", {
-    defaultValue: envApiUrl || "",
+    defaultValue: DEFAULT_API_URL,
   });
   const [assistantId, setAssistantId] = useQueryState("assistantId", {
-    defaultValue: envAssistantId || "",
+    defaultValue: DEFAULT_ASSISTANT_ID,
   });
 
   // For API key, use localStorage with env var fallback
@@ -156,7 +151,11 @@ export const StreamProvider: React.FC<{ children: ReactNode }> = ({
   // const finalAssistantId = assistantId || envAssistantId;
 
   useEffect(() => {
-    setApiUrl(DEFAULT_API_URL);
+    let resolvedUrl = DEFAULT_API_URL;
+    if (resolvedUrl.startsWith("/") && typeof window !== "undefined") {
+      resolvedUrl = `${window.location.origin}${resolvedUrl}`;
+    }
+    setApiUrl(resolvedUrl);
     setApiKey("");
     setAssistantId(DEFAULT_ASSISTANT_ID);
   }, []);

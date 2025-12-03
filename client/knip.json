@@ -1,0 +1,6 @@
+{
+  "entry": ["src/app/page.tsx", "src/app/api/**/*.ts"],
+  "project": ["src/**/*.{ts,tsx}"],
+  "ignore": ["**/*.d.ts"],
+  "ignoreDependencies": ["eslint-config-next", "postcss", "autoprefixer"]
+}
