@@ -10,29 +10,20 @@ import { Checkpoint, Message } from "@langchain/langgraph-sdk";
 import { motion } from "framer-motion";
 import {
   ArrowDown,
-  FileText,
   LoaderCircle,
   PanelRightClose,
   PanelRightOpen,
-  Plus,
   SquarePen,
-  XIcon,
+  XIcon
 } from "lucide-react";
 import { parseAsBoolean, useQueryState } from "nuqs";
-import { FormEvent, ReactNode, useEffect, useRef, useState, useMemo } from "react";
+import { FormEvent, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
 import { v4 as uuidv4 } from "uuid";
 import { NEFACLogoSVG } from "../icons/langgraph";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "../ui/sheet";
 import { Switch } from "../ui/switch";
 import { ContentBlocksPreview } from "./ContentBlocksPreview";
 import {
@@ -44,9 +35,9 @@ import {
 import ThreadHistory from "./history";
 import { AssistantMessage, AssistantMessageLoading } from "./messages/ai";
 import { HumanMessage } from "./messages/human";
-import { TooltipIconButton } from "./tooltip-icon-button";
-import { getContentString, getEnhancedUrl, parseDocumentContent } from "./utils";
 import { ReasoningBlock } from "./reasoning-block";
+import { TooltipIconButton } from "./tooltip-icon-button";
+import { getContentString } from "./utils";
 
 
 function StickyToBottomContent(props: {
@@ -99,10 +90,10 @@ export function Thread() {
     "chatHistoryOpen",
     parseAsBoolean.withDefault(false),
   );
-  const [enableToolCalls, setEnableToolCalls] = useQueryState(
-    "enableToolCalls",
-    parseAsBoolean.withDefault(false),
-  );
+  // const [enableToolCalls, setEnableToolCalls] = useQueryState(
+  //   "enableToolCalls",
+  //   parseAsBoolean.withDefault(false),
+  // );
   const [isDeepResearch, setIsDeepResearch] = useQueryState(
     "deepResearch",
     parseAsBoolean.withDefault(false),
@@ -111,21 +102,21 @@ export function Thread() {
   const {
     contentBlocks,
     setContentBlocks,
-    handleFileUpload,
+    // handleFileUpload,
     dropRef,
     removeBlock,
     resetBlocks: _resetBlocks,
     dragOver,
     handlePaste,
   } = useFileUpload();
-  const [firstTokenReceived, setFirstTokenReceived] = useState(false);
+  // const [firstTokenReceived, setFirstTokenReceived] = useState(false);
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");
 
   const stream = useStreamContext();
   const messages = stream.messages;
 
-  const documents =
-    (stream as any).documents || (stream as any).values?.documents;
+  // const documents =
+  //   (stream as any).documents || (stream as any).values?.documents;
   const isLoading = stream.isLoading;
 
   const lastError = useRef<string | undefined>(undefined);
@@ -169,14 +160,6 @@ export function Thread() {
   // TODO: this should be part of the useStream hook
   const prevMessageLength = useRef(0);
   useEffect(() => {
-    if (
-      messages.length !== prevMessageLength.current &&
-      messages?.length &&
-      messages[messages.length - 1].type === "ai"
-    ) {
-      setFirstTokenReceived(true);
-    }
-
     prevMessageLength.current = messages.length;
   }, [messages]);
 
@@ -184,7 +167,7 @@ export function Thread() {
     e.preventDefault();
     if ((input.trim().length === 0 && contentBlocks.length === 0) || isLoading)
       return;
-    setFirstTokenReceived(false);
+
 
     const newHumanMessage: Message = {
       id: uuidv4(),
@@ -232,7 +215,7 @@ export function Thread() {
   ) => {
     // Do this so the loading state is correct
     prevMessageLength.current = prevMessageLength.current - 1;
-    setFirstTokenReceived(false);
+
     stream.submit(undefined, {
       checkpoint: parentCheckpoint,
       streamMode: ["values"],
