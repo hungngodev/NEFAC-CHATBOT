@@ -61,56 +61,68 @@ const CodeHeader: FC<CodeHeaderProps> = ({ language, code }) => {
 };
 
 const defaultComponents: any = {
-  h1: ({ className, ...props }: { className?: string }) => (
+  h1: ({ className, children, ...props }: { className?: string; children?: React.ReactNode }) => (
     <h1
       className={cn(
         "mb-8 scroll-m-20 text-4xl font-extrabold tracking-tight last:mb-0",
         className,
       )}
       {...props}
-    />
+    >
+      {children}
+    </h1>
   ),
-  h2: ({ className, ...props }: { className?: string }) => (
+  h2: ({ className, children, ...props }: { className?: string; children?: React.ReactNode }) => (
     <h2
       className={cn(
         "mt-8 mb-4 scroll-m-20 text-3xl font-semibold tracking-tight first:mt-0 last:mb-0",
         className,
       )}
       {...props}
-    />
+    >
+      {children}
+    </h2>
   ),
-  h3: ({ className, ...props }: { className?: string }) => (
+  h3: ({ className, children, ...props }: { className?: string; children?: React.ReactNode }) => (
     <h3
       className={cn(
         "mt-6 mb-4 scroll-m-20 text-2xl font-semibold tracking-tight first:mt-0 last:mb-0",
         className,
       )}
       {...props}
-    />
+    >
+      {children}
+    </h3>
   ),
-  h4: ({ className, ...props }: { className?: string }) => (
+  h4: ({ className, children, ...props }: { className?: string; children?: React.ReactNode }) => (
     <h4
       className={cn(
         "mt-6 mb-4 scroll-m-20 text-xl font-semibold tracking-tight first:mt-0 last:mb-0",
         className,
       )}
       {...props}
-    />
+    >
+      {children}
+    </h4>
   ),
-  h5: ({ className, ...props }: { className?: string }) => (
+  h5: ({ className, children, ...props }: { className?: string; children?: React.ReactNode }) => (
     <h5
       className={cn(
         "my-4 text-lg font-semibold first:mt-0 last:mb-0",
         className,
       )}
       {...props}
-    />
+    >
+      {children}
+    </h5>
   ),
-  h6: ({ className, ...props }: { className?: string }) => (
+  h6: ({ className, children, ...props }: { className?: string; children?: React.ReactNode }) => (
     <h6
       className={cn("my-4 font-semibold first:mt-0 last:mb-0", className)}
       {...props}
-    />
+    >
+      {children}
+    </h6>
   ),
   p: ({ className, ...props }: { className?: string }) => (
     <p
@@ -118,14 +130,16 @@ const defaultComponents: any = {
       {...props}
     />
   ),
-  a: ({ className, ...props }: { className?: string }) => (
+  a: ({ className, children, ...props }: { className?: string; children?: React.ReactNode }) => (
     <a
       className={cn(
         "text-primary font-medium underline underline-offset-4",
         className,
       )}
       {...props}
-    />
+    >
+      {children}
+    </a>
   ),
   blockquote: ({ className, ...props }: { className?: string }) => (
     <blockquote

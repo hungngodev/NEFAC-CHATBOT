@@ -152,6 +152,13 @@ function HasContentsEllipsis({ onClick }: { onClick?: () => void }) {
   return (
     <span
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          onClick?.();
+        }
+      }}
+      role="button"
+      tabIndex={0}
       className={cn(
         "rounded-md p-[2px] font-mono text-[10px] leading-3",
         "bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-800",
@@ -192,6 +199,13 @@ export function StateViewObject(props: StateViewProps) {
       >
         <div
           onClick={() => setExpanded((prev) => !prev)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              setExpanded((prev) => !prev);
+            }
+          }}
+          role="button"
+          tabIndex={0}
           className="flex h-5 w-5 cursor-pointer items-center justify-center rounded-md text-gray-500 transition-colors ease-in-out hover:bg-gray-100 hover:text-black"
         >
           <ChevronRight className="h-4 w-4" />
