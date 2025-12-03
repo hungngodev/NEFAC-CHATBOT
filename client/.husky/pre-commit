@@ -1,0 +1,5 @@
+# Run Type Checking
+pnpm tsc --noEmit
+
+# Run Linting & Formatting on Staged Files
+pnpm lint-staged

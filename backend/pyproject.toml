@@ -1,3 +1,6 @@
+[tool.poetry]
+packages = [{include = "src"}]
+
 [project]
 name = "backend"
 version = "0.1.0"
@@ -6,6 +9,7 @@ authors = [
     {name = "HUNG NGO", email = "hungngo1607@gmail.com"}
 ]
 requires-python = ">=3.11,<3.13"
+
 
 dependencies = [
     "pydantic (>=2.11.7,<3.0.0)",
@@ -52,6 +56,8 @@ dependencies = [
     "llama-index-core (>=0.14.8,<1.0.0)",
     "rapidfuzz (>=3.14.3,<4.0.0)",
     "deepmultilingualpunctuation (>=1.0.1,<2.0.0)",
+    "langgraph-checkpoint-postgres (>=3.0.1,<4.0.0)",
+    "langgraph-checkpoint-redis (>=0.2.1,<0.3.0)",
 ]
 
 [build-system]
@@ -63,6 +69,9 @@ autoflake = "^2.3.1"
 black = "^24.4.2"
 pre-commit = "^3.7.1"
 ruff = "^0.4.8"
+mypy = "^1.19.0"
+types-requests = "^2.32.4.20250913"
+types-pyyaml = "^6.0.12.20250915"
 
 [tool.black]
 line-length = 300
@@ -111,3 +120,10 @@ ignore = ["E501", "W291"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["backend"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true
+exclude = ["tests", "docs"]
+
