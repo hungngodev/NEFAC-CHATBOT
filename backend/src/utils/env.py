@@ -10,7 +10,7 @@ def load_env(force: bool = False) -> Optional[str]:
 
     Resolution order:
     1) ENV_FILE env var, if points to an existing file
-    2) Repo root .env (one level above this backend folder)
+    2) Repo root .env (at the repository root)
     3) First .env found by find_dotenv(usecwd=True)
 
     Returns the loaded path (if any), else None.
@@ -21,8 +21,9 @@ def load_env(force: bool = False) -> Optional[str]:
         load_dotenv(dotenv_path=Path(env_file).expanduser(), override=force)
         return str(Path(env_file).expanduser())
 
-    # 2) Repo root .env (back one level from backend/)
-    repo_env = Path(__file__).resolve().parent.parent / ".env"
+    # 2) Repo root .env (back 4 levels from src/utils/env.py)
+    # backend/src/utils/env.py -> utils -> src -> backend -> repo_root
+    repo_env = Path(__file__).resolve().parent.parent.parent.parent / ".env"
     if repo_env.exists():
         load_dotenv(dotenv_path=repo_env, override=force)
         return str(repo_env)
@@ -34,7 +35,3 @@ def load_env(force: bool = False) -> Optional[str]:
         return located
 
     return None
-
-
-# Auto-load on import for convenience
-_LOADED_PATH = load_env()  # noqa: F841

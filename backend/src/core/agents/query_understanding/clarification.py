@@ -44,6 +44,6 @@ async def clarify_with_user(state: AgentState, config: RunnableConfig):
         config={"metadata": {"is_final_response": True}},
     )
     if response.need_clarification:
-        return Command(goto=END, update={"messages": [AIMessage(content=response.question)]})
+        return Command(goto=END, update={"messages": [AIMessage(content=response.question, additional_kwargs={"is_final_response": True})]})
     else:
         return Command(goto=RESEARCH_WRITE_RESEARCH_BRIEF, update={"messages": [AIMessage(content=response.verification)]})

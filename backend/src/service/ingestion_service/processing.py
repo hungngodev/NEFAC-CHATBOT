@@ -11,7 +11,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Set
 
-from load_env import load_env as load_env_from_root
 from src.service.ingestion_service.llamaindex.database_cleaner import clear_all_databases
 from src.service.ingestion_service.llamaindex.ingestion_workflow import run_ingestion_workflow
 from src.service.ingestion_service.llamaindex.metadata_utils import _get_base_metadata
@@ -21,6 +20,7 @@ from src.service.ingestion_service.progress_tracker import (
     get_tracker,
     reset_tracker,
 )
+from src.utils.env import load_env as load_env_from_root
 
 load_env_from_root()
 

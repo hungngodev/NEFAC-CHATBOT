@@ -5,8 +5,8 @@ from llama_index.core import Settings
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.llms.openai import OpenAI
 
-from load_env import load_env as load_env_from_root
 from src.config.models import EMBEDDING_DIMENSIONS, EMBEDDING_MODEL_NAME
+from src.utils.env import load_env as load_env_from_root
 
 load_env_from_root()
 logger = logging.getLogger(__name__)
@@ -40,18 +40,20 @@ SEMANTIC_SPLITTER_APPEND_THRESHOLD = 0.6
 SEMANTIC_SPLITTER_MERGE_THRESHOLD = 0.6
 SEMANTIC_SPLITTER_MAX_CHUNK = 384
 
+SERVICE_TIER = "flex"
+
 Settings.llm = OpenAI(
     model="gpt-5-nano",
     max_retries=30,
     timeout=900.0,
-    additional_kwargs={"service_tier": "flex"},
+    additional_kwargs={"service_tier": SERVICE_TIER},
     api_key=os.getenv("OPENAI_API_KEY"),
 )
 graph_llm_model = OpenAI(
     model="gpt-5-nano",
     max_retries=30,
     timeout=900.0,
-    additional_kwargs={"service_tier": "flex"},
+    additional_kwargs={"service_tier": SERVICE_TIER},
     api_key=os.getenv("OPENAI_API_KEY"),
 )
 Settings.embed_model = OpenAIEmbedding(

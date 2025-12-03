@@ -4,6 +4,7 @@ Specialized prompts configuration for the NEFAC chatbot system.
 
 from pydantic import BaseModel, Field
 
+import src.config.models as models_module
 import src.config.node_names as node_names_module
 import src.config.prompts as prompts_module
 
@@ -27,4 +28,10 @@ class RetrievalConfig(BaseModel):
             "langgraph_nodes": [node_names_module.GRAPH_RETRIEVAL_GRAPH_TOOL_NODE],
             "langgraph_type": "prompt",
         },
+    )
+
+    retrieval_planner_model: str = Field(
+        default=models_module.DEFAULT_RETRIEVAL_PLANNER_MODEL,
+        description="Model to use for the retrieval planner.",
+        metadata={"x_oap_ui_config": {"type": "model", "label": "Retrieval Planner Model"}},
     )

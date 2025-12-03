@@ -4,7 +4,6 @@ from langchain.chat_models import init_chat_model as _init_chat_model
 from langchain_core.language_models import BaseChatModel
 
 from src.config.models import DEFAULT_MAX_RETRIES, ENABLE_STREAMING, SERVICE_TIER, ModelType
-from src.config.node_names import INTERNAL_NODES
 
 
 def init_model(
@@ -34,10 +33,7 @@ def init_model(
         A configured ChatOpenAI or ChatAnthropic instance.
     """
     if disable_streaming is None:
-        if node_name and node_name in INTERNAL_NODES:
-            disable_streaming = True
-        else:
-            disable_streaming = not ENABLE_STREAMING
+        disable_streaming = not ENABLE_STREAMING
 
     if max_retries is None:
         max_retries = DEFAULT_MAX_RETRIES
@@ -58,5 +54,7 @@ def init_model(
         max_tokens=max_tokens,
         disable_streaming=disable_streaming,
         max_retries=max_retries,
+        name=node_name,
+        tags=[node_name] if node_name else None,
         **kwargs,
     )
