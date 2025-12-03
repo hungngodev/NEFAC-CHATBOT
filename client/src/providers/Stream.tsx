@@ -158,7 +158,7 @@ export const StreamProvider: React.FC<{ children: ReactNode }> = ({
     setApiUrl(resolvedUrl);
     setApiKey("");
     setAssistantId(DEFAULT_ASSISTANT_ID);
-  }, []);
+  }, [setApiUrl, setAssistantId]);
 
   // Show the form if we: don't have an API URL, or don't have an assistant ID
   // if (!finalApiUrl || !finalAssistantId) {
