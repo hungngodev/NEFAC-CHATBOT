@@ -2,9 +2,22 @@ version: "3.8"
 
 volumes:
   esdata:
+    external: true
+    name: backend_es-data
   qdrant-data:
+    external: true
+    name: backend_qdrant-data
   neo4j-data:
-  langgraph-data:
+    external: true
+    name: backend_neo4j-data
+  postgres-data:
+    name: backend_postgres-data
+  redis-data:
+    name: backend_redis-data
+  kibana-data:
+    name: backend_kibana-data
+  nginx-logs:
+    name: backend_nginx-logs
 
 networks:
   nefacnet:
@@ -14,16 +27,18 @@ services:
   # --- Databases & Infrastructure ---
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
-    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.1.2
+    container_name: nefac-elasticsearch
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
       - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - path.repo=/usr/share/elasticsearch/snapshots
     ports:
       - "9200:9200"
     volumes:
       - esdata:/usr/share/elasticsearch/data
+      - ../backup:/usr/share/elasticsearch/snapshots
     networks:
       - nefacnet
     healthcheck:
@@ -33,12 +48,16 @@ services:
       retries: 5
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:8.11.1
-    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:9.1.2
+    container_name: nefac-kibana
     ports:
       - "5601:5601"
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - XPACK_SECURITY_ENABLED=false
+      - XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY=a7a6311933d3503b89bc2dbc36572c33a6c10925682e591bffcab6911c06786d
+    volumes:
+      - kibana-data:/usr/share/kibana/data
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -47,7 +66,7 @@ services:
 
   qdrant:
     image: qdrant/qdrant:latest
-    container_name: qdrant
+    container_name: nefac-qdrant
     ports:
       - "6333:6333"
       - "6334:6334"
@@ -59,14 +78,14 @@ services:
     networks:
       - nefacnet
     healthcheck:
-      test: ["CMD-SHELL", "curl -s http://localhost:6333/healthz >/dev/null || exit 1"]
+      test: ["CMD-SHELL", "bash -c 'cat < /dev/tcp/localhost/6333'"]
       interval: 30s
       timeout: 10s
       retries: 5
 
   neo4j:
     image: neo4j:latest
-    container_name: neo4j
+    container_name: nefac-neo4j
     ports:
       - "7474:7474" # HTTP
       - "7687:7687" # Bolt
@@ -85,20 +104,22 @@ services:
       timeout: 10s
       retries: 5
 
-  langgraph-redis:
+  redis:
     image: redis:6
-    container_name: langgraph-redis
+    container_name: nefac-redis
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 1s
       retries: 5
+    volumes:
+      - redis-data:/data
     networks:
       - nefacnet
 
-  langgraph-postgres:
+  postgres:
     image: postgres:16
-    container_name: langgraph-postgres
+    container_name: nefac-postgres
     ports:
       - "5433:5432"
     environment:
@@ -106,7 +127,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - langgraph-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
       start_period: 10s
@@ -122,9 +143,12 @@ services:
     build:
       context: ../backend
       dockerfile: Dockerfile
+    image: nefac-backend
     container_name: nefac-backend
     ports:
       - "8123:8000"
+    volumes:
+      - ../backend:/deps/backend
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -132,22 +156,37 @@ services:
         condition: service_healthy
       neo4j:
         condition: service_healthy
-      langgraph-redis:
+      redis:
         condition: service_healthy
-      langgraph-postgres:
+      postgres:
         condition: service_healthy
     env_file:
       - ../.env
     environment:
       # Override hostnames to point to docker service names
-      - REDIS_URI=redis://langgraph-redis:6379/0
-      - POSTGRES_URI=postgres://postgres:postgres@langgraph-postgres:5432/postgres?sslmode=disable
+      - REDIS_URI=redis://redis:6379/0
+      - POSTGRES_URI=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
       - ES_HOST=http://elasticsearch:9200
       - QDRANT_ENDPOINT=http://qdrant:6333
       - NEO4J_URI=bolt://neo4j:7687
       # Ensure these match the service names/auth
       - NEO4J_USERNAME=neo4j
       - NEO4J_PASSWORD=password123
+      - LANGGRAPH_CHECKPOINTER={"type":"langgraph_checkpoint_postgres.PostgresSaver","kwargs":{"conn_string":"postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable"}}
+    networks:
+      - nefacnet
+
+  nginx:
+    image: nginx:alpine
+    container_name: nefac-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ../nginx.conf:/etc/nginx/nginx.conf:ro
+      - nginx-logs:/var/log/nginx
+    depends_on:
+      - frontend
+      - backend
     networks:
       - nefacnet
 
@@ -155,11 +194,14 @@ services:
     build:
       context: ../client
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: /api
+        NEXT_PUBLIC_ASSISTANT_ID: agent
     container_name: nefac-frontend
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8123
+      - NEXT_PUBLIC_API_URL=/api
       - NEXT_PUBLIC_ASSISTANT_ID=agent
     depends_on:
       backend:
