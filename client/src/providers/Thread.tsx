@@ -12,7 +12,7 @@ import {
   SetStateAction,
 } from "react";
 import { createClient } from "./client";
-
+import { DEFAULT_API_URL, DEFAULT_ASSISTANT_ID } from "@/constants";
 interface ThreadContextType {
   getThreads: () => Promise<Thread[]>;
   deleteThread: (threadId: string) => Promise<void>;
@@ -34,10 +34,11 @@ function getThreadSearchMetadata(
   }
 }
 
+
+
 export function ThreadProvider({ children }: { children: ReactNode }) {
-  const [apiUrl] = useQueryState("apiUrl");
-  const [queryAssistantId] = useQueryState("assistantId");
-  const assistantId = queryAssistantId || process.env.NEXT_PUBLIC_ASSISTANT_ID || "agent";
+  const [apiUrl] = useQueryState("apiUrl", { defaultValue: DEFAULT_API_URL });
+  const [assistantId] = useQueryState("assistantId", { defaultValue: DEFAULT_ASSISTANT_ID });
 
   const [threads, setThreads] = useState<Thread[]>([]);
   const [threadsLoading, setThreadsLoading] = useState(false);

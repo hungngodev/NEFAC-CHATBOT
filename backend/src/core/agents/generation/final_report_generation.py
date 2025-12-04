@@ -1,12 +1,13 @@
+import asyncio
 from langchain_core.messages import AIMessage, HumanMessage, get_buffer_string
 from langchain_core.runnables import RunnableConfig
-
 from src.config.node_names import RESEARCH_FINAL_REPORT_GENERATION
 from src.config.settings import Configuration
 from src.core.agents.tools.misc_utils import get_api_key_for_model, get_today_str
 from src.core.agents.tools.token_utils import get_model_token_limit, is_token_limit_exceeded
 from src.schemas.state import AgentState
 from src.utils.model_factory import init_model
+from src.utils.events import emit_final_response_signal
 
 
 async def final_report_generation(state: AgentState, config: RunnableConfig):
@@ -29,13 +30,14 @@ async def final_report_generation(state: AgentState, config: RunnableConfig):
     while current_retry <= max_retries:
         final_report_prompt = configurable.final_report_generation_prompt.format(research_brief=state.get("research_brief", ""), messages=get_buffer_string(state.get("messages", [])), findings=findings, date=get_today_str())
         try:
-            # Tag this call as the final response so the frontend knows to display it
-            final_report = await llm.with_config(writer_model_config).ainvoke([HumanMessage(content=final_report_prompt)], config={"metadata": {"is_final_response": True}})
+            emit_final_response_signal(True)
+            
+            final_report = await llm.ainvoke([HumanMessage(content=final_report_prompt)], config)
 
-            # Attach context to the final message for UI display
             final_report.additional_kwargs = {
                 "final_documents": state.get("final_documents", []),
                 "supervisor_messages": state.get("supervisor_messages", []),
+                "is_final_response": True,
             }
 
             return {"final_report": final_report.content, "messages": [final_report], **cleared_state}

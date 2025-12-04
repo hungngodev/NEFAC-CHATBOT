@@ -10,6 +10,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetDescription,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PanelRightOpen, PanelRightClose, Trash2 } from "lucide-react";
@@ -148,9 +149,12 @@ export default function ThreadHistory() {
             side="left"
             className="flex lg:hidden"
           >
-            <SheetHeader>
-              <SheetTitle>Chat History</SheetTitle>
-            </SheetHeader>
+              <SheetHeader>
+                <SheetTitle>Chat History</SheetTitle>
+                <SheetDescription className="sr-only">
+                  View and manage your past conversations
+                </SheetDescription>
+              </SheetHeader>
             <ThreadList
               threads={threads}
               onThreadClick={() => setChatHistoryOpen((o) => !o)}

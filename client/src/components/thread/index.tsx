@@ -1,3 +1,27 @@
+import {
+  FormEvent,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+
+import { AIMessage, Checkpoint, Message } from "@langchain/langgraph-sdk";
+import { motion } from "framer-motion";
+import {
+  ArrowDown,
+  LoaderCircle,
+  PanelRightClose,
+  PanelRightOpen,
+  SquarePen,
+  XIcon,
+} from "lucide-react";
+import { parseAsBoolean, useQueryState } from "nuqs";
+import { toast } from "sonner";
+import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
+import { v4 as uuidv4 } from "uuid";
+
 import { useFileUpload } from "@/hooks/use-file-upload";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
@@ -6,21 +30,7 @@ import {
 } from "@/lib/ensure-tool-responses";
 import { cn } from "@/lib/utils";
 import { useStreamContext } from "@/providers/Stream";
-import { Checkpoint, Message } from "@langchain/langgraph-sdk";
-import { motion } from "framer-motion";
-import {
-  ArrowDown,
-  LoaderCircle,
-  PanelRightClose,
-  PanelRightOpen,
-  SquarePen,
-  XIcon
-} from "lucide-react";
-import { parseAsBoolean, useQueryState } from "nuqs";
-import { FormEvent, ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { toast } from "sonner";
-import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
-import { v4 as uuidv4 } from "uuid";
+
 import { NEFACLogoSVG } from "../icons/langgraph";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
@@ -33,12 +43,15 @@ import {
   useArtifactOpen,
 } from "./artifact";
 import ThreadHistory from "./history";
-import { AssistantMessage, AssistantMessageLoading } from "./messages/ai";
+import {
+  AssistantMessage,
+  AssistantMessageLoading,
+  DeepResearchLoading,
+} from "./messages/ai";
 import { HumanMessage } from "./messages/human";
 import { ReasoningBlock } from "./reasoning-block";
 import { TooltipIconButton } from "./tooltip-icon-button";
 import { getContentString } from "./utils";
-
 
 function StickyToBottomContent(props: {
   content: ReactNode;
@@ -168,7 +181,6 @@ export function Thread() {
     if ((input.trim().length === 0 && contentBlocks.length === 0) || isLoading)
       return;
 
-
     const newHumanMessage: Message = {
       id: uuidv4(),
       type: "human",
@@ -191,7 +203,7 @@ export function Thread() {
             research_mode: isDeepResearch ? "deep" : "quick",
           },
         },
-        streamMode: ["values"],
+        streamMode: ["values", "custom", "messages"],
         streamSubgraphs: true,
         streamResumable: true,
         optimisticValues: (prev) => ({
@@ -218,7 +230,7 @@ export function Thread() {
 
     stream.submit(undefined, {
       checkpoint: parentCheckpoint,
-      streamMode: ["values"],
+      streamMode: ["custom", "messages"],
       streamSubgraphs: true,
       streamResumable: true,
     });
@@ -229,46 +241,151 @@ export function Thread() {
     (m) => m.type === "ai" || m.type === "tool",
   );
 
+  // State for incremental updates
+  const blocksRef = useRef<{
+    blocks: any[];
+    currentReasoningBlock: Message[];
+    lastProcessedIndex: number;
+    lastMessages: Message[];
+    lastIsFinalStreaming: boolean;
+  }>({
+    blocks: [],
+    currentReasoningBlock: [],
+    lastProcessedIndex: -1,
+    lastMessages: [],
+    lastIsFinalStreaming: false,
+  });
+
   const groupedBlocks = useMemo(() => {
-    const filtered = messages.filter(
-      (m) =>
-        !m.id?.startsWith(DO_NOT_RENDER_ID_PREFIX) &&
-        !getContentString(m.content).trim().startsWith("{"),
-    );
+    const isFinalResponseStreaming =
+      (stream as any).isFinalResponseStreaming ||
+      (stream as any).values?.isFinalResponseStreaming;
 
-    const result = filtered.reduce(
-      (acc, message) => {
-        const isHuman = message.type === "human";
-        const isFinal =
-          message.additional_kwargs?.final_documents ||
-          message.additional_kwargs?.is_final_response;
+    const isFinalMessage = (message: Message) => {
+      if (message.type === "human") return true;
+      return (
+        message.additional_kwargs?.is_final_response ||
+        (isFinalResponseStreaming && message.type === "ai")
+      );
+    };
 
-        if (isHuman || isFinal) {
-          if (acc.currentReasoning.length > 0) {
-            acc.blocks.push({
-              type: "reasoning",
-              messages: acc.currentReasoning,
-            });
-            acc.currentReasoning = [];
-          }
-          acc.blocks.push({ type: "message", message });
-        } else {
-          acc.currentReasoning.push(message);
+    const prev = blocksRef.current;
+
+    const isIncremental =
+      messages.length >= prev.lastMessages.length &&
+      (prev.lastMessages.length === 0 ||
+        messages[0]?.id === prev.lastMessages[0]?.id);
+
+    let startIndex = 0;
+    let newBlocks: any[] = [];
+    let newCurrentReasoningBlock: Message[] = [];
+
+    if (isIncremental) {
+      startIndex = Math.max(0, prev.lastMessages.length - 1);
+
+      newBlocks = [...prev.blocks];
+      newCurrentReasoningBlock = [...prev.currentReasoningBlock];
+
+      if (messages.length === prev.lastMessages.length && messages.length > 0) {
+        const lastMsg = messages[messages.length - 1];
+
+        if (
+          newCurrentReasoningBlock.length > 0 &&
+          newCurrentReasoningBlock[newCurrentReasoningBlock.length - 1].id ===
+            lastMsg.id
+        ) {
+          newCurrentReasoningBlock.pop();
+        } else if (
+          newBlocks.length > 0 &&
+          newBlocks[newBlocks.length - 1].type === "message" &&
+          newBlocks[newBlocks.length - 1].message.id === lastMsg.id
+        ) {
+          newBlocks.pop();
         }
-        return acc;
-      },
-      { blocks: [] as any[], currentReasoning: [] as Message[] },
-    );
 
-    if (result.currentReasoning.length > 0) {
-      result.blocks.push({
-        type: "reasoning",
-        messages: result.currentReasoning,
-      });
+        startIndex = messages.length - 1;
+      } else if (messages.length > prev.lastMessages.length) {
+        startIndex = prev.lastMessages.length;
+      }
+    } else {
+      startIndex = 0;
+      newBlocks = [];
+      newCurrentReasoningBlock = [];
     }
-    
-    return result.blocks;
-  }, [messages]);
+
+    for (let i = startIndex; i < messages.length; i++) {
+      const message = messages[i];
+
+      if (
+        message.id?.startsWith(DO_NOT_RENDER_ID_PREFIX) ||
+        getContentString(message.content).trim().startsWith("{") ||
+        !(
+          getContentString(message.content).trim().length > 0 ||
+          ((message as AIMessage).tool_calls?.length ?? 0) > 0 ||
+          Object.keys(message.additional_kwargs ?? {}).length > 0
+        )
+      ) {
+        continue;
+      }
+
+      if (isFinalMessage(message)) {
+        if (newCurrentReasoningBlock.length > 0) {
+          if (
+            newBlocks.length > 0 &&
+            newBlocks[newBlocks.length - 1].type === "reasoning"
+          ) {
+            const lastBlock = newBlocks[newBlocks.length - 1];
+            newBlocks[newBlocks.length - 1] = {
+              ...lastBlock,
+              messages: [...lastBlock.messages, ...newCurrentReasoningBlock],
+            };
+          } else {
+            newBlocks.push({
+              type: "reasoning",
+              messages: [...newCurrentReasoningBlock],
+            });
+          }
+          newCurrentReasoningBlock = [];
+        }
+        newBlocks.push({ type: "message", message });
+      } else {
+        newCurrentReasoningBlock.push(message);
+      }
+    }
+
+    blocksRef.current = {
+      blocks: newBlocks,
+      currentReasoningBlock: newCurrentReasoningBlock,
+      lastProcessedIndex: messages.length,
+      lastMessages: messages,
+      lastIsFinalStreaming: isFinalResponseStreaming,
+    };
+
+    const finalBlocks = [...newBlocks];
+    if (newCurrentReasoningBlock.length > 0) {
+      if (
+        finalBlocks.length > 0 &&
+        finalBlocks[finalBlocks.length - 1].type === "reasoning"
+      ) {
+        const lastBlock = finalBlocks[finalBlocks.length - 1];
+        finalBlocks[finalBlocks.length - 1] = {
+          ...lastBlock,
+          messages: [...lastBlock.messages, ...newCurrentReasoningBlock],
+        };
+      } else {
+        finalBlocks.push({
+          type: "reasoning",
+          messages: newCurrentReasoningBlock,
+        });
+      }
+    }
+
+    return finalBlocks;
+  }, [
+    messages,
+    (stream as any).isFinalResponseStreaming,
+    (stream as any).values?.isFinalResponseStreaming,
+  ]);
 
   return (
     <div className="flex h-screen w-full overflow-hidden">
@@ -383,7 +500,6 @@ export function Thread() {
               </div>
 
               <div className="flex items-center gap-4">
-
                 <TooltipIconButton
                   size="lg"
                   className="p-4"
@@ -415,23 +531,62 @@ export function Thread() {
                         <ReasoningBlock
                           key={`reasoning-${index}`}
                           messages={block.messages}
+                          isLoading={
+                            isLoading && index === groupedBlocks.length - 1
+                          }
+                          thread={stream}
                         />
                       );
                     }
+
+                    // Check for Deep Research
+                    const isDeepResearch = block.message.tool_calls?.some(
+                      (tc: any) => tc.name === "deep_research",
+                    );
+                    if (isDeepResearch) {
+                      const isLastBlock = index === groupedBlocks.length - 1;
+                      const isResearching =
+                        isLoading && !stream.interrupt && isLastBlock;
+                      return (
+                        <DeepResearchLoading
+                          key={index}
+                          isComplete={!isResearching}
+                        />
+                      );
+                    }
+
                     const message = block.message;
-                    return message.type === "human" ? (
-                      <HumanMessage
-                        key={message.id || `${message.type}-${index}`}
-                        message={message}
-                        isLoading={isLoading}
-                      />
-                    ) : (
-                      <AssistantMessage
-                        key={message.id || `${message.type}-${index}`}
-                        message={message}
-                        isLoading={isLoading}
-                        handleRegenerate={handleRegenerate}
-                      />
+                    return (
+                      <div
+                        key={message.id}
+                        className="flex flex-col gap-2"
+                      >
+                        {message.type === "human" ? (
+                          <HumanMessage
+                            message={message}
+                            isLoading={isLoading}
+                          />
+                        ) : (
+                          <AssistantMessage
+                            message={message}
+                            isLoading={
+                              isLoading && index === groupedBlocks.length - 1
+                            }
+                            handleRegenerate={handleRegenerate}
+                            thread={stream}
+                            isLastMessage={
+                              message.id === messages[messages.length - 1]?.id
+                            }
+                            hasNoAIOrToolMessages={
+                              !messages.some(
+                                (m) => m.type === "ai" || m.type === "tool",
+                              )
+                            }
+                            meta={stream.getMessagesMetadata(message)}
+                            interrupt={stream.interrupt}
+                          />
+                        )}
+                      </div>
                     );
                   })}
                   {/* Special rendering case where there are no AI/tool messages, but there is an interrupt.
@@ -442,11 +597,14 @@ export function Thread() {
                       message={undefined}
                       isLoading={isLoading}
                       handleRegenerate={handleRegenerate}
+                      thread={stream}
+                      isLastMessage={true}
+                      hasNoAIOrToolMessages={true}
+                      meta={undefined}
+                      interrupt={stream.interrupt}
                     />
                   )}
-                  {isLoading && (
-                    <AssistantMessageLoading />
-                  )}
+                  {isLoading && <AssistantMessageLoading />}
                 </>
               }
               footer={

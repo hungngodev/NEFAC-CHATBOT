@@ -1,5 +1,5 @@
+import asyncio
 import os as _os
-
 from langchain_core.messages import SystemMessage, ToolMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, START, StateGraph
@@ -13,7 +13,7 @@ from src.core.agents.tools.misc_utils import execute_tool_safely, get_api_key_fo
 from src.schemas.state import QuickAgentState
 from src.utils.debug import get_debug_mode
 from src.utils.model_factory import init_model
-
+from src.utils.events import emit_final_response_signal
 
 async def quick_agent(state: QuickAgentState, config: RunnableConfig) -> dict:
     """
@@ -24,11 +24,7 @@ async def quick_agent(state: QuickAgentState, config: RunnableConfig) -> dict:
 
     tools = await get_all_tools(config)
 
-    model_config = {
-        "model": configurable.quick_agent_model,
-        "api_key": get_api_key_for_model(configurable.quick_agent_model, config),
-    }
-    llm = init_model(configurable.quick_agent_model, disable_streaming=configurable.disable_streaming, node_name=QUICK_AGENT_NODE).bind(**model_config)
+    llm = init_model(configurable.quick_agent_model , disable_streaming=configurable.disable_streaming, node_name=QUICK_AGENT_NODE)
     llm_with_tools = llm.bind_tools(tools)
 
     system_prompt = configurable.quick_agent_system_prompt.format(date=get_today_str())
@@ -38,18 +34,19 @@ async def quick_agent(state: QuickAgentState, config: RunnableConfig) -> dict:
     conversation_history = [m for m in messages if not isinstance(m, SystemMessage)]
     llm_input = [SystemMessage(content=system_prompt)] + conversation_history + supervisor_messages
 
-    # Invoke Model
-    # Tag this call as the final response so the frontend knows to display it
-    response = await llm_with_tools.ainvoke(llm_input, config={"metadata": {"is_final_response": True}})
-
+    emit_final_response_signal(True)
+    
+    response = await llm_with_tools.ainvoke(llm_input, config)
     # Check for Tool Calls
     if response.tool_calls:
+        emit_final_response_signal(False)
         return Command(goto=QUICK_AGENT_TOOLS_NODE, update={"supervisor_messages": [response], "tool_call_iterations": state.get("tool_call_iterations", 0) + 1})
-
+    
     # No tool calls -> Final Answert
     response.additional_kwargs = {
         "final_documents": state.get("final_documents", []),
         "supervisor_messages": supervisor_messages,
+        "is_final_response": True,
     }
 
     return Command(

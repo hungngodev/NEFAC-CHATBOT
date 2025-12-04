@@ -1,20 +1,23 @@
-import { parsePartialJson } from "@langchain/core/output_parsers";
-import { useStreamContext } from "@/providers/Stream";
-import { AIMessage, Checkpoint, Message } from "@langchain/langgraph-sdk";
-import { getContentString } from "../utils";
-import { BranchSwitcher, CommandBar } from "./shared";
-import { MarkdownText } from "../markdown-text";
-import { LoadExternalComponent } from "@langchain/langgraph-sdk/react-ui";
-import { cn } from "@/lib/utils";
-import { ToolCalls, ToolResult } from "./tool-calls";
+import React, { Fragment, useEffect, useState } from "react";
+
 import { MessageContentComplex } from "@langchain/core/messages";
-import { Fragment } from "react/jsx-runtime";
+import { parsePartialJson } from "@langchain/core/output_parsers";
+import { AIMessage, Checkpoint, Message } from "@langchain/langgraph-sdk";
+import { LoadExternalComponent } from "@langchain/langgraph-sdk/react-ui";
+import { parseAsBoolean, useQueryState } from "nuqs";
+
 import { isAgentInboxInterruptSchema } from "@/lib/agent-inbox-interrupt";
+import { cn } from "@/lib/utils";
+import { useStreamContext } from "@/providers/Stream";
+
 import { ThreadView } from "../agent-inbox";
-import { useQueryState, parseAsBoolean } from "nuqs";
-import { GenericInterruptView } from "./generic-interrupt";
 import { useArtifact } from "../artifact";
+import { MarkdownText } from "../markdown-text";
+import { getContentString } from "../utils";
 import { DocumentList } from "./document-list";
+import { GenericInterruptView } from "./generic-interrupt";
+import { BranchSwitcher, CommandBar } from "./shared";
+import { ToolCalls, ToolResult } from "./tool-calls";
 
 function CustomComponent({
   message,
@@ -99,30 +102,34 @@ function Interrupt({
   );
 }
 
-export function AssistantMessage({
+export const AssistantMessage = React.memo(function AssistantMessage({
   message,
   isLoading,
   handleRegenerate,
+  forceShowToolCalls,
+  thread,
+  isLastMessage,
+  hasNoAIOrToolMessages,
+  meta,
+  interrupt,
 }: {
   message: Message | undefined;
   isLoading: boolean;
   handleRegenerate: (parentCheckpoint: Checkpoint | null | undefined) => void;
+  forceShowToolCalls?: boolean;
+  thread: ReturnType<typeof useStreamContext>;
+  isLastMessage: boolean;
+  hasNoAIOrToolMessages: boolean;
+  meta: any;
+  interrupt: any;
 }) {
   const content = message?.content ?? [];
   const contentString = getContentString(content);
-  const [hideToolCalls] = useQueryState(
+  const [hideToolCallsQuery] = useQueryState(
     "hideToolCalls",
     parseAsBoolean.withDefault(false),
   );
-
-  const thread = useStreamContext();
-  const isLastMessage =
-    thread.messages[thread.messages.length - 1].id === message?.id;
-  const hasNoAIOrToolMessages = !thread.messages.find(
-    (m) => m.type === "ai" || m.type === "tool",
-  );
-  const meta = message ? thread.getMessagesMetadata(message) : undefined;
-  const threadInterrupt = thread.interrupt;
+  const hideToolCalls = forceShowToolCalls ? false : hideToolCallsQuery;
 
   const parentCheckpoint = meta?.firstSeenState?.parent_checkpoint;
   const anthropicStreamedToolCalls = Array.isArray(content)
@@ -153,17 +160,25 @@ export function AssistantMessage({
           <>
             <ToolResult message={message} />
             <Interrupt
-              interrupt={threadInterrupt}
+              interrupt={interrupt}
               isLastMessage={isLastMessage}
               hasNoAIOrToolMessages={hasNoAIOrToolMessages}
             />
           </>
         ) : (
           <>
-            {contentString.length > 0 && (
+            {contentString.length > 0 ? (
               <div className="py-1">
                 <MarkdownText>{contentString}</MarkdownText>
               </div>
+            ) : (
+              !hasToolCalls &&
+              !hasAnthropicToolCalls &&
+              !isToolResult && (
+                <div className="py-1 text-xs text-gray-400 italic">
+                  (Empty message content)
+                </div>
+              )
             )}
 
             {!hideToolCalls && (
@@ -187,7 +202,7 @@ export function AssistantMessage({
               />
             )}
             <Interrupt
-              interrupt={threadInterrupt}
+              interrupt={interrupt}
               isLastMessage={isLastMessage}
               hasNoAIOrToolMessages={hasNoAIOrToolMessages}
             />
@@ -210,7 +225,7 @@ export function AssistantMessage({
                 handleRegenerate={() => handleRegenerate(parentCheckpoint)}
               />
             </div>
-            
+
             {message?.additional_kwargs?.final_documents && (
               <DocumentList
                 documents={message.additional_kwargs.final_documents as any[]}
@@ -221,7 +236,23 @@ export function AssistantMessage({
       </div>
     </div>
   );
-}
+}, (prev, next) => {
+  // Custom comparison to avoid re-renders when `thread` context changes but message is stable
+  const prevContent = getContentString(prev.message?.content ?? []);
+  const nextContent = getContentString(next.message?.content ?? []);
+  
+  return (
+    prev.message?.id === next.message?.id &&
+    prevContent === nextContent &&
+    prev.isLoading === next.isLoading &&
+    prev.isLastMessage === next.isLastMessage &&
+    prev.hasNoAIOrToolMessages === next.hasNoAIOrToolMessages &&
+    // We intentionally ignore `thread` prop changes to prevent re-renders on every token
+    // This assumes `thread` methods (setBranch) are stable or we don't care if they are stale for old messages
+    JSON.stringify(prev.meta) === JSON.stringify(next.meta) &&
+    JSON.stringify(prev.interrupt) === JSON.stringify(next.interrupt)
+  );
+});
 
 export function AssistantMessageLoading() {
   return (
@@ -231,6 +262,79 @@ export function AssistantMessageLoading() {
         <div className="bg-foreground/50 h-1.5 w-1.5 animate-[pulse_1.5s_ease-in-out_0.5s_infinite] rounded-full"></div>
         <div className="bg-foreground/50 h-1.5 w-1.5 animate-[pulse_1.5s_ease-in-out_1s_infinite] rounded-full"></div>
       </div>
+    </div>
+  );
+}
+
+export function DeepResearchLoading({ isComplete }: { isComplete?: boolean }) {
+  const [statusIndex, setStatusIndex] = useState(0);
+
+  const statuses = [
+    "Analyzing request...",
+    "Searching knowledge base...",
+    "Reading documents...",
+    "Synthesizing information...",
+    "Formulating response...",
+  ];
+
+  useEffect(() => {
+    if (isComplete) return;
+    const statusInterval = setInterval(() => {
+      setStatusIndex((prev) => (prev + 1) % statuses.length);
+    }, 4000); // Change status every 4 seconds
+
+    return () => clearInterval(statusInterval);
+  }, [isComplete]);
+
+  if (isComplete) {
+    return (
+      <div className="bg-muted/30 mr-auto flex w-full flex-col gap-4 rounded-lg border p-4">
+        <div className="flex items-center gap-3">
+          <div className="relative flex h-3 w-3 items-center justify-center">
+             <div className="h-2.5 w-2.5 rounded-full bg-green-500" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium">Deep Research Complete</span>
+            <span className="text-muted-foreground text-xs">
+              Research finished. Generating final report...
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-muted/30 mr-auto flex w-full flex-col gap-4 rounded-lg border p-4">
+      <div className="flex items-center gap-3">
+        <div className="relative flex h-3 w-3">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
+          <span className="relative inline-flex h-3 w-3 rounded-full bg-blue-500"></span>
+        </div>
+        <div className="flex flex-col">
+          <span className="text-sm font-medium">Deep Research in Progress</span>
+          <span className="text-muted-foreground animate-pulse text-xs">
+            {statuses[statusIndex]}
+          </span>
+        </div>
+      </div>
+
+      <div className="bg-muted h-1.5 w-full overflow-hidden rounded-full">
+        <div
+          className="h-full w-1/3 animate-[slide_2s_ease-in-out_infinite] rounded-full bg-blue-500/50"
+          style={{
+            animation: "shimmer 2s infinite linear",
+            backgroundImage:
+              "linear-gradient(to right, transparent, rgba(59, 130, 246, 0.5), transparent)",
+            backgroundSize: "200% 100%",
+          }}
+        ></div>
+      </div>
+
+      <p className="text-muted-foreground mt-1 border-t pt-3 text-xs">
+        This process involves searching multiple sources and analyzing complex
+        data.
+      </p>
     </div>
   );
 }

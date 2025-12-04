@@ -10,7 +10,7 @@ from typing import Literal
 EMBEDDING_MODEL_NAME = "text-embedding-3-small"
 EMBEDDING_DIMENSIONS = 1536
 
-SERVICE_TIER: Literal["flex", "default", "auto", "priority"] = "default"
+SERVICE_TIER: Literal["flex", "default", "auto", "priority"] = "flex"
 ENABLE_STREAMING: bool = True
 DEFAULT_MAX_RETRIES: int = 5
 
@@ -44,9 +44,9 @@ DEFAULT_STEP_BACK_GENERATE_MODEL = "openai:gpt-5-mini"
 DEFAULT_STEP_BACK_RESPONSE_MODEL = "openai:gpt-5-mini"
 
 DEFAULT_CLARIFY_WITH_USER_MODEL = "openai:gpt-5-mini"
-DEFAULT_TRANSFORM_MESSAGES_INTO_RESEARCH_TOPIC_MODEL = "openai:gpt-5.1"
+DEFAULT_TRANSFORM_MESSAGES_INTO_RESEARCH_TOPIC_MODEL = "openai:gpt-5-mini"
 DEFAULT_COMPRESS_RESEARCH_MODEL = "openai:gpt-5-mini"
-DEFAULT_SUPERVISOR_MODEL = "openai:gpt-5.1"
-DEFAULT_RESEARCH_MODEL = "openai:gpt-5.1"
-DEFAULT_FINAL_REPORT_MODEL = "openai:gpt-5.1"
-DEFAULT_QUICK_AGENT_MODEL = "openai:gpt-5.1"
+DEFAULT_SUPERVISOR_MODEL = "openai:gpt-5-mini"
+DEFAULT_RESEARCH_MODEL = "openai:gpt-5-mini"
+DEFAULT_FINAL_REPORT_MODEL = "openai:gpt-5-mini"
+DEFAULT_QUICK_AGENT_MODEL = "openai:gpt-5-mini"

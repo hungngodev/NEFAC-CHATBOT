@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ChevronDown, ChevronRight, BrainCircuit } from "lucide-react";
 import {
   Collapsible,
@@ -15,14 +15,28 @@ interface ReasoningBlockProps {
   isLoading?: boolean;
 }
 
-export function ReasoningBlock({ messages, isLoading }: ReasoningBlockProps) {
+export const ReasoningBlock = React.memo(function ReasoningBlock({ messages, isLoading, thread }: ReasoningBlockProps & { thread: any }) {
   const [isOpen, setIsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
     if (isOpen && messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      // Throttle scrolling to avoid performance issues during rapid streaming
+      if (scrollTimeoutRef.current) return;
+
+      scrollTimeoutRef.current = setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+        scrollTimeoutRef.current = null;
+      }, 100);
     }
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+        scrollTimeoutRef.current = null;
+      }
+    };
   }, [messages, isOpen]);
 
   if (!messages.length) return null;
@@ -55,11 +69,16 @@ export function ReasoningBlock({ messages, isLoading }: ReasoningBlockProps) {
           <ScrollArea className="h-[300px] w-full rounded-b-lg border-t bg-muted/10 p-4">
             <div className="flex flex-col gap-4">
               {messages.map((message, index) => (
-                <div key={message.id || index} className="text-sm text-muted-foreground">
+                <div key={message.id || index} className="text-sm">
                   <AssistantMessage
                     message={message}
                     isLoading={false} // Don't show loading spinners inside reasoning
                     handleRegenerate={() => {}} // Disable regen inside reasoning
+                    thread={thread}
+                    isLastMessage={false} // Reasoning steps are never the "last" message in the main thread sense
+                    hasNoAIOrToolMessages={false}
+                    meta={thread.getMessagesMetadata(message)}
+                    interrupt={thread.interrupt}
                   />
                 </div>
               ))}
@@ -70,4 +89,4 @@ export function ReasoningBlock({ messages, isLoading }: ReasoningBlockProps) {
       </Collapsible>
     </div>
   );
-}
+});

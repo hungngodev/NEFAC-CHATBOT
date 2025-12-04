@@ -65,26 +65,10 @@ If you need to ask a question, follow these guidelines:
 - Don't ask for unnecessary information, or information that the user has already provided. If you can see that the user has already provided the information, do not ask for it again
 - Focus clarifying questions based on the type of request the user is making
 
-Respond in valid JSON format with these exact keys:
-"need_clarification": boolean,
-"question": "<question to ask the user to clarify the report scope>",
-"verification": "<verification message that we will start research>"
-
-If you need to ask a clarifying question, return:
-"need_clarification": true,
-"question": "<your clarifying question>",
-"verification": ""
-
-If you do not need to ask a clarifying question, return:
-"need_clarification": false,
-"question": "",
-"verification": "<acknowledgement message that you will now start research based on the provided information>"
-
-For the verification message when no clarification is needed:
-- Acknowledge that you have sufficient information to proceed
-- Briefly summarize the key aspects of what you understand from their request
-- Confirm that you will now begin the research process
-- Keep the message concise and professional
+**Response Format:**
+- If you need to ask a clarifying question, simply write the question in your response. Do NOT use any tool.
+- If you do NOT need to ask a clarifying question and have sufficient information to start research, call the `StartResearch` tool.
+  - In the `verification` argument of the tool, provide a brief acknowledgement message that you will now start research based on the provided information.
 """
 
 DEFAULT_TRANSFORM_MESSAGES_INTO_RESEARCH_TOPIC_PROMPT = """You are an expert at contextualizing and transforming user queries for the NEFAC (New England First Amendment Coalition) legal information system. Your task is to transform conversational follow-up questions into standalone, comprehensive research questions that resolve all implicit references and dependencies while providing specific guidance on sources, scope, and methodology for comprehensive investigation.

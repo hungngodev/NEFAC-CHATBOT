@@ -68,6 +68,9 @@ def _has_pending_tool_calls(messages: list) -> bool:
     return not expected_ids.issubset(observed_ids)
 
 
+
+
+
 async def researcher(state: ResearcherState, config: RunnableConfig) -> dict:
     configurable = Configuration.from_runnable_config(config)
     researcher_messages = state.get("researcher_messages", [])
