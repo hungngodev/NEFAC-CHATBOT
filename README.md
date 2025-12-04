@@ -108,7 +108,7 @@ docker-compose up -d --build
 ```
 
 - **Frontend**: `http://localhost:3000`
-- **Backend API**: `http://localhost:8123`
+- **Backend API**: `http://localhost:2024`
 - **Neo4j Browser**: `http://localhost:7474`
 - **Kibana**: `http://localhost:5601`
 
@@ -343,7 +343,7 @@ docker-compose up -d --build
 ```
 
 - **Frontend**: `http://localhost:3000`
-- **Backend API**: `http://localhost:8123`
+- **Backend API**: `http://localhost:2024`
 - **Neo4j Browser**: `http://localhost:7474`
 - **Kibana**: `http://localhost:5601`
 

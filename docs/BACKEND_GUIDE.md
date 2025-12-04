@@ -205,5 +205,5 @@ Defined in `.env` (see `.env.example`).
     cd ../backend
     poetry run langgraph dev
     ```
-    - **API**: `http://localhost:8123`
+    - **API**: `http://localhost:2024`
     - **Studio**: `http://localhost:2024` (Check terminal output)

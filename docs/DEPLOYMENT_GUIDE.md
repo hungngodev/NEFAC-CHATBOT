@@ -31,7 +31,7 @@ This guide details how to deploy the NEFAC Chatbot system using **Docker Compose
     *   `OPENAI_API_KEY`: Ensure your key has sufficient quota.
     *   `TAVILY_API_KEY`: Required for web search.
 
-    *Note: The `NEXT_PUBLIC_API_URL` in `.env` is used by the frontend container to talk to the backend. In Docker, this is usually `http://localhost:8123` (client-side browser access) or the public domain name.*
+    *Note: The `NEXT_PUBLIC_API_URL` in `.env` is used by the frontend container to talk to the backend. In Docker, this is usually `http://localhost:2024` (client-side browser access) or the public domain name.*
 
 ## 4. Deployment Command
 
@@ -56,7 +56,7 @@ docker-compose up -d --build
 | Service | Internal Port | Host Port | Description |
 | :--- | :--- | :--- | :--- |
 | **Frontend** | 3000 | **3000** | Next.js UI. Access at `http://localhost:3000`. |
-| **Backend** | 8000 | **8123** | LangGraph API. Access at `http://localhost:8123`. |
+| **Backend** | 8000 | **8123** | LangGraph API. Access at `http://localhost:2024`. |
 | **Neo4j** | 7474 | **7474** | Graph DB Browser. |
 | **Qdrant** | 6333 | **6333** | Vector DB Dashboard. |
 | **Kibana** | 5601 | **5601** | Elasticsearch Dashboard. |

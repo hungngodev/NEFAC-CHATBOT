@@ -10,7 +10,7 @@
   "env": "../.env",
   "http": {
     "cors": {
-      "allow_origins": ["http://localhost:3000"],
+      "allow_origins": ["http://localhost:3000", "https://localhost:3001"],
       "allow_methods": ["*"],
       "allow_headers": ["*"]
     }

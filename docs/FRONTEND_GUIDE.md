@@ -103,7 +103,7 @@ The app uses **Server-Sent Events (SSE)** for real-time communication.
   1.  User submits a message in `Thread`.
   2.  `stream.submit()` is called with the message and configuration (e.g., `research_mode`).
   3.  Request hits `/api/runs/stream` (Next.js API Route).
-  4.  Next.js proxies the request to the Python backend (`http://localhost:8123`).
+  4.  Next.js proxies the request to the Python backend (`http://localhost:2024`).
   5.  Backend streams events back (tokens, tool updates, state changes).
   6.  `useStreamContext` updates the `messages` state in real-time.
 
@@ -131,7 +131,7 @@ The app uses **Server-Sent Events (SSE)** for real-time communication.
 
 Defined in `.env.local` (or `.env`).
 
-- `NEXT_PUBLIC_API_URL`: The URL of the LangGraph backend (default: `http://localhost:8123`).
+- `NEXT_PUBLIC_API_URL`: The URL of the LangGraph backend (default: `http://localhost:2024`).
 - `LANGSMITH_API_KEY`: (Optional) For tracing agent execution.
 
 ### 5.2 Key Dependencies (`package.json`)
@@ -158,7 +158,7 @@ Defined in `.env.local` (or `.env`).
     ```bash
     cp .env.example .env.local
     ```
-    *Ensure `NEXT_PUBLIC_API_URL=http://localhost:8123` in `.env.local`.*
+    *Ensure `NEXT_PUBLIC_API_URL=http://localhost:2024` in `.env.local`.*
 
 3.  **Start Frontend**:
     Run the Next.js development server:
