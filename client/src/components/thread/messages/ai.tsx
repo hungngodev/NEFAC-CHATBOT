@@ -7,8 +7,10 @@ import { LoadExternalComponent } from "@langchain/langgraph-sdk/react-ui";
 import { parseAsBoolean, useQueryState } from "nuqs";
 
 import { isAgentInboxInterruptSchema } from "@/lib/agent-inbox-interrupt";
+import { getApiKey } from "@/lib/api-key";
 import { cn } from "@/lib/utils";
-import { useStreamContext } from "@/providers/Stream";
+import { StateType, useStreamContext } from "@/providers/Stream";
+import { DEFAULT_API_URL } from "@/constants";
 
 import { ThreadView } from "../agent-inbox";
 import { useArtifact } from "../artifact";
@@ -86,6 +88,18 @@ function Interrupt({
     ? (interrupt as Record<string, any>[])
     : (((interrupt as { value?: unknown } | undefined)?.value ??
         interrupt) as Record<string, any>);
+
+  // Hide generic "breakpoint" interrupts that don't have payload
+  // This fixes the issue where "when: breakpoint" appears unexpectedly
+  if (
+    !Array.isArray(interrupt) &&
+    interrupt &&
+    typeof interrupt === "object" &&
+    Object.keys(interrupt).length === 1 &&
+    (interrupt as any).when === "breakpoint"
+  ) {
+    return null;
+  }
 
   return (
     <>
@@ -266,27 +280,56 @@ export function AssistantMessageLoading() {
   );
 }
 
-export function DeepResearchLoading({ isComplete }: { isComplete?: boolean }) {
-  const [statusIndex, setStatusIndex] = useState(0);
+export const DeepResearchLoading = ({
+  isComplete,
+}: {
+  isComplete?: boolean;
+}) => {
+  const stream = useStreamContext();
+  const values = (stream as any).values || {};
 
-  const statuses = [
-    "Analyzing request...",
-    "Searching knowledge base...",
-    "Reading documents...",
-    "Synthesizing information...",
-    "Formulating response...",
-  ];
+  // Use context status
+  const status =
+    values.deepResearchStatus || values.deep_research_status;
 
+  const [progress, setProgress] = useState(5);
+  const [lastStatus, setLastStatus] = useState("");
+
+  // Monotonic progress update based on status changes
   useEffect(() => {
-    if (isComplete) return;
-    const statusInterval = setInterval(() => {
-      setStatusIndex((prev) => (prev + 1) % statuses.length);
-    }, 4000); // Change status every 4 seconds
+    if (isComplete) {
+      setProgress(100);
+      return;
+    }
 
-    return () => clearInterval(statusInterval);
-  }, [isComplete]);
+    if (!status?.status) return;
 
-  if (isComplete) {
+    // Prevent backward jumps
+    if (status.status === lastStatus) return;
+    setLastStatus(status.status);
+
+    let increment = 0;
+    const s = status.status.toLowerCase();
+
+    // Heuristic progress increments based on event type
+    if (s.includes("refining")) increment = 5;
+    else if (s.includes("formulating")) increment = 10;
+    else if (s.includes("coordinating")) increment = 5;
+    else if (s.includes("analyzing")) increment = 5;
+    else if (s.includes("searching")) increment = 2;
+    else if (s.includes("reading")) increment = 2;
+    else increment = 1;
+
+    setProgress((prev) => Math.min(95, prev + increment));
+  }, [status?.status, isComplete, lastStatus]);
+
+  // Use backend status text if available, otherwise default
+  const statusText = status?.status || "Conducting deep research...";
+
+  // Only show complete state if progress is 100 or status indicates completion
+  const isActuallyComplete = isComplete && (progress >= 100 || status?.status?.toLowerCase().includes("complete"));
+
+  if (isActuallyComplete) {
     return (
       <div className="bg-muted/30 mr-auto flex w-full flex-col gap-4 rounded-lg border p-4">
         <div className="flex items-center gap-3">
@@ -314,20 +357,15 @@ export function DeepResearchLoading({ isComplete }: { isComplete?: boolean }) {
         <div className="flex flex-col">
           <span className="text-sm font-medium">Deep Research in Progress</span>
           <span className="text-muted-foreground animate-pulse text-xs">
-            {statuses[statusIndex]}
+            {statusText}
           </span>
         </div>
       </div>
 
       <div className="bg-muted h-1.5 w-full overflow-hidden rounded-full">
         <div
-          className="h-full w-1/3 animate-[slide_2s_ease-in-out_infinite] rounded-full bg-blue-500/50"
-          style={{
-            animation: "shimmer 2s infinite linear",
-            backgroundImage:
-              "linear-gradient(to right, transparent, rgba(59, 130, 246, 0.5), transparent)",
-            backgroundSize: "200% 100%",
-          }}
+          className="h-full bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-600 animate-gradient-x transition-all duration-500 ease-out"
+          style={{ width: `${progress}%` }}
         ></div>
       </div>
 
@@ -335,6 +373,7 @@ export function DeepResearchLoading({ isComplete }: { isComplete?: boolean }) {
         This process involves searching multiple sources and analyzing complex
         data.
       </p>
+
     </div>
   );
 }

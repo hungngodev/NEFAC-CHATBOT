@@ -13,14 +13,14 @@ class QuickAgentConfig(BaseModel):
         models_module.ModelType,
         Field(
             description="The model to use for the Quick Agent.",
-            metadata={"x_oap_ui_config": {"type": "model_select", "label": "Quick Agent Model"}},
+            json_schema_extra={"x_oap_ui_config": {"type": "model_select", "label": "Quick Agent Model"}},
         ),
     ] = models_module.DEFAULT_QUICK_AGENT_MODEL
 
     quick_agent_system_prompt: str = Field(
         default=prompts_module.DEFAULT_QUICK_AGENT_SYSTEM_PROMPT,
         description="The system prompt for the Quick Agent.",
-        metadata={"x_oap_ui_config": {"type": "prompt_editor", "label": "Quick Agent System Prompt"}},
+        json_schema_extra={"x_oap_ui_config": {"type": "prompt_editor", "label": "Quick Agent System Prompt"}},
     )
 
     @model_validator(mode="before")

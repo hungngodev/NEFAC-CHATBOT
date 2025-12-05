@@ -27,6 +27,7 @@ from src.core.agents.query_translation.multi_query import multi_query
 from src.core.agents.query_translation.step_back import step_back
 from src.schemas.state import QueryTransformerOutputState, QueryTransformerState
 from src.utils.debug import get_debug_mode
+from src.utils.events import EVENT_DEEP_RESEARCH_UPDATE, emit_custom_event
 from src.utils.model_factory import init_model
 
 
@@ -45,10 +46,17 @@ async def route_to_transformer(state: QueryTransformerState, config: RunnableCon
     """
     configurable = Configuration.from_runnable_config(config)
 
+    emit_custom_event(
+        EVENT_DEEP_RESEARCH_UPDATE,
+        {
+            "status": "Refining research questions...",
+        },
+    )
+
     prompt_template = configurable.query_transformer_prompt
     if configurable.research_mode == "quick":
         prompt_template += configurable.query_transformer_quick_mode_instruction
-
+    # This step uses the query transformer model to decide on the strategy
     llm = init_model(configurable.query_transformer_model, disable_streaming=configurable.disable_streaming, node_name=QUERY_TRANSFORMER_NODE)
     method_chain = ChatPromptTemplate.from_template(prompt_template) | llm.with_structured_output(MethodSelection)
     question = state["transformed_query"]
@@ -56,18 +64,25 @@ async def route_to_transformer(state: QueryTransformerState, config: RunnableCon
     method = response.method.lower().strip()
 
     if "multiquery" in method:
+        emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Generating multi-perspective queries..."})
         return "multi_query"
     elif "decompose" in method:
+        emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Decomposing complex question..."})
         return "decomposition"
     elif "stepback" in method:
+        emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Generating step-back questions..."})
         return "step_back"
     elif "hyde" in method:
+        emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Generating hypothetical documents..."})
         return "hyde"
     elif "factual" in method:
+        emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Extracting factual entities..."})
         return "factual_strategy"
     elif "contextual" in method:
+        emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Analyzing query context..."})
         return "contextual_strategy"
     else:
+        emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Using default retrieval strategy..."})
         return "default_retrieval"
 
 

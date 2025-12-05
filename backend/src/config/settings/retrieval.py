@@ -30,8 +30,8 @@ class RetrievalConfig(BaseModel):
         },
     )
 
-    retrieval_planner_model: str = Field(
+    retrieval_planner_model: models_module.ModelType = Field(
         default=models_module.DEFAULT_RETRIEVAL_PLANNER_MODEL,
-        description="Model to use for the retrieval planner.",
-        metadata={"x_oap_ui_config": {"type": "model", "label": "Retrieval Planner Model"}},
+        description="Model for planning retrieval strategies.",
+        json_schema_extra={"__template_metadata__": {"kind": "llm"}},
     )

@@ -16,7 +16,7 @@ from src.config.settings import Configuration
 async def get_mcp_access_token(
     supabase_token: str,
     base_mcp_url: str,
-) -> dict[str, Any | None]:
+) -> dict[str, Any | None] | None:
     try:
         form_data = {
             "client_id": "mcp_default",
@@ -76,7 +76,7 @@ async def set_tokens(config: RunnableConfig, tokens: dict[str, Any]):
     return
 
 
-async def fetch_tokens(config: RunnableConfig) -> dict[str, Any]:
+async def fetch_tokens(config: RunnableConfig) -> dict[str, Any] | None:
     current_tokens = await get_tokens(config)
     if current_tokens:
         return current_tokens
@@ -88,7 +88,8 @@ async def fetch_tokens(config: RunnableConfig) -> dict[str, Any]:
         return None
     mcp_tokens = await get_mcp_access_token(supabase_token, mcp_config.get("url"))
 
-    await set_tokens(config, mcp_tokens)
+    if mcp_tokens:
+        await set_tokens(config, mcp_tokens)
     return mcp_tokens
 
 

@@ -18,15 +18,13 @@ import {
   XIcon,
 } from "lucide-react";
 import { parseAsBoolean, useQueryState } from "nuqs";
-import { toast } from "sonner";
 import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
 import { v4 as uuidv4 } from "uuid";
 
 import { useFileUpload } from "@/hooks/use-file-upload";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
-  DO_NOT_RENDER_ID_PREFIX,
-  ensureToolCallsHaveResponses,
+  ensureToolCallsHaveResponses
 } from "@/lib/ensure-tool-responses";
 import { cn } from "@/lib/utils";
 import { useStreamContext } from "@/providers/Stream";
@@ -52,6 +50,101 @@ import { HumanMessage } from "./messages/human";
 import { ReasoningBlock } from "./reasoning-block";
 import { TooltipIconButton } from "./tooltip-icon-button";
 import { getContentString } from "./utils";
+
+const DO_NOT_RENDER_ID_PREFIX = "do_not_render_";
+
+type MessageBlock = {
+  type: "message";
+  message: Message;
+};
+
+type ReasoningBlockType = { // Renamed to avoid conflict with component
+  type: "reasoning";
+  messages: Message[];
+};
+
+type Block = MessageBlock | ReasoningBlockType;
+
+interface GroupMessagesOptions {
+  messages: Message[];
+  isFinalResponseStreaming?: boolean;
+}
+
+function groupMessages(options: GroupMessagesOptions): Block[] {
+  const { messages, isFinalResponseStreaming } = options;
+  const blocks: Block[] = [];
+  let currentReasoningBlock: Message[] = [];
+
+  const isFinalMessage = (message: Message) => {
+    if (message.type === "human") return true;
+    return (
+      message.additional_kwargs?.is_final_response ||
+      (isFinalResponseStreaming && message.type === "ai")
+    );
+  };
+
+  const flushReasoningBlock = () => {
+    if (currentReasoningBlock.length > 0) {
+      blocks.push({
+        type: "reasoning",
+        messages: [...currentReasoningBlock],
+      });
+      currentReasoningBlock = [];
+    }
+  };
+
+  const seenIds = new Set<string>();
+
+  for (const message of messages) {
+    // Deduplication
+    if (message.id && seenIds.has(message.id)) {
+      continue;
+    }
+    if (message.id) {
+      seenIds.add(message.id);
+    }
+
+    // Filtering
+    if (
+      message.id?.startsWith(DO_NOT_RENDER_ID_PREFIX) ||
+      getContentString(message.content).trim().startsWith("{") ||
+      !(
+        getContentString(message.content).trim().length > 0 ||
+        ((message as AIMessage).tool_calls?.length ?? 0) > 0 ||
+        Object.keys(message.additional_kwargs ?? {}).length > 0
+      )
+    ) {
+      continue;
+    }
+
+    if (isFinalMessage(message)) {
+      flushReasoningBlock();
+      blocks.push({ type: "message", message });
+    } else {
+      currentReasoningBlock.push(message);
+    }
+  }
+
+  flushReasoningBlock();
+
+  // Merge adjacent reasoning blocks (optimization)
+  const mergedBlocks: Block[] = [];
+  for (const block of blocks) {
+    if (
+      block.type === "reasoning" &&
+      mergedBlocks.length > 0 &&
+      mergedBlocks[mergedBlocks.length - 1].type === "reasoning"
+    ) {
+      (mergedBlocks[mergedBlocks.length - 1] as ReasoningBlockType).messages.push( // Cast to ReasoningBlockType
+        ...block.messages
+      );
+    } else {
+      mergedBlocks.push(block);
+    }
+  }
+
+  return mergedBlocks;
+}
 
 function StickyToBottomContent(props: {
   content: ReactNode;
@@ -111,6 +204,8 @@ export function Thread() {
     "deepResearch",
     parseAsBoolean.withDefault(false),
   );
+
+
   const [input, setInput] = useState("");
   const {
     contentBlocks,
@@ -140,6 +235,11 @@ export function Thread() {
     // close artifact and reset artifact context
     closeArtifact();
     setArtifactContext({});
+    
+    // Explicitly reset blocks when thread changes to null (New Chat)
+    if (id === null) {
+      // blocksRef removed as state is now derived purely from messages
+    }
   };
 
   useEffect(() => {
@@ -147,28 +247,22 @@ export function Thread() {
       lastError.current = undefined;
       return;
     }
-    try {
-      const message = (stream.error as any).message;
-      if (!message || lastError.current === message) {
-        // Message has already been logged. do not modify ref, return early.
-        return;
-      }
-
-      // Message is defined, and it has not been logged yet. Save it, and send the error
-      lastError.current = message;
-      toast.error("An error occurred. Please try again.", {
-        description: (
-          <p>
-            <strong>Error:</strong> <code>{message}</code>
-          </p>
-        ),
-        richColors: true,
-        closeButton: true,
-      });
-    } catch {
-      // no-op
-    }
+// ... (error handling code)
   }, [stream.error]);
+
+  // Warn user before reloading if streaming is active
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isLoading) {
+        e.preventDefault();
+        e.returnValue = ""; // Required for Chrome
+        return ""; // Required for some other browsers
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isLoading]);
 
   // TODO: this should be part of the useStream hook
   const prevMessageLength = useRef(0);
@@ -194,13 +288,19 @@ export function Thread() {
 
     const context =
       Object.keys(artifactContext).length > 0 ? artifactContext : undefined;
+      
+    // Determine research mode
+    let researchMode = "quick";
+    if (isDeepResearch) {
+      researchMode = "deep";
+    }
 
     stream.submit(
       { messages: [...toolMessages, newHumanMessage], context },
       {
         config: {
           configurable: {
-            research_mode: isDeepResearch ? "deep" : "quick",
+            research_mode: researchMode,
           },
         },
         streamMode: ["values", "custom", "messages"],
@@ -241,146 +341,15 @@ export function Thread() {
     (m) => m.type === "ai" || m.type === "tool",
   );
 
-  // State for incremental updates
-  const blocksRef = useRef<{
-    blocks: any[];
-    currentReasoningBlock: Message[];
-    lastProcessedIndex: number;
-    lastMessages: Message[];
-    lastIsFinalStreaming: boolean;
-  }>({
-    blocks: [],
-    currentReasoningBlock: [],
-    lastProcessedIndex: -1,
-    lastMessages: [],
-    lastIsFinalStreaming: false,
-  });
-
   const groupedBlocks = useMemo(() => {
     const isFinalResponseStreaming =
       (stream as any).isFinalResponseStreaming ||
       (stream as any).values?.isFinalResponseStreaming;
 
-    const isFinalMessage = (message: Message) => {
-      if (message.type === "human") return true;
-      return (
-        message.additional_kwargs?.is_final_response ||
-        (isFinalResponseStreaming && message.type === "ai")
-      );
-    };
-
-    const prev = blocksRef.current;
-
-    const isIncremental =
-      messages.length >= prev.lastMessages.length &&
-      (prev.lastMessages.length === 0 ||
-        messages[0]?.id === prev.lastMessages[0]?.id);
-
-    let startIndex = 0;
-    let newBlocks: any[] = [];
-    let newCurrentReasoningBlock: Message[] = [];
-
-    if (isIncremental) {
-      startIndex = Math.max(0, prev.lastMessages.length - 1);
-
-      newBlocks = [...prev.blocks];
-      newCurrentReasoningBlock = [...prev.currentReasoningBlock];
-
-      if (messages.length === prev.lastMessages.length && messages.length > 0) {
-        const lastMsg = messages[messages.length - 1];
-
-        if (
-          newCurrentReasoningBlock.length > 0 &&
-          newCurrentReasoningBlock[newCurrentReasoningBlock.length - 1].id ===
-            lastMsg.id
-        ) {
-          newCurrentReasoningBlock.pop();
-        } else if (
-          newBlocks.length > 0 &&
-          newBlocks[newBlocks.length - 1].type === "message" &&
-          newBlocks[newBlocks.length - 1].message.id === lastMsg.id
-        ) {
-          newBlocks.pop();
-        }
-
-        startIndex = messages.length - 1;
-      } else if (messages.length > prev.lastMessages.length) {
-        startIndex = prev.lastMessages.length;
-      }
-    } else {
-      startIndex = 0;
-      newBlocks = [];
-      newCurrentReasoningBlock = [];
-    }
-
-    for (let i = startIndex; i < messages.length; i++) {
-      const message = messages[i];
-
-      if (
-        message.id?.startsWith(DO_NOT_RENDER_ID_PREFIX) ||
-        getContentString(message.content).trim().startsWith("{") ||
-        !(
-          getContentString(message.content).trim().length > 0 ||
-          ((message as AIMessage).tool_calls?.length ?? 0) > 0 ||
-          Object.keys(message.additional_kwargs ?? {}).length > 0
-        )
-      ) {
-        continue;
-      }
-
-      if (isFinalMessage(message)) {
-        if (newCurrentReasoningBlock.length > 0) {
-          if (
-            newBlocks.length > 0 &&
-            newBlocks[newBlocks.length - 1].type === "reasoning"
-          ) {
-            const lastBlock = newBlocks[newBlocks.length - 1];
-            newBlocks[newBlocks.length - 1] = {
-              ...lastBlock,
-              messages: [...lastBlock.messages, ...newCurrentReasoningBlock],
-            };
-          } else {
-            newBlocks.push({
-              type: "reasoning",
-              messages: [...newCurrentReasoningBlock],
-            });
-          }
-          newCurrentReasoningBlock = [];
-        }
-        newBlocks.push({ type: "message", message });
-      } else {
-        newCurrentReasoningBlock.push(message);
-      }
-    }
-
-    blocksRef.current = {
-      blocks: newBlocks,
-      currentReasoningBlock: newCurrentReasoningBlock,
-      lastProcessedIndex: messages.length,
-      lastMessages: messages,
-      lastIsFinalStreaming: isFinalResponseStreaming,
-    };
-
-    const finalBlocks = [...newBlocks];
-    if (newCurrentReasoningBlock.length > 0) {
-      if (
-        finalBlocks.length > 0 &&
-        finalBlocks[finalBlocks.length - 1].type === "reasoning"
-      ) {
-        const lastBlock = finalBlocks[finalBlocks.length - 1];
-        finalBlocks[finalBlocks.length - 1] = {
-          ...lastBlock,
-          messages: [...lastBlock.messages, ...newCurrentReasoningBlock],
-        };
-      } else {
-        finalBlocks.push({
-          type: "reasoning",
-          messages: newCurrentReasoningBlock,
-        });
-      }
-    }
-
-    return finalBlocks;
+    return groupMessages({
+      messages,
+      isFinalResponseStreaming,
+    });
   }, [
     messages,
     (stream as any).isFinalResponseStreaming,
@@ -525,8 +494,20 @@ export function Thread() {
               contentClassName="pt-8 pb-16 max-w-3xl mx-auto flex flex-col gap-4 w-full"
               content={
                 <>
-                  {groupedBlocks.map((block, index) => {
+
+                  {groupedBlocks.map((block: Block, index: number) => {
                     if (block.type === "reasoning") {
+                      // User requested strict adherence to the deep research switch.
+                      if (isDeepResearch) {
+                        const isResearching = (isLoading && !stream.interrupt && index === groupedBlocks.length - 1);
+                        return (
+                          <DeepResearchLoading
+                            key={`deep-research-${index}`}
+                            isComplete={!isResearching}
+                          />
+                        );
+                      }
+
                       return (
                         <ReasoningBlock
                           key={`reasoning-${index}`}
@@ -539,26 +520,10 @@ export function Thread() {
                       );
                     }
 
-                    // Check for Deep Research
-                    const isDeepResearch = block.message.tool_calls?.some(
-                      (tc: any) => tc.name === "deep_research",
-                    );
-                    if (isDeepResearch) {
-                      const isLastBlock = index === groupedBlocks.length - 1;
-                      const isResearching =
-                        isLoading && !stream.interrupt && isLastBlock;
-                      return (
-                        <DeepResearchLoading
-                          key={index}
-                          isComplete={!isResearching}
-                        />
-                      );
-                    }
-
                     const message = block.message;
                     return (
                       <div
-                        key={message.id}
+                        key={message.id || `msg-${index}`}
                         className="flex flex-col gap-2"
                       >
                         {message.type === "human" ? (

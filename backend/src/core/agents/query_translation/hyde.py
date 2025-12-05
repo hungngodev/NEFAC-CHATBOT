@@ -1,3 +1,5 @@
+from typing import NotRequired
+
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START, StateGraph
@@ -22,7 +24,7 @@ from src.utils.model_factory import init_model
 class HydeState(QueryTransformerState):
     """State for the HyDE query transformation subgraph."""
 
-    hypothetical_document: str = ""
+    hypothetical_document: NotRequired[str]
     # The 'documents' field will be populated by the retrieval subgraph
 
 

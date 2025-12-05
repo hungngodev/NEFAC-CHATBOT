@@ -1,5 +1,6 @@
-import asyncio
 import os as _os
+from typing import cast
+
 from langchain_core.messages import SystemMessage, ToolMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, START, StateGraph
@@ -9,11 +10,12 @@ from src.config.node_names import QUICK_AGENT_NODE, QUICK_AGENT_TOOLS_NODE
 from src.config.settings import Configuration
 from src.core.agents.query_translation.query_transformer import query_transformer
 from src.core.agents.tools.main import get_all_tools
-from src.core.agents.tools.misc_utils import execute_tool_safely, get_api_key_for_model, get_today_str
+from src.core.agents.tools.misc_utils import execute_tool_safely, get_today_str
 from src.schemas.state import QuickAgentState
 from src.utils.debug import get_debug_mode
+from src.utils.events import EVENT_FINAL_RESPONSE, emit_custom_event
 from src.utils.model_factory import init_model
-from src.utils.events import emit_final_response_signal
+
 
 async def quick_agent(state: QuickAgentState, config: RunnableConfig) -> dict:
     """
@@ -24,7 +26,7 @@ async def quick_agent(state: QuickAgentState, config: RunnableConfig) -> dict:
 
     tools = await get_all_tools(config)
 
-    llm = init_model(configurable.quick_agent_model , disable_streaming=configurable.disable_streaming, node_name=QUICK_AGENT_NODE)
+    llm = init_model(configurable.quick_agent_model, disable_streaming=configurable.disable_streaming, node_name=QUICK_AGENT_NODE)
     llm_with_tools = llm.bind_tools(tools)
 
     system_prompt = configurable.quick_agent_system_prompt.format(date=get_today_str())
@@ -32,16 +34,16 @@ async def quick_agent(state: QuickAgentState, config: RunnableConfig) -> dict:
     supervisor_messages = state.get("supervisor_messages", [])
     messages = state.get("messages", [])
     conversation_history = [m for m in messages if not isinstance(m, SystemMessage)]
-    llm_input = [SystemMessage(content=system_prompt)] + conversation_history + supervisor_messages
+    llm_input = [SystemMessage(content=system_prompt)] + conversation_history + cast(list, supervisor_messages)
 
-    emit_final_response_signal(True)
-    
+    emit_custom_event(EVENT_FINAL_RESPONSE, {"is_final": True})
+
     response = await llm_with_tools.ainvoke(llm_input, config)
     # Check for Tool Calls
     if response.tool_calls:
-        emit_final_response_signal(False)
+        emit_custom_event(EVENT_FINAL_RESPONSE, {"is_final": False})
         return Command(goto=QUICK_AGENT_TOOLS_NODE, update={"supervisor_messages": [response], "tool_call_iterations": state.get("tool_call_iterations", 0) + 1})
-    
+
     # No tool calls -> Final Answert
     response.additional_kwargs = {
         "final_documents": state.get("final_documents", []),
@@ -60,9 +62,9 @@ async def quick_agent(state: QuickAgentState, config: RunnableConfig) -> dict:
 
 
 async def quick_agent_tools(state: QuickAgentState, config: RunnableConfig) -> dict:
-    messages = state.get("supervisor_messages", [])
+    messages = cast(list, state.get("supervisor_messages", []))
     if not messages:
-        messages = state.get("messages", [])
+        messages = cast(list, state.get("messages", []))
 
     last_message = messages[-1]
     tool_calls = last_message.tool_calls

@@ -1,4 +1,5 @@
-from langchain_core.documents import Document
+from typing import NotRequired
+
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, FewShotChatMessagePromptTemplate
 from langgraph.graph import END, StateGraph
@@ -25,9 +26,9 @@ from src.utils.model_factory import init_model
 class StepBackState(QueryTransformerState):
     """State for the step-back query transformation subgraph."""
 
-    step_back_question: str = ""
-    original_context: list[Document] = []
-    step_back_context: list[Document] = []
+    step_back_question: NotRequired[str]
+    original_context: NotRequired[str]
+    step_back_context: NotRequired[str]
 
 
 # --- Nodes ---

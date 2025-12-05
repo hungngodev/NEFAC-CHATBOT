@@ -1,5 +1,7 @@
 """Multi‑query: generate queries, retrieve, dedup, format."""
 
+from typing import NotRequired
+
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START, StateGraph
@@ -23,8 +25,8 @@ from src.utils.model_factory import init_model
 
 # --- Subgraph State ---
 class MultiQueryState(QueryTransformerState):
-    generated_queries: list[str] = []
-    current_index: int = 0
+    generated_queries: NotRequired[list[str]]
+    current_index: NotRequired[int]
 
 
 # --- Nodes ---

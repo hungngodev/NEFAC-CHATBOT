@@ -17,7 +17,24 @@ import { toast } from "sonner";
 import { useThreads } from "./Thread";
 import { DEFAULT_API_URL, DEFAULT_ASSISTANT_ID } from "@/constants";
 import { handleCustomEvent } from "@/lib/events";
-export type StateType = { messages: Message[]; ui?: UIMessage[]; isFinalResponseStreaming?: boolean };
+export type StateType = {
+  messages: Message[];
+  ui?: UIMessage[];
+  isFinalResponseStreaming?: boolean;
+  deepResearchStatus?: {
+    status: string;
+    progress: number;
+    total_steps: number;
+    estimated_time_remaining: number;
+  };
+  // Persisted status from backend
+  deep_research_status?: {
+    status: string;
+    progress: number;
+    total_steps: number;
+    estimated_time_remaining: number;
+  };
+};
 
 const useTypedStream = useStream<
   StateType,
@@ -87,6 +104,8 @@ const StreamSession = ({
       sleep().then(() => getThreads().then(setThreads).catch(console.error));
     },
   });
+
+
 
   useEffect(() => {
     checkGraphStatus(apiUrl, apiKey).then((ok) => {

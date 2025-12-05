@@ -3,6 +3,7 @@ import { StateType } from "@/providers/Stream";
 
 // Event Names
 export const EVENT_FINAL_RESPONSE_TAG = "final_response_tag";
+export const EVENT_DEEP_RESEARCH_UPDATE = "deep_research_update";
 
 export type EventMutator = (prev: StateType) => StateType;
 
@@ -24,6 +25,11 @@ export function handleCustomEvent(
     options.mutate((prev) => ({
       ...prev,
       isFinalResponseStreaming: isFinal,
+    }));
+  } else if (event.name === EVENT_DEEP_RESEARCH_UPDATE) {
+    options.mutate((prev) => ({
+      ...prev,
+      deepResearchStatus: event.data,
     }));
   }
 }

@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, cast
 
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import MessagesState
@@ -41,4 +41,4 @@ def summarizer(state: SummaryState, config: RunnableConfig | None = None) -> Sum
     if summarization_result.running_summary:
         state_update["summary"] = summarization_result.running_summary
 
-    return state_update
+    return cast(SummaryState, state_update)

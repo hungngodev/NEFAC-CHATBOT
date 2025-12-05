@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 from src.config.settings import Configuration
 from src.core.agents.tools.misc_utils import get_api_key_for_model, get_today_str
 from src.schemas.state import AgentState
+from src.utils.events import EVENT_DEEP_RESEARCH_UPDATE, emit_custom_event
 from src.utils.model_factory import init_model
 
 
@@ -20,6 +21,15 @@ class ResearchQuestion(BaseModel):
 
 async def write_research_brief(state: AgentState, config: RunnableConfig) -> dict:
     configurable = Configuration.from_runnable_config(config)
+
+    # Emit progress update
+    emit_custom_event(
+        EVENT_DEEP_RESEARCH_UPDATE,
+        {
+            "status": "Formulating research strategy...",
+        },
+    )
+
     write_model_config = {"model": configurable.transform_messages_into_research_topic_model, "max_tokens": configurable.research_model_max_tokens, "api_key": get_api_key_for_model(configurable.transform_messages_into_research_topic_model, config)}
     llm = init_model(configurable.transform_messages_into_research_topic_model, disable_streaming=configurable.disable_streaming).bind(**write_model_config)
     write_brief_model = llm.with_structured_output(ResearchQuestion).with_retry(stop_after_attempt=configurable.max_structured_output_retries).with_config(write_model_config)

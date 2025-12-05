@@ -1,7 +1,7 @@
 from langchain_core.messages import AIMessage, MessageLikeRepresentation
 
 
-def is_token_limit_exceeded(exception: Exception, model_name: str = None) -> bool:
+def is_token_limit_exceeded(exception: Exception, model_name: str | None = None) -> bool:
     error_str = str(exception).lower()
     provider = None
     if model_name:

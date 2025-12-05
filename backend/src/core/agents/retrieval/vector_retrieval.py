@@ -5,6 +5,7 @@ from langchain_core.callbacks import CallbackManagerForRetrieverRun
 from langchain_core.documents import Document
 from langchain_core.retrievers import BaseRetriever
 from llama_index.core import VectorStoreIndex
+from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.vector_stores.qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 
@@ -17,8 +18,10 @@ if api_key:
 else:
     client = QdrantClient(url=qdrant_url)
 
+embed_model = OpenAIEmbedding(model_name="text-embedding-3-small", api_key=os.getenv("OPENAI_EMBEDDING_API_KEY"), api_base=os.getenv("OPENAI_EMBEDDING_API_BASE"))
+
 vector_store = QdrantVectorStore(client=client, collection_name=collection_name)
-index = VectorStoreIndex.from_vector_store(vector_store=vector_store)
+index = VectorStoreIndex.from_vector_store(vector_store=vector_store, embed_model=embed_model)
 
 
 class LlamaIndexRetrieverWrapper(BaseRetriever):

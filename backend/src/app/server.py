@@ -24,6 +24,7 @@ from src.utils.debug import get_debug_mode
 
 deep_researcher_builder = StateGraph(state_schema=AgentState, input_schema=AgentInputState, output_schema=AgentState, context_schema=Configuration)
 
+
 deep_researcher_builder.add_node(
     node=RESEARCH_CLARIFY_WITH_USER,
     action=clarify_with_user,

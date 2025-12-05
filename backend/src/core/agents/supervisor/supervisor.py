@@ -8,6 +8,7 @@ from langgraph.types import Command
 from src.config.node_names import RESEARCH_TEAM, SUPERVISOR_NODE, SUPERVISOR_TOOLS_NODE
 from src.config.settings import Configuration
 from src.core.agents.research.researcher import researcher_subgraph
+from src.core.agents.research.utils import emit_research_status
 from src.core.agents.supervisor.supervisor_tools import supervisor_tools
 from src.core.agents.tools.misc_utils import get_api_key_for_model, safe_get
 from src.schemas.state import ConductResearch, ResearchComplete, SupervisorState
@@ -45,6 +46,10 @@ def _has_pending_tool_calls(messages: list) -> bool:
 
 async def supervisor(state: SupervisorState, config: RunnableConfig) -> dict:
     configurable = Configuration.from_runnable_config(config)
+
+    iteration = state.get("research_iterations", 0)
+    status_payload = emit_research_status(status=f"Coordinating research team (Iteration {iteration + 1})...")
+
     supervisor_model_config = {"model": configurable.supervisor_model, "max_tokens": configurable.research_model_max_tokens, "api_key": get_api_key_for_model(configurable.supervisor_model, config)}
     llm = init_model(configurable.supervisor_model, disable_streaming=configurable.disable_streaming, node_name=SUPERVISOR_NODE).bind(**supervisor_model_config)
     lead_researcher_tools = [ConductResearch, ResearchComplete]
@@ -53,26 +58,28 @@ async def supervisor(state: SupervisorState, config: RunnableConfig) -> dict:
     if _has_pending_tool_calls(supervisor_messages):
         return Command(goto=SUPERVISOR_TOOLS_NODE)
     response = await supervisor_model.ainvoke(supervisor_messages)
-    return {"supervisor_messages": [response], "research_iterations": state.get("research_iterations", 0) + 1}
+    return {
+        "supervisor_messages": [response],
+        "research_iterations": state.get("research_iterations", 0) + 1,
+        "deep_research_status": status_payload,
+    }
 
 
 supervisor_builder = StateGraph(state_schema=SupervisorState, input_schema=SupervisorState, output_schema=SupervisorState, context_schema=Configuration)
 
 supervisor_builder.add_node(
     node=SUPERVISOR_TOOLS_NODE,
+    destinations=[RESEARCH_TEAM, SUPERVISOR_NODE, END],
     action=supervisor_tools,
-    destinations=[SUPERVISOR_NODE, END, RESEARCH_TEAM],
     metadata={
-        "description": "Processes supervisor tool calls and routes to appropriate actions",
-        "type": "routing_node",
-        "interaction": "internal",
-        "criticality": "critical",
+        "description": "Executes supervisor's tool calls (delegation or completion)",
+        "type": "tool_execution_node",
+        "interaction": "internal_routing",
+        "criticality": "high",
         "command_based_routing": True,
-        "tool_execution": True,
         "expected_duration": "short",
-        "routing_targets": ["supervisor", "end", "research_team"],
-        "dependencies": ["supervisor_messages", "tool_calls"],
-        "outputs": ["routing_command", "tool_results"],
+        "dependencies": ["supervisor_messages"],
+        "outputs": ["research_tool_calls", "completed_research_results"],
     },
 )
 
@@ -80,15 +87,14 @@ supervisor_builder.add_node(
     node=SUPERVISOR_NODE,
     action=supervisor,
     metadata={
-        "description": "Main supervisor decision-making node for research coordination",
-        "type": "decision_node",
-        "interaction": "internal",
+        "description": "Supervisor agent that plans and delegates research tasks",
+        "type": "supervisor_node",
+        "interaction": "planning",
         "criticality": "critical",
         "llm_powered": True,
-        "tool_calling": True,
         "expected_duration": "medium",
-        "dependencies": ["research_brief", "previous_results"],
-        "outputs": ["supervisor_messages", "research_decisions"],
+        "dependencies": ["research_brief", "research_results"],
+        "outputs": ["supervisor_messages", "research_iterations"],
     },
 )
 
@@ -96,16 +102,14 @@ supervisor_builder.add_node(
     node=RESEARCH_TEAM,
     action=researcher_subgraph,
     metadata={
-        "description": "Parallel research team execution subgraph",
+        "description": "Research team subgraph that executes delegated research tasks",
         "type": "worker_subgraph",
-        "interaction": "internal",
+        "interaction": "research",
         "criticality": "high",
         "parallel_capable": True,
-        "send_api_target": True,
-        "concurrent_execution": True,
         "expected_duration": "long",
-        "dependencies": ["research_topics"],
-        "outputs": ["research_results", "completed_research"],
+        "dependencies": ["research_topic"],
+        "outputs": ["completed_research_results"],
     },
 )
 

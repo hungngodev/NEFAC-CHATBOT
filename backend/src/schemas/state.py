@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import operator
-from typing import Annotated, Any, Literal, TypedDict
+from typing import Annotated, Any, Literal, NotRequired, TypedDict
 
 from langchain_core.documents import Document
-from langchain_core.messages import MessageLikeRepresentation
-from langgraph.graph import MessagesState
+from langchain_core.messages import AnyMessage, MessageLikeRepresentation
+from langgraph.graph import add_messages
 from pydantic import BaseModel, Field
 
 
@@ -94,31 +94,27 @@ class RetrievalSubgraphState(TypedDict):
     """State for the retrieval subgraph."""
 
     # The `retrieval_query` from  is used as the input query.
-    retrieval_query: str = ""
-    retrieval_plan: dict[str, Any] = {}
-    graph_documents: list[Document] = []
-    document_search_documents: list[Document] = []
-    documents: Annotated[list[Document], reduce_documents] = []  # Final combined list
+    # The `retrieval_query` from  is used as the input query.
+    retrieval_query: NotRequired[str]
+    retrieval_plan: NotRequired[dict[str, Any]]
+    graph_documents: NotRequired[list[Document]]
+    document_search_documents: NotRequired[list[Document]]
+    documents: NotRequired[Annotated[list[Document], reduce_documents]]  # Final combined list
 
 
 class QueryTransformerState(RetrievalSubgraphState):
     """Standalone state for the query transformer workflow."""
 
-    transformed_query: str  # The input query to transform
-    method_used: Literal["multiquery", "decompose", "stepback", "hyde", "factual", "contextual", "default"]  # Which transformation method was applied
-    transformed_context: str  # Formatted final context
-    generated_queries: list[str]  # For multi-query strategy
-    sub_questions: list[str]  # For decomposition strategy
-    step_back_question: str  # For step-back strategy
-    hypothetical_document: str  # For HyDE strategy
-    # ✅ ADD: Support for tool call context in Send() API
-    _source_tool_call: dict = {}  # Store original tool call for result processing
+    transformed_query: NotRequired[str]  # The input query to transform
+    method_used: NotRequired[Literal["multiquery", "decompose", "stepback", "hyde", "factual", "contextual", "default"]]  # Which transformation method was applied
+    transformed_context: NotRequired[str]  # Formatted final context
+    _source_tool_call: NotRequired[dict]  # Store original tool call for result processing
 
 
 class QueryTransformerOutputState(TypedDict):
     """Output state for query transformer - following legacy Send() API pattern."""
 
-    _completed_query_results: Annotated[list[dict], operator.add]  # ✅ Key field for Send() API aggregation
+    _completed_query_results: NotRequired[Annotated[list[dict], operator.add]]  # ✅ Key field for Send() API aggregation
 
 
 def override_reducer(current_value, new_value):
@@ -132,49 +128,53 @@ class BaseResearchState(TypedDict):
     """Base state with common research fields."""
 
     research_brief: str | None
-    notes: Annotated[list[str], override_reducer]
-    raw_notes: Annotated[list[str], override_reducer]
-    final_documents: Annotated[list[Document], reduce_documents]
+    notes: NotRequired[Annotated[list[str], override_reducer]]
+    raw_notes: NotRequired[Annotated[list[str], override_reducer]]
+    final_documents: NotRequired[Annotated[list[Document], reduce_documents]]
+    deep_research_status: NotRequired[dict]
 
 
-class AgentInputState(MessagesState):
-    """InputState is only 'messages'"""
+class AgentInputState(TypedDict):
+    """Input state for the agent."""
+
+    messages: Annotated[list[AnyMessage], add_messages]
 
 
-class AgentState(MessagesState):
-    supervisor_messages: Annotated[list[MessageLikeRepresentation], override_reducer]
-    final_report: str
+class AgentState(AgentInputState):
+    """State for the agent."""
 
     # BaseResearchState fields explicitly defined to avoid metaclass conflict
     research_brief: str | None
-    notes: Annotated[list[str], override_reducer]
-    raw_notes: Annotated[list[str], override_reducer]
-    final_documents: Annotated[list[Document], reduce_documents]
+    notes: NotRequired[Annotated[list[str], override_reducer]]
+    raw_notes: NotRequired[Annotated[list[str], override_reducer]]
+    final_documents: NotRequired[Annotated[list[Document], reduce_documents]]
+    deep_research_status: NotRequired[dict]
 
 
 class QuickAgentState(AgentState):
     """State for the Quick Agent subgraph."""
 
-    tool_call_iterations: int = 0
-    final_report: str = ""
+    tool_call_iterations: NotRequired[int]
+    final_report: NotRequired[str]
 
 
 class SupervisorState(BaseResearchState):
-    supervisor_messages: Annotated[list[MessageLikeRepresentation], override_reducer]
-    research_iterations: int = 0
+    supervisor_messages: NotRequired[Annotated[list[MessageLikeRepresentation], override_reducer]]
+    research_iterations: NotRequired[int]
     # Send() API aggregation fields (following legacy pattern)
-    completed_research_results: Annotated[list["ResearcherOutputState"], operator.add] = []
-    research_tool_calls: list[dict] = []  # Store tool calls for result matching
+    completed_research_results: NotRequired[Annotated[list["ResearcherOutputState"], operator.add]]
+    research_tool_calls: NotRequired[list[dict]]  # Store tool calls for result matching
 
 
 class ResearcherState(BaseResearchState):
-    researcher_messages: Annotated[list[MessageLikeRepresentation], operator.add]
-    tool_call_iterations: int = 0
+    researcher_messages: NotRequired[Annotated[list[MessageLikeRepresentation], operator.add]]
+    tool_call_iterations: NotRequired[int]
     research_topic: str
     compressed_research: str
-    _completed_query_results: Annotated[list[dict], override_reducer] = []  # Aggregated query transformer results (supports override clears)
-    _answered_tool_call_ids: Annotated[list[str], operator.add] = []
-    documents: Annotated[list[Document], reduce_documents] = []
+    _completed_query_results: NotRequired[Annotated[list[dict], override_reducer]]  # Aggregated query transformer results (supports override clears)
+    _answered_tool_call_ids: NotRequired[Annotated[list[str], operator.add]]
+    documents: NotRequired[Annotated[list[Document], reduce_documents]]
+    research_iterations: NotRequired[int]
 
 
 class ResearcherOutputState(BaseModel):

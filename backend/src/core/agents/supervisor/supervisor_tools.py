@@ -9,6 +9,7 @@ from src.core.agents.tools.main import get_notes_from_tool_calls
 from src.core.agents.tools.misc_utils import safe_get
 from src.core.agents.tools.token_utils import is_token_limit_exceeded
 from src.schemas.state import SupervisorState
+from src.utils.events import EVENT_DEEP_RESEARCH_UPDATE, emit_custom_event
 
 
 async def supervisor_tools(state: SupervisorState, config: RunnableConfig) -> SupervisorState:
@@ -67,6 +68,7 @@ async def supervisor_tools(state: SupervisorState, config: RunnableConfig) -> Su
         return Command(goto=SUPERVISOR_NODE, update={"supervisor_messages": tool_messages, "raw_notes": ["\n".join(raw_notes_parts)], "completed_research_results": [], "research_tool_calls": [], "final_documents": batch_docs})
 
     if exceeded_allowed_iterations or no_tool_calls or research_complete_tool_call:
+        emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Research completed. Generating final report..."})
         return Command(goto=END, update={"notes": get_notes_from_tool_calls(supervisor_messages), "research_brief": state.get("research_brief", "")})
 
     try:
@@ -76,7 +78,11 @@ async def supervisor_tools(state: SupervisorState, config: RunnableConfig) -> Su
         conduct_research_calls = all_conduct_research_calls[:max_units]
         overflow_conduct_research_calls = all_conduct_research_calls[max_units:]
 
-        research_sends = [Send(RESEARCH_TEAM, {"researcher_messages": [HumanMessage(content=tool_call["args"]["research_topic"])], "research_topic": tool_call["args"]["research_topic"]}) for tool_call in conduct_research_calls]
+        research_sends = []
+        for tool_call in conduct_research_calls:
+            topic = tool_call["args"]["research_topic"]
+            emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": f"Starting research on: {topic}"})
+            research_sends.append(Send(RESEARCH_TEAM, {"researcher_messages": [HumanMessage(content=topic)], "research_topic": topic, "research_iterations": research_iterations}))
 
         # Handle overflow as error messages
         overflow_messages = [ToolMessage(content=f"Error: Exceeded max concurrent research units ({max_units}). Please try again with fewer units.", name="ConductResearch", tool_call_id=tool_call["id"]) for tool_call in overflow_conduct_research_calls]

@@ -14,7 +14,7 @@ import src.config.prompts as prompts_module
 class QueryTransformerConfig(BaseModel):
     """Configuration for core query transformation strategies."""
 
-    query_transformer_model: str = Field(
+    query_transformer_model: models_module.ModelType = Field(
         default=models_module.DEFAULT_QUERY_TRANSFORMER_MODEL,
         description="Model for query translation and transformation tasks.",
         json_schema_extra={

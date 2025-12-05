@@ -1,9 +1,12 @@
+from typing import Any
+
 from langchain_core.messages import ToolMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.types import Command, Send
 
 from src.config.node_names import QUERY_TRANSFORMER_NODE, RESEARCH_COMPRESS_RESEARCH, RESEARCH_RESEARCHER
 from src.config.settings import Configuration
+from src.core.agents.research.utils import emit_research_status
 from src.core.agents.tools.main import get_all_tools
 from src.core.agents.tools.misc_utils import execute_tool_safely, safe_get
 from src.core.agents.tools.search import anthropic_websearch_called, openai_websearch_called
@@ -43,7 +46,7 @@ def _pending_tool_call_ids(messages: list[object]) -> set[str]:
     last_idx, tool_calls = _last_ai_with_tool_calls(messages)
     if last_idx is None or not tool_calls:
         return set()
-    expected = {call.get("id") for call in tool_calls if isinstance(call, dict)}
+    expected = {str(call.get("id")) for call in tool_calls if isinstance(call, dict) and call.get("id")}
     if not expected:
         return set()
     observed = set()
@@ -53,7 +56,7 @@ def _pending_tool_call_ids(messages: list[object]) -> set[str]:
             break
         tcid = safe_get(m, "tool_call_id")
         if tcid:
-            observed.add(tcid)
+            observed.add(str(tcid))
     return expected - observed
 
 
@@ -62,6 +65,11 @@ async def researcher_tools(state: ResearcherState, config: RunnableConfig):
     researcher_messages = state.get("researcher_messages", [])
     most_recent_message = researcher_messages[-1] if researcher_messages else None
     tool_call_iterations = state.get("tool_call_iterations", 0)
+
+    # Calculate loop variables for progress tracking
+    research_loop = state.get("research_iterations", 0)
+    max_iter = getattr(configurable, "max_researcher_iterations", 3)
+    max_tool_calls = max(1, configurable.max_react_tool_calls)
 
     async def run_tool_calls(tool_calls: list[dict]) -> tuple[list[ToolMessage], list[str]]:
         """Execute recognized tools and return (tool_messages, answered_ids_delta).
@@ -81,6 +89,18 @@ async def researcher_tools(state: ResearcherState, config: RunnableConfig):
             if tcid in already_answered:
                 continue
             if name in tools_by_name:
+                # Emit progress update for tool execution
+
+                status_msg = f"Executing {name}..."
+                if name == "InternalDocumentSearch":
+                    status_msg = "Doing internal document search..."
+                elif name and ("search" in name.lower() or "tavily" in name.lower()):
+                    query_arg = tc.get("args", {}).get("query", "")
+                    if len(query_arg) > 30:
+                        query_arg = query_arg[:30] + "..."
+                    status_msg = f"Searching online for: {query_arg}"
+
+                emit_research_status(status=status_msg)
                 observation = await execute_tool_safely(tools_by_name[name], tc.get("args", {}), config)
                 outputs.append(ToolMessage(content=observation, name=name, tool_call_id=tcid))
                 new_answered.append(tcid)
@@ -203,6 +223,19 @@ async def researcher_tools(state: ResearcherState, config: RunnableConfig):
         cap = max(2, int(configurable.max_internal_search_calls_per_turn))
         to_dispatch_calls = deduped_internal_calls[:cap]
         overflow_calls = deduped_internal_calls[cap:]
+
+        emit_research_status(
+            status=f"DEBUG: Dispatching {len(to_dispatch_calls)} calls to Query Transformer",
+            include_progress=True,
+            current_loop=research_loop,
+            max_loops=max_iter,
+            current_step=tool_call_iterations,
+            max_steps=max_tool_calls,
+        )
+        # Note: Previous code manually set progress=35. emit_research_status calculates it dynamicallly.
+        # If specific fixed progress is needed, the util might need adjustment, but dynamic is likely better.
+        # Keeping it simple for now as requested refactor.
+
         query_transformer_sends = [
             Send(
                 QUERY_TRANSFORMER_NODE,
@@ -248,7 +281,7 @@ async def researcher_tools(state: ResearcherState, config: RunnableConfig):
     tool_outputs, new_ids = await run_tool_calls(tool_calls)
 
     if state.get("tool_call_iterations", 0) >= configurable.max_react_tool_calls or any(tool_call["name"] == "ResearchComplete" for tool_call in most_recent_message.tool_calls):
-        update_payload = {"researcher_messages": tool_outputs}
+        update_payload: dict[str, Any] = {"researcher_messages": tool_outputs}
         if new_ids:
             update_payload["_answered_tool_call_ids"] = new_ids
         return Command(goto=RESEARCH_COMPRESS_RESEARCH, update=update_payload)
@@ -256,4 +289,18 @@ async def researcher_tools(state: ResearcherState, config: RunnableConfig):
     update_payload = {"researcher_messages": tool_outputs}
     if new_ids:
         update_payload["_answered_tool_call_ids"] = new_ids
+
+    # Include the last calculated status if available
+    # Note: We can't easily access the exact last status payload here without recalculating or passing it through
+    # But since we emit events, the state update is mainly for persistence.
+    # We can recalculate the latest status based on the current iteration.
+    update_payload["deep_research_status"] = emit_research_status(
+        status="Analyzing tool outputs...",
+        current_loop=research_loop,
+        max_loops=max_iter,
+        current_step=tool_call_iterations,
+        max_steps=max_tool_calls,
+        include_progress=True,
+    )
+
     return Command(goto=RESEARCH_RESEARCHER, update=update_payload)

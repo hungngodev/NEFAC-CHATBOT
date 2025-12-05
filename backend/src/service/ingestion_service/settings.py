@@ -56,10 +56,11 @@ graph_llm_model = OpenAI(
     additional_kwargs={"service_tier": SERVICE_TIER},
     api_key=os.getenv("OPENAI_API_KEY"),
 )
+
+
 Settings.embed_model = OpenAIEmbedding(
     model=EMBEDDING_MODEL_NAME,
     dimensions=EMBEDDING_DIMENSIONS,
-    api_key=os.getenv("OPENAI_API_KEY"),
 )
 
 

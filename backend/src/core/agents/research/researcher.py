@@ -16,6 +16,7 @@ from src.config.settings import Configuration
 from src.core.agents.query_translation.query_transformer import query_transformer
 from src.core.agents.research.compress_research import compress_research
 from src.core.agents.research.researcher_tools import researcher_tools
+from src.core.agents.research.utils import emit_research_status
 from src.core.agents.tools.main import get_all_tools
 from src.core.agents.tools.misc_utils import get_api_key_for_model, get_today_str, safe_get
 from src.schemas.state import ResearcherOutputState, ResearcherSendOutputState, ResearcherState
@@ -68,9 +69,6 @@ def _has_pending_tool_calls(messages: list) -> bool:
     return not expected_ids.issubset(observed_ids)
 
 
-
-
-
 async def researcher(state: ResearcherState, config: RunnableConfig) -> dict:
     configurable = Configuration.from_runnable_config(config)
     researcher_messages = state.get("researcher_messages", [])
@@ -91,9 +89,21 @@ async def researcher(state: ResearcherState, config: RunnableConfig) -> dict:
     llm = init_model(configurable.research_model, disable_streaming=configurable.disable_streaming).bind(**research_model_config)
     researcher_system_prompt = configurable.research_system_prompt.format(mcp_prompt=configurable.mcp_prompt or "", date=get_today_str())
     research_model = llm.bind_tools(tools).with_retry(stop_after_attempt=configurable.max_structured_output_retries).with_config(research_model_config)
+
+    research_loop = state.get("research_iterations", 0)
+    iteration = state.get("tool_call_iterations", 0)
+
+    status_payload = emit_research_status(
+        status=f"Analyzing research data (Loop {research_loop + 1}, Step {iteration + 1})...",
+    )
+
     # Place system prompt first to avoid breaking tool_call reply sequencing
-    response = await research_model.ainvoke([SystemMessage(content=researcher_system_prompt)] + researcher_messages)
-    return {"researcher_messages": [response], "tool_call_iterations": state.get("tool_call_iterations", 0) + 1}
+    response = await research_model.ainvoke([SystemMessage(content=researcher_system_prompt)] + researcher_messages, config)
+    return {
+        "researcher_messages": [response],
+        "tool_call_iterations": state.get("tool_call_iterations", 0) + 1,
+        "deep_research_status": status_payload,
+    }
 
 
 def package_output(state: ResearcherState) -> ResearcherSendOutputState:

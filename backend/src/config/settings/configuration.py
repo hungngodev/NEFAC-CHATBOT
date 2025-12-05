@@ -51,10 +51,11 @@ class Configuration(
     """
 
     # MCP server configuration
-    mcp_config: MCPConfig | None = Field(default=None, optional=True, metadata={"x_oap_ui_config": {"type": "mcp", "description": "MCP server configuration"}})
-    mcp_prompt: str | None = Field(default=None, optional=True, metadata={"x_oap_ui_config": {"type": "text", "description": "Any additional instructions to pass along to the Agent regarding the MCP tools that are available to it."}})
-    research_mode: Literal["deep", "quick"] = Field(default="deep", description="The research mode to use: 'deep' for comprehensive research, 'quick' for fast answers.", metadata={"x_oap_ui_config": {"type": "select", "options": ["deep", "quick"], "label": "Research Mode"}})
-    enable_graph_search: bool = Field(default=False, description="Enable or disable graph-based retrieval.", metadata={"x_oap_ui_config": {"type": "boolean", "label": "Enable Graph Search"}})
+    # MCP server configuration
+    mcp_config: MCPConfig | None = Field(default=None, json_schema_extra={"x_oap_ui_config": {"type": "mcp", "description": "MCP server configuration"}})
+    mcp_prompt: str | None = Field(default=None, json_schema_extra={"x_oap_ui_config": {"type": "text", "description": "Any additional instructions to pass along to the Agent regarding the MCP tools that are available to it."}})
+    research_mode: Literal["deep", "quick"] = Field(default="deep", description="The research mode to use: 'deep' for comprehensive research, 'quick' for fast answers.", json_schema_extra={"x_oap_ui_config": {"type": "select", "options": ["deep", "quick"], "label": "Research Mode"}})
+    enable_graph_search: bool = Field(default=False, description="Enable or disable graph-based retrieval.", json_schema_extra={"x_oap_ui_config": {"type": "boolean", "label": "Enable Graph Search"}})
 
     @classmethod
     def from_runnable_config(cls, config: RunnableConfig | None = None) -> "Configuration":
