@@ -14,7 +14,7 @@ import src.config.prompts as prompts_module
 class QueryTransformerConfig(BaseModel):
     """Configuration for core query transformation strategies."""
 
-    query_transformer_model: str = Field(
+    query_transformer_model: models_module.ModelType = Field(
         default=models_module.DEFAULT_QUERY_TRANSFORMER_MODEL,
         description="Model for query translation and transformation tasks.",
         json_schema_extra={
@@ -35,6 +35,15 @@ class QueryTransformerConfig(BaseModel):
                 node_names_module.QUERY_TRANSFORMER_FACTUAL_STRATEGY,
                 node_names_module.QUERY_TRANSFORMER_CONTEXTUAL_STRATEGY,
             ],
+            "langgraph_type": "prompt",
+        },
+    )
+
+    query_transformer_quick_mode_instruction: str = Field(
+        default=prompts_module.DEFAULT_QUERY_TRANSFORMER_QUICK_MODE_INSTRUCTION,
+        description="Instruction appended to the prompt when in quick research mode.",
+        json_schema_extra={
+            "langgraph_nodes": [node_names_module.QUERY_TRANSFORMER_NODE],
             "langgraph_type": "prompt",
         },
     )

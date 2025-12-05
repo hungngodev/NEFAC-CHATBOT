@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 import operator
-from operator import add
-from typing import Annotated, Any, Literal, TypedDict
+from typing import Annotated, Any, Literal, NotRequired, TypedDict
 
 from langchain_core.documents import Document
-from langchain_core.messages import MessageLikeRepresentation
-from langgraph.graph import MessagesState
+from langchain_core.messages import AnyMessage, MessageLikeRepresentation
+from langgraph.graph import add_messages
 from pydantic import BaseModel, Field
 
 
@@ -60,35 +59,62 @@ class RetrievalPlanModel(BaseModel):
     rerank_k: int
 
 
+def reduce_documents(current_docs: list[Document] | None, new_docs: list[Document] | None | dict) -> list[Document]:
+    # Check for override signal
+    if isinstance(new_docs, dict) and new_docs.get("type") == "override":
+        return new_docs.get("value", [])
+
+    if current_docs is None:
+        current_docs = []
+    if new_docs is None:
+        new_docs = []
+
+    seen = set()
+    unique_docs = []
+
+    # Add existing docs
+    for doc in current_docs:
+        # Use a tuple of content and source as key
+        key = (doc.page_content, str(doc.metadata.get("source", "")))
+        if key not in seen:
+            seen.add(key)
+            unique_docs.append(doc)
+
+    # Add new docs
+    for doc in new_docs:
+        key = (doc.page_content, str(doc.metadata.get("source", "")))
+        if key not in seen:
+            seen.add(key)
+            unique_docs.append(doc)
+
+    return unique_docs
+
+
 class RetrievalSubgraphState(TypedDict):
     """State for the retrieval subgraph."""
 
     # The `retrieval_query` from  is used as the input query.
-    retrieval_query: str = ""
-    retrieval_plan: dict[str, Any] = {}
-    graph_documents: list[Document] = []
-    document_search_documents: list[Document] = []
-    documents: list[Document] = []  # Final combined list
+    # The `retrieval_query` from  is used as the input query.
+    retrieval_query: NotRequired[str]
+    retrieval_plan: NotRequired[dict[str, Any]]
+    graph_documents: NotRequired[list[Document]]
+    document_search_documents: NotRequired[list[Document]]
+    documents: NotRequired[Annotated[list[Document], reduce_documents]]  # Final combined list
 
 
 class QueryTransformerState(RetrievalSubgraphState):
     """Standalone state for the query transformer workflow."""
 
-    transformed_query: str  # The input query to transform
-    method_used: Literal["multiquery", "decompose", "stepback", "hyde", "factual", "contextual", "default"]  # Which transformation method was applied
-    transformed_context: str  # Formatted final context
-    generated_queries: list[str]  # For multi-query strategy
-    sub_questions: list[str]  # For decomposition strategy
-    step_back_question: str  # For step-back strategy
-    hypothetical_document: str  # For HyDE strategy
-    # ✅ ADD: Support for tool call context in Send() API
-    _source_tool_call: dict = {}  # Store original tool call for result processing
+    transformed_query: NotRequired[str]  # The input query to transform
+    method_used: NotRequired[Literal["multiquery", "decompose", "stepback", "hyde", "factual", "contextual", "default"]]  # Which transformation method was applied
+    transformed_context: NotRequired[str]  # Formatted final context
+    _source_tool_call: NotRequired[dict]  # Store original tool call for result processing
 
 
 class QueryTransformerOutputState(TypedDict):
     """Output state for query transformer - following legacy Send() API pattern."""
 
-    _completed_query_results: Annotated[list[dict], operator.add]  # ✅ Key field for Send() API aggregation
+    _completed_query_results: NotRequired[Annotated[list[dict], operator.add]]  # ✅ Key field for Send() API aggregation
 
 
 def override_reducer(current_value, new_value):
@@ -98,43 +124,65 @@ def override_reducer(current_value, new_value):
         return operator.add(current_value, new_value)
 
 
-class AgentInputState(MessagesState):
-    """InputState is only 'messages'"""
+class AgentInputState(TypedDict):
+    """Input state for the agent."""
+
+    messages: Annotated[list[AnyMessage], add_messages]
 
 
-class AgentState(MessagesState):
-    supervisor_messages: Annotated[list[MessageLikeRepresentation], override_reducer]
+class AgentState(AgentInputState):
+    """Main state for the agent - all substates should inherit from this.
+
+    This ensures consistent state flow across all subgraphs and prevents
+    fields from being dropped at state boundaries.
+    """
+
+    # Research fields
     research_brief: str | None
-    raw_notes: Annotated[list[str], override_reducer] = []
-    notes: Annotated[list[str], override_reducer] = []
-    final_report: str
-    final_documents: Annotated[list[Document], add] = Field(default_factory=list, description="Final list of retrieved documents")
+    notes: NotRequired[Annotated[list[str], override_reducer]]
+    raw_notes: NotRequired[Annotated[list[str], override_reducer]]
+    final_documents: NotRequired[Annotated[list[Document], reduce_documents]]
+    deep_research_status: NotRequired[dict]
+
+    # Supervisor/coordination fields
+    supervisor_messages: NotRequired[Annotated[list[MessageLikeRepresentation], override_reducer]]
+
+    # Output fields
+    final_report: NotRequired[str]
 
 
-class SupervisorState(TypedDict):
-    supervisor_messages: Annotated[list[MessageLikeRepresentation], override_reducer]
-    research_brief: str
-    notes: Annotated[list[str], override_reducer] = []
-    research_iterations: int = 0
-    raw_notes: Annotated[list[str], override_reducer] = []
+class QuickAgentState(AgentState):
+    """State for the Quick Agent subgraph."""
+
+    tool_call_iterations: NotRequired[int]
+
+
+class SupervisorState(AgentState):
+    """State for the supervisor subgraph - inherits from AgentState."""
+
+    research_iterations: NotRequired[int]
     # Send() API aggregation fields (following legacy pattern)
-    completed_research_results: Annotated[list["ResearcherOutputState"], operator.add] = []
-    research_tool_calls: list[dict] = []  # Store tool calls for result matching
+    completed_research_results: NotRequired[Annotated[list["ResearcherOutputState"], operator.add]]
+    research_tool_calls: NotRequired[list[dict]]  # Store tool calls for result matching
 
 
-class ResearcherState(TypedDict):
-    researcher_messages: Annotated[list[MessageLikeRepresentation], operator.add]
-    tool_call_iterations: int = 0
+class ResearcherState(AgentState):
+    """State for the researcher subgraph - inherits from AgentState."""
+
+    researcher_messages: NotRequired[Annotated[list[MessageLikeRepresentation], operator.add]]
+    tool_call_iterations: NotRequired[int]
     research_topic: str
     compressed_research: str
-    raw_notes: Annotated[list[str], override_reducer] = []
-    _completed_query_results: Annotated[list[dict], override_reducer] = []  # Aggregated query transformer results (supports override clears)
-    _answered_tool_call_ids: Annotated[list[str], operator.add] = []
+    _completed_query_results: NotRequired[Annotated[list[dict], override_reducer]]  # Aggregated query transformer results
+    _answered_tool_call_ids: NotRequired[Annotated[list[str], operator.add]]
+    documents: NotRequired[Annotated[list[Document], reduce_documents]]
+    research_iterations: NotRequired[int]
 
 
 class ResearcherOutputState(BaseModel):
     compressed_research: str
     raw_notes: Annotated[list[str], override_reducer] = []
+    documents: list[Document] = Field(default_factory=list)
 
 
 class ResearcherSendOutputState(TypedDict):

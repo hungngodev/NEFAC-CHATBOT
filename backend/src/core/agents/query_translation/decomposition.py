@@ -3,7 +3,8 @@ Decomposition query transformation agent.
 Breaks down complex queries into sub-questions for better retrieval.
 """
 
-from langchain.chat_models import init_chat_model
+from typing import NotRequired
+
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableConfig
@@ -15,19 +16,22 @@ from src.config.node_names import (
     DECOMPOSITION_GENERATE_SUB_QUESTIONS,
     DECOMPOSITION_RETRIEVE_SUBGRAPH,
     DECOMPOSITION_SYNTHESIZE_FINAL_ANSWER,
+    QUERY_TRANSFORMER_DECOMPOSITION,
 )
 from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import RetrievalSubgraphState, retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.state import QueryTransformerState
+from src.utils.debug import get_debug_mode
+from src.utils.model_factory import init_model
 
 
 # --- Subgraph State ---
 class DecompositionState(QueryTransformerState):
     """State for the decomposition query transformation subgraph."""
 
-    sub_questions: list[str] = []
-    q_a_pairs: list[str] = []
+    sub_questions: NotRequired[list[str]]
+    q_a_pairs: NotRequired[list[str]]
 
 
 # --- Nodes ---
@@ -35,11 +39,11 @@ async def generate_sub_questions_node(state: DecompositionState, config: Runnabl
     """Decomposes the main question into a series of sub-questions."""
     configuration = Configuration.from_runnable_config(config)
 
-    model = init_chat_model(configuration.decomposition_generate_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.decomposition_generate_model, disable_streaming=configuration.disable_streaming)
     question = state["transformed_query"]
 
     prompt = ChatPromptTemplate.from_template(configuration.decomposition_generate_prompt)
-    chain = prompt | model | StrOutputParser() | (lambda x: x.strip().split("\n"))
+    chain = prompt | llm | StrOutputParser() | (lambda x: x.strip().split("\n"))
 
     sub_questions = await chain.ainvoke({"question": question})
     sub_questions = [q.strip() for q in sub_questions if q.strip()]
@@ -60,10 +64,11 @@ def answer_sub_questions_node(state: DecompositionState) -> RetrievalSubgraphSta
 async def format_answer_node(state: DecompositionState, config: RunnableConfig) -> DecompositionState:
     """Format the answer for the current sub-question."""
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.decomposition_answer_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.query_transformer_model, disable_streaming=configuration.disable_streaming, node_name=QUERY_TRANSFORMER_DECOMPOSITION)
 
     context_docs = state["documents"]
     context = format_docs(context_docs)
+
     # Accumulate Q&A pairs across iterations to advance the loop index
     q_a_pairs = state.get("q_a_pairs", [])
     previous_q_a = "\n---\n".join(q_a_pairs)
@@ -81,7 +86,7 @@ async def format_answer_node(state: DecompositionState, config: RunnableConfig) 
 async def synthesize_final_answer_node(state: DecompositionState, config: RunnableConfig) -> QueryTransformerState:
     """Synthesizes the final answer from the Q&A pairs."""
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.decomposition_final_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.decomposition_final_model, disable_streaming=configuration.disable_streaming)
 
     question = state["transformed_query"]
     q_a_pairs_str = "\n---\n".join(state.get("q_a_pairs", []))
@@ -107,6 +112,7 @@ workflow = StateGraph(DecompositionState)
 workflow.add_node(
     DECOMPOSITION_GENERATE_SUB_QUESTIONS,
     generate_sub_questions_node,
+    destinations=[DECOMPOSITION_ANSWER_SUB_QUESTIONS, DECOMPOSITION_SYNTHESIZE_FINAL_ANSWER],
     metadata={
         "description": "Decomposes complex queries into focused sub-questions for iterative retrieval",
         "dependencies": ["transformed_query"],
@@ -121,6 +127,7 @@ workflow.add_node(
 workflow.add_node(
     DECOMPOSITION_ANSWER_SUB_QUESTIONS,
     answer_sub_questions_node,
+    destinations=[DECOMPOSITION_RETRIEVE_SUBGRAPH],
     metadata={"description": "Prepares retrieval query for current unanswered sub-question", "dependencies": ["sub_questions", "q_a_pairs"], "outputs": ["retrieval_query"], "strategy": "iterative_sub_question_processing", "expected_duration": "0.1-0.5s", "loop_control": "tracks_current_index"},
 )
 
@@ -142,6 +149,7 @@ workflow.add_node(
 workflow.add_node(
     DECOMPOSITION_RETRIEVE_SUBGRAPH,
     retrieval_subgraph,
+    destinations=[DECOMPOSITION_FORMAT_ANSWER],
     metadata={
         "description": "Retrieval subgraph for decomposition strategy sub-questions",
         "dependencies": ["retrieval_query"],
@@ -156,6 +164,7 @@ workflow.add_node(
 workflow.add_node(
     DECOMPOSITION_SYNTHESIZE_FINAL_ANSWER,
     synthesize_final_answer_node,
+    destinations=[END],
     metadata={
         "description": "Synthesizes final comprehensive answer from all Q&A pairs",
         "dependencies": ["q_a_pairs", "transformed_query"],
@@ -181,7 +190,8 @@ workflow.add_edge(DECOMPOSITION_RETRIEVE_SUBGRAPH, DECOMPOSITION_FORMAT_ANSWER)
 workflow.add_conditional_edges(DECOMPOSITION_FORMAT_ANSWER, route_from_format_nodes)
 workflow.add_edge(DECOMPOSITION_SYNTHESIZE_FINAL_ANSWER, END)
 
+
 decomposition = workflow.compile(
-    debug=True,
+    debug=get_debug_mode(),
     name="decomposition_strategy_loop",
 )

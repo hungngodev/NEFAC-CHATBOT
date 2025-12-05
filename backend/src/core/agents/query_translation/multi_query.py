@@ -1,38 +1,38 @@
 """Multi‑query: generate queries, retrieve, dedup, format."""
 
-from langchain.chat_models import init_chat_model
-from langchain_core.documents import Document
-from langchain_core.load import dumps, loads
+from typing import NotRequired
+
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langgraph.graph import END, StateGraph
+from langgraph.graph import END, START, StateGraph
 from langgraph.types import RunnableConfig
 
 from src.config.node_names import (
     MULTI_QUERY_ACCUMULATE,
-    MULTI_QUERY_DEDUPLICATE_DOCUMENTS,
     MULTI_QUERY_FORMAT_DOCUMENTS,
     MULTI_QUERY_GENERATE_QUERIES,
     MULTI_QUERY_NEXT,
     MULTI_QUERY_RETRIEVE_SUBGRAPH,
+    QUERY_TRANSFORMER_MULTI_QUERY,
 )
 from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.state import QueryTransformerState
+from src.utils.debug import get_debug_mode
+from src.utils.model_factory import init_model
 
 
 # --- Subgraph State ---
 class MultiQueryState(QueryTransformerState):
-    generated_queries: list[str] = []
-    current_index: int = 0
-    collected_documents: list[Document] = []
+    generated_queries: NotRequired[list[str]]
+    current_index: NotRequired[int]
 
 
 # --- Nodes ---
 async def generate_queries_node(state: MultiQueryState, config: RunnableConfig) -> MultiQueryState:
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.multi_query_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.query_transformer_model, disable_streaming=configuration.disable_streaming, node_name=QUERY_TRANSFORMER_MULTI_QUERY)
 
     question = state["transformed_query"]
     prompt = ChatPromptTemplate.from_template(configuration.multi_query_perspectives_prompt)
@@ -46,16 +46,29 @@ async def generate_queries_node(state: MultiQueryState, config: RunnableConfig) 
     return {"generated_queries": generated_queries}
 
 
-def deduplicate_documents_node(state: MultiQueryState, config: RunnableConfig) -> MultiQueryState:
-    collected = state.get("collected_documents", [])
-    unique_serialized = {dumps(d) for d in collected if isinstance(d, Document)}
-    unique_documents = [loads(s) for s in unique_serialized if isinstance(loads(s), Document)]
-    return {"collected_documents": unique_documents}
+def next_query_node(state: MultiQueryState) -> MultiQueryState:
+    """Select the next generated query for retrieval, if any remain."""
+    idx = state.get("current_index", 0)
+    queries = state.get("generated_queries", [])
+    if idx >= len(queries):
+        return {}
+    return {"retrieval_query": queries[idx]}
+
+
+def advance_index_node(state: MultiQueryState) -> MultiQueryState:
+    """Advance the query index. Documents are accumulated automatically via reducer."""
+    return {
+        "current_index": state.get("current_index", 0) + 1,
+    }
 
 
 def format_documents_node(state: MultiQueryState) -> QueryTransformerState:
-    formatted_string = format_docs(state.get("collected_documents", []))
+    formatted_string = format_docs(state.get("documents", []))
     return {"transformed_context": formatted_string}
+
+
+def route_after_accumulate(state: MultiQueryState) -> str:
+    return MULTI_QUERY_NEXT if state.get("current_index", 0) < len(state.get("generated_queries", [])) else MULTI_QUERY_FORMAT_DOCUMENTS
 
 
 workflow = StateGraph(state_schema=MultiQueryState, output_schema=QueryTransformerState, context_schema=Configuration)
@@ -63,6 +76,7 @@ workflow = StateGraph(state_schema=MultiQueryState, output_schema=QueryTransform
 workflow.add_node(
     node=MULTI_QUERY_GENERATE_QUERIES,
     action=generate_queries_node,
+    destinations=[MULTI_QUERY_NEXT],
     metadata={
         "description": "Generates multiple perspective queries from original query",
         "type": "generation_node",
@@ -78,28 +92,10 @@ workflow.add_node(
 )
 
 
-def next_query_node(state: MultiQueryState) -> MultiQueryState:
-    """Select the next generated query for retrieval, if any remain."""
-    idx = state.get("current_index", 0)
-    queries = state.get("generated_queries", [])
-    if idx >= len(queries):
-        return {}
-    return {"retrieval_query": queries[idx]}
-
-
-def accumulate_documents_node(state: MultiQueryState) -> MultiQueryState:
-    """Append newly retrieved documents and advance the query index."""
-    docs = state.get("documents", [])
-    collected = state.get("collected_documents", []) + docs
-    return {
-        "collected_documents": collected,
-        "current_index": state.get("current_index", 0) + 1,
-    }
-
-
 workflow.add_node(
     node=MULTI_QUERY_NEXT,
     action=next_query_node,
+    destinations=[MULTI_QUERY_RETRIEVE_SUBGRAPH],
     metadata={
         "description": "Sets the next generated query as retrieval input",
         "type": "control_node",
@@ -111,6 +107,7 @@ workflow.add_node(
 workflow.add_node(
     node=MULTI_QUERY_RETRIEVE_SUBGRAPH,
     action=retrieval_subgraph,
+    destinations=[MULTI_QUERY_ACCUMULATE],
     metadata={
         "description": "Retrieval subgraph executed per generated query (sequential)",
         "type": "retrieval_subgraph",
@@ -126,7 +123,8 @@ workflow.add_node(
 
 workflow.add_node(
     node=MULTI_QUERY_ACCUMULATE,
-    action=accumulate_documents_node,
+    destinations=[MULTI_QUERY_NEXT, MULTI_QUERY_FORMAT_DOCUMENTS],
+    action=advance_index_node,
     metadata={
         "description": "Accumulates documents from this query into the running set",
         "type": "processing_node",
@@ -135,26 +133,11 @@ workflow.add_node(
     },
 )
 
-workflow.add_node(
-    node=MULTI_QUERY_DEDUPLICATE_DOCUMENTS,
-    action=deduplicate_documents_node,
-    metadata={
-        "description": "Deduplicates and merges documents from parallel retrieval operations",
-        "type": "processing_node",
-        "interaction": "internal",
-        "criticality": "medium",
-        "expected_duration": "1-3s",
-        "processing_method": "document_deduplication",
-        "dependencies": ["collected_documents"],
-        "outputs": ["collected_documents"],
-        "optimization": "hash_based_deduplication",
-        "merge_strategy": "content_aware",
-    },
-)
 
 workflow.add_node(
     node=MULTI_QUERY_FORMAT_DOCUMENTS,
     action=format_documents_node,
+    destinations=[END],
     metadata={
         "description": "Formats deduplicated documents into final transformed context string",
         "type": "formatting_node",
@@ -168,23 +151,11 @@ workflow.add_node(
     },
 )
 
-workflow.set_entry_point(MULTI_QUERY_GENERATE_QUERIES)
+workflow.add_edge(START, MULTI_QUERY_GENERATE_QUERIES)
 workflow.add_edge(MULTI_QUERY_GENERATE_QUERIES, MULTI_QUERY_NEXT)
 workflow.add_edge(MULTI_QUERY_NEXT, MULTI_QUERY_RETRIEVE_SUBGRAPH)
 workflow.add_edge(MULTI_QUERY_RETRIEVE_SUBGRAPH, MULTI_QUERY_ACCUMULATE)
+workflow.add_conditional_edges(MULTI_QUERY_ACCUMULATE, route_after_accumulate)
+workflow.add_edge(MULTI_QUERY_FORMAT_DOCUMENTS, END)
 
-
-def route_after_accumulate(state: MultiQueryState) -> str:
-    if state.get("current_index", 0) < len(state.get("generated_queries", [])):
-        return MULTI_QUERY_NEXT
-    else:
-        return MULTI_QUERY_DEDUPLICATE_DOCUMENTS
-
-
-workflow.add_conditional_edges(source=MULTI_QUERY_ACCUMULATE, path=route_after_accumulate)
-
-workflow.add_edge(start_key=MULTI_QUERY_DEDUPLICATE_DOCUMENTS, end_key=MULTI_QUERY_FORMAT_DOCUMENTS)
-
-workflow.add_edge(start_key=MULTI_QUERY_FORMAT_DOCUMENTS, end_key=END)
-
-multi_query = workflow.compile(debug=True, name="multi_query_sequential_retrieval_strategy", interrupt_before=None, interrupt_after=None, checkpointer=None)
+multi_query = workflow.compile(debug=get_debug_mode(), name="multi_query_sequential_retrieval_strategy", interrupt_before=None, interrupt_after=None, checkpointer=None)

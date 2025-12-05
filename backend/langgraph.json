@@ -6,5 +6,23 @@
       "config_schema": "src.config.settings:Configuration"
     }
   },
-  "env": "../.env"
+  "image_distro": "wolfi",
+  "env": "../.env",
+  "http": {
+    "cors": {
+      "allow_origins": ["*"],
+      "allow_methods": ["*"],
+      "allow_headers": ["*"]
+    }
+  },
+  "dockerfile_lines": [
+    "RUN apk add --no-cache build-base pkgconf openblas-dev"
+  ],
+  "checkpointer": {
+    "ttl": {
+      "strategy": "delete",
+      "sweep_interval_minutes": 10080,
+      "default_ttl": 43200
+    }
+  }
 }

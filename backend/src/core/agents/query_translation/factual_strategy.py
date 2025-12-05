@@ -1,4 +1,3 @@
-from langchain.chat_models import init_chat_model
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START, StateGraph
@@ -8,11 +7,14 @@ from src.config.node_names import (
     FACTUAL_STRATEGY_FORMAT_DOCUMENTS,
     FACTUAL_STRATEGY_GENERATE_FACTUAL_QUERY,
     FACTUAL_STRATEGY_RETRIEVE_SUBGRAPH,
+    QUERY_TRANSFORMER_FACTUAL_STRATEGY,
 )
 from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.state import QueryTransformerState
+from src.utils.debug import get_debug_mode
+from src.utils.model_factory import init_model
 
 
 # --- Subgraph State ---
@@ -28,7 +30,7 @@ async def generate_factual_query_node(state: FactualStrategyState, config: Runna
     question = state["transformed_query"]
 
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.factual_strategy_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.query_transformer_model, disable_streaming=configuration.disable_streaming, node_name=QUERY_TRANSFORMER_FACTUAL_STRATEGY)
 
     prompt = ChatPromptTemplate.from_template(configuration.factual_strategy_prompt)
     chain = prompt | llm | StrOutputParser()
@@ -69,7 +71,8 @@ workflow.add_edge(FACTUAL_STRATEGY_GENERATE_FACTUAL_QUERY, FACTUAL_STRATEGY_RETR
 workflow.add_edge(FACTUAL_STRATEGY_RETRIEVE_SUBGRAPH, FACTUAL_STRATEGY_FORMAT_DOCUMENTS)
 workflow.add_edge(FACTUAL_STRATEGY_FORMAT_DOCUMENTS, END)
 
+
 factual_strategy = workflow.compile(
-    debug=True,
+    debug=get_debug_mode(),
     name="factual_strategy_sequence",
 )

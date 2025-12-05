@@ -1,0 +1,34 @@
+# Documentation
+docs/
+README.md
+LICENSE
+
+# Git
+.git/
+.github/
+.gitignore
+
+# Environment
+.env
+.env.local
+.env.*
+!.env.example
+!.env.template
+
+# Dependencies & Build Artifacts
+node_modules/
+venv/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.coverage
+htmlcov/
+dist/
+build/
+.next/
+out/
+
+# Docker
+docker/
+docker-compose.yml

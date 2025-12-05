@@ -1,4 +1,3 @@
-from langchain.chat_models import init_chat_model
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START, StateGraph
@@ -8,11 +7,14 @@ from src.config.node_names import (
     CONTEXTUAL_STRATEGY_FORMAT_DOCUMENTS,
     CONTEXTUAL_STRATEGY_GENERATE_CONTEXTUAL_QUERY,
     CONTEXTUAL_STRATEGY_RETRIEVE_SUBGRAPH,
+    QUERY_TRANSFORMER_CONTEXTUAL_STRATEGY,
 )
 from src.config.settings import Configuration
 from src.core.agents.retrieval.subgraph import retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.state import QueryTransformerState
+from src.utils.debug import get_debug_mode
+from src.utils.model_factory import init_model
 
 
 # --- Subgraph State ---
@@ -26,7 +28,7 @@ async def generate_contextual_query_node(state: ContextualStrategyState, config:
     question = state["transformed_query"]
 
     configuration = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configuration.contextual_strategy_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.query_transformer_model, disable_streaming=configuration.disable_streaming, node_name=QUERY_TRANSFORMER_CONTEXTUAL_STRATEGY)
 
     prompt = ChatPromptTemplate.from_template(configuration.contextual_strategy_prompt)
     chain = prompt | llm | StrOutputParser()
@@ -67,7 +69,8 @@ workflow.add_edge(CONTEXTUAL_STRATEGY_GENERATE_CONTEXTUAL_QUERY, CONTEXTUAL_STRA
 workflow.add_edge(CONTEXTUAL_STRATEGY_RETRIEVE_SUBGRAPH, CONTEXTUAL_STRATEGY_FORMAT_DOCUMENTS)
 workflow.add_edge(CONTEXTUAL_STRATEGY_FORMAT_DOCUMENTS, END)
 
+
 contextual_strategy = workflow.compile(
-    debug=True,
+    debug=get_debug_mode(),
     name="contextual_strategy_sequence",
 )

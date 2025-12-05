@@ -1,7 +1,6 @@
 import os as _os
 from typing import ClassVar, Literal
 
-from langchain.chat_models import init_chat_model
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, StateGraph
@@ -14,6 +13,7 @@ from src.config.node_names import (
     QUERY_TRANSFORMER_FACTUAL_STRATEGY,
     QUERY_TRANSFORMER_HYDE,
     QUERY_TRANSFORMER_MULTI_QUERY,
+    QUERY_TRANSFORMER_NODE,
     QUERY_TRANSFORMER_PREPARE_OUTPUT,
     QUERY_TRANSFORMER_STEP_BACK,
 )
@@ -26,6 +26,9 @@ from src.core.agents.query_translation.hyde import hyde
 from src.core.agents.query_translation.multi_query import multi_query
 from src.core.agents.query_translation.step_back import step_back
 from src.schemas.state import QueryTransformerOutputState, QueryTransformerState
+from src.utils.debug import get_debug_mode
+from src.utils.events import EVENT_DEEP_RESEARCH_UPDATE, emit_custom_event
+from src.utils.model_factory import init_model
 
 
 class MethodSelection(BaseModel):
@@ -42,25 +45,44 @@ async def route_to_transformer(state: QueryTransformerState, config: RunnableCon
     Avoids any potential streaming by using a plain text parser instead of structured output.
     """
     configurable = Configuration.from_runnable_config(config)
-    llm = init_chat_model(configurable.query_transformer_model, disable_streaming=configurable.disable_streaming)
-    method_chain = ChatPromptTemplate.from_template(configurable.query_transformer_prompt) | llm.with_structured_output(MethodSelection)
+
+    emit_custom_event(
+        EVENT_DEEP_RESEARCH_UPDATE,
+        {
+            "status": "Refining research questions...",
+        },
+    )
+
+    prompt_template = configurable.query_transformer_prompt
+    if configurable.research_mode == "quick":
+        prompt_template += configurable.query_transformer_quick_mode_instruction
+    # This step uses the query transformer model to decide on the strategy
+    llm = init_model(configurable.query_transformer_model, disable_streaming=configurable.disable_streaming, node_name=QUERY_TRANSFORMER_NODE)
+    method_chain = ChatPromptTemplate.from_template(prompt_template) | llm.with_structured_output(MethodSelection)
     question = state["transformed_query"]
     response = await method_chain.ainvoke({"question": question})
     method = response.method.lower().strip()
 
     if "multiquery" in method:
+        emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Generating multi-perspective queries..."})
         return "multi_query"
     elif "decompose" in method:
+        emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Decomposing complex question..."})
         return "decomposition"
     elif "stepback" in method:
+        emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Generating step-back questions..."})
         return "step_back"
     elif "hyde" in method:
+        emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Generating hypothetical documents..."})
         return "hyde"
     elif "factual" in method:
+        emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Extracting factual entities..."})
         return "factual_strategy"
     elif "contextual" in method:
+        emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Analyzing query context..."})
         return "contextual_strategy"
     else:
+        emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Using default retrieval strategy..."})
         return "default_retrieval"
 
 
@@ -71,6 +93,7 @@ def prepare_output(state: QueryTransformerState) -> QueryTransformerOutputState:
         "method_used": state.get("method_used", "default"),
         "_source_tool_call": state.get("_source_tool_call", {}),
         "transformed_query": state.get("transformed_query", ""),
+        "documents": state.get("documents", []),
     }
 
     return {"_completed_query_results": [result]}
@@ -116,9 +139,10 @@ workflow.add_edge(QUERY_TRANSFORMER_CONTEXTUAL_STRATEGY, QUERY_TRANSFORMER_PREPA
 workflow.add_edge(QUERY_TRANSFORMER_DEFAULT_RETRIEVAL, QUERY_TRANSFORMER_PREPARE_OUTPUT)
 workflow.add_edge(QUERY_TRANSFORMER_PREPARE_OUTPUT, END)
 
+
 _RL = int(_os.getenv("GRAPH_RECURSION_LIMIT", "60"))
 query_transformer = workflow.compile(
-    debug=True,
+    debug=get_debug_mode(),
     name="query_transformation_strategy_router",
     interrupt_before=None,
     interrupt_after=None,

@@ -2,7 +2,6 @@ import asyncio
 import os
 from typing import Annotated, Literal
 
-from langchain.chat_models import init_chat_model
 from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import HumanMessage
 from langchain_core.runnables import RunnableConfig
@@ -13,6 +12,7 @@ from tavily import AsyncTavilyClient
 from src.config.settings import Configuration, SearchAPI
 from src.core.agents.tools.misc_utils import get_api_key_for_model, get_today_str
 from src.schemas.state import Summary
+from src.utils.model_factory import init_model
 
 TAVILY_SEARCH_DESCRIPTION = "A search engine optimized for comprehensive, accurate, and trusted results. " "Useful for when you need to answer questions about current events."
 
@@ -51,10 +51,8 @@ async def tavily_search(queries: list[str], max_results: Annotated[int, Injected
                 unique_results[url] = {**result, "query": response["query"]}
     configurable = Configuration.from_runnable_config(config)
     max_char_to_include = 50_000
-    model_api_key = get_api_key_for_model(configurable.summarization_model, config)
-    summarization_model = (
-        init_chat_model(model=configurable.summarization_model, max_tokens=configurable.summarization_model_max_tokens, api_key=model_api_key, disable_streaming=configurable.disable_streaming).with_structured_output(Summary).with_retry(stop_after_attempt=configurable.max_structured_output_retries)
-    )
+    get_api_key_for_model(configurable.summarization_model, config)
+    summarization_model = init_model(configurable.summarization_model, disable_streaming=configurable.disable_streaming).with_structured_output(Summary).with_retry(stop_after_attempt=configurable.max_structured_output_retries)
 
     async def noop():
         return None

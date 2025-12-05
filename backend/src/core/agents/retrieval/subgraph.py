@@ -1,6 +1,5 @@
 import os as _os
 
-from langchain.chat_models import init_chat_model
 from langchain.retrievers import EnsembleRetriever
 from langchain.retrievers.contextual_compression import ContextualCompressionRetriever
 from langchain_cohere import CohereRerank
@@ -14,27 +13,53 @@ from src.config.node_names import (
     RETRIEVAL_SUBGRAPH_GRAPH_RETRIEVAL,
     RETRIEVAL_SUBGRAPH_PLANNER,
 )
+from src.config.prompt.retrieval import (
+    GRAPH_SEARCH_GUIDELINE,
+    GRAPH_SEARCH_KNOB,
+    GRAPH_SEARCH_METHOD,
+    GRAPH_SEARCH_PARAM,
+)
 from src.config.settings import Configuration
 from src.core.agents.retrieval.graph_retrieval import graph_tool_node
 from src.core.agents.retrieval.keyword_retrieval import keyword_retriever
 from src.core.agents.retrieval.vector_retrieval import vector_retriever
 from src.schemas.state import RetrievalPlanModel, RetrievalSubgraphState
+from src.utils.debug import get_debug_mode
+from src.utils.model_factory import init_model
 
 
 async def plan_retrieval_node(state: RetrievalSubgraphState, config: RunnableConfig) -> dict:
     query = state["retrieval_query"]
     configuration = Configuration.from_runnable_config(config)
+
+    # Dynamically construct the prompt based on graph search availability
+    if configuration.enable_graph_search:
+        system_prompt = configuration.retrieval_planning_prompt.format(
+            graph_knob=GRAPH_SEARCH_KNOB,
+            graph_method=GRAPH_SEARCH_METHOD,
+            graph_guideline=GRAPH_SEARCH_GUIDELINE,
+            graph_param=GRAPH_SEARCH_PARAM,
+        )
+    else:
+        system_prompt = configuration.retrieval_planning_prompt.format(
+            graph_knob="",
+            graph_method="",
+            graph_guideline="",
+            graph_param="",
+        )
+
     prompt = ChatPromptTemplate.from_messages(
         [
             (
                 "system",
-                configuration.retrieval_planning_prompt + "\n\nWhen asked for output, respond with only the data, no commentary.",
+                system_prompt + "\n\nWhen asked for output, respond with only the data, no commentary.",
             ),
             ("human", "Query: {query}"),
         ]
     )
 
-    llm_struct = init_chat_model(configuration.retriever_worker_model, disable_streaming=configuration.disable_streaming).with_structured_output(RetrievalPlanModel)
+    # Initialize the retrieval planner model
+    llm_struct = init_model(configuration.retrieval_planner_model, disable_streaming=configuration.disable_streaming, node_name=RETRIEVAL_SUBGRAPH_PLANNER).with_structured_output(RetrievalPlanModel)
     plan_model = await (prompt | llm_struct).ainvoke({"query": query})
     plan_dict = plan_model.model_dump() if hasattr(plan_model, "model_dump") else plan_model.dict()
     return {"retrieval_plan": plan_dict}
@@ -61,7 +86,6 @@ def ensemble_retrieval_node(state: RetrievalSubgraphState) -> RetrievalSubgraphS
         return {"document_search_documents": []}
 
     ensemble_retriever = EnsembleRetriever(retrievers=retrievers, weights=weights or None)
-    ensemble_retriever.k = max(1, vector_k, keyword_k)
     compressor = CohereRerank(model="rerank-english-v3.0")
     compression_retriever = ContextualCompressionRetriever(base_compressor=compressor, base_retriever=ensemble_retriever)
     reranked_docs = compression_retriever.invoke(query)
@@ -153,7 +177,8 @@ workflow.add_node(
 workflow.set_entry_point(RETRIEVAL_SUBGRAPH_PLANNER)
 
 
-def route_after_planning(state: RetrievalSubgraphState):
+def route_after_planning(state: RetrievalSubgraphState, config: RunnableConfig):
+    configuration = Configuration.from_runnable_config(config)
     plan = state.get("retrieval_plan", {})
     vector_k = int(plan.get("vector_k", 0) or 0)
     keyword_k = int(plan.get("keyword_k", 0) or 0)
@@ -162,7 +187,7 @@ def route_after_planning(state: RetrievalSubgraphState):
     nodes_to_run = []
     if (vector_k > 0) or (keyword_k > 0):
         nodes_to_run.append(RETRIEVAL_SUBGRAPH_ENSEMBLE_RETRIEVAL)
-    if graph_k > 0:
+    if graph_k > 0 and configuration.enable_graph_search:
         nodes_to_run.append(RETRIEVAL_SUBGRAPH_GRAPH_RETRIEVAL)
 
     return nodes_to_run if nodes_to_run else [RETRIEVAL_SUBGRAPH_COMBINE_DOCUMENTS]
@@ -179,8 +204,8 @@ workflow.add_edge(RETRIEVAL_SUBGRAPH_COMBINE_DOCUMENTS, END)
 
 _RL = int(_os.getenv("GRAPH_RECURSION_LIMIT", "60"))
 retrieval_subgraph = workflow.compile(
-    debug=True,
-    name="retrieval_coordination_subgraph",
+    debug=get_debug_mode(),
+    name="retrieval_subgraph",
     interrupt_before=None,
     interrupt_after=None,
 ).with_config({"recursion_limit": _RL})

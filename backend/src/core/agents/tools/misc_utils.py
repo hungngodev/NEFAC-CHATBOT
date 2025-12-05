@@ -8,6 +8,13 @@ def get_today_str() -> str:
     return datetime.now().strftime("%a %b %-d, %Y")
 
 
+async def execute_tool_safely(tool, args, config):
+    try:
+        return await tool.ainvoke(args, config)
+    except Exception as e:
+        return f"Error executing tool: {str(e)}"
+
+
 def get_config_value(value):
     if value is None:
         return None
@@ -32,7 +39,6 @@ def get_api_key_for_model(model_name: str, config: RunnableConfig):
             return api_keys.get("ANTHROPIC_API_KEY")
         elif model_name.startswith("google"):
             return api_keys.get("GOOGLE_API_KEY")
-        return None
     else:
         if model_name.startswith("openai:"):
             return os.getenv("OPENAI_API_KEY")
@@ -40,4 +46,12 @@ def get_api_key_for_model(model_name: str, config: RunnableConfig):
             return os.getenv("ANTHROPIC_API_KEY")
         elif model_name.startswith("google"):
             return os.getenv("GOOGLE_API_KEY")
-        return None
+    return None
+
+
+def safe_get(obj, attr, default=None):
+    """Safely get an attribute from an object or a key from a dict."""
+    val = getattr(obj, attr, None)
+    if val is None and isinstance(obj, dict):
+        val = obj.get(attr)
+    return val if val is not None else default

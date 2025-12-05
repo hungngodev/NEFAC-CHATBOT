@@ -19,6 +19,7 @@ from llama_index.graph_stores.neo4j import Neo4jPropertyGraphStore
 from llama_index.llms.openai import OpenAI as LIOpenAI
 from openai import RateLimitError
 
+from src.config.models import EMBEDDING_DIMENSIONS
 from src.service.ingestion_service.graph_rag import CitationLinker, CommunityLinker, EntityCooccurrenceLinker, SemanticLinker, TemporalLinker, TopicLinker
 from src.service.ingestion_service.llamaindex.entity_deduplication import (
     EntityDeduplicator,

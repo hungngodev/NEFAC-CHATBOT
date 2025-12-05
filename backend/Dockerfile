@@ -1,50 +1,28 @@
-FROM python:3.10
+FROM langchain/langgraph-api:3.11-wolfi
 
-WORKDIR /app
+RUN apk add --no-cache build-base pkgconf openblas-dev
 
-# Set PYTHONPATH for backend
-ENV PYTHONPATH="/app/src"
+# -- Adding local package . --
+ADD . /deps/backend
+# -- End of local package . --
 
-# Install system dependencies including build tools and BLAS libraries
-RUN apt-get update && apt-get install -y \
-    curl \
-    build-essential \
-    gcc \
-    g++ \
-    libblas-dev \
-    liblapack-dev \
-    libatlas-base-dev \
-    pkg-config \
-    && rm -rf /var/lib/apt/lists/*
+# -- Installing all local dependencies --
+RUN for dep in /deps/*; do             echo "Installing $dep";             if [ -d "$dep" ]; then                 echo "Installing $dep";                 (cd "$dep" && PYTHONDONTWRITEBYTECODE=1 uv pip install --system --no-cache-dir -c /api/constraints.txt -e .);             fi;         done
+# -- End of local dependencies install --
+ENV LANGGRAPH_HTTP='{"cors": {"allow_origins": ["http://localhost:3000"], "allow_methods": ["*"], "allow_headers": ["*"]}}'
+ENV LANGGRAPH_CHECKPOINTER='{"ttl": {"strategy": "delete", "sweep_interval_minutes": 10080, "default_ttl": 43200}}'
+ENV LANGSERVE_GRAPHS='{"agent": {"path": "src.app.server:deep_researcher", "config_schema": "src.config.settings:Configuration"}}'
 
-# Install poetry
-RUN curl -sSL https://install.python-poetry.org | python3 - && \
-    /root/.local/bin/poetry config virtualenvs.create false
 
-# Copy poetry files first for better caching
-COPY pyproject.toml poetry.lock ./
 
-# Install dependencies using poetry
-RUN /root/.local/bin/poetry install --no-interaction --no-ansi --only=main --no-root
+# -- Ensure user deps didn't inadvertently overwrite langgraph-api
+RUN mkdir -p /api/langgraph_api /api/langgraph_runtime /api/langgraph_license && touch /api/langgraph_api/__init__.py /api/langgraph_runtime/__init__.py /api/langgraph_license/__init__.py
+RUN PYTHONDONTWRITEBYTECODE=1 uv pip install --system --no-cache-dir --no-deps -e /api
+# -- End of ensuring user deps didn't inadvertently overwrite langgraph-api --
+# -- Removing build deps from the final image ~<:===~~~ --
+RUN pip uninstall -y pip setuptools wheel
+RUN rm -rf /usr/local/lib/python*/site-packages/pip* /usr/local/lib/python*/site-packages/setuptools* /usr/local/lib/python*/site-packages/wheel* && find /usr/local/bin -name "pip*" -delete || true
+RUN rm -rf /usr/lib/python*/site-packages/pip* /usr/lib/python*/site-packages/setuptools* /usr/lib/python*/site-packages/wheel* && find /usr/bin -name "pip*" -delete || true
+RUN uv pip uninstall --system pip setuptools wheel && rm /usr/bin/uv /usr/bin/uvx
 
-# Copy backend code
-COPY src /app/src
-
-# Create non-root user for security
-RUN useradd --create-home --shell /bin/bash app && \
-    chown -R app:app /app
-
-# Create a directory for mounted .env file and ensure proper permissions
-RUN mkdir -p /app && chown -R app:app /app
-
-USER app
-
-# Expose port
-EXPOSE 8000
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
-
-# Run the application
-CMD ["gunicorn", "src.app.app:app", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "--log-level", "info", "--access-logfile", "-", "--error-logfile", "-"] 
+WORKDIR /deps/backend

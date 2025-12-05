@@ -1,12 +1,12 @@
 import os
 
-from langchain.chat_models import init_chat_model
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.documents import Document
 from langchain_core.tools import tool
 from langchain_neo4j import GraphCypherQAChain, Neo4jGraph
 
 from src.config.settings import Configuration
+from src.utils.model_factory import init_model
 
 NEO4J_URI = os.environ["NEO4J_URI"]
 NEO4J_USERNAME = os.environ.get("NEO4J_USERNAME") or os.environ.get("NEO4J_USER")
@@ -20,7 +20,7 @@ graph = Neo4jGraph(url=NEO4J_URI, username=NEO4J_USERNAME, password=NEO4J_PASSWO
 async def graph_tool_node(query: str, conf: Configuration | None = None) -> list[Document]:
 
     configuration = conf or Configuration.from_runnable_config(None)
-    llm = init_chat_model(configuration.retriever_worker_model, disable_streaming=configuration.disable_streaming)
+    llm = init_model(configuration.retriever_worker_model, disable_streaming=configuration.disable_streaming)
 
     cypher_prompt = ChatPromptTemplate.from_template(configuration.cypher_generation_template)
     qa_prompt = ChatPromptTemplate.from_template(configuration.graph_qa_prompt)

@@ -10,7 +10,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+
 lib64/
 parts/
 sdist/
@@ -23,6 +23,10 @@ share/python-wheels/
 MANIFEST
 *.pkl
 *.json
+!langgraph.json
+!package.json
+!tsconfig.json
+!components.json
 /resources
 # Virtual Environment
 venv/
@@ -81,7 +85,7 @@ coverage.xml
 *.log
 logs/
 log/
-
+.next/
 # Database
 *.db
 *.sqlite3

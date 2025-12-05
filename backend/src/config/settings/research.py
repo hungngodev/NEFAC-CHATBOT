@@ -15,11 +15,11 @@ from src.config.settings.base import SearchAPI
 class ResearchConfig(BaseModel):
     """Configuration for research functionality."""
 
-    max_structured_output_retries: int = Field(default=3, metadata={"x_oap_ui_config": {"type": "number", "default": 3, "min": 1, "max": 10, "description": "Maximum number of retries for structured output calls from models"}})
-    allow_clarification: bool = Field(default=True, metadata={"x_oap_ui_config": {"type": "boolean", "default": True, "description": "Whether to allow the researcher to ask the user clarifying questions before starting research"}})
+    max_structured_output_retries: int = Field(default=3, json_schema_extra={"x_oap_ui_config": {"type": "number", "default": 3, "min": 1, "max": 10, "description": "Maximum number of retries for structured output calls from models"}})
+    allow_clarification: bool = Field(default=True, json_schema_extra={"x_oap_ui_config": {"type": "boolean", "default": True, "description": "Whether to allow the researcher to ask the user clarifying questions before starting research"}})
     max_concurrent_research_units: int = Field(
         default=3,
-        metadata={
+        json_schema_extra={
             "x_oap_ui_config": {
                 "type": "slider",
                 "default": 5,
@@ -33,7 +33,7 @@ class ResearchConfig(BaseModel):
 
     search_api: SearchAPI = Field(
         default=SearchAPI.TAVILY,
-        metadata={
+        json_schema_extra={
             "x_oap_ui_config": {
                 "type": "select",
                 "default": "tavily",
@@ -44,18 +44,20 @@ class ResearchConfig(BaseModel):
     )
     max_researcher_iterations: int = Field(
         default=3,
-        metadata={"x_oap_ui_config": {"type": "slider", "default": 3, "min": 1, "max": 10, "step": 1, "description": "Maximum number of research iterations for the Research Supervisor. This is the number of times the Research Supervisor will reflect on the research and ask follow-up questions."}},
+        json_schema_extra={
+            "x_oap_ui_config": {"type": "slider", "default": 3, "min": 1, "max": 10, "step": 1, "description": "Maximum number of research iterations for the Research Supervisor. This is the number of times the Research Supervisor will reflect on the research and ask follow-up questions."}
+        },
     )
-    max_react_tool_calls: int = Field(default=3, metadata={"x_oap_ui_config": {"type": "slider", "default": 3, "min": 1, "max": 30, "step": 1, "description": "Maximum number of tool calling iterations to make in a single researcher step."}})
+    max_react_tool_calls: int = Field(default=3, json_schema_extra={"x_oap_ui_config": {"type": "slider", "default": 3, "min": 1, "max": 30, "step": 1, "description": "Maximum number of tool calling iterations to make in a single researcher step."}})
 
     # Hard limit on how many InternalDocumentSearch calls are processed per iteration.
     # Additional calls in the same assistant message will be deferred with a ToolMessage.
     max_internal_search_calls_per_turn: int = Field(
-        default=4,
-        metadata={
+        default=2,
+        json_schema_extra={
             "x_oap_ui_config": {
                 "type": "slider",
-                "default": 4,
+                "default": 2,
                 "min": 1,
                 "max": 10,
                 "step": 1,
@@ -67,7 +69,7 @@ class ResearchConfig(BaseModel):
     # Graph recursion limit for LangGraph runloops (prevents infinite bouncing)
     graph_recursion_limit: int = Field(
         default=60,
-        metadata={
+        json_schema_extra={
             "x_oap_ui_config": {
                 "type": "slider",
                 "default": 60,
@@ -143,15 +145,6 @@ class ResearchModelsConfig(BaseModel):
         description="System prompt for the main researcher agent.",
         json_schema_extra={
             "langgraph_nodes": [node_names_module.RESEARCH_RESEARCHER],
-            "langgraph_type": "prompt",
-        },
-    )
-
-    lead_researcher_prompt: str = Field(
-        default=prompts_module.DEFAULT_LEAD_RESEARCHER_PROMPT,
-        description="Prompt given to the supervisor/lead researcher to coordinate research.",
-        json_schema_extra={
-            "langgraph_nodes": [node_names_module.RESEARCH_WRITE_RESEARCH_BRIEF],
             "langgraph_type": "prompt",
         },
     )
