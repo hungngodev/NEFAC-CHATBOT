@@ -43,3 +43,15 @@
 .markdown-content tr:nth-child(even) {
   background-color: #f9f9f9;
 }
+
+/* Performance optimizations for streaming */
+/* content-visibility: auto skips rendering for off-screen content */
+.markdown-content {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 300px;
+}
+
+/* Isolate layout calculations per block */
+.markdown-content > * {
+  contain: layout style;
+}

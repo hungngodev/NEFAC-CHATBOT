@@ -1,13 +1,10 @@
 "use client";
 
 import { FC, memo, useState } from "react";
-import ReactMarkdown from "react-markdown";
+import { Streamdown } from "streamdown";
 
 import "katex/dist/katex.min.css";
 import { CheckIcon, CopyIcon } from "lucide-react";
-import rehypeKatex from "rehype-katex";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
 
 import { SyntaxHighlighter } from "@/components/thread/syntax-highlighter";
 import { TooltipIconButton } from "@/components/thread/tooltip-icon-button";
@@ -58,15 +55,9 @@ const CodeHeader: FC<CodeHeaderProps> = ({ language, code }) => {
   );
 };
 
-const components: any = {
-  h1: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children?: React.ReactNode;
-  }) => (
+// Custom components compatible with Streamdown
+const components: Record<string, FC<any>> = {
+  h1: ({ className, children, ...props }) => (
     <h1
       className={cn(
         "mt-2 scroll-m-20 text-4xl font-bold tracking-tight",
@@ -77,14 +68,7 @@ const components: any = {
       {children}
     </h1>
   ),
-  h2: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children?: React.ReactNode;
-  }) => (
+  h2: ({ className, children, ...props }) => (
     <h2
       className={cn(
         "mt-10 scroll-m-20 border-b pb-1 text-3xl font-semibold tracking-tight first:mt-0",
@@ -95,14 +79,7 @@ const components: any = {
       {children}
     </h2>
   ),
-  h3: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children?: React.ReactNode;
-  }) => (
+  h3: ({ className, children, ...props }) => (
     <h3
       className={cn(
         "mt-8 scroll-m-20 text-2xl font-semibold tracking-tight",
@@ -113,14 +90,7 @@ const components: any = {
       {children}
     </h3>
   ),
-  h4: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children?: React.ReactNode;
-  }) => (
+  h4: ({ className, children, ...props }) => (
     <h4
       className={cn(
         "mt-8 scroll-m-20 text-xl font-semibold tracking-tight",
@@ -131,14 +101,7 @@ const components: any = {
       {children}
     </h4>
   ),
-  h5: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children?: React.ReactNode;
-  }) => (
+  h5: ({ className, children, ...props }) => (
     <h5
       className={cn(
         "mt-8 scroll-m-20 text-lg font-semibold tracking-tight",
@@ -149,14 +112,7 @@ const components: any = {
       {children}
     </h5>
   ),
-  h6: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children?: React.ReactNode;
-  }) => (
+  h6: ({ className, children, ...props }) => (
     <h6
       className={cn(
         "mt-8 scroll-m-20 text-base font-semibold tracking-tight",
@@ -167,14 +123,7 @@ const components: any = {
       {children}
     </h6>
   ),
-  p: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children?: React.ReactNode;
-  }) => (
+  p: ({ className, children, ...props }) => (
     <p
       className={cn("leading-7 [&:not(:first-child)]:mt-6", className)}
       {...props}
@@ -182,14 +131,7 @@ const components: any = {
       {children}
     </p>
   ),
-  ul: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children?: React.ReactNode;
-  }) => (
+  ul: ({ className, children, ...props }) => (
     <ul
       className={cn("my-6 ml-6 list-disc [&>li]:mt-2", className)}
       {...props}
@@ -197,14 +139,7 @@ const components: any = {
       {children}
     </ul>
   ),
-  ol: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children?: React.ReactNode;
-  }) => (
+  ol: ({ className, children, ...props }) => (
     <ol
       className={cn("my-6 ml-6 list-decimal [&>li]:mt-2", className)}
       {...props}
@@ -212,14 +147,7 @@ const components: any = {
       {children}
     </ol>
   ),
-  li: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children?: React.ReactNode;
-  }) => (
+  li: ({ className, children, ...props }) => (
     <li
       className={cn("mt-2", className)}
       {...props}
@@ -227,14 +155,7 @@ const components: any = {
       {children}
     </li>
   ),
-  code: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children: React.ReactNode;
-  }) => {
+  code: ({ className, children, ...props }) => {
     const match = /language-(\w+)/.exec(className || "");
     const isInline = !match;
 
@@ -272,16 +193,7 @@ const components: any = {
       </div>
     );
   },
-  a: ({
-    className,
-    children,
-    href,
-    ...props
-  }: {
-    className?: string;
-    children: React.ReactNode;
-    href?: string;
-  }) => {
+  a: ({ className, children, href, ...props }) => {
     const isExternal = href?.startsWith("http");
     return (
       <a
@@ -298,14 +210,7 @@ const components: any = {
       </a>
     );
   },
-  table: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children: React.ReactNode;
-  }) => (
+  table: ({ className, children, ...props }) => (
     <div className="my-6 w-full overflow-y-auto rounded-lg border">
       <table
         className={cn("w-full text-sm", className)}
@@ -315,14 +220,7 @@ const components: any = {
       </table>
     </div>
   ),
-  thead: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children: React.ReactNode;
-  }) => (
+  thead: ({ className, children, ...props }) => (
     <thead
       className={cn("bg-muted/50", className)}
       {...props}
@@ -330,14 +228,7 @@ const components: any = {
       {children}
     </thead>
   ),
-  tbody: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children: React.ReactNode;
-  }) => (
+  tbody: ({ className, children, ...props }) => (
     <tbody
       className={cn("[&_tr:last-child]:border-0", className)}
       {...props}
@@ -345,14 +236,7 @@ const components: any = {
       {children}
     </tbody>
   ),
-  tfoot: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children: React.ReactNode;
-  }) => (
+  tfoot: ({ className, children, ...props }) => (
     <tfoot
       className={cn("bg-muted/50 text-muted-foreground font-medium", className)}
       {...props}
@@ -360,14 +244,7 @@ const components: any = {
       {children}
     </tfoot>
   ),
-  th: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children: React.ReactNode;
-  }) => (
+  th: ({ className, children, ...props }) => (
     <th
       className={cn(
         "text-muted-foreground border-b px-4 py-3 text-left font-medium [&[align=center]]:text-center [&[align=right]]:text-right",
@@ -378,14 +255,7 @@ const components: any = {
       {children}
     </th>
   ),
-  td: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children: React.ReactNode;
-  }) => (
+  td: ({ className, children, ...props }) => (
     <td
       className={cn(
         "border-b px-4 py-3 text-left [&[align=center]]:text-center [&[align=right]]:text-right",
@@ -396,14 +266,7 @@ const components: any = {
       {children}
     </td>
   ),
-  tr: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children: React.ReactNode;
-  }) => (
+  tr: ({ className, children, ...props }) => (
     <tr
       className={cn("even:bg-muted/10 m-0 border-t p-0", className)}
       {...props}
@@ -411,27 +274,20 @@ const components: any = {
       {children}
     </tr>
   ),
-  img: ({ className, alt, ...props }: { className?: string; alt?: string }) => (
+  img: ({ className, alt, ...props }) => (
     <img
       className={cn("bg-muted rounded-lg border", className)}
       alt={alt}
       {...props}
     />
   ),
-  hr: ({ className, ...props }: { className?: string }) => (
+  hr: ({ className, ...props }) => (
     <hr
       className={cn("border-muted my-8", className)}
       {...props}
     />
   ),
-  blockquote: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children: React.ReactNode;
-  }) => (
+  blockquote: ({ className, children, ...props }) => (
     <blockquote
       className={cn(
         "border-primary text-muted-foreground mt-6 border-l-2 pl-6 italic",
@@ -442,14 +298,7 @@ const components: any = {
       {children}
     </blockquote>
   ),
-  pre: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children: React.ReactNode;
-  }) => (
+  pre: ({ className, children, ...props }) => (
     <pre
       className={cn(
         "bg-muted mt-6 mb-4 overflow-x-auto rounded-lg py-4",
@@ -460,14 +309,7 @@ const components: any = {
       {children}
     </pre>
   ),
-  sup: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children: React.ReactNode;
-  }) => (
+  sup: ({ className, children, ...props }) => (
     <sup
       className={cn("[&>a]:text-xs [&>a]:no-underline", className)}
       {...props}
@@ -475,14 +317,7 @@ const components: any = {
       {children}
     </sup>
   ),
-  strong: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children: React.ReactNode;
-  }) => (
+  strong: ({ className, children, ...props }) => (
     <strong
       className={cn("font-bold", className)}
       {...props}
@@ -490,14 +325,7 @@ const components: any = {
       {children}
     </strong>
   ),
-  em: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children: React.ReactNode;
-  }) => (
+  em: ({ className, children, ...props }) => (
     <em
       className={cn("italic", className)}
       {...props}
@@ -505,14 +333,7 @@ const components: any = {
       {children}
     </em>
   ),
-  del: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children: React.ReactNode;
-  }) => (
+  del: ({ className, children, ...props }) => (
     <del
       className={cn("line-through", className)}
       {...props}
@@ -520,14 +341,7 @@ const components: any = {
       {children}
     </del>
   ),
-  input: ({
-    className,
-    type,
-    ...props
-  }: {
-    className?: string;
-    type?: string;
-  }) => {
+  input: ({ className, type, ...props }) => {
     if (type === "checkbox") {
       return (
         <input
@@ -546,14 +360,7 @@ const components: any = {
       />
     );
   },
-  section: ({
-    className,
-    children,
-    ...props
-  }: {
-    className?: string;
-    children: React.ReactNode;
-  }) => (
+  section: ({ className, children, ...props }) => (
     <section
       className={cn(
         "text-muted-foreground mt-8 border-t pt-4 text-sm",
@@ -566,18 +373,23 @@ const components: any = {
   ),
 };
 
+/**
+ * MarkdownText component using Streamdown for optimized streaming.
+ * 
+ * Streamdown provides:
+ * - Memoized block rendering (only re-parses changed blocks)
+ * - Graceful handling of incomplete markdown during streaming
+ * - Progressive formatting for smooth user experience
+ */
 const MarkdownTextImpl: FC<{ children: string }> = ({ children }) => {
   return (
     <div className="markdown-content text-foreground max-w-none break-words">
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkMath]}
-        rehypePlugins={[rehypeKatex]}
-        components={components}
-      >
+      <Streamdown components={components}>
         {children}
-      </ReactMarkdown>
+      </Streamdown>
     </div>
   );
 };
 
 export const MarkdownText = memo(MarkdownTextImpl);
+

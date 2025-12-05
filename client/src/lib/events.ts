@@ -29,7 +29,7 @@ export function handleCustomEvent(
   } else if (event.name === EVENT_DEEP_RESEARCH_UPDATE) {
     options.mutate((prev) => ({
       ...prev,
-      deepResearchStatus: event.data,
+      deep_research_status: event.data,
     }));
   }
 }

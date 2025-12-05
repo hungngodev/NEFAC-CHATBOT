@@ -2,6 +2,9 @@
 
 @plugin "tailwindcss-animate";
 
+/* Streamdown styles for optimized streaming markdown rendering */
+@source "../node_modules/streamdown/dist/*.js";
+
 @custom-variant dark (&:is(.dark *));
 
 :root {

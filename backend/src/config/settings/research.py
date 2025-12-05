@@ -149,15 +149,6 @@ class ResearchModelsConfig(BaseModel):
         },
     )
 
-    lead_researcher_prompt: str = Field(
-        default=prompts_module.DEFAULT_LEAD_RESEARCHER_PROMPT,
-        description="Prompt given to the supervisor/lead researcher to coordinate research.",
-        json_schema_extra={
-            "langgraph_nodes": [node_names_module.RESEARCH_WRITE_RESEARCH_BRIEF],
-            "langgraph_type": "prompt",
-        },
-    )
-
     compress_research_model: Annotated[
         models_module.ModelType,
         {"__template_metadata__": {"kind": "llm"}},

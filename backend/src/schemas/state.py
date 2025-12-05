@@ -124,16 +124,6 @@ def override_reducer(current_value, new_value):
         return operator.add(current_value, new_value)
 
 
-class BaseResearchState(TypedDict):
-    """Base state with common research fields."""
-
-    research_brief: str | None
-    notes: NotRequired[Annotated[list[str], override_reducer]]
-    raw_notes: NotRequired[Annotated[list[str], override_reducer]]
-    final_documents: NotRequired[Annotated[list[Document], reduce_documents]]
-    deep_research_status: NotRequired[dict]
-
-
 class AgentInputState(TypedDict):
     """Input state for the agent."""
 
@@ -141,37 +131,49 @@ class AgentInputState(TypedDict):
 
 
 class AgentState(AgentInputState):
-    """State for the agent."""
+    """Main state for the agent - all substates should inherit from this.
 
-    # BaseResearchState fields explicitly defined to avoid metaclass conflict
+    This ensures consistent state flow across all subgraphs and prevents
+    fields from being dropped at state boundaries.
+    """
+
+    # Research fields
     research_brief: str | None
     notes: NotRequired[Annotated[list[str], override_reducer]]
     raw_notes: NotRequired[Annotated[list[str], override_reducer]]
     final_documents: NotRequired[Annotated[list[Document], reduce_documents]]
     deep_research_status: NotRequired[dict]
 
+    # Supervisor/coordination fields
+    supervisor_messages: NotRequired[Annotated[list[MessageLikeRepresentation], override_reducer]]
+
+    # Output fields
+    final_report: NotRequired[str]
+
 
 class QuickAgentState(AgentState):
     """State for the Quick Agent subgraph."""
 
     tool_call_iterations: NotRequired[int]
-    final_report: NotRequired[str]
 
 
-class SupervisorState(BaseResearchState):
-    supervisor_messages: NotRequired[Annotated[list[MessageLikeRepresentation], override_reducer]]
+class SupervisorState(AgentState):
+    """State for the supervisor subgraph - inherits from AgentState."""
+
     research_iterations: NotRequired[int]
     # Send() API aggregation fields (following legacy pattern)
     completed_research_results: NotRequired[Annotated[list["ResearcherOutputState"], operator.add]]
     research_tool_calls: NotRequired[list[dict]]  # Store tool calls for result matching
 
 
-class ResearcherState(BaseResearchState):
+class ResearcherState(AgentState):
+    """State for the researcher subgraph - inherits from AgentState."""
+
     researcher_messages: NotRequired[Annotated[list[MessageLikeRepresentation], operator.add]]
     tool_call_iterations: NotRequired[int]
     research_topic: str
     compressed_research: str
-    _completed_query_results: NotRequired[Annotated[list[dict], override_reducer]]  # Aggregated query transformer results (supports override clears)
+    _completed_query_results: NotRequired[Annotated[list[dict], override_reducer]]  # Aggregated query transformer results
     _answered_tool_call_ids: NotRequired[Annotated[list[str], operator.add]]
     documents: NotRequired[Annotated[list[Document], reduce_documents]]
     research_iterations: NotRequired[int]

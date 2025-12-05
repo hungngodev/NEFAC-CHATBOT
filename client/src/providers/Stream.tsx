@@ -21,13 +21,7 @@ export type StateType = {
   messages: Message[];
   ui?: UIMessage[];
   isFinalResponseStreaming?: boolean;
-  deepResearchStatus?: {
-    status: string;
-    progress: number;
-    total_steps: number;
-    estimated_time_remaining: number;
-  };
-  // Persisted status from backend
+  // Deep research status (both real-time and persisted)
   deep_research_status?: {
     status: string;
     progress: number;

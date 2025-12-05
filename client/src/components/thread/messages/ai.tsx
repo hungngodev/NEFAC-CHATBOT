@@ -288,14 +288,13 @@ export const DeepResearchLoading = ({
   const stream = useStreamContext();
   const values = (stream as any).values || {};
 
-  // Use context status
-  const status =
-    values.deepResearchStatus || values.deep_research_status;
+  // Use context status (standardized key)
+  const status = values.deep_research_status;
 
   const [progress, setProgress] = useState(5);
   const [lastStatus, setLastStatus] = useState("");
 
-  // Monotonic progress update based on status changes
+  // Update progress based on status changes
   useEffect(() => {
     if (isComplete) {
       setProgress(100);
@@ -304,6 +303,13 @@ export const DeepResearchLoading = ({
 
     if (!status?.status) return;
 
+    // Use backend-provided progress if available
+    if (typeof status.progress === "number" && status.progress > 0) {
+      setProgress(status.progress);
+      return;
+    }
+
+    // Fallback heuristic if no backend progress provided
     // Prevent backward jumps
     if (status.status === lastStatus) return;
     setLastStatus(status.status);
@@ -321,7 +327,7 @@ export const DeepResearchLoading = ({
     else increment = 1;
 
     setProgress((prev) => Math.min(95, prev + increment));
-  }, [status?.status, isComplete, lastStatus]);
+  }, [status?.status, status?.progress, isComplete, lastStatus]);
 
   // Use backend status text if available, otherwise default
   const statusText = status?.status || "Conducting deep research...";
