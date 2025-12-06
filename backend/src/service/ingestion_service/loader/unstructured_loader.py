@@ -24,7 +24,9 @@ CONTEXT_FORMAT = getattr(
 
 
 def parse_timestamps(transcript_text: str) -> Tuple[str, List[Dict[str, Any]]]:
-    segments, clean_text, offset_map = [], "", []
+    segments: List[Dict[str, Any]] = []
+    clean_text = ""
+    offset_map: List[Dict[str, Any]] = []
     for line in transcript_text.strip().splitlines():
         line = line.strip()
         if not line:
@@ -34,29 +36,40 @@ def parse_timestamps(transcript_text: str) -> Tuple[str, List[Dict[str, Any]]]:
             ts_str, text = match.groups()
             parts = ts_str.split(":")
             try:
-                seconds = float(parts[0]) if len(parts) == 1 else int(parts[0]) * 60 + float(parts[1]) if len(parts) == 2 else int(parts[0]) * 3600 + int(parts[1]) * 60 + float(parts[2])
+                seconds: float
+                if len(parts) == 1:
+                    seconds = float(parts[0])
+                elif len(parts) == 2:
+                    seconds = int(parts[0]) * 60 + float(parts[1])
+                else:
+                    seconds = int(parts[0]) * 3600 + int(parts[1]) * 60 + float(parts[2])
                 if text.strip():
                     segments.append({"start": seconds, "text": text.strip()})
             except ValueError:
                 continue
         elif segments:
-            segments[-1]["text"] += " " + line
+            prev_text = str(segments[-1]["text"])
+            segments[-1]["text"] = prev_text + " " + line
 
     for i, seg in enumerate(segments):
         start_char = len(clean_text)
         separator = "\n"
+        seg_start: float = float(seg["start"])
+        seg_text: str = str(seg["text"])
+
         if i + 1 < len(segments):
-            time_diff = segments[i + 1]["start"] - seg["start"]
+            next_start: float = float(segments[i + 1]["start"])
+            time_diff = next_start - seg_start
             probability = min(1.0, max(0.0, (time_diff - 0.5) / 2.0))
-            rand_val = int(hashlib.md5(seg["text"].encode()).hexdigest(), 16) % 1000 / 1000.0
+            rand_val = int(hashlib.md5(seg_text.encode()).hexdigest(), 16) % 1000 / 1000.0
 
             if rand_val < probability:
                 separator = "\n\n"
 
-        clean_text += seg["text"] + separator
+        clean_text += seg_text + separator
         end_char = len(clean_text) - 1
-        end_time = segments[i + 1]["start"] if i + 1 < len(segments) else None
-        offset_map.append({"start_char": start_char, "end_char": end_char, "start_time": seg["start"], "end_time": end_time})
+        end_time = float(segments[i + 1]["start"]) if i + 1 < len(segments) else None
+        offset_map.append({"start_char": start_char, "end_char": end_char, "start_time": seg_start, "end_time": end_time})
 
     return clean_text.strip(), offset_map
 
@@ -146,7 +159,7 @@ def load_document_nodes(
     try:
         if ext in {"xlsx", "xls", "csv"}:
             _log_phase("Parsing spreadsheet structure")
-            xlsx_chunks = process_xlsx_intelligently(path, entry)
+            xlsx_chunks = process_xlsx_intelligently(str(path), entry)
 
             for chunk_idx, (sheet_text, sheet_meta) in enumerate(xlsx_chunks):
                 chunk_base_meta = document_base_meta.copy()

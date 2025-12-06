@@ -1,6 +1,6 @@
 from .base_linker import GraphLinker
 from .citation_linker import CitationLinker
-from .community_linker import CommunityLinker
+from .community_linker import CommunityLinker, HierarchicalCommunityLinker
 from .deduplication_linker import DeduplicationLinker
 from .entity_cooccurrence_linker import EntityCooccurrenceLinker
 from .semantic_linker import SemanticLinker
@@ -12,6 +12,7 @@ __all__ = [
     "SemanticLinker",
     "DeduplicationLinker",
     "CommunityLinker",
+    "HierarchicalCommunityLinker",
     "TopicLinker",
     "CitationLinker",
     "TemporalLinker",

@@ -20,15 +20,19 @@ from llama_index.graph_stores.neo4j import Neo4jPropertyGraphStore
 from llama_index.llms.openai import OpenAI as LIOpenAI
 from openai import RateLimitError
 
-from src.service.ingestion_service.graph_rag import CitationLinker, CommunityLinker, EntityCooccurrenceLinker, SemanticLinker, TemporalLinker, TopicLinker
-from src.service.ingestion_service.llamaindex.entity_deduplication import (
+from src.service.ingestion_service.graph.entity_deduplication import (
     EntityDeduplicator,
 )
-from src.service.ingestion_service.llamaindex.graphrag_extractor import (
+from src.service.ingestion_service.graph.graphrag_extractor import (
     GraphRAGExtractor,
 )
-from src.service.ingestion_service.llamaindex.metadata_utils import (
-    sanitize_metadata,
+from src.service.ingestion_service.graph.linkers import (
+    CitationLinker,
+    CommunityLinker,
+    EntityCooccurrenceLinker,
+    SemanticLinker,
+    TemporalLinker,
+    TopicLinker,
 )
 from src.service.ingestion_service.settings import (
     ALLOWED_NODES,
@@ -43,6 +47,9 @@ from src.service.ingestion_service.settings import (
     GRAPH_RATE_LIMIT_RETRIES,
     GRAPH_WORD_DISTANCE_THRESHOLD,
     KG_VALIDATION_SCHEMA,
+)
+from src.service.ingestion_service.shared.metadata_utils import (
+    sanitize_metadata,
 )
 
 logger = logging.getLogger(__name__)

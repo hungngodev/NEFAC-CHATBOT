@@ -173,6 +173,10 @@ ALLOWED_NODES = [
     "LegislativeBill",
     "Court",
     "Judge",
+    # New entity types for legal/media domain
+    "Journalist",
+    "MediaOutlet",
+    "GovernmentAgency",
 ]
 
 ALLOWED_RELATIONSHIPS = [
@@ -200,9 +204,46 @@ ALLOWED_RELATIONSHIPS = [
     "REGULATES",
     "ENFORCES",
     "OPPOSES",
-    "OPPOSES",
     "SUPPORTS",
+    # New relationship types for legal/media domain
+    "APPEALS_TO",
+    "AMENDS",
+    "SUPERSEDES",
+    "COVERS",
+    "REPRESENTS",
+    "ADVOCATES_FOR",
+    "FILED_BY",
 ]
+
+# Validation schema: which entity types can have which relationships
+# Used by SchemaLLMPathExtractor with strict=True for Pydantic validation
+KG_VALIDATION_SCHEMA = {
+    "Person": ["WORKS_FOR", "SERVES_ON", "AUTHORED_BY", "WRITES", "REPRESENTS", "ADVOCATES_FOR", "FILED_BY", "LOCATED_IN"],
+    "Journalist": ["WORKS_FOR", "AUTHORED_BY", "WRITES", "COVERS", "LOCATED_IN"],
+    "Organization": ["WORKS_FOR", "PARTNERS_WITH", "HOSTED_BY", "FILES", "CITES", "ADVOCATES_FOR", "LOCATED_IN", "FUNDS", "PUBLISHES"],
+    "MediaOutlet": ["PUBLISHES", "COVERS", "LOCATED_IN", "WORKS_FOR"],
+    "GovernmentAgency": ["ENFORCES", "REGULATES", "LOCATED_IN", "FUNDS", "PARTNERS_WITH"],
+    "LegalCase": ["CITES", "CHALLENGES", "DECIDED_BY", "FILED_BY", "APPEALS_TO", "REFERENCES", "CONCERNS"],
+    "LawOrPolicy": ["ENFORCES", "REGULATES", "CHALLENGES", "CITES", "AMENDS", "SUPERSEDES", "REFERENCES", "CONCERNS"],
+    "Statute": ["ENFORCES", "REGULATES", "AMENDS", "SUPERSEDES", "REFERENCES"],
+    "LegislativeBill": ["CITES", "AMENDS", "CONCERNS", "REFERENCES"],
+    "Court": ["DECIDED_BY", "LOCATED_IN", "APPEALS_TO"],
+    "Judge": ["DECIDED_BY", "WORKS_FOR", "SERVES_ON"],
+    "Document": ["CITES", "AUTHORED_BY", "PUBLISHES", "REFERENCES", "COVERS", "CONCERNS"],
+    "Event": ["HOSTED_BY", "TAKES_PLACE_IN", "LOCATED_IN", "CONCERNS"],
+    "Program": ["HOSTED_BY", "FUNDS", "PARTNERS_WITH", "LOCATED_IN"],
+    "Location": ["LOCATED_IN", "TAKES_PLACE_IN"],
+    "Topic": ["CONCERNS", "COVERS"],
+    "Concept": ["CONCERNS", "REFERENCES"],
+    # Additional entity types for full coverage
+    "WebPage": ["LINKS_TO", "HAS_PAGE", "HAS_SECTION", "REFERENCES"],
+    "MediaAsset": ["PUBLISHES", "REFERENCES", "COVERS"],
+    "Dataset": ["REFERENCES", "CONCERNS", "PUBLISHES"],
+    "FundingSource": ["FUNDS", "PARTNERS_WITH"],
+    "Board": ["SERVES_ON", "PARTNERS_WITH"],
+    "Committee": ["SERVES_ON", "PARTNERS_WITH", "CONCERNS"],
+    "SocialProfile": ["HAS_PROFILE", "LINKS_TO"],
+}
 
 EXCLUDED_METADATA_KEYS = [
     "file_path",
