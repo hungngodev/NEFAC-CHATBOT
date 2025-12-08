@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment } from "react";
 
 import { MessageContentComplex } from "@langchain/core/messages";
 import { parsePartialJson } from "@langchain/core/output_parsers";
@@ -288,52 +288,14 @@ export const DeepResearchLoading = ({
   const stream = useStreamContext();
   const values = (stream as any).values || {};
 
-  // Use context status (standardized key)
   const status = values.deep_research_status;
+  
+  // Use progress from status (calculated time-based in Stream.tsx/events.ts), default to 5% if missing
+  const progress = typeof status?.progress === "number" ? Math.max(status.progress, 1) : 5;
 
-  const [progress, setProgress] = useState(5);
-  const [lastStatus, setLastStatus] = useState("");
-
-  // Update progress based on status changes
-  useEffect(() => {
-    if (isComplete) {
-      setProgress(100);
-      return;
-    }
-
-    if (!status?.status) return;
-
-    // Use backend-provided progress if available
-    if (typeof status.progress === "number" && status.progress > 0) {
-      setProgress(status.progress);
-      return;
-    }
-
-    // Fallback heuristic if no backend progress provided
-    // Prevent backward jumps
-    if (status.status === lastStatus) return;
-    setLastStatus(status.status);
-
-    let increment = 0;
-    const s = status.status.toLowerCase();
-
-    // Heuristic progress increments based on event type
-    if (s.includes("refining")) increment = 5;
-    else if (s.includes("formulating")) increment = 10;
-    else if (s.includes("coordinating")) increment = 5;
-    else if (s.includes("analyzing")) increment = 5;
-    else if (s.includes("searching")) increment = 2;
-    else if (s.includes("reading")) increment = 2;
-    else increment = 1;
-
-    setProgress((prev) => Math.min(95, prev + increment));
-  }, [status?.status, status?.progress, isComplete, lastStatus]);
-
-  // Use backend status text if available, otherwise default
   const statusText = status?.status || "Conducting deep research...";
 
-  // Only show complete state if progress is 100 or status indicates completion
-  const isActuallyComplete = isComplete && (progress >= 100 || status?.status?.toLowerCase().includes("complete"));
+  const isActuallyComplete = isComplete && progress >= 100;
 
   if (isActuallyComplete) {
     return (
@@ -360,8 +322,15 @@ export const DeepResearchLoading = ({
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
           <span className="relative inline-flex h-3 w-3 rounded-full bg-blue-500"></span>
         </div>
-        <div className="flex flex-col">
-          <span className="text-sm font-medium">Deep Research in Progress</span>
+        <div className="flex flex-1 flex-col">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium">Deep Research in Progress</span>
+            {status?.estimated_time_remaining && status.estimated_time_remaining > 0 && (
+              <span className="text-muted-foreground text-xs">
+                ~{Math.ceil(status.estimated_time_remaining / 60)} min remaining
+              </span>
+            )}
+          </div>
           <span className="text-muted-foreground animate-pulse text-xs">
             {statusText}
           </span>

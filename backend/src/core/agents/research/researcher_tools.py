@@ -67,9 +67,9 @@ async def researcher_tools(state: ResearcherState, config: RunnableConfig):
     tool_call_iterations = state.get("tool_call_iterations", 0)
 
     # Calculate loop variables for progress tracking
-    research_loop = state.get("research_iterations", 0)
-    max_iter = getattr(configurable, "max_researcher_iterations", 3)
-    max_tool_calls = max(1, configurable.max_react_tool_calls)
+    state.get("research_iterations", 0)
+    getattr(configurable, "max_researcher_iterations", 3)
+    max(1, configurable.max_react_tool_calls)
 
     async def run_tool_calls(tool_calls: list[dict]) -> tuple[list[ToolMessage], list[str]]:
         """Execute recognized tools and return (tool_messages, answered_ids_delta).
@@ -224,17 +224,7 @@ async def researcher_tools(state: ResearcherState, config: RunnableConfig):
         to_dispatch_calls = deduped_internal_calls[:cap]
         overflow_calls = deduped_internal_calls[cap:]
 
-        emit_research_status(
-            status=f"DEBUG: Dispatching {len(to_dispatch_calls)} calls to Query Transformer",
-            include_progress=True,
-            current_loop=research_loop,
-            max_loops=max_iter,
-            current_step=tool_call_iterations,
-            max_steps=max_tool_calls,
-        )
-        # Note: Previous code manually set progress=35. emit_research_status calculates it dynamicallly.
-        # If specific fixed progress is needed, the util might need adjustment, but dynamic is likely better.
-        # Keeping it simple for now as requested refactor.
+        emit_research_status(status=f"Dispatching {len(to_dispatch_calls)} queries to transformer...")
 
         query_transformer_sends = [
             Send(
@@ -290,17 +280,6 @@ async def researcher_tools(state: ResearcherState, config: RunnableConfig):
     if new_ids:
         update_payload["_answered_tool_call_ids"] = new_ids
 
-    # Include the last calculated status if available
-    # Note: We can't easily access the exact last status payload here without recalculating or passing it through
-    # But since we emit events, the state update is mainly for persistence.
-    # We can recalculate the latest status based on the current iteration.
-    update_payload["deep_research_status"] = emit_research_status(
-        status="Analyzing tool outputs...",
-        current_loop=research_loop,
-        max_loops=max_iter,
-        current_step=tool_call_iterations,
-        max_steps=max_tool_calls,
-        include_progress=True,
-    )
+    emit_research_status(status="Analyzing tool outputs...")
 
     return Command(goto=RESEARCH_RESEARCHER, update=update_payload)

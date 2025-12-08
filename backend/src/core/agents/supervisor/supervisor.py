@@ -48,7 +48,7 @@ async def supervisor(state: SupervisorState, config: RunnableConfig) -> dict:
     configurable = Configuration.from_runnable_config(config)
 
     iteration = state.get("research_iterations", 0)
-    status_payload = emit_research_status(status=f"Coordinating research team (Iteration {iteration + 1})...")
+    emit_research_status(status=f"Coordinating research team (Iteration {iteration + 1})...")
 
     supervisor_model_config = {"model": configurable.supervisor_model, "max_tokens": configurable.research_model_max_tokens, "api_key": get_api_key_for_model(configurable.supervisor_model, config)}
     llm = init_model(configurable.supervisor_model, disable_streaming=configurable.disable_streaming, node_name=SUPERVISOR_NODE).bind(**supervisor_model_config)
@@ -61,7 +61,6 @@ async def supervisor(state: SupervisorState, config: RunnableConfig) -> dict:
     return {
         "supervisor_messages": [response],
         "research_iterations": state.get("research_iterations", 0) + 1,
-        "deep_research_status": status_payload,
     }
 
 

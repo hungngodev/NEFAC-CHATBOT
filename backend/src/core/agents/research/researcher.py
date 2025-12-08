@@ -93,16 +93,12 @@ async def researcher(state: ResearcherState, config: RunnableConfig) -> dict:
     research_loop = state.get("research_iterations", 0)
     iteration = state.get("tool_call_iterations", 0)
 
-    status_payload = emit_research_status(
-        status=f"Analyzing research data (Loop {research_loop + 1}, Step {iteration + 1})...",
-    )
+    emit_research_status(status=f"Analyzing research data (Loop {research_loop + 1}, Step {iteration + 1})...")
 
-    # Place system prompt first to avoid breaking tool_call reply sequencing
     response = await research_model.ainvoke([SystemMessage(content=researcher_system_prompt)] + researcher_messages, config)
     return {
         "researcher_messages": [response],
         "tool_call_iterations": state.get("tool_call_iterations", 0) + 1,
-        "deep_research_status": status_payload,
     }
 
 
