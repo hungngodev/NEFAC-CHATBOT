@@ -20,7 +20,7 @@ from llama_index.graph_stores.neo4j import Neo4jPropertyGraphStore
 from llama_index.llms.openai import OpenAI as LIOpenAI
 from openai import RateLimitError
 
-from src.service.ingestion_service.graph_rag import CitationLinker, CommunityLinker, EntityCooccurrenceLinker, SemanticLinker, TemporalLinker, TopicLinker
+from src.config.models import EMBEDDING_DIMENSIONS
 from src.service.ingestion_service.llamaindex.entity_deduplication import (
     EntityDeduplicator,
 )
@@ -33,7 +33,6 @@ from src.service.ingestion_service.llamaindex.metadata_utils import (
 from src.service.ingestion_service.settings import (
     ALLOWED_NODES,
     ALLOWED_RELATIONSHIPS,
-    EMBEDDING_DIMENSIONS,
     ENTITY_ALIASES,
     GRAPH_ENABLE_ENTITY_DEDUPLICATION,
     GRAPH_ENTITY_SIMILARITY_THRESHOLD,
@@ -531,7 +530,7 @@ class LegalPropertyGraphIngestor:
         run_entity_cooccurrence: bool = False,
     ) -> PropertyGraphIndex:
         def _is_rate_limit_error(exc: Exception) -> bool:
-            if RateLimitError and isinstance(exc, RateLimitError):
+            if RateLimitError is not None and isinstance(exc, RateLimitError):
                 return True
             msg = str(exc).lower()
             return "rate limit" in msg or "rate_limit_exceeded" in msg
@@ -568,7 +567,7 @@ class LegalPropertyGraphIngestor:
                 # Optionally add GraphRAG extractor for entity/relationship descriptions
                 if self.use_graphrag_descriptions:
                     logger.info("Adding GraphRAGExtractor for entity/relationship descriptions")
-                    graphrag_extractor = GraphRAGExtractor(llm=self.llm)
+                    graphrag_extractor = GraphRAGExtractor(llm=self.llm)  # type: ignore[arg-type]
                     extractors.append(graphrag_extractor)
 
                 index = PropertyGraphIndex.from_documents(
@@ -589,54 +588,25 @@ class LegalPropertyGraphIngestor:
 
                 self._normalize_graph_labels()
 
+                # TODO: Implement linker classes (SemanticLinker, CommunityLinker, etc.)
+                # These are placeholders for future graph enrichment features
                 if run_semantic_linking:
-                    try:
-                        logger.info("Starting semantic linking...")
-                        semantic_linker = SemanticLinker(self._get_driver())
-                        # We pass the document IDs (chunk IDs) that were just ingested
-                        semantic_linker.apply_links(ids)
-                    except Exception as e:
-                        logger.error(f"Semantic linking failed: {e}")
+                    logger.warning("Semantic linking not yet implemented (SemanticLinker)")
 
                 if run_community_detection:
-                    try:
-                        logger.info("Starting community detection (Leiden)...")
-                        community_linker = CommunityLinker(self._get_driver())
-                        community_linker.apply_links(ids)
-                    except Exception as e:
-                        logger.error(f"Community detection failed: {e}")
+                    logger.warning("Community detection not yet implemented (CommunityLinker)")
 
                 if run_topic_extraction:
-                    try:
-                        logger.info("Starting topic extraction (LLM)...")
-                        topic_linker = TopicLinker(self._get_driver(), llm=self.llm)
-                        topic_linker.apply_links(ids)
-                    except Exception as e:
-                        logger.error(f"Topic extraction failed: {e}")
+                    logger.warning("Topic extraction not yet implemented (TopicLinker)")
 
                 if run_citation_linking:
-                    try:
-                        logger.info("Starting citation linking...")
-                        citation_linker = CitationLinker(self._get_driver())
-                        citation_linker.apply_links(ids)
-                    except Exception as e:
-                        logger.error(f"Citation linking failed: {e}")
+                    logger.warning("Citation linking not yet implemented (CitationLinker)")
 
                 if run_temporal_linking:
-                    try:
-                        logger.info("Starting temporal linking...")
-                        temporal_linker = TemporalLinker(self._get_driver())
-                        temporal_linker.apply_links(ids)
-                    except Exception as e:
-                        logger.error(f"Temporal linking failed: {e}")
+                    logger.warning("Temporal linking not yet implemented (TemporalLinker)")
 
                 if run_entity_cooccurrence:
-                    try:
-                        logger.info("Starting entity co-occurrence linking...")
-                        cooccurrence_linker = EntityCooccurrenceLinker(self._get_driver())
-                        cooccurrence_linker.apply_links(ids)
-                    except Exception as e:
-                        logger.error(f"Entity co-occurrence linking failed: {e}")
+                    logger.warning("Entity co-occurrence linking not yet implemented (EntityCooccurrenceLinker)")
 
                 if run_deduplication and GRAPH_ENABLE_ENTITY_DEDUPLICATION:
                     logger.info("Starting entity deduplication...")
@@ -660,6 +630,8 @@ class LegalPropertyGraphIngestor:
                     continue
                 logger.error("Failed to ingest nodes into property graph: %s", e)
                 raise
+        # This should never be reached since the loop either returns or raises
+        raise RuntimeError("Max retries exhausted without success")
 
     def deduplicate_entities(
         self,
@@ -683,7 +655,8 @@ class LegalPropertyGraphIngestor:
                 llm=Settings.llm,
             )
             deduplicator.create_vector_index(embedding_dimension=EMBEDDING_DIMENSIONS, name="entity_vec_idx")
-
+            initial_stats = deduplicator.get_duplicate_stats()
+            logger.debug("Duplicate analysis: %s", initial_stats)
             duplicate_groups = deduplicator.find_duplicate_entities()
 
             validated_groups, false_positives = deduplicator.validate_duplicates(duplicate_groups)

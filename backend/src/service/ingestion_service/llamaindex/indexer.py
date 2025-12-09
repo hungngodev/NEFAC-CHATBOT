@@ -4,7 +4,7 @@ import asyncio
 import logging
 import os
 import uuid
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from llama_index.core import Settings, StorageContext
 from llama_index.core.ingestion import IngestionPipeline
@@ -74,7 +74,7 @@ def create_storage_context(
 
     return StorageContext.from_defaults(
         vector_store=primary_vector_store,
-        graph_store=neo4j_graph_store,
+        graph_store=neo4j_graph_store,  # type: ignore[arg-type]
         docstore=docstore,
     )
 
@@ -88,10 +88,14 @@ def create_qdrant_store(
     url = url or os.getenv("QDRANT_ENDPOINT", "http://localhost:6333")
     api_key = api_key or os.getenv("QDRANT_API_KEY")
 
-    client_kwargs = {"url": url}
+    client_kwargs: Dict[str, Any] = {"url": url}
     if api_key:
         client_kwargs["api_key"] = api_key
     client = QdrantClient(**client_kwargs)
+
+    # Ensure collection_name is not None
+    if collection_name is None:
+        raise ValueError("collection_name must be provided or set via QDRANT_CLUSTER_ID env var")
 
     # Standard dense-only
     if client and not client.collection_exists(collection_name):
@@ -123,6 +127,9 @@ def create_elasticsearch_store(
     logger.info(f"Creating Elasticsearch store: {index_name} with strategy: bm25")
 
     try:
+        # Ensure index_name is not None
+        if index_name is None:
+            raise ValueError("index_name must be provided or set via ES_INDEX env var")
         return ElasticsearchStore(
             index_name=index_name,
             es_url=es_url,
@@ -182,7 +189,7 @@ def index_nodes_to_qdrant(
 
         pipeline = IngestionPipeline(
             transformations=[
-                embedder,
+                embedder,  # type: ignore[list-item]
             ],
             docstore=SimpleDocumentStore(),
             vector_store=vector_store,
@@ -252,7 +259,7 @@ async def index_nodes_to_elasticsearch(
         # )
         cleaned_nodes = [_clean_text_node(node, include_text_field=True) for node in nodes]
         # await pipeline.arun(nodes=cleaned_nodes)
-        await vector_store.async_add(cleaned_nodes)
+        await vector_store.async_add(cleaned_nodes)  # type: ignore[arg-type]
 
         logger.info(f"✅ Indexed {len(cleaned_nodes)} nodes to Elasticsearch")
         _close_maybe_async(getattr(vector_store, "client", None))

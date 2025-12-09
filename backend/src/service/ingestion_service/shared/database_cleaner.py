@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import Dict
+from typing import Any, Dict
 
 from llama_index.graph_stores.neo4j import Neo4jGraphStore
 from llama_index.vector_stores.elasticsearch import ElasticsearchStore
@@ -19,7 +19,7 @@ def clear_qdrant_collection() -> bool:
         api_key = os.environ.get("QDRANT_API_KEY")
 
         # Build client explicitly so auth-less setups work and URL is always provided.
-        client_kwargs = {"url": qdrant_url}
+        client_kwargs: Dict[str, Any] = {"url": qdrant_url}
         if api_key:
             client_kwargs["api_key"] = api_key
         qdrant_client = QdrantClient(**client_kwargs)

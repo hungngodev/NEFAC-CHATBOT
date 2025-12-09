@@ -20,6 +20,7 @@ from src.core.agents.retrieval.subgraph import retrieval_subgraph
 from src.core.agents.tools.document_formatter import format_docs
 from src.schemas.state import QueryTransformerState
 from src.utils.debug import get_debug_mode
+from src.utils.events import EVENT_DEEP_RESEARCH_UPDATE, emit_custom_event
 from src.utils.model_factory import init_model
 
 
@@ -31,6 +32,7 @@ class MultiQueryState(QueryTransformerState):
 
 # --- Nodes ---
 async def generate_queries_node(state: MultiQueryState, config: RunnableConfig) -> MultiQueryState:
+    emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Generating multi-perspective queries..."})
     configuration = Configuration.from_runnable_config(config)
     llm = init_model(configuration.query_transformer_model, disable_streaming=configuration.disable_streaming, node_name=QUERY_TRANSFORMER_MULTI_QUERY)
 

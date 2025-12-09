@@ -203,7 +203,8 @@ Answer only with the succinct context and nothing else."""
         contextualised.metadata.setdefault("document_title", document_meta.get("title"))
         contextualised.metadata.setdefault("document_source", document_meta.get("source"))
         contextualised.metadata["contextual_summary"] = contextual_summary
-        contextualised.text = f"Contextual Summary: {contextual_summary}\n\nOriginal Chunk:\n{chunk_text}"
+        if hasattr(contextualised, "text"):
+            contextualised.text = f"Contextual Summary: {contextual_summary}\n\nOriginal Chunk:\n{chunk_text}"  # type: ignore[attr-defined]
         return contextualised
 
     def build_nodes_from_documents(
@@ -256,7 +257,7 @@ Answer only with the succinct context and nothing else."""
             if self.enable_metadata and self.extractors:
                 logger.info("Starting Metadata Extraction (Summary/Questions)...")
                 extraction_pipeline = IngestionPipeline(
-                    transformations=self.extractors,
+                    transformations=self.extractors,  # type: ignore[arg-type]
                     docstore=SimpleDocumentStore(),
                 )
                 nodes = extraction_pipeline.run(nodes=nodes, show_progress=show_progress)
@@ -270,7 +271,7 @@ Answer only with the succinct context and nothing else."""
                 meta["chunk_index"] = idx
                 meta["chunk_id"] = chunk_id
                 node.metadata = sanitize_metadata(meta, include_text=False)
-                node.id_ = chunk_id
+                node.id_ = chunk_id or str(idx)
                 normalized_nodes.append(node)
 
             all_nodes.extend(normalized_nodes)

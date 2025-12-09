@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from llama_index.core import Settings
 from llama_index.core.ingestion import IngestionPipeline
@@ -47,10 +47,14 @@ def create_qdrant_store(
     url = url or os.getenv("QDRANT_ENDPOINT", "http://localhost:6333")
     api_key = api_key or os.getenv("QDRANT_API_KEY")
 
-    client_kwargs = {"url": url}
+    client_kwargs: Dict[str, Any] = {"url": url}
     if api_key:
         client_kwargs["api_key"] = api_key
     client = QdrantClient(**client_kwargs)
+
+    # Ensure collection_name is not None
+    if collection_name is None:
+        raise ValueError("collection_name must be provided or set via QDRANT_CLUSTER_ID env var")
 
     # Create collection if it doesn't exist
     if client and not client.collection_exists(collection_name):
@@ -128,7 +132,7 @@ def index_nodes_to_qdrant(
                     logger.debug("Delete Qdrant points skipped for doc_id=%s: %s", upsert_doc_id, exc)
 
         pipeline = IngestionPipeline(
-            transformations=[embedder],
+            transformations=[embedder],  # type: ignore[list-item]
             docstore=SimpleDocumentStore(),
             vector_store=vector_store,
         )

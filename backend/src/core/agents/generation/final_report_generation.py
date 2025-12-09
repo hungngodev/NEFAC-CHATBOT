@@ -26,8 +26,7 @@ async def final_report_generation(state: AgentState, config: RunnableConfig):
     while current_retry <= max_retries:
         final_report_prompt = configurable.final_report_generation_prompt.format(research_brief=state.get("research_brief", ""), messages=get_buffer_string(state.get("messages", [])), findings=findings, date=get_today_str())
         try:
-            # Emit progress update
-            emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Synthesizing final comprehensive report...", "progress": 92, "total_steps": 100, "estimated_time_remaining": 30})
+            emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Synthesizing final comprehensive report..."})
 
             emit_custom_event(EVENT_FINAL_RESPONSE, {"is_final": True})
 
@@ -39,8 +38,7 @@ async def final_report_generation(state: AgentState, config: RunnableConfig):
                 "is_final_response": True,
             }
 
-            # Emit final completion event
-            emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Deep Research Complete", "progress": 100, "total_steps": 100, "estimated_time_remaining": 0})
+            emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Deep Research Complete"})
 
             return {"final_report": final_report.content, "messages": [final_report], **cleared_state}
         except Exception as e:

@@ -87,7 +87,7 @@ def create_storage_context(
 
     return StorageContext.from_defaults(
         vector_store=primary_vector_store,
-        graph_store=neo4j_graph_store,
+        graph_store=neo4j_graph_store,  # type: ignore[arg-type]
         docstore=docstore,
     )
 

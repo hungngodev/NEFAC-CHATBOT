@@ -22,13 +22,7 @@ class ResearchQuestion(BaseModel):
 async def write_research_brief(state: AgentState, config: RunnableConfig) -> dict:
     configurable = Configuration.from_runnable_config(config)
 
-    # Emit progress update
-    emit_custom_event(
-        EVENT_DEEP_RESEARCH_UPDATE,
-        {
-            "status": "Formulating research strategy...",
-        },
-    )
+    emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Formulating research strategy..."})
 
     write_model_config = {"model": configurable.transform_messages_into_research_topic_model, "max_tokens": configurable.research_model_max_tokens, "api_key": get_api_key_for_model(configurable.transform_messages_into_research_topic_model, config)}
     llm = init_model(configurable.transform_messages_into_research_topic_model, disable_streaming=configurable.disable_streaming).bind(**write_model_config)
@@ -45,7 +39,6 @@ async def write_research_brief(state: AgentState, config: RunnableConfig) -> dic
         ]
     )
 
-    # Append URLs to the research brief or as a separate context for the researcher
     supervisor_content = [SystemMessage(content=configurable.lead_supervisor_prompt.format(date=get_today_str(), max_concurrent_research_units=configurable.max_concurrent_research_units)), HumanMessage(content=response.research_brief)]
 
     if response.urls:

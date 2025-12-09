@@ -119,7 +119,7 @@ class IngestionWorkflow(Workflow):
                     # Deserialize nodes (assuming TextNode for now as per loader)
                     nodes = [TextNode.from_dict(n) for n in data["nodes"]]
                     logger.info("[Workflow] Loaded %d nodes from cache", len(nodes))
-                    return NodesCreatedEvent(nodes=nodes, file_path=file_path, metadata=metadata)
+                    return NodesCreatedEvent(nodes=nodes, file_path=file_path, metadata=metadata)  # type: ignore[arg-type]
                 else:
                     logger.info(f"[Workflow] Cache expired for {file_path}")
             except Exception as e:
@@ -147,7 +147,7 @@ class IngestionWorkflow(Workflow):
             logger.warning(f"[Workflow] Failed to save cache: {e}")
 
         logger.info("[Workflow] Loader produced %d nodes", len(nodes))
-        return NodesCreatedEvent(nodes=nodes, file_path=file_path, metadata=metadata)
+        return NodesCreatedEvent(nodes=nodes, file_path=file_path, metadata=metadata)  # type: ignore[arg-type]
 
     @step
     async def parse_nodes(self, ctx: Context, ev: NodesCreatedEvent) -> ParsedNodesEvent:

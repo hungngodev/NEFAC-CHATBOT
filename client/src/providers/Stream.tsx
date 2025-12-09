@@ -12,11 +12,13 @@ import React, {
   useContext,
   useEffect,
   useState,
+  useMemo,
 } from "react";
 import { toast } from "sonner";
 import { useThreads } from "./Thread";
+import { createClient } from "./client";
 import { DEFAULT_API_URL, DEFAULT_ASSISTANT_ID } from "@/constants";
-import { handleCustomEvent } from "@/lib/events";
+import { handleCustomEvent, resetRunStartTime, setRunStartTime } from "@/lib/events";
 export type StateType = {
   messages: Message[];
   ui?: UIMessage[];
@@ -42,7 +44,9 @@ const useTypedStream = useStream<
   }
 >;
 
-type StreamContextType = ReturnType<typeof useTypedStream>;
+type StreamContextType = ReturnType<typeof useTypedStream> & {
+  hasActiveRun: boolean;
+};
 const StreamContext = createContext<StreamContextType | undefined>(undefined);
 
 async function sleep(ms = 4000) {
@@ -81,6 +85,9 @@ const StreamSession = ({
   assistantId: string;
 }) => {
   const [threadId, setThreadId] = useQueryState("threadId");
+  const [hasActiveRun, setHasActiveRun] = useState(false);
+  const [isCheckingRuns, setIsCheckingRuns] = useState(true);
+  const [reconnectedStatus, setReconnectedStatus] = useState<StateType["deep_research_status"] | null>(null);
   const { getThreads, setThreads } = useThreads();
   const streamValue = useTypedStream({
     apiUrl,
@@ -88,6 +95,7 @@ const StreamSession = ({
     assistantId,
     threadId: threadId ?? null,
     fetchStateHistory: true,
+    reconnectOnMount: () => window.localStorage,
     onCustomEvent: (event, options) => {
       handleCustomEvent(event, options);
     },
@@ -99,7 +107,140 @@ const StreamSession = ({
     },
   });
 
+  useEffect(() => {
+    if (!threadId || !apiUrl) {
+      setHasActiveRun(false);
+      setIsCheckingRuns(false);
+      return;
+    }
 
+    if (streamValue.isLoading) {
+      setIsCheckingRuns(false);
+      return;
+    }
+
+    setIsCheckingRuns(true);
+    let cancelled = false;
+    
+    const debounceTimeout = setTimeout(async () => {
+      try {
+        const client = createClient(apiUrl, apiKey ?? undefined);
+        const [pendingRuns, runningRuns] = await Promise.all([
+          client.runs.list(threadId, { status: "pending", limit: 1 }),
+          client.runs.list(threadId, { status: "running", limit: 1 }),
+        ]);
+        if (!cancelled) {
+          setHasActiveRun(pendingRuns.length > 0 || runningRuns.length > 0);
+        }
+      } catch (e) {
+        console.error("Failed to check active runs:", e);
+        if (!cancelled) {
+          setHasActiveRun(false);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsCheckingRuns(false);
+        }
+      }
+    }, 100);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(debounceTimeout);
+    };
+  }, [threadId, apiUrl, apiKey, streamValue.isLoading]);
+
+  useEffect(() => {
+    if (streamValue.isLoading) {
+      setHasActiveRun(false);
+      setIsCheckingRuns(false);
+      setReconnectedStatus(null); // Clear stale reconnection data when new stream starts
+      resetRunStartTime(); // Reset time-based progress for new run
+    }
+  }, [streamValue.isLoading]);
+
+  useEffect(() => {
+    if (!hasActiveRun || streamValue.isLoading || !threadId || !apiUrl) {
+      return;
+    }
+
+    let cancelled = false;
+    const abortController = new AbortController();
+    const EXPECTED_DURATION_SECONDS = 710;
+
+    const deriveStatusFromEvent = (eventName: string): string | null => {
+      if (eventName.includes("final_report")) return "Generating final report...";
+      if (eventName.includes("retrieve_subgraph")) return "Retrieving documents...";
+      if (eventName.includes("multi_query")) return "Executing search queries...";
+      if (eventName.includes("query_transformer")) return "Transforming queries...";
+      if (eventName.includes("researcher")) return "Analyzing research data...";
+      if (eventName.includes("research_team")) return "Research team working...";
+      if (eventName.includes("research_supervisor") && !eventName.includes("research_team")) return "Coordinating research...";
+      if (eventName.includes("write_research_brief")) return "Formulating research strategy...";
+      return null;
+    };
+
+    const joinActiveRun = async () => {
+      try {
+        const client = createClient(apiUrl, apiKey ?? undefined);
+        const [runningRuns, pendingRuns] = await Promise.all([
+          client.runs.list(threadId, { status: "running", limit: 1 }),
+          client.runs.list(threadId, { status: "pending", limit: 1 }),
+        ]);
+        const activeRun = runningRuns[0] || pendingRuns[0];
+        if (!activeRun || cancelled) return;
+
+        // Set run start time for time-based progress calculation
+        const activeRunStartTime = new Date(activeRun.created_at).getTime();
+        setRunStartTime(activeRunStartTime);
+
+        for await (const chunk of client.runs.joinStream(threadId, activeRun.run_id, {
+          signal: abortController.signal,
+        })) {
+          if (cancelled) break;
+
+          let statusText: string | null = null;
+
+          // Handle custom events from backend
+          if (chunk.event === "custom" && chunk.data?.name === "deep_research_update" && chunk.data?.data) {
+            statusText = chunk.data.data.status;
+          } else {
+            // Derive status from chunk event name (fallback)
+            statusText = deriveStatusFromEvent(chunk.event);
+          }
+          
+          if (statusText) {
+            // Calculate time-based progress using the stored run start time
+            const elapsedSeconds = (Date.now() - activeRunStartTime) / 1000;
+            const progress = Math.min(95, Math.floor((elapsedSeconds / EXPECTED_DURATION_SECONDS) * 100));
+            const remainingSeconds = Math.max(0, EXPECTED_DURATION_SECONDS - elapsedSeconds);
+            
+            setReconnectedStatus({
+              status: statusText,
+              progress: Math.max(1, progress),
+              total_steps: 100,
+              estimated_time_remaining: Math.floor(remainingSeconds),
+            });
+          }
+
+          if (chunk.event === "end") {
+            setHasActiveRun(false);
+          }
+        }
+      } catch (e) {
+        if (!cancelled && (e as Error).name !== "AbortError") {
+          console.error("[Stream] Failed to join stream:", e);
+        }
+      }
+    };
+
+    joinActiveRun();
+
+    return () => {
+      cancelled = true;
+      abortController.abort();
+    };
+  }, [hasActiveRun, streamValue.isLoading, threadId, apiUrl, apiKey]);
 
   useEffect(() => {
     checkGraphStatus(apiUrl, apiKey).then((ok) => {
@@ -119,8 +260,27 @@ const StreamSession = ({
     });
   }, [apiKey, apiUrl]);
 
+  // Compute on every render to ensure updates from mutate() are reflected
+  // Wrapped in useMemo to prevent unnecessary re-renders of child components
+  const extendedStreamValue = useMemo(() => {
+    const baseValues = streamValue.values || {};
+    const streamStatus = (baseValues as Record<string, unknown>).deep_research_status as StateType["deep_research_status"] | undefined;
+    
+    // Priority: reconnectedStatus (live joinStream) > streamStatus (may be stale checkpoint)
+    const effectiveStatus = reconnectedStatus || streamStatus;
+    
+    return {
+      ...streamValue,
+      values: {
+        ...baseValues,
+        ...(effectiveStatus && { deep_research_status: effectiveStatus }),
+      },
+      hasActiveRun: hasActiveRun || isCheckingRuns,
+    };
+  }, [streamValue, streamValue.values, reconnectedStatus, hasActiveRun, isCheckingRuns]);
+
   return (
-    <StreamContext.Provider value={streamValue}>
+    <StreamContext.Provider value={extendedStreamValue}>
       {children}
     </StreamContext.Provider>
   );

@@ -1,6 +1,7 @@
 import {
   FormEvent,
   ReactNode,
+  DragEvent,
   useEffect,
   useMemo,
   useRef,
@@ -77,6 +78,12 @@ function groupMessages(options: GroupMessagesOptions): Block[] {
 
   const isFinalMessage = (message: Message) => {
     if (message.type === "human") return true;
+
+    const toolCalls = (message as AIMessage).tool_calls || [];
+    if (toolCalls.length > 0) {
+      return false;
+    }
+
     return (
       message.additional_kwargs?.is_final_response ||
       (isFinalResponseStreaming && message.type === "ai")
@@ -225,7 +232,7 @@ export function Thread() {
 
   // const documents =
   //   (stream as any).documents || (stream as any).values?.documents;
-  const isLoading = stream.isLoading;
+  const isLoading = stream.isLoading || stream.hasActiveRun;
 
   const lastError = useRef<string | undefined>(undefined);
 
@@ -496,28 +503,20 @@ export function Thread() {
                 <>
 
                   {groupedBlocks.map((block: Block, index: number) => {
-                    if (block.type === "reasoning") {
-                      // User requested strict adherence to the deep research switch.
-                      if (isDeepResearch) {
-                        const isResearching = (isLoading && !stream.interrupt && index === groupedBlocks.length - 1);
+                    if (block.type === "reasoning" ) {
+                      if (!isDeepResearch) {
                         return (
-                          <DeepResearchLoading
-                            key={`deep-research-${index}`}
-                            isComplete={!isResearching}
+                          <ReasoningBlock
+                            key={`reasoning-${index}`}
+                            messages={block.messages}
+                            isLoading={
+                              isLoading && index === groupedBlocks.length - 1
+                            }
+                            thread={stream}
                           />
                         );
                       }
-
-                      return (
-                        <ReasoningBlock
-                          key={`reasoning-${index}`}
-                          messages={block.messages}
-                          isLoading={
-                            isLoading && index === groupedBlocks.length - 1
-                          }
-                          thread={stream}
-                        />
-                      );
+                      return null;
                     }
 
                     const message = block.message;
@@ -567,6 +566,11 @@ export function Thread() {
                       hasNoAIOrToolMessages={true}
                       meta={undefined}
                       interrupt={stream.interrupt}
+                    />
+                  )}
+                  {isDeepResearch && (stream.hasActiveRun || (isLoading && groupedBlocks.some(b => b.type === "reasoning"))) && (
+                    <DeepResearchLoading 
+                      isComplete={!stream.hasActiveRun && !isLoading}
                     />
                   )}
                   {isLoading && <AssistantMessageLoading />}

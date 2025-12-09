@@ -38,7 +38,7 @@ class EntityAwareRetriever(CustomPGRetriever):
 
     vector_retriever: Optional[VectorContextRetriever] = None
 
-    def init(
+    def init(  # type: ignore[override]
         self,
         llm=None,
         embed_model=None,
@@ -177,7 +177,7 @@ class GlobalSearchRetriever(CustomPGRetriever):
     global search approach.
     """
 
-    def init(
+    def init(  # type: ignore[override]
         self,
         driver=None,
         database: str = "neo4j",
@@ -277,7 +277,7 @@ class HybridRetriever(CustomPGRetriever):
     community summaries for broader/abstract questions.
     """
 
-    def init(
+    def init(  # type: ignore[override]
         self,
         llm=None,
         embed_model=None,

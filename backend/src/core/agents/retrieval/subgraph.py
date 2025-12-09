@@ -25,10 +25,12 @@ from src.core.agents.retrieval.keyword_retrieval import keyword_retriever
 from src.core.agents.retrieval.vector_retrieval import vector_retriever
 from src.schemas.state import RetrievalPlanModel, RetrievalSubgraphState
 from src.utils.debug import get_debug_mode
+from src.utils.events import EVENT_DEEP_RESEARCH_UPDATE, emit_custom_event
 from src.utils.model_factory import init_model
 
 
 async def plan_retrieval_node(state: RetrievalSubgraphState, config: RunnableConfig) -> dict:
+    emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Planning retrieval strategy..."})
     query = state["retrieval_query"]
     configuration = Configuration.from_runnable_config(config)
 
@@ -66,6 +68,7 @@ async def plan_retrieval_node(state: RetrievalSubgraphState, config: RunnableCon
 
 
 def ensemble_retrieval_node(state: RetrievalSubgraphState) -> RetrievalSubgraphState:
+    emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Searching documents..."})
     plan = state["retrieval_plan"]
     kw_weight = plan.get("keyword_weight", 0.5)
     vec_weight = plan.get("vector_weight", 0.5)
@@ -94,6 +97,7 @@ def ensemble_retrieval_node(state: RetrievalSubgraphState) -> RetrievalSubgraphS
 
 
 async def graph_retrieval_node(state: RetrievalSubgraphState, config: RunnableConfig) -> RetrievalSubgraphState:
+    emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Querying knowledge graph..."})
     query = state["retrieval_query"]
     configuration = Configuration.from_runnable_config(config)
     documents = await graph_tool_node.ainvoke({"query": query, "conf": configuration})
@@ -101,6 +105,7 @@ async def graph_retrieval_node(state: RetrievalSubgraphState, config: RunnableCo
 
 
 def combine_documents_node(state: RetrievalSubgraphState) -> RetrievalSubgraphState:
+    emit_custom_event(EVENT_DEEP_RESEARCH_UPDATE, {"status": "Combining retrieved documents..."})
     all_docs = state.get("document_search_documents", []) + state.get("graph_documents", [])
     return {"documents": all_docs}
 

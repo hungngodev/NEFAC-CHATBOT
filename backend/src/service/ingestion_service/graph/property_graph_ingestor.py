@@ -538,7 +538,7 @@ class LegalPropertyGraphIngestor:
         run_entity_cooccurrence: bool = False,
     ) -> PropertyGraphIndex:
         def _is_rate_limit_error(exc: Exception) -> bool:
-            if RateLimitError and isinstance(exc, RateLimitError):
+            if RateLimitError is not None and isinstance(exc, RateLimitError):
                 return True
             msg = str(exc).lower()
             return "rate limit" in msg or "rate_limit_exceeded" in msg
@@ -575,7 +575,7 @@ class LegalPropertyGraphIngestor:
                 # Optionally add GraphRAG extractor for entity/relationship descriptions
                 if self.use_graphrag_descriptions:
                     logger.info("Adding GraphRAGExtractor for entity/relationship descriptions")
-                    graphrag_extractor = GraphRAGExtractor(llm=self.llm)
+                    graphrag_extractor = GraphRAGExtractor(llm=self.llm)  # type: ignore[arg-type]
                     extractors.append(graphrag_extractor)
 
                 index = PropertyGraphIndex.from_documents(
@@ -667,6 +667,8 @@ class LegalPropertyGraphIngestor:
                     continue
                 logger.error("Failed to ingest nodes into property graph: %s", e)
                 raise
+        # This should never be reached since the loop either returns or raises
+        raise RuntimeError("Max retries exhausted without success")
 
     def deduplicate_entities(
         self,

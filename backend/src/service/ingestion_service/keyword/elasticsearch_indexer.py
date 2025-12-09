@@ -44,6 +44,9 @@ def create_elasticsearch_store(
     logger.info(f"Creating Elasticsearch store: {index_name} with strategy: bm25")
 
     try:
+        # Ensure index_name is not None
+        if index_name is None:
+            raise ValueError("index_name must be provided or set via ES_INDEX env var")
         return ElasticsearchStore(
             index_name=index_name,
             es_url=es_url,
@@ -95,7 +98,7 @@ async def index_nodes_to_elasticsearch(
 
     try:
         cleaned_nodes = [clean_text_node(node, include_text_field=True) for node in nodes]
-        await vector_store.async_add(cleaned_nodes)
+        await vector_store.async_add(cleaned_nodes)  # type: ignore[arg-type]
 
         logger.info(f"✅ Indexed {len(cleaned_nodes)} nodes to Elasticsearch")
         close_maybe_async(getattr(vector_store, "client", None))
