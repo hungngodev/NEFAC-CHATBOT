@@ -40,25 +40,32 @@ SEMANTIC_SPLITTER_MAX_CHUNK = 384
 
 SERVICE_TIER = "flex"
 
-Settings.llm = OpenAI(
-    model="gpt-5-nano",
-    max_retries=30,
-    timeout=900.0,
-    additional_kwargs={"service_tier": SERVICE_TIER},
-    api_key=os.getenv("OPENAI_API_KEY"),
-)
-graph_llm_model = OpenAI(
-    model="gpt-5-nano",
-    max_retries=30,
-    timeout=900.0,
-    additional_kwargs={"service_tier": SERVICE_TIER},
-    api_key=os.getenv("OPENAI_API_KEY"),
-)
+LLM_API_BASE = os.getenv("OPENAI_API_BASE")
+LLM_API_KEY = os.getenv("OPENAI_API_KEY")
+
+EMBEDDING_API_BASE = os.getenv("OPENAI_EMBEDDING_API_BASE", "https://api.openai.com/v1")
+EMBEDDING_API_KEY = os.getenv("OPENAI_EMBEDDING_API_KEY") or LLM_API_KEY
+
+llm_kwargs = {
+    "model": "gpt-4o-mini",
+    "max_retries": 30,
+    "timeout": 900.0,
+    "api_key": LLM_API_KEY,
+}
+if LLM_API_BASE:
+    llm_kwargs["api_base"] = LLM_API_BASE
+else:
+    llm_kwargs["additional_kwargs"] = {"service_tier": SERVICE_TIER}
+
+Settings.llm = OpenAI(**llm_kwargs)
+graph_llm_model = OpenAI(**llm_kwargs)
 
 
 Settings.embed_model = OpenAIEmbedding(
     model=EMBEDDING_MODEL_NAME,
     dimensions=EMBEDDING_DIMENSIONS,
+    api_key=EMBEDDING_API_KEY,
+    api_base=EMBEDDING_API_BASE,
 )
 
 
