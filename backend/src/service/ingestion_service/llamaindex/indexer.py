@@ -19,8 +19,8 @@ from qdrant_client import QdrantClient
 from qdrant_client.http.models import FieldCondition, Filter, MatchValue
 
 from src.service.ingestion_service import settings as ingestion_settings
+from src.service.ingestion_service.graph.property_graph_ingestor import LegalPropertyGraphIngestor
 from src.service.ingestion_service.llamaindex.metadata_utils import build_chunk_id, sanitize_metadata
-from src.service.ingestion_service.llamaindex.property_graph_ingestor import LegalPropertyGraphIngestor
 
 
 def _ensure_text_node(node: BaseNode) -> TextNode:
