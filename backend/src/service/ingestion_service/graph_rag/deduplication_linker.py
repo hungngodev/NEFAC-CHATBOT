@@ -1,9 +1,6 @@
-import logging
 from typing import Any, Dict, List
 
 from .base_linker import GraphLinker
-
-logger = logging.getLogger(__name__)
 
 
 class DeduplicationLinker(GraphLinker):
@@ -19,8 +16,6 @@ class DeduplicationLinker(GraphLinker):
         try:
             result = self._execute_query(query)
             count = result[0]["merged_count"] if result else 0
-            logger.info(f"DeduplicationLinker: Merged {count} entities.")
             return {"merged_count": count}
         except Exception as e:
-            logger.error(f"DeduplicationLinker failed: {e}")
             return {"error": str(e)}

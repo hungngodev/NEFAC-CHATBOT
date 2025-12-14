@@ -1,9 +1,6 @@
-import logging
 from typing import Any, Dict, List
 
 from .base_linker import GraphLinker
-
-logger = logging.getLogger(__name__)
 
 
 class TemporalLinker(GraphLinker):
@@ -21,8 +18,6 @@ class TemporalLinker(GraphLinker):
         try:
             result = self._execute_query(query, {"doc_ids": document_ids})
             count = result[0]["links_created"] if result else 0
-            logger.info(f"TemporalLinker: Created {count} NEXT_IN_TIME links.")
             return {"links_created": count}
         except Exception as e:
-            logger.error(f"TemporalLinker failed: {e}")
             return {"error": str(e)}

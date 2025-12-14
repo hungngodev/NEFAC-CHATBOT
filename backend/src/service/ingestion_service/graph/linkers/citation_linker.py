@@ -1,10 +1,7 @@
-import logging
 import re
 from typing import Any, Dict, List
 
 from .base_linker import GraphLinker
-
-logger = logging.getLogger(__name__)
 
 
 class CitationLinker(GraphLinker):
@@ -33,7 +30,7 @@ class CitationLinker(GraphLinker):
                     """
                     self._execute_query(cypher, {"doc_id": doc_id, "citations": citations})
                     links_created += len(citations)
-            except Exception as e:
-                logger.error(f"CitationLinker error for {doc_id}: {e}")
+            except Exception:
 
+                pass
         return {"links_created": links_created}

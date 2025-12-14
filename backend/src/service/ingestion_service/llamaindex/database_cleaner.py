@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import logging
 import os
 from typing import Any, Dict
 
@@ -9,8 +8,6 @@ from llama_index.vector_stores.elasticsearch import ElasticsearchStore
 from llama_index.vector_stores.qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 
-logger = logging.getLogger(__name__)
-
 
 def clear_qdrant_collection() -> bool:
     try:
@@ -18,7 +15,6 @@ def clear_qdrant_collection() -> bool:
         collection_name = os.environ["QDRANT_CLUSTER_ID"]
         api_key = os.environ.get("QDRANT_API_KEY")
 
-        # Build client explicitly so auth-less setups work and URL is always provided.
         client_kwargs: Dict[str, Any] = {"url": qdrant_url}
         if api_key:
             client_kwargs["api_key"] = api_key
@@ -32,21 +28,16 @@ def clear_qdrant_collection() -> bool:
         if client is None:
             raise RuntimeError("QdrantVectorStore did not expose a client")
 
-        logger.info("Connecting to Qdrant: %s", qdrant_url)
         collections = client.get_collections()
         exists = any(col.name == collection_name for col in collections.collections)
         if exists:
-            logger.info("Deleting existing Qdrant collection: %s", collection_name)
             client.delete_collection(collection_name=collection_name)
-            logger.info("Cleared Qdrant collection '%s'", collection_name)
         else:
-            logger.info("Qdrant collection '%s' does not exist", collection_name)
+            pass
         return True
-    except KeyError as exc:
-        logger.error("Missing environment variable: %s", exc)
+    except KeyError:
         return False
-    except Exception as exc:  # pragma: no cover - depends on external services
-        logger.error("Error clearing Qdrant collection: %s", exc)
+    except Exception:
         return False
 
 
@@ -60,9 +51,6 @@ def clear_elasticsearch_index() -> bool:
         if client is None:
             raise RuntimeError("ElasticsearchStore did not expose a client")
 
-        logger.info("Connecting to Elasticsearch: %s", es_url)
-
-        # Client may be async; normalize to sync calls when possible.
         exists_fn = getattr(client.indices, "exists", None)
         delete_fn = getattr(client.indices, "delete", None)
         close_fn = getattr(client, "close", None) or getattr(client, "aclose", None)
@@ -70,7 +58,6 @@ def clear_elasticsearch_index() -> bool:
         if exists_fn is None or delete_fn is None:
             raise RuntimeError("Elasticsearch client does not expose indices.exists/delete")
 
-        # Handle coroutine or sync functions transparently.
         def _maybe_await(result):
             if hasattr(result, "__await__"):
                 import asyncio
@@ -80,24 +67,19 @@ def clear_elasticsearch_index() -> bool:
 
         exists = _maybe_await(exists_fn(index=index_name))
         if exists:
-            logger.info("Deleting Elasticsearch index: %s", index_name)
             _maybe_await(delete_fn(index=index_name))
-            logger.info("Cleared Elasticsearch index '%s'", index_name)
         else:
-            logger.info("Elasticsearch index '%s' does not exist", index_name)
 
-        # Close client/connector if supported to avoid unclosed session warnings
+            pass
         if close_fn is not None:
             try:
                 _maybe_await(close_fn())
             except Exception:
                 pass
         return True
-    except KeyError as exc:
-        logger.error("Missing environment variable: %s", exc)
+    except KeyError:
         return False
-    except Exception as exc:  # pragma: no cover - depends on external services
-        logger.error("Error clearing Elasticsearch index: %s", exc)
+    except Exception:
         return False
 
 
@@ -114,18 +96,14 @@ def clear_neo4j_database() -> bool:
         if driver is None:
             raise RuntimeError("Neo4jGraphStore did not expose a driver")
 
-        logger.info("Connecting to Neo4j: %s", uri)
         with driver.session() as session:
             session.run("MATCH (n) DETACH DELETE n")
             summary = session.run("MATCH (n) RETURN count(n) as node_count").single()
-            remaining = summary["node_count"] if summary else 0
-        logger.info("Cleared Neo4j database; remaining nodes: %s", remaining)
+            summary["node_count"] if summary else 0
         return True
-    except KeyError as exc:
-        logger.error("Missing environment variable: %s", exc)
+    except KeyError:
         return False
-    except Exception as exc:  # pragma: no cover - depends on external services
-        logger.error("Error clearing Neo4j database: %s", exc)
+    except Exception:
         return False
 
 
@@ -134,8 +112,6 @@ def clear_all_databases(
     clear_elasticsearch: bool = True,
     clear_neo4j: bool = True,
 ) -> Dict[str, bool]:
-    logger.info("🧹 Starting database cleanup via LlamaIndex stores...")
-    logger.info(f"Targets: Qdrant={clear_qdrant}, ES={clear_elasticsearch}, Neo4j={clear_neo4j}")
 
     results = {}
 
@@ -150,9 +126,8 @@ def clear_all_databases(
 
     successes = sum(result for result in results.values())
     if successes == len(results):
-        logger.info("✅ Successfully cleared requested databases")
+        pass
     else:
-        failed = [name for name, ok in results.items() if not ok]
-        logger.warning("⚠️ Issues clearing: %s", ", ".join(failed))
+        [name for name, ok in results.items() if not ok]
 
     return results

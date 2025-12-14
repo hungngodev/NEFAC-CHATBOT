@@ -1,18 +1,3 @@
-"""
-LlamaIndex Configuration Module.
-
-Centralized configuration for LlamaIndex Settings and KG schema.
-
-Usage:
-    from src.service.ingestion_service.config import (
-        configure_llamaindex,
-        ALLOWED_NODES,
-        ALLOWED_RELATIONSHIPS,
-    )
-
-    configure_llamaindex()  # Call once at startup
-"""
-
 from .schema import (
     ALLOWED_NODES,
     ALLOWED_RELATIONSHIPS,

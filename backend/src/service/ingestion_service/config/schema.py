@@ -1,10 +1,3 @@
-"""
-Knowledge Graph Schema.
-
-Re-exports schema constants from the main settings module for
-modular import organization.
-"""
-
 from src.service.ingestion_service.settings import (
     ALLOWED_NODES,
     ALLOWED_RELATIONSHIPS,

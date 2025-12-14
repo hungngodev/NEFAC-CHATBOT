@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import difflib
-import logging
 import re
 import time
 from typing import Any, Dict, List, Optional, Set, Tuple
@@ -17,8 +16,6 @@ from llama_index.core import PromptTemplate, Settings
 from llama_index.core.program import LLMTextCompletionProgram
 from llama_index.graph_stores.neo4j import Neo4jPropertyGraphStore
 from pydantic import BaseModel
-
-logger = logging.getLogger(__name__)
 
 
 class EntityVerificationResult(BaseModel):
@@ -46,8 +43,6 @@ class EntityDeduplicator:
         self.llm = llm
         self.embed_model = Settings.embed_model
 
-        logger.info(f"EntityDeduplicator initialized: similarity_threshold={similarity_threshold}, word_edit_distance={word_edit_distance}")
-
     def _get_driver(self):
         driver = getattr(self.graph_store, "driver", None) or getattr(self.graph_store, "_driver", None)
         if driver is None:
@@ -70,10 +65,7 @@ class EntityDeduplicator:
 
             self.graph_store.structured_query(query, param_map={"dimensions": embedding_dimension})
 
-            logger.info(f"Created vector index '{safe_name}' on __Entity__ with {embedding_dimension} dimensions")
-
         except Exception as e:
-            logger.error(f"Could not create vector index: {e}")
             raise e
 
     def find_duplicate_entities(self, use_llm: bool = True) -> List[Dict[str, Any]]:
@@ -114,7 +106,6 @@ class EntityDeduplicator:
 
             return consolidated_groups
         except Exception as e:
-            logger.error(f"Error in deduplication: {e}")
             raise e
 
     def _consolidate_groups_with_source(self, groups_with_source: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -174,10 +165,9 @@ class EntityDeduplicator:
             result = self.graph_store.structured_query(query)
             groups = [row["names"] for row in result]
             if groups:
-                logger.info(f"Found {len(groups)} exact duplicate groups")
+                pass
             return groups
         except Exception as e:
-            logger.error(f"Error finding exact duplicates: {e}")
             raise e
 
     def _find_abbreviation_duplicates(self) -> List[List[str]]:
@@ -229,7 +219,6 @@ class EntityDeduplicator:
 
             for token, phrases in token_map.items():
                 for phrase in phrases:
-                    # Use regex for robust token matching (handles punctuation like "NEFAC,")
                     token_pattern = re.compile(rf"\b{re.escape(token)}\b")
                     names_with_token = [n for n in all_names if token_pattern.search(n)]
                     names_with_phrase = [n for n in all_names if phrase in n]
@@ -252,7 +241,6 @@ class EntityDeduplicator:
 
             return groups
         except Exception as e:
-            logger.error(f"Error finding abbreviation duplicates: {e}")
             raise e
 
     def _is_close_match(self, s1: str, s2: str) -> bool:
@@ -347,7 +335,7 @@ class EntityDeduplicator:
         UNWIND range(0, size(allCombinedResults)-1, 1) as combinedResultIndex
         WITH allCombinedResults[combinedResultIndex] as combinedResult,
              combinedResultIndex, allCombinedResults
-        WHERE NOT any(x IN range(0,size(allCombinedResults)-1,1) 
+        WHERE NOT any(x IN range(0,size(allCombinedResults)-1,1)
             WHERE x <> combinedResultIndex
             AND apoc.coll.containsAll(allCombinedResults[x], combinedResult)
         )
@@ -359,14 +347,12 @@ class EntityDeduplicator:
 
             duplicate_groups = [row["combinedResult"] for row in data]
 
-            logger.info(f"Found {len(duplicate_groups)} duplicate entity groups using APOC")
             for group in duplicate_groups:
-                logger.debug(f"Duplicate group: {group}")
 
+                pass
             return duplicate_groups
 
         except Exception as e:
-            logger.error(f"Error in APOC-based deduplication: {e}")
             raise e
 
     def _find_duplicates_without_apoc(self) -> List[List[str]]:
@@ -379,7 +365,7 @@ class EntityDeduplicator:
             WITH node, score
             WHERE score > toFloat($cutoff)
                 AND labels(e) = labels(node)
-                AND (toLower(node.name) CONTAINS toLower(e.name) 
+                AND (toLower(node.name) CONTAINS toLower(e.name)
                      OR toLower(e.name) CONTAINS toLower(node.name))
             WITH node, score
             ORDER BY node.name
@@ -397,11 +383,9 @@ class EntityDeduplicator:
 
             filtered_groups = self._remove_subset_groups(duplicate_groups)
 
-            logger.info(f"Found {len(filtered_groups)} duplicate entity groups (no APOC)")
             return filtered_groups
 
         except Exception as e:
-            logger.error(f"Error in non-APOC deduplication: {e}")
             raise e
 
     def _remove_subset_groups(self, groups: List[List[str]]) -> List[List[str]]:
@@ -425,7 +409,6 @@ class EntityDeduplicator:
             duplicate_groups = self.find_duplicate_entities()
 
         if not duplicate_groups:
-            logger.info("No duplicate entities found to merge")
             return {"merged_groups": 0, "total_entities_merged": 0}
 
         merged_count = 0
@@ -433,15 +416,13 @@ class EntityDeduplicator:
 
         for item in duplicate_groups:
             group = item["group"]
-            source = item.get("source", "unknown")
+            item.get("source", "unknown")
 
             if len(group) < 2:
                 continue
 
             canonical_name = sorted(group, key=lambda x: (-len(x), x))[0]
             duplicates = [name for name in group if name != canonical_name]
-
-            logger.info(f"[Source: {source}] Merging {duplicates} into '{canonical_name}'")
 
             if not dry_run:
                 self._merge_entity_group(canonical_name, duplicates)
@@ -455,7 +436,6 @@ class EntityDeduplicator:
             "dry_run": dry_run,
         }
 
-        logger.info(f"Entity deduplication complete: {stats}")
         return stats
 
     def _merge_entity_group(self, canonical_name: str, duplicates: List[str]):
@@ -484,11 +464,9 @@ class EntityDeduplicator:
             result = self.graph_store.structured_query(query, param_map={"canonical_name": canonical_name, "duplicates": duplicates})
 
             if result:
-                count = result[0].get("merged_count", 0)
-                logger.debug(f"Merged {count} entities into '{canonical_name}' using APOC")
+                result[0].get("merged_count", 0)
 
         except Exception as e:
-            logger.error(f"Error merging entity group: {e}")
             raise e
 
     def validate_duplicates(
@@ -571,25 +549,19 @@ class EntityDeduplicator:
             for item in duplicate_groups:
                 group = item["group"]
                 is_false_positive = False
-                reason = None
 
                 for pattern_fn, pattern_reason in false_positive_patterns:
                     if pattern_fn(group):
                         is_false_positive = True
-                        reason = pattern_reason
                         break
 
                 if is_false_positive:
-                    logger.debug(f"False positive detected: {group} - {reason}")
                     false_positives.append(item)
                 else:
                     validated.append(item)
 
-            logger.info(f"Validation complete: {len(validated)} valid groups, " f"{len(false_positives)} false positives")
-
             return validated, false_positives
         except Exception as e:
-            logger.error(f"Error validating duplicates: {e}")
             raise e
 
     def get_duplicate_stats(
@@ -627,7 +599,6 @@ class EntityDeduplicator:
             return stats
 
         except Exception as e:
-            logger.error(f"Error getting duplicate stats: {e}")
             raise e
 
     def _find_candidates_for_llm(self, existing_groups: List[List[str]]) -> List[List[str]]:
@@ -662,11 +633,10 @@ class EntityDeduplicator:
                     candidates.append(pair)
 
             if candidates:
-                logger.info(f"Found {len(candidates)} candidate pairs for LLM verification")
 
+                pass
             return candidates
         except Exception as e:
-            logger.error(f"Error finding candidates for LLM: {e}")
             raise e
 
     def _has_conflicting_numbers(self, s1: str, s2: str) -> bool:
@@ -697,7 +667,6 @@ class EntityDeduplicator:
         if fuzz:
             return fuzz.token_sort_ratio(s1, s2) > threshold
 
-        logger.warning("rapidfuzz not found, falling back to slower difflib implementation")
         return self._is_token_sort_match_fallback(s1, s2, threshold / 100.0)
 
     def _is_token_sort_match_fallback(self, s1: str, s2: str, threshold: float) -> bool:
@@ -724,15 +693,12 @@ class EntityDeduplicator:
 
         for pair in candidates:
             if self._is_token_sort_match(pair[0], pair[1]):
-                logger.debug(f"Fast-verified pair (token sort): {pair}")
                 verified_groups.append({"group": pair, "source": "rapidfuzz_token_sort"})
             else:
                 llm_candidates.append(pair)
 
         if not llm_candidates:
             return verified_groups
-
-        logger.info(f"Sending {len(llm_candidates)} pairs (out of {len(candidates)}) to LLM for verification")
 
         batch_size = 20
 
@@ -770,22 +736,17 @@ class EntityDeduplicator:
                         if res.is_same_entity and res.index < len(batch):
                             verified_groups.append({"group": batch[res.index], "source": "llm_verified"})
 
-                    # Success - break retry loop
                     break
 
                 except Exception as e:
                     is_rate_limit = "429" in str(e) or "ResourceExhausted" in str(e) or "rate limit" in str(e).lower()
                     if is_rate_limit and attempt < max_retries - 1:
                         sleep_time = 10 * (attempt + 1)
-                        logger.warning(f"Rate limit hit during deduplication. Retrying in {sleep_time}s (Attempt {attempt+1}/{max_retries})")
                         time.sleep(sleep_time)
                     else:
-                        logger.error(f"Error in LLM verification (Attempt {attempt+1}): {e}")
                         if attempt == max_retries - 1:
-                            logger.warning(f"Skipping batch due to persistent error: {e}")
 
-            # Proactive rate limiting for Flash-Lite (15 RPM = 1 req / 4s)
-            # Adding a small buffer to be safe
+                            pass
             time.sleep(4.5)
 
         return verified_groups
@@ -795,7 +756,6 @@ class EntityDeduplicator:
             try:
                 self._nlp = spacy.load("en_core_web_sm")
             except OSError:
-                logger.warning("Spacy model 'en_core_web_sm' not found. Downloading...")
                 from spacy.cli import download
 
                 download("en_core_web_sm")

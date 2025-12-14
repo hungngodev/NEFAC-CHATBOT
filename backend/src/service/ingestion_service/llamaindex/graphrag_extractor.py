@@ -1,16 +1,9 @@
-"""
-GraphRAG V2-style entity and relationship extractor.
-
-This module implements Microsoft GraphRAG-inspired extraction that enriches
-entities and relationships with LLM-generated descriptions for richer context.
-"""
-
 from __future__ import annotations
 
 import json
-import logging
-from typing import Any, List, Optional, Sequence
+from typing import Any, List, Optional, Sequence, Tuple
 
+from llama_index.core import Settings
 from llama_index.core.graph_stores.types import (
     KG_NODES_KEY,
     KG_RELATIONS_KEY,
@@ -21,9 +14,6 @@ from llama_index.core.schema import BaseNode, TransformComponent
 from llama_index.llms.openai import OpenAI
 
 from src.service.ingestion_service.settings import ALLOWED_NODES, ALLOWED_RELATIONSHIPS
-
-logger = logging.getLogger(__name__)
-
 
 GRAPHRAG_EXTRACTION_PROMPT = """You are a knowledge graph extraction expert specializing in First Amendment, FOIA, and media law content.
 
@@ -63,174 +53,126 @@ Return valid JSON only:
 {text}
 """
 
+MIN_TEXT_LENGTH = 50
+MAX_TEXT_LENGTH = 4000
+
 
 class GraphRAGExtractor(TransformComponent):
-    """
-    Microsoft GraphRAG-style extractor that enriches entities and relationships
-    with LLM-generated descriptions.
-
-    This extractor produces:
-    - EntityNodes with `entity_description` property
-    - Relations with `relationship_description` property
-
-    These descriptions enable:
-    - Richer semantic search over the knowledge graph
-    - Better community summarization
-    - More contextual retrieval
-    """
-
     def __init__(
         self,
         llm: Optional[OpenAI] = None,
         entity_types: Optional[List[str]] = None,
         relation_types: Optional[List[str]] = None,
         max_retries: int = 3,
-    ):
-        """
-        Initialize the GraphRAG extractor.
-
-        Args:
-            llm: Language model to use for extraction (defaults to Settings.llm)
-            entity_types: Allowed entity types (defaults to ALLOWED_NODES)
-            relation_types: Allowed relationship types (defaults to ALLOWED_RELATIONSHIPS)
-            max_retries: Number of retries for failed extractions
-        """
+    ) -> None:
         super().__init__()
-
-        if llm is None:
-            from llama_index.core import Settings
-
-            self.llm = Settings.llm
-        else:
-            self.llm = llm
-
+        self.llm = llm if llm is not None else Settings.llm
         self.entity_types = entity_types or ALLOWED_NODES
         self.relation_types = relation_types or ALLOWED_RELATIONSHIPS
         self.max_retries = max_retries
 
     def __call__(self, nodes: Sequence[BaseNode], **kwargs: Any) -> List[BaseNode]:
-        """
-        Process nodes to extract entities and relationships with descriptions.
-
-        Args:
-            nodes: List of text nodes to process
-
-        Returns:
-            List of nodes with KG_NODES_KEY and KG_RELATIONS_KEY metadata
-        """
         for node in nodes:
             try:
                 entities, relationships = self._extract_with_descriptions(node)
-
-                # Add entities with descriptions to node metadata
-                kg_nodes = node.metadata.get(KG_NODES_KEY, [])
-                for entity in entities:
-                    entity_node = EntityNode(
-                        name=entity["name"],
-                        label=entity["type"],
-                        properties={
-                            "entity_description": entity.get("description", ""),
-                        },
-                    )
-                    kg_nodes.append(entity_node)
-                node.metadata[KG_NODES_KEY] = kg_nodes
-
-                # Add relationships with descriptions to node metadata
-                kg_relations = node.metadata.get(KG_RELATIONS_KEY, [])
-                for rel in relationships:
-                    relation = Relation(
-                        label=rel["relation"],
-                        source_id=rel["source"],
-                        target_id=rel["target"],
-                        properties={
-                            "relationship_description": rel.get("description", ""),
-                        },
-                    )
-                    kg_relations.append(relation)
-                node.metadata[KG_RELATIONS_KEY] = kg_relations
-
-            except Exception as e:
-                logger.warning(f"Failed to extract from node: {e}")
+                self._add_entities_to_node(node, entities)
+                self._add_relationships_to_node(node, relationships, entities)
+            except Exception:
                 continue
-
         return list(nodes)
 
-    def _extract_with_descriptions(self, node: BaseNode) -> tuple[List[dict], List[dict]]:
-        """
-        Extract entities and relationships with descriptions from a single node.
+    def _add_entities_to_node(self, node: BaseNode, entities: List[dict]) -> None:
+        kg_nodes = node.metadata.get(KG_NODES_KEY, [])
+        for entity in entities:
+            entity_node = EntityNode(
+                name=entity["name"],
+                label=entity["type"],
+                properties={"entity_description": entity.get("description", "")},
+            )
+            kg_nodes.append(entity_node)
+        node.metadata[KG_NODES_KEY] = kg_nodes
 
-        Args:
-            node: The node to extract from
+    def _add_relationships_to_node(self, node: BaseNode, relationships: List[dict], entities: List[dict]) -> None:
+        kg_relations = node.metadata.get(KG_RELATIONS_KEY, [])
+        for rel in relationships:
+            relation = Relation(
+                label=rel["relation"],
+                source_id=rel["source"],
+                target_id=rel["target"],
+                properties={"relationship_description": rel.get("description", "")},
+            )
+            kg_relations.append(relation)
+        node.metadata[KG_RELATIONS_KEY] = kg_relations
 
-        Returns:
-            Tuple of (entities, relationships) lists
-        """
+    def _extract_with_descriptions(self, node: BaseNode) -> Tuple[List[dict], List[dict]]:
         text = node.get_content()
-        if not text or len(text.strip()) < 50:
+        if not text or len(text.strip()) < MIN_TEXT_LENGTH:
             return [], []
 
         prompt = GRAPHRAG_EXTRACTION_PROMPT.format(
             entity_types=", ".join(self.entity_types),
             relation_types=", ".join(self.relation_types),
-            text=text[:4000],  # Limit text length
+            text=text[:MAX_TEXT_LENGTH],
         )
 
         for attempt in range(self.max_retries):
             try:
                 response = self.llm.complete(prompt)
-                response_text = response.text.strip()
-
-                # Handle code blocks
-                if response_text.startswith("```"):
-                    lines = response_text.split("\n")
-                    # Remove first and last lines (```json and ```)
-                    response_text = "\n".join(lines[1:-1])
-
+                response_text = self._clean_response(response.text.strip())
                 data = json.loads(response_text)
-
-                entities = data.get("entities", [])
-                relationships = data.get("relationships", [])
-
-                # Validate and filter
-                valid_entities = []
-                for e in entities:
-                    if e.get("name") and e.get("type"):
-                        # Normalize entity type
-                        if e["type"] not in self.entity_types:
-                            # Try to match case-insensitively
-                            for et in self.entity_types:
-                                if et.lower() == e["type"].lower():
-                                    e["type"] = et
-                                    break
-                        valid_entities.append(e)
-
-                valid_relationships = []
-                entity_names = {e["name"] for e in valid_entities}
-                for r in relationships:
-                    if r.get("source") in entity_names and r.get("target") in entity_names and r.get("relation"):
-                        # Normalize relation type
-                        if r["relation"] not in self.relation_types:
-                            for rt in self.relation_types:
-                                if rt.lower() == r["relation"].lower().replace(" ", "_"):
-                                    r["relation"] = rt
-                                    break
-                        valid_relationships.append(r)
-
-                logger.debug(f"Extracted {len(valid_entities)} entities and " f"{len(valid_relationships)} relationships with descriptions")
-                return valid_entities, valid_relationships
-
-            except json.JSONDecodeError as e:
-                logger.warning(f"JSON parse error (attempt {attempt + 1}): {e}")
+                entities = self._validate_entities(data.get("entities", []))
+                relationships = self._validate_relationships(data.get("relationships", []), entities)
+                return entities, relationships
+            except json.JSONDecodeError:
                 continue
-            except Exception as e:
-                logger.warning(f"Extraction error (attempt {attempt + 1}): {e}")
+            except Exception:
                 continue
-
         return [], []
+
+    def _clean_response(self, response_text: str) -> str:
+        if response_text.startswith("```"):
+            lines = response_text.split("\n")
+            return "\n".join(lines[1:-1])
+        return response_text
+
+    def _validate_entities(self, entities: List[dict]) -> List[dict]:
+        valid_entities = []
+        for e in entities:
+            if not e.get("name") or not e.get("type"):
+                continue
+            if e["type"] not in self.entity_types:
+                matched_type = self._match_type_case_insensitive(e["type"], self.entity_types)
+                if matched_type:
+                    e["type"] = matched_type
+            valid_entities.append(e)
+        return valid_entities
+
+    def _validate_relationships(self, relationships: List[dict], entities: List[dict]) -> List[dict]:
+        entity_names = {e["name"] for e in entities}
+        valid_relationships = []
+        for r in relationships:
+            if r.get("source") not in entity_names:
+                continue
+            if r.get("target") not in entity_names:
+                continue
+            if not r.get("relation"):
+                continue
+            if r["relation"] not in self.relation_types:
+                matched_rel = self._match_type_case_insensitive(r["relation"].replace(" ", "_"), self.relation_types)
+                if matched_rel:
+                    r["relation"] = matched_rel
+            valid_relationships.append(r)
+        return valid_relationships
+
+    def _match_type_case_insensitive(self, value: str, allowed: List[str]) -> Optional[str]:
+        value_lower = value.lower()
+        for item in allowed:
+            if item.lower() == value_lower:
+                return item
+        return None
 
     @classmethod
     def class_name(cls) -> str:
-        """Return the class name for serialization."""
         return "GraphRAGExtractor"
 
 
@@ -239,17 +181,6 @@ def create_graphrag_extractor(
     entity_types: Optional[List[str]] = None,
     relation_types: Optional[List[str]] = None,
 ) -> GraphRAGExtractor:
-    """
-    Factory function to create a GraphRAG extractor.
-
-    Args:
-        llm: Language model (defaults to Settings.llm)
-        entity_types: Allowed entity types (defaults to ALLOWED_NODES)
-        relation_types: Allowed relationship types (defaults to ALLOWED_RELATIONSHIPS)
-
-    Returns:
-        Configured GraphRAGExtractor instance
-    """
     return GraphRAGExtractor(
         llm=llm,
         entity_types=entity_types,

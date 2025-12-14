@@ -19,7 +19,6 @@ def _get_base_metadata(path: str, entry: Dict[str, Any]) -> Dict[str, Any]:
     def to_iso(ts: float) -> str:
         return datetime.fromtimestamp(ts, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    # Resolve key metadata fields once to ensure consistency
     source_url = entry.get("source_url") or entry.get("link") or f"file://{abs_path}"
     date_val = entry.get("date") or to_iso(getattr(stat, "st_ctime", stat.st_mtime))
 
@@ -93,7 +92,6 @@ def sanitize_metadata(
     if include_text and "text" in meta and isinstance(meta["text"], str):
         cleaned["text"] = meta["text"]
 
-    # Preserve specific metadata fields from truncation
     for field in ["section_summary", "questions_this_excerpt_can_answer", "excerpt_keywords"]:
         if field in meta and isinstance(meta[field], str):
             cleaned[field] = meta[field]

@@ -1,13 +1,6 @@
-"""
-Shared utilities for ingestion service.
-
-This module contains common utilities used across all database indexers.
-"""
-
 from __future__ import annotations
 
 import asyncio
-import logging
 import uuid
 from typing import TYPE_CHECKING, Optional
 
@@ -15,7 +8,6 @@ from llama_index.core import StorageContext
 from llama_index.core.schema import BaseNode, TextNode
 from llama_index.core.storage.docstore import SimpleDocumentStore
 
-# Type-only imports for optional dependencies
 if TYPE_CHECKING:
     from llama_index.graph_stores.neo4j import Neo4jPropertyGraphStore
     from llama_index.vector_stores.elasticsearch import ElasticsearchStore
@@ -26,11 +18,8 @@ from src.service.ingestion_service.shared.metadata_utils import (
     sanitize_metadata,
 )
 
-logger = logging.getLogger(__name__)
-
 
 def ensure_text_node(node: BaseNode) -> TextNode:
-    """Convert any BaseNode to a TextNode."""
     if isinstance(node, TextNode):
         return node
     meta = dict(node.metadata or {})
@@ -49,7 +38,6 @@ def ensure_text_node(node: BaseNode) -> TextNode:
 
 
 def clean_text_node(node: BaseNode, include_text_field: bool = False) -> TextNode:
-    """Clean and normalize a node for indexing."""
     tn = ensure_text_node(node)
     meta = dict(tn.metadata or {})
     chunk_id = meta.get("chunk_id") or meta.get("id")
@@ -74,8 +62,6 @@ def create_storage_context(
     neo4j_graph_store: Optional["Neo4jPropertyGraphStore"] = None,
     docstore: Optional[SimpleDocumentStore] = None,
 ) -> StorageContext:
-    """Create a unified storage context for LlamaIndex."""
-    logger.info("Creating unified storage context")
 
     if docstore is None:
         docstore = SimpleDocumentStore()
@@ -83,8 +69,8 @@ def create_storage_context(
     primary_vector_store = qdrant_store or elasticsearch_store
 
     if primary_vector_store is None:
-        logger.warning("No vector store provided to StorageContext")
 
+        pass
     return StorageContext.from_defaults(
         vector_store=primary_vector_store,
         graph_store=neo4j_graph_store,  # type: ignore[arg-type]
@@ -93,14 +79,12 @@ def create_storage_context(
 
 
 def await_maybe(coro_or_val):
-    """Await a coroutine if needed, otherwise return the value."""
     if hasattr(coro_or_val, "__await__"):
         return asyncio.get_event_loop().run_until_complete(coro_or_val)
     return coro_or_val
 
 
 def close_maybe_async(resource):
-    """Close a resource that may be async."""
     if resource is None:
         return
     try:

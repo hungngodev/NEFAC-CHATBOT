@@ -1,12 +1,9 @@
 import json
-import logging
 from typing import Any, Dict, List, Optional
 
 from llama_index.core.llms import LLM
 
 from .base_linker import GraphLinker
-
-logger = logging.getLogger(__name__)
 
 
 class TopicLinker(GraphLinker):
@@ -47,7 +44,7 @@ class TopicLinker(GraphLinker):
                     """
                     self._execute_query(cypher, {"doc_id": doc_id, "topics": topics})
                     links_created += len(topics)
-            except Exception as e:
-                logger.error(f"TopicLinker error for {doc_id}: {e}")
+            except Exception:
 
+                pass
         return {"links_created": links_created}

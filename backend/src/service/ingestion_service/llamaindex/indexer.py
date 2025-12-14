@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import logging
 import os
 import uuid
 from typing import Any, Dict, List, Optional
@@ -15,9 +14,6 @@ from llama_index.vector_stores.elasticsearch import (
     AsyncBM25Strategy,
     ElasticsearchStore,
 )
-
-# ... (keeping other imports)
-# ... (skipping to create_elasticsearch_store)
 from llama_index.vector_stores.qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import FieldCondition, Filter, MatchValue
@@ -25,8 +21,6 @@ from qdrant_client.http.models import FieldCondition, Filter, MatchValue
 from src.service.ingestion_service import settings as ingestion_settings
 from src.service.ingestion_service.llamaindex.metadata_utils import build_chunk_id, sanitize_metadata
 from src.service.ingestion_service.llamaindex.property_graph_ingestor import LegalPropertyGraphIngestor
-
-logger = logging.getLogger(__name__)
 
 
 def _ensure_text_node(node: BaseNode) -> TextNode:
@@ -62,7 +56,6 @@ def create_storage_context(
     neo4j_graph_store: Optional[Neo4jPropertyGraphStore] = None,
     docstore: Optional[SimpleDocumentStore] = None,
 ) -> StorageContext:
-    logger.info("Creating unified storage context")
 
     if docstore is None:
         docstore = SimpleDocumentStore()
@@ -70,8 +63,8 @@ def create_storage_context(
     primary_vector_store = qdrant_store or elasticsearch_store
 
     if primary_vector_store is None:
-        logger.warning("No vector store provided to StorageContext")
 
+        pass
     return StorageContext.from_defaults(
         vector_store=primary_vector_store,
         graph_store=neo4j_graph_store,  # type: ignore[arg-type]
@@ -93,21 +86,17 @@ def create_qdrant_store(
         client_kwargs["api_key"] = api_key
     client = QdrantClient(**client_kwargs)
 
-    # Ensure collection_name is not None
     if collection_name is None:
         raise ValueError("collection_name must be provided or set via QDRANT_CLUSTER_ID env var")
 
-    # Standard dense-only
     if client and not client.collection_exists(collection_name):
         from qdrant_client.http import models
 
-        logger.info(f"Creating Qdrant collection {collection_name} (dense-only)")
         client.create_collection(
             collection_name=collection_name,
             vectors_config=models.VectorParams(size=ingestion_settings.EMBEDDING_DIMENSIONS, distance=models.Distance.COSINE),
         )
 
-    logger.info(f"Creating Qdrant store: {collection_name} (hybrid=False)")
     return QdrantVectorStore(
         collection_name=collection_name,
         client=client,
@@ -124,10 +113,7 @@ def create_elasticsearch_store(
     index_name = index_name or os.getenv("ES_INDEX", "documents")
     es_url = es_url or os.getenv("ES_HOST", "http://localhost:9200")
 
-    logger.info(f"Creating Elasticsearch store: {index_name} with strategy: bm25")
-
     try:
-        # Ensure index_name is not None
         if index_name is None:
             raise ValueError("index_name must be provided or set via ES_INDEX env var")
         return ElasticsearchStore(
@@ -136,8 +122,7 @@ def create_elasticsearch_store(
             retrieval_strategy=AsyncBM25Strategy(),
         )
 
-    except ImportError as e:
-        logger.error(f"Failed to import Elasticsearch strategies: {e}")
+    except ImportError:
         raise
 
 
@@ -164,7 +149,6 @@ def index_nodes_to_qdrant(
     upsert_doc_id: Optional[str] = None,
 ) -> Optional[QdrantVectorStore]:
     if not nodes:
-        logger.warning("No nodes to index to Qdrant")
         return None
 
     try:
@@ -172,7 +156,6 @@ def index_nodes_to_qdrant(
         embedder = embed_model or Settings.embed_model
 
         if embedder is None:
-            logger.error("No embedding model configured; skipping Qdrant indexing")
             return None
 
         if upsert_doc_id:
@@ -183,10 +166,9 @@ def index_nodes_to_qdrant(
                         collection_name=vector_store.collection_name,
                         points_selector=Filter(must=[FieldCondition(key="doc_id", match=MatchValue(value=upsert_doc_id))]),
                     )
-                    logger.info("Deleted existing Qdrant points for doc_id=%s", upsert_doc_id)
-                except Exception as exc:
-                    logger.debug("Delete Qdrant points skipped for doc_id=%s: %s", upsert_doc_id, exc)
+                except Exception:
 
+                    pass
         pipeline = IngestionPipeline(
             transformations=[
                 embedder,  # type: ignore[list-item]
@@ -203,17 +185,13 @@ def index_nodes_to_qdrant(
             batch = cleaned_nodes[i : i + batch_size]
             try:
                 pipeline.run(nodes=batch)
-                logger.info(f"Indexed batch {i//batch_size + 1}/{(total_nodes + batch_size - 1)//batch_size} ({len(batch)} nodes)")
             except Exception as e:
-                logger.error(f"Failed to index batch {i}: {e}")
                 raise e
 
-        logger.info(f"✅ Indexed {len(cleaned_nodes)} nodes to Qdrant")
         _close_maybe_async(getattr(vector_store, "client", None))
         return vector_store
 
-    except Exception as e:
-        logger.error(f"Failed to index to Qdrant: {e}")
+    except Exception:
         return None
 
 
@@ -224,21 +202,14 @@ async def index_nodes_to_elasticsearch(
     upsert_doc_id: Optional[str] = None,
 ) -> Optional[ElasticsearchStore]:
     if not nodes:
-        logger.warning("No nodes to index to Elasticsearch")
         return None
 
     vector_store = create_elasticsearch_store(index_name=index_name)
-    # embedder = embed_model or Settings.embed_model
-    # if embedder is None:
-    #     logger.error("No embedding model configured; skipping Elasticsearch indexing")
-    #     return None
 
     client = getattr(vector_store, "client", None)
 
     if upsert_doc_id and client:
         try:
-            # Try to delete existing documents for this doc_id
-            # If index doesn't exist, this might fail, which is fine (nothing to delete)
             resp = client.delete_by_query(
                 index=vector_store.index_name,
                 body={"query": {"term": {"doc_id": upsert_doc_id}}},
@@ -246,26 +217,16 @@ async def index_nodes_to_elasticsearch(
             )
             if hasattr(resp, "__await__"):
                 await resp
-            logger.info("Deleted existing Elasticsearch docs for doc_id=%s", upsert_doc_id)
-        except Exception as exc:
-            # Log at debug level as failure here is often just "index not found" or similar benign issues
-            logger.debug("Delete ES docs skipped for doc_id=%s: %s", upsert_doc_id, exc)
+        except Exception:
 
+            pass
     try:
-        # pipeline = IngestionPipeline(
-        #     transformations=[],  # No embeddings for ES (BM25 only)
-        #     docstore=SimpleDocumentStore(),
-        #     vector_store=vector_store,
-        # )
         cleaned_nodes = [_clean_text_node(node, include_text_field=True) for node in nodes]
-        # await pipeline.arun(nodes=cleaned_nodes)
         await vector_store.async_add(cleaned_nodes)  # type: ignore[arg-type]
 
-        logger.info(f"✅ Indexed {len(cleaned_nodes)} nodes to Elasticsearch")
         _close_maybe_async(getattr(vector_store, "client", None))
         return vector_store
-    except Exception as exc:
-        logger.error("Failed to index to Elasticsearch: %s", exc)
+    except Exception:
         return None
 
 
@@ -281,7 +242,6 @@ def index_nodes_to_neo4j(
     run_entity_cooccurrence: bool = False,
 ) -> int:
     if not nodes:
-        logger.warning("No nodes to index to Neo4j")
         return 0
 
     try:
@@ -301,11 +261,9 @@ def index_nodes_to_neo4j(
             )
             return len(nodes)
         else:
-            logger.warning("Basic graph indexing not implemented, use property_graph=True")
             return 0
 
-    except Exception as e:
-        logger.error(f"Failed to index to Neo4j: {e}")
+    except Exception:
         return 0
 
 

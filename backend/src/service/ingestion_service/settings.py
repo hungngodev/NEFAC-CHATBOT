@@ -1,4 +1,3 @@
-import logging
 import os
 
 from llama_index.core import Settings
@@ -9,7 +8,6 @@ from src.config.models import EMBEDDING_DIMENSIONS, EMBEDDING_MODEL_NAME
 from src.utils.env import load_env as load_env_from_root
 
 load_env_from_root()
-logger = logging.getLogger(__name__)
 
 DEFAULT_MODEL_PROVIDER = "openai"
 ENABLE_CONTEXTUAL_RETRIEVAL = True
@@ -173,7 +171,6 @@ ALLOWED_NODES = [
     "LegislativeBill",
     "Court",
     "Judge",
-    # New entity types for legal/media domain
     "Journalist",
     "MediaOutlet",
     "GovernmentAgency",
@@ -205,7 +202,6 @@ ALLOWED_RELATIONSHIPS = [
     "ENFORCES",
     "OPPOSES",
     "SUPPORTS",
-    # New relationship types for legal/media domain
     "APPEALS_TO",
     "AMENDS",
     "SUPERSEDES",
@@ -215,8 +211,6 @@ ALLOWED_RELATIONSHIPS = [
     "FILED_BY",
 ]
 
-# Validation schema: which entity types can have which relationships
-# Used by SchemaLLMPathExtractor with strict=True for Pydantic validation
 KG_VALIDATION_SCHEMA = {
     "Person": ["WORKS_FOR", "SERVES_ON", "AUTHORED_BY", "WRITES", "REPRESENTS", "ADVOCATES_FOR", "FILED_BY", "LOCATED_IN"],
     "Journalist": ["WORKS_FOR", "AUTHORED_BY", "WRITES", "COVERS", "LOCATED_IN"],
@@ -235,7 +229,6 @@ KG_VALIDATION_SCHEMA = {
     "Location": ["LOCATED_IN", "TAKES_PLACE_IN"],
     "Topic": ["CONCERNS", "COVERS"],
     "Concept": ["CONCERNS", "REFERENCES"],
-    # Additional entity types for full coverage
     "WebPage": ["LINKS_TO", "HAS_PAGE", "HAS_SECTION", "REFERENCES"],
     "MediaAsset": ["PUBLISHES", "REFERENCES", "COVERS"],
     "Dataset": ["REFERENCES", "CONCERNS", "PUBLISHES"],

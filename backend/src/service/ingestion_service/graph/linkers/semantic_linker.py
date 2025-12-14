@@ -1,9 +1,6 @@
-import logging
 from typing import Any, Dict, List
 
 from .base_linker import GraphLinker
-
-logger = logging.getLogger(__name__)
 
 
 class SemanticLinker(GraphLinker):
@@ -25,8 +22,6 @@ class SemanticLinker(GraphLinker):
         try:
             result = self._execute_query(query, {"doc_ids": document_ids, "k": top_k, "threshold": threshold})
             count = result[0]["links_created"] if result else 0
-            logger.info(f"SemanticLinker: Created {count} links.")
             return {"links_created": count}
         except Exception as e:
-            logger.error(f"SemanticLinker failed: {e}")
             return {"error": str(e)}

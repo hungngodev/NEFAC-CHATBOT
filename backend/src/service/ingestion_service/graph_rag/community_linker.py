@@ -6,15 +6,11 @@ Provides two implementations:
 - HierarchicalCommunityLinker: Uses graspologic hierarchical Leiden (Python-native)
 """
 
-import logging
 from typing import Any, Dict, List, Optional
 
 from .base_linker import GraphLinker
 from .gds_utils import GDSUtils
 
-logger = logging.getLogger(__name__)
-
-# Try to import graspologic, but don't fail if not available
 try:
     import networkx as nx
     from graspologic.partition import hierarchical_leiden
@@ -22,7 +18,6 @@ try:
     GRASPOLOGIC_AVAILABLE = True
 except ImportError:
     GRASPOLOGIC_AVAILABLE = False
-    logger.info("graspologic not installed. HierarchicalCommunityLinker will not be available.")
 
 
 class CommunityLinker(GraphLinker):
@@ -48,7 +43,6 @@ class CommunityLinker(GraphLinker):
 
             return result
         except Exception as e:
-            logger.error(f"Community detection failed: {e}")
             return {"error": str(e)}
 
     def _create_community_nodes(self):
@@ -109,22 +103,17 @@ class HierarchicalCommunityLinker(GraphLinker):
             return {"status": "skipped_graspologic_missing", "message": "Install graspologic: pip install graspologic"}
 
         try:
-            # Build NetworkX graph from Neo4j
             G = self._build_networkx_graph()
 
             if G.number_of_nodes() == 0:
                 return {"status": "skipped_empty_graph", "communities_created": 0}
 
-            logger.info(f"Running hierarchical Leiden on {G.number_of_nodes()} nodes, " f"{G.number_of_edges()} edges")
-
-            # Run hierarchical Leiden
             clusters = hierarchical_leiden(
                 G,
                 max_cluster_size=self.max_cluster_size,
                 resolution=self.resolution,
             )
 
-            # Group by community at each level
             levels: Dict[int, Dict[int, List[str]]] = {}
             for item in clusters:
                 if item.level not in levels:
@@ -133,15 +122,12 @@ class HierarchicalCommunityLinker(GraphLinker):
                     levels[item.level][item.cluster] = []
                 levels[item.level][item.cluster].append(item.node)
 
-            # Store in Neo4j with hierarchy
             total_communities = 0
             for level, communities in levels.items():
                 for comm_id, members in communities.items():
                     full_comm_id = f"L{level}_C{comm_id}"
                     self._store_community(full_comm_id, level, comm_id, members)
                     total_communities += 1
-
-            logger.info(f"Created {total_communities} communities across {len(levels)} levels")
 
             return {
                 "status": "success",
@@ -151,7 +137,6 @@ class HierarchicalCommunityLinker(GraphLinker):
             }
 
         except Exception as e:
-            logger.error(f"Hierarchical community detection failed: {e}", exc_info=True)
             return {"status": "error", "error": str(e)}
 
     def _build_networkx_graph(self) -> "nx.Graph":
@@ -163,7 +148,7 @@ class HierarchicalCommunityLinker(GraphLinker):
         """
         query = f"""
         MATCH (e1:{self.node_label})-[r]->(e2:{self.node_label})
-        RETURN e1.name as source, e2.name as target, 
+        RETURN e1.name as source, e2.name as target,
                type(r) as rel_type, count(*) as weight
         """
         result = self._execute_query(query)
@@ -214,8 +199,8 @@ class HierarchicalCommunityLinker(GraphLinker):
         MATCH (c:Community)
         OPTIONAL MATCH (c)<-[:IN_COMMUNITY]-(e)
         WITH c.level as level, c.id as community_id, count(e) as member_count
-        RETURN level, count(*) as num_communities, 
-               avg(member_count) as avg_size, 
+        RETURN level, count(*) as num_communities,
+               avg(member_count) as avg_size,
                max(member_count) as max_size
         ORDER BY level
         """

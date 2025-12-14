@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import copy
-import logging
 from typing import List
 
 import spacy
@@ -40,8 +39,6 @@ from src.service.ingestion_service.settings import (
     SEMANTIC_SPLITTER_SPACY_MODEL,
 )
 
-logger = logging.getLogger(__name__)
-
 
 def _build_language_config(language: str, spacy_model: str) -> LanguageConfig:
     try:
@@ -51,11 +48,6 @@ def _build_language_config(language: str, spacy_model: str) -> LanguageConfig:
         if not mismatch:
             raise
 
-        logger.warning(
-            "spaCy model %s is not in the approved list for %s, disabling validation",
-            spacy_model,
-            language,
-        )
         return LanguageConfig(language=language, spacy_model=spacy_model, model_validation=False)
 
 
@@ -96,12 +88,10 @@ def get_semantic_splitter() -> NodeParser:
     language = _normalize_language(SEMANTIC_SPLITTER_LANGUAGE)
     spacy_model = SEMANTIC_SPLITTER_SPACY_MODEL
 
-    # Ensure model is loaded
     if SEMANTIC_SPLITTER_AUTO_DOWNLOAD:
         try:
             spacy.load(spacy_model)
         except OSError:
-            logger.info("Downloading spaCy model %s...", spacy_model)
             spacy.cli.download(spacy_model)
             spacy.load(spacy_model)
     else:
@@ -195,8 +185,7 @@ Answer only with the succinct context and nothing else."""
                 prompt = self.CONTEXT_PROMPT.format(doc=truncated_doc, chunk=chunk_text)
                 contextual_summary = self.llm.complete(prompt).text.strip()
 
-        except Exception as exc:  # pragma: no cover - defensive
-            logger.warning("Contextual summary generation failed: %s", exc)
+        except Exception:
             return node
 
         contextualised = copy.deepcopy(node)
@@ -224,21 +213,17 @@ Answer only with the succinct context and nothing else."""
 
             split_doc = LIDocument(text=doc.get_content(), metadata={"title": doc.metadata.get("title", "")})
 
-            # Step 1: Run Semantic Splitter
             semantic_pipeline = IngestionPipeline(
                 transformations=[self.base_parser],
                 docstore=SimpleDocumentStore(),
             )
             semantic_nodes = semantic_pipeline.run(documents=[split_doc], show_progress=show_progress)
-            logger.info(f"DEBUG: Semantic Splitter produced {len(semantic_nodes)} nodes")
 
-            # Step 2: Run Safety Splitter (SentenceSplitter)
             safety_pipeline = IngestionPipeline(
                 transformations=[safety_splitter],
                 docstore=SimpleDocumentStore(),
             )
             nodes = safety_pipeline.run(documents=semantic_nodes, show_progress=show_progress)
-            logger.info(f"DEBUG: Safety Splitter produced {len(nodes)} nodes")
             for node in nodes:
                 node.metadata.update(doc.metadata)
                 node.excluded_embed_metadata_keys = list(doc.excluded_embed_metadata_keys)
@@ -255,7 +240,6 @@ Answer only with the succinct context and nothing else."""
                 nodes = [self._add_context(node, doc.get_content(), doc.metadata) for node in tqdm(nodes, desc="Generating contextual summaries")]
 
             if self.enable_metadata and self.extractors:
-                logger.info("Starting Metadata Extraction (Summary/Questions)...")
                 extraction_pipeline = IngestionPipeline(
                     transformations=self.extractors,  # type: ignore[arg-type]
                     docstore=SimpleDocumentStore(),

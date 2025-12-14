@@ -1,7 +1,4 @@
-import logging
 from typing import Any, Dict
-
-logger = logging.getLogger(__name__)
 
 
 class GDSUtils:
@@ -14,8 +11,7 @@ class GDSUtils:
             with self.driver.session() as session:
                 result = session.run(query).single()
                 return bool(result)
-        except Exception as e:
-            logger.warning(f"GDS not available: {e}")
+        except Exception:
             return False
 
     def drop_graph(self, graph_name: str) -> None:

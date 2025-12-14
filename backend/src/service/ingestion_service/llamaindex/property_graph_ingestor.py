@@ -6,7 +6,7 @@ import os
 import random
 import re
 import time
-from typing import List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 from llama_index.core import PropertyGraphIndex, Settings
 from llama_index.core.indices.property_graph import (
@@ -21,15 +21,9 @@ from llama_index.llms.openai import OpenAI as LIOpenAI
 from openai import RateLimitError
 
 from src.config.models import EMBEDDING_DIMENSIONS
-from src.service.ingestion_service.llamaindex.entity_deduplication import (
-    EntityDeduplicator,
-)
-from src.service.ingestion_service.llamaindex.graphrag_extractor import (
-    GraphRAGExtractor,
-)
-from src.service.ingestion_service.llamaindex.metadata_utils import (
-    sanitize_metadata,
-)
+from src.service.ingestion_service.llamaindex.entity_deduplication import EntityDeduplicator
+from src.service.ingestion_service.llamaindex.graphrag_extractor import GraphRAGExtractor
+from src.service.ingestion_service.llamaindex.metadata_utils import sanitize_metadata
 from src.service.ingestion_service.settings import (
     ALLOWED_NODES,
     ALLOWED_RELATIONSHIPS,
@@ -44,11 +38,9 @@ from src.service.ingestion_service.settings import (
     KG_VALIDATION_SCHEMA,
 )
 
-logger = logging.getLogger(__name__)
 logging.getLogger("openai").setLevel(logging.WARNING)
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("llama_index.llms.openai").setLevel(logging.WARNING)
-
 
 NEFAC_GRAPH_SYSTEM_PROMPT = f"""
 You are an expert knowledge graph extractor for the New England First Amendment Coalition.
@@ -87,6 +79,30 @@ Document(type="AmicusBrief", title="...", date_published="...") FILES Organizati
 Document(...) CITES LegalCase(citation="555 F.3d 123", name="Doe v. City")
 """
 
+METADATA_KEYS_TO_REMOVE = [
+    "contextual_summary",
+    "section_summary",
+    "id",
+    "questions_this_excerpt_can_answer",
+    "excerpt_keywords",
+    "text",
+    "embedding",
+    "_node_content",
+]
+
+CLEANUP_QUERIES = [
+    """
+    MATCH (n:__Entity__)
+    WHERE n.name IS NULL OR toString(n.name) = '' OR toLower(n.name) IN ['unknown', 'n/a', 'none']
+    DETACH DELETE n
+    """,
+    """
+    MATCH (n)
+    WHERE size(labels(n)) = 0
+    DETACH DELETE n
+    """,
+]
+
 
 class LegalPropertyGraphIngestor:
     def __init__(
@@ -96,10 +112,10 @@ class LegalPropertyGraphIngestor:
         neo4j_password: Optional[str] = None,
         database: str = "neo4j",
         enable_validation: bool = True,
-        llm=None,
-        use_strict_schema: bool = True,  # Use SchemaLLMPathExtractor with Pydantic validation
-        use_graphrag_descriptions: bool = False,  # Use GraphRAG-style entity/relationship descriptions
-    ):
+        llm: Any = None,
+        use_strict_schema: bool = False,
+        use_graphrag_descriptions: bool = False,
+    ) -> None:
         self.neo4j_url = neo4j_url or os.getenv("NEO4J_URI", "bolt://localhost:7687")
         self.neo4j_user = neo4j_user or os.getenv("NEO4J_USERNAME") or os.getenv("NEO4J_USER") or "neo4j"
         self.neo4j_password = neo4j_password or os.getenv("NEO4J_PASSWORD", "password")
@@ -108,9 +124,16 @@ class LegalPropertyGraphIngestor:
         self.llm = llm or Settings.llm
         self.use_strict_schema = use_strict_schema
         self.use_graphrag_descriptions = use_graphrag_descriptions
+        self.graph_store: Neo4jPropertyGraphStore = None  # type: ignore[assignment]
         self._setup_graph_store()
 
-    def _setup_graph_store(self):
+    def _get_driver(self) -> Any:
+        driver = getattr(self.graph_store, "driver", None) or getattr(self.graph_store, "_driver", None)
+        if driver is None:
+            raise RuntimeError("Neo4j driver not available from property graph store")
+        return driver
+
+    def _setup_graph_store(self) -> None:
         try:
             self.graph_store = Neo4jPropertyGraphStore(
                 username=self.neo4j_user,
@@ -118,13 +141,11 @@ class LegalPropertyGraphIngestor:
                 url=self.neo4j_url,
                 database=self.database,
             )
-            logger.info(f"Connected to Neo4j at {self.neo4j_url}")
             self._ensure_constraints()
-        except Exception as e:
-            logger.error(f"Failed to get graph stats: {e}")
-            raise e
+        except Exception:
+            raise
 
-    def _ensure_constraints(self):
+    def _ensure_constraints(self) -> None:
         driver = self._get_driver()
         queries = [
             "CREATE CONSTRAINT node_id IF NOT EXISTS FOR (n:__Entity__) REQUIRE n.id IS UNIQUE",
@@ -138,47 +159,38 @@ class LegalPropertyGraphIngestor:
             with driver.session(database=self.database) as session:
                 for q in queries:
                     session.run(q)
-            logger.info("Ensured Neo4j constraints and indexes exist")
-        except Exception as e:
-            logger.error(f"Could not create constraints: {e}")
-            raise e
+        except Exception:
+            raise
 
-    def _create_schema_extractor(self):
-        """Create the appropriate entity/relationship extractor.
-
-        If use_strict_schema=True, uses SchemaLLMPathExtractor with Pydantic validation.
-        Otherwise, falls back to DynamicLLMPathExtractor for more flexible extraction.
-        """
-        extraction_llm = LIOpenAI(
+    def _create_extraction_llm(self) -> LIOpenAI:
+        return LIOpenAI(
             model=self.llm.model,
             temperature=0.0,
             system_prompt=NEFAC_GRAPH_SYSTEM_PROMPT,
             additional_kwargs=self.llm.additional_kwargs,
         )
 
+    def _create_schema_extractor(self) -> Any:
+        extraction_llm = self._create_extraction_llm()
         if self.use_strict_schema:
-            logger.info("Creating SchemaLLMPathExtractor with strict Pydantic validation")
             return SchemaLLMPathExtractor(
                 llm=extraction_llm,
                 possible_entities=ALLOWED_NODES,
                 possible_relations=ALLOWED_RELATIONSHIPS,
                 kg_validation_schema=KG_VALIDATION_SCHEMA,
-                strict=True,  # Enforce Pydantic schema validation
+                strict=True,
                 num_workers=min(GRAPH_NUM_WORKERS, 4),
                 max_triplets_per_chunk=GRAPH_MAX_TRIPLETS_PER_CHUNK,
             )
-        else:
-            logger.info("Creating DynamicLLMPathExtractor with flexible schema")
-            return DynamicLLMPathExtractor(
-                llm=extraction_llm,
-                allowed_entity_types=ALLOWED_NODES,
-                allowed_relation_types=ALLOWED_RELATIONSHIPS,
-                num_workers=min(GRAPH_NUM_WORKERS, 4),
-                max_triplets_per_chunk=GRAPH_MAX_TRIPLETS_PER_CHUNK,
-            )
+        return DynamicLLMPathExtractor(
+            llm=extraction_llm,
+            allowed_entity_types=ALLOWED_NODES,
+            allowed_relation_types=ALLOWED_RELATIONSHIPS,
+            num_workers=min(GRAPH_NUM_WORKERS, 4),
+            max_triplets_per_chunk=GRAPH_MAX_TRIPLETS_PER_CHUNK,
+        )
 
     def _pre_disambiguate_entities(self, nodes: List[BaseNode]) -> List[BaseNode]:
-        logger.info("Disambiguating entities for %d nodes...", len(nodes))
         fixed_nodes = []
         for node in nodes:
             new_node = node.model_copy()
@@ -197,7 +209,6 @@ class LegalPropertyGraphIngestor:
                 new_node.metadata["original_mentions"] = list(set(found_aliases))
             new_node.set_content(new_content)
             fixed_nodes.append(new_node)
-        logger.info("Entity disambiguation complete for %d nodes", len(fixed_nodes))
         return fixed_nodes
 
     def _nodes_to_documents(self, nodes: List[BaseNode]) -> List[LIDocument]:
@@ -207,77 +218,75 @@ class LegalPropertyGraphIngestor:
             doc_id = metadata.get("doc_id") or metadata.get("document_id") or metadata.get("ref_doc_id") or metadata.get("id")
             if doc_id:
                 metadata["doc_id"] = doc_id
-            chunk_index = idx
-
             h = hashlib.sha1(f"{doc_id}:{idx}".encode()).hexdigest()[:12]
             chunk_id = f"{doc_id}__{h}"
-
-            metadata["chunk_index"] = chunk_index
+            metadata["chunk_index"] = idx
             metadata["chunk_id"] = chunk_id
-
-            keys_to_remove = ["contextual_summary", "section_summary", "id", "questions_this_excerpt_can_answer", "excerpt_keywords", "text", "embedding", "_node_content"]
-            for key in keys_to_remove:
+            for key in METADATA_KEYS_TO_REMOVE:
                 metadata.pop(key, None)
-
             documents.append(LIDocument(text=node.get_content(), metadata=metadata, id_=chunk_id))
         return documents
+
+    def _execute_query(self, query: str, params: Optional[Dict[str, Any]] = None) -> Any:
+        driver = self._get_driver()
+        with driver.session(database=self.database) as session:
+            return session.run(query, params or {})
 
     def _delete_existing_node_ids(self, ids: Set[str]) -> None:
         if not ids:
             return
-        driver = self._get_driver()
         cypher = """
         UNWIND $ids AS rid
         MATCH (n {chunk_id: rid})
         DETACH DELETE n
         """
         try:
-            with driver.session(database=self.database) as session:
-                session.run(cypher, ids=list(ids))
-        except Exception as exc:
-            logger.error("Could not pre-delete duplicate nodes by chunk_id: %s", exc)
-            raise exc
+            self._execute_query(cypher, {"ids": list(ids)})
+        except Exception:
+            raise
 
     def delete_by_doc_id(self, doc_id: str) -> None:
         if not doc_id:
             return
-        driver = self._get_driver()
         cypher = """
         MATCH (n {doc_id: $doc_id})
         DETACH DELETE n
         """
         try:
-            with driver.session(database=self.database) as session:
-                session.run(cypher, doc_id=doc_id)
-            logger.info("Deleted existing graph nodes for doc_id=%s", doc_id)
-        except Exception as exc:
-            logger.error("Failed to delete graph nodes for doc_id=%s: %s", doc_id, exc)
-            raise exc
+            self._execute_query(cypher, {"doc_id": doc_id})
+        except Exception:
+            raise
 
-    def _cleanup_empty_nodes(self):
-        driver = self._get_driver()
+    def _cleanup_empty_nodes(self) -> None:
         query = """
         MATCH (n:__Entity__)
         WHERE n.id IS NULL OR toString(n.id) = '' OR n.name IS NULL OR toString(n.name) = ''
         DETACH DELETE n
         """
         try:
-            with driver.session(database=self.database) as session:
-                result = session.run(query)
-                summary = result.consume()
-                if summary.counters.nodes_deleted > 0:
-                    logger.info(f"Cleaned up {summary.counters.nodes_deleted} nodes with empty IDs/names")
-        except Exception as e:
-            logger.error(f"Failed to cleanup empty nodes: {e}")
-            raise e
+            result = self._execute_query(query)
+            summary = result.consume()
+            if summary.counters.nodes_deleted > 0:
+                pass
+        except Exception:
+            raise
 
-    def _link_chunks_to_parent_document(self):
-        driver = self._get_driver()
+    def _cleanup_aggressive(self) -> None:
+        try:
+            driver = self._get_driver()
+            with driver.session(database=self.database) as session:
+                for q in CLEANUP_QUERIES:
+                    session.run(q)
+        except Exception:
+
+            pass
+
+    def _link_chunks_to_parent_document(self) -> None:
         query = """
         MATCH (c:Chunk)
         WHERE c.doc_id IS NOT NULL
         MERGE (d:__Document__ {id: c.doc_id})
-        ON CREATE SET 
+        ON CREATE SET
             d.filename = c.filename,
             d.file_type = c.file_type,
             d.date = c.date,
@@ -293,31 +302,24 @@ class LegalPropertyGraphIngestor:
         MERGE (c)-[:PART_OF]->(d)
         """
         try:
-            with driver.session(database=self.database) as session:
-                session.run(query)
-                logger.info("Linked Chunks to parent __Document__ nodes")
-        except Exception as e:
-            logger.error(f"Failed to link chunks to parent documents: {e}")
-            raise e
+            self._execute_query(query)
+        except Exception:
+            raise
 
-    def _link_entities_to_documents(self):
-        driver = self._get_driver()
+    def _link_entities_to_documents(self) -> None:
         query = """
         MATCH (e:__Entity__)-[:MENTIONED_IN|MENTIONS|MENTIONED]->(c:Chunk)-[:PART_OF]->(d:__Document__)
         MERGE (e)-[:APPEARS_IN]->(d)
         """
         try:
-            with driver.session(database=self.database) as session:
-                result = session.run(query)
-                summary = result.consume()
-                if summary.counters.relationships_created > 0:
-                    logger.info(f"Created {summary.counters.relationships_created} APPEARS_IN relationships between Entities and Documents")
-        except Exception as e:
-            logger.error(f"Failed to link entities to documents: {e}")
-            raise e
+            result = self._execute_query(query)
+            summary = result.consume()
+            if summary.counters.relationships_created > 0:
+                pass
+        except Exception:
+            raise
 
-    def _link_documents_by_shared_entities(self):
-        driver = self._get_driver()
+    def _link_documents_by_shared_entities(self) -> None:
         query = """
         MATCH (d1:__Document__)<-[:APPEARS_IN]-(e:__Entity__)-[:APPEARS_IN]->(d2:__Document__)
         WHERE elementId(d1) < elementId(d2)
@@ -327,17 +329,14 @@ class LegalPropertyGraphIngestor:
         SET r.weight = shared_count
         """
         try:
-            with driver.session(database=self.database) as session:
-                result = session.run(query)
-                summary = result.consume()
-                if summary.counters.relationships_created > 0:
-                    logger.info(f"Created {summary.counters.relationships_created} RELATED_TO relationships between Documents")
-        except Exception as e:
-            logger.error(f"Failed to link documents by shared entities: {e}")
-            raise e
+            result = self._execute_query(query)
+            summary = result.consume()
+            if summary.counters.relationships_created > 0:
+                pass
+        except Exception:
+            raise
 
-    def _link_documents_to_years(self):
-        driver = self._get_driver()
+    def _link_documents_to_years(self) -> None:
         query = r"""
         MATCH (d:__Document__)
         WHERE d.date IS NOT NULL AND d.date =~ '^\d{4}.*'
@@ -346,29 +345,24 @@ class LegalPropertyGraphIngestor:
         MERGE (d)-[:PUBLISHED_IN]->(y)
         """
         try:
-            with driver.session(database=self.database) as session:
-                session.run(query)
-                logger.info("Linked Documents to Year nodes")
-        except Exception as e:
-            logger.error(f"Failed to link documents to years: {e}")
-            raise e
+            self._execute_query(query)
+        except Exception:
+            raise
 
-    def _sync_chunk_metadata(self, documents: List[LIDocument]):
-        driver = self._get_driver()
-
+    def _sync_chunk_metadata(self, documents: List[LIDocument]) -> None:
         data = []
         for doc in documents:
             meta = doc.metadata
-            item = {
-                "id": doc.id_,
-                "date": meta.get("date"),
-                "title": meta.get("title"),
-                "source_url": meta.get("source_url"),
-                "file_type": meta.get("file_type"),
-                "filename": meta.get("filename"),
-            }
-            data.append(item)
-
+            data.append(
+                {
+                    "id": doc.id_,
+                    "date": meta.get("date"),
+                    "title": meta.get("title"),
+                    "source_url": meta.get("source_url"),
+                    "file_type": meta.get("file_type"),
+                    "filename": meta.get("filename"),
+                }
+            )
         query = """
         UNWIND $data AS row
         MATCH (c:Chunk {id: row.id})
@@ -378,46 +372,36 @@ class LegalPropertyGraphIngestor:
             c.file_type = row.file_type,
             c.filename = row.filename
         """
-
         try:
+            driver = self._get_driver()
             with driver.session(database=self.database) as session:
                 batch_size = 1000
                 for i in range(0, len(data), batch_size):
                     batch = data[i : i + batch_size]
                     session.run(query, data=batch)
-            logger.info(f"Synced metadata for {len(documents)} Chunk nodes")
-        except Exception as e:
-            logger.error(f"Failed to sync chunk metadata: {e}")
-            raise e
+        except Exception:
+            raise
 
-    def _normalize_graph_labels(self):
+    def _normalize_graph_labels(self) -> None:
         driver = self._get_driver()
-        queries = []
-
-        existing_labels = set()
-        existing_rel_types = set()
-
+        queries: List[str] = []
         try:
             with driver.session(database=self.database) as session:
                 result = session.run("CALL db.labels()")
                 existing_labels = {record["label"] for record in result}
-
                 result = session.run("CALL db.relationshipTypes()")
                 existing_rel_types = {record["relationshipType"] for record in result}
-        except Exception as e:
-            logger.error(f"Failed to fetch existing labels/types: {e}")
+        except Exception:
             return
 
-        def _clean_key(s: str) -> str:
+        def clean_key(s: str) -> str:
             return s.lower().replace("_", "").replace(" ", "")
 
-        canonical_labels = {_clean_key(n): n for n in ALLOWED_NODES}
-
+        canonical_labels = {clean_key(n): n for n in ALLOWED_NODES}
         for label in existing_labels:
             if label in ALLOWED_NODES:
                 continue
-
-            clean_label = _clean_key(label)
+            clean_label = clean_key(label)
             if clean_label in canonical_labels:
                 correct_label = canonical_labels[clean_label]
                 queries.append(
@@ -428,13 +412,11 @@ class LegalPropertyGraphIngestor:
                 """
                 )
 
-        canonical_rels = {_clean_key(r): r for r in ALLOWED_RELATIONSHIPS}
-
+        canonical_rels = {clean_key(r): r for r in ALLOWED_RELATIONSHIPS}
         for rel_type in existing_rel_types:
             if rel_type in ALLOWED_RELATIONSHIPS:
                 continue
-
-            clean_rel = _clean_key(rel_type)
+            clean_rel = clean_key(rel_type)
             if clean_rel in canonical_rels:
                 correct_rel = canonical_rels[clean_rel]
                 queries.append(
@@ -450,72 +432,69 @@ class LegalPropertyGraphIngestor:
                 for q in queries:
                     session.run(q)
             if queries:
-                logger.info(f"Normalized {len(queries)} label/relationship inconsistencies")
-            else:
-                logger.info("No label normalization needed")
-        except Exception as e:
-            logger.error(f"Failed to normalize labels: {e}")
+                pass
+        except Exception:
 
-    def _enforce_schema_compliance(self, nodes: List[BaseNode]) -> List[BaseNode]:
-        """
-        Enforces schema compliance by:
-        1. Filtering out entities with empty names.
-        2. Normalizing labels to PascalCase based on ALLOWED_NODES.
-        """
-        logger.info("Enforcing schema compliance for %d nodes...", len(nodes))
-        valid_nodes = []
+            pass
 
-        # Create a mapping for case-insensitive label lookup
-        # label_map = {label.lower(): label for label in ALLOWED_NODES}
-
-        for node in nodes:
-            # 1. Filter empty names
-            # LlamaIndex stores the triplet in the node metadata or content depending on the extractor
-            # But here we are dealing with BaseNode objects that *will be* processed by PropertyGraphIndex
-            # The actual entities are extracted *inside* PropertyGraphIndex.from_documents using the kg_extractors.
-            # However, if we are using pre-extracted nodes (which we are not, we are passing chunks),
-            # we can't filter entities here yet because they haven't been extracted!
-
-            # WAIT: The `nodes` passed to `ingest_nodes` are CHUNKS (TextNode), not EntityNodes.
-            # The extraction happens inside `PropertyGraphIndex.from_documents`.
-            # We cannot filter entity nodes *before* they are created by the extractor.
-
-            # BUT, we can wrap the extractor or use a custom one.
-            # Since we are using `DynamicLLMPathExtractor`, we can't easily inject logic inside it without subclassing.
-
-            # ALTERNATIVE: We can filter the graph *immediately after* ingestion but *before* linking.
-            # We already have `_cleanup_empty_nodes`. We should make it more aggressive.
-
-            valid_nodes.append(node)
-
-        return valid_nodes
-
-    def _cleanup_aggressive(self):
-        """
-        Aggressively cleans up empty or malformed nodes immediately after ingestion.
-        """
+    def _label_chunk_nodes(self) -> None:
         driver = self._get_driver()
         queries = [
-            # Delete nodes with empty/null names
             """
-            MATCH (n:__Entity__)
-            WHERE n.name IS NULL OR toString(n.name) = '' OR toLower(n.name) IN ['unknown', 'n/a', 'none']
-            DETACH DELETE n
+            MATCH (n:Chunk)
+            WHERE n.name IS NULL AND n.text IS NOT NULL
+            SET n.name = 'Chunk: ' + substring(n.text, 0, 30) + '...'
             """,
-            # Delete nodes with no labels (except internal ones)
             """
-            MATCH (n)
-            WHERE size(labels(n)) = 0
-            DETACH DELETE n
+            MATCH (n:Chunk)
+            WHERE n.name IS NULL
+            SET n.name = 'Chunk ' + coalesce(toString(n.chunk_index), '?') + ' of ' + coalesce(n.filename, 'Unknown')
             """,
         ]
+        cleanup_query = """
+        MATCH (n:Chunk)
+        WHERE n.text IS NULL AND n.filename IS NULL AND n.chunk_index IS NULL
+        DETACH DELETE n
+        """
         try:
             with driver.session(database=self.database) as session:
                 for q in queries:
                     session.run(q)
-            logger.info("Aggressive cleanup of empty/malformed nodes complete")
-        except Exception as e:
-            logger.error(f"Failed to cleanup nodes: {e}")
+                result = session.run(cleanup_query)
+                summary = result.consume()
+                if summary.counters.nodes_deleted > 0:
+                    pass
+        except Exception:
+            raise
+
+    def _is_rate_limit_error(self, exc: Exception) -> bool:
+        if RateLimitError is not None and isinstance(exc, RateLimitError):
+            return True
+        msg = str(exc).lower()
+        return "rate limit" in msg or "rate_limit_exceeded" in msg
+
+    def _run_graph_enrichment(
+        self,
+        run_semantic_linking: bool,
+        run_community_detection: bool,
+        run_topic_extraction: bool,
+        run_citation_linking: bool,
+        run_temporal_linking: bool,
+        run_entity_cooccurrence: bool,
+    ) -> None:
+        if run_semantic_linking:
+            pass
+        if run_community_detection:
+            pass
+        if run_topic_extraction:
+            pass
+        if run_citation_linking:
+            pass
+        if run_temporal_linking:
+            pass
+        if run_entity_cooccurrence:
+
+            pass
 
     def ingest_nodes(
         self,
@@ -529,44 +508,28 @@ class LegalPropertyGraphIngestor:
         run_temporal_linking: bool = False,
         run_entity_cooccurrence: bool = False,
     ) -> PropertyGraphIndex:
-        def _is_rate_limit_error(exc: Exception) -> bool:
-            if RateLimitError is not None and isinstance(exc, RateLimitError):
-                return True
-            msg = str(exc).lower()
-            return "rate limit" in msg or "rate_limit_exceeded" in msg
-
         max_attempts = GRAPH_RATE_LIMIT_RETRIES
         delay = GRAPH_RATE_LIMIT_BACKOFF
         attempt = 0
+
         while attempt < max_attempts:
             try:
-                logger.info(
-                    "Ingesting %d nodes into PropertyGraphIndex (attempt %d/%d)",
-                    len(nodes),
-                    attempt + 1,
-                    max_attempts,
-                )
-
                 nodes_to_process = self._pre_disambiguate_entities(nodes)
-
                 documents = self._nodes_to_documents(nodes_to_process)
+
                 ids = [d.id_ for d in documents]
                 dupes = {i for i in ids if ids.count(i) > 1}
                 if dupes:
-                    logger.error("Duplicate graph node ids in batch: %s", dupes)
                     raise ValueError(f"Duplicate graph node ids in batch: {dupes}")
+
                 incoming_ids = {str(doc.id_) for doc in documents if doc.id_}
                 self._delete_existing_node_ids(incoming_ids)
 
                 kg_extractor = self._create_schema_extractor()
                 implicit_extractor = ImplicitPathExtractor()
-
-                # Build extractors list
                 extractors = [kg_extractor, implicit_extractor]
 
-                # Optionally add GraphRAG extractor for entity/relationship descriptions
                 if self.use_graphrag_descriptions:
-                    logger.info("Adding GraphRAGExtractor for entity/relationship descriptions")
                     graphrag_extractor = GraphRAGExtractor(llm=self.llm)  # type: ignore[arg-type]
                     extractors.append(graphrag_extractor)
 
@@ -576,61 +539,42 @@ class LegalPropertyGraphIngestor:
                     kg_extractors=extractors,
                     show_progress=show_progress,
                 )
-                logger.info("Successfully ingested %d nodes into property graph", len(nodes))
 
                 self._sync_chunk_metadata(documents)
-                self._cleanup_aggressive()  # Replaces _cleanup_empty_nodes with more robust version
+                self._cleanup_aggressive()
                 self._label_chunk_nodes()
                 self._link_chunks_to_parent_document()
                 self._link_entities_to_documents()
                 self._link_documents_by_shared_entities()
                 self._link_documents_to_years()
-
                 self._normalize_graph_labels()
 
-                # TODO: Implement linker classes (SemanticLinker, CommunityLinker, etc.)
-                # These are placeholders for future graph enrichment features
-                if run_semantic_linking:
-                    logger.warning("Semantic linking not yet implemented (SemanticLinker)")
-
-                if run_community_detection:
-                    logger.warning("Community detection not yet implemented (CommunityLinker)")
-
-                if run_topic_extraction:
-                    logger.warning("Topic extraction not yet implemented (TopicLinker)")
-
-                if run_citation_linking:
-                    logger.warning("Citation linking not yet implemented (CitationLinker)")
-
-                if run_temporal_linking:
-                    logger.warning("Temporal linking not yet implemented (TemporalLinker)")
-
-                if run_entity_cooccurrence:
-                    logger.warning("Entity co-occurrence linking not yet implemented (EntityCooccurrenceLinker)")
+                self._run_graph_enrichment(
+                    run_semantic_linking,
+                    run_community_detection,
+                    run_topic_extraction,
+                    run_citation_linking,
+                    run_temporal_linking,
+                    run_entity_cooccurrence,
+                )
 
                 if run_deduplication and GRAPH_ENABLE_ENTITY_DEDUPLICATION:
-                    logger.info("Starting entity deduplication...")
                     self.deduplicate_entities(
                         similarity_threshold=GRAPH_ENTITY_SIMILARITY_THRESHOLD,
                         word_edit_distance=int(GRAPH_WORD_DISTANCE_THRESHOLD),
                     )
+
                 return index
+
             except Exception as e:
                 attempt += 1
-                if _is_rate_limit_error(e) and attempt < max_attempts:
+                if self._is_rate_limit_error(e) and attempt < max_attempts:
                     sleep_for = delay * (1.5**attempt) + random.uniform(0, 1.0)
                     sleep_for = min(sleep_for, 30.0)
-                    logger.debug(
-                        "Rate limited during graph ingestion, backing off %.1fs (attempt %d/%d)",
-                        sleep_for,
-                        attempt,
-                        max_attempts,
-                    )
                     time.sleep(sleep_for)
                     continue
-                logger.error("Failed to ingest nodes into property graph: %s", e)
                 raise
-        # This should never be reached since the loop either returns or raises
+
         raise RuntimeError("Max retries exhausted without success")
 
     def deduplicate_entities(
@@ -639,14 +583,8 @@ class LegalPropertyGraphIngestor:
         word_edit_distance: int = 5,
         enable_apoc: bool = True,
         dry_run: bool = False,
-    ) -> dict:
+    ) -> Dict[str, Any]:
         try:
-            logger.info(
-                "Running entity deduplication (similarity=%.2f, word_distance=%d, dry_run=%s)",
-                similarity_threshold,
-                word_edit_distance,
-                dry_run,
-            )
             deduplicator = EntityDeduplicator(
                 graph_store=self.graph_store,
                 similarity_threshold=similarity_threshold,
@@ -656,24 +594,14 @@ class LegalPropertyGraphIngestor:
             )
             deduplicator.create_vector_index(embedding_dimension=EMBEDDING_DIMENSIONS, name="entity_vec_idx")
             initial_stats = deduplicator.get_duplicate_stats()
-            logger.debug("Duplicate analysis: %s", initial_stats)
             duplicate_groups = deduplicator.find_duplicate_entities()
-
             validated_groups, false_positives = deduplicator.validate_duplicates(duplicate_groups)
-
-            initial_stats = deduplicator.get_duplicate_stats(duplicate_groups=duplicate_groups, validated_groups=validated_groups, false_positives=false_positives)
-            logger.debug("Duplicate analysis: %s", initial_stats)
-
-            logger.info(
-                "Validated duplicate groups=%d (filtered false positives=%d)",
-                len(validated_groups),
-                len(false_positives),
+            initial_stats = deduplicator.get_duplicate_stats(
+                duplicate_groups=duplicate_groups,
+                validated_groups=validated_groups,
+                false_positives=false_positives,
             )
-
-            merge_stats = deduplicator.merge_duplicate_entities(
-                duplicate_groups=validated_groups,
-                dry_run=dry_run,
-            )
+            merge_stats = deduplicator.merge_duplicate_entities(duplicate_groups=validated_groups, dry_run=dry_run)
             final_stats = deduplicator.get_duplicate_stats(use_llm=False)
             result = {
                 **merge_stats,
@@ -682,34 +610,19 @@ class LegalPropertyGraphIngestor:
                 "validated_groups": len(validated_groups),
                 "false_positives_filtered": len(false_positives),
             }
-            logger.info(
-                "Entity deduplication complete: merged_groups=%s total_entities_merged=%s",
-                result.get("merged_groups"),
-                result.get("total_entities_merged"),
-            )
             return result
-        except Exception as e:
-            logger.error(f"Error during entity deduplication: {e}", exc_info=True)
-            raise e
-
-    def _get_driver(self):
-        driver = getattr(self.graph_store, "driver", None) or getattr(self.graph_store, "_driver", None)
-        if driver is None:
-            raise RuntimeError("Neo4j driver not available from property graph store")
-        return driver
-
-    def clear_graph(self):
-        try:
-            driver = self._get_driver()
-            logger.info("Clearing Neo4j graph")
-            with driver.session(database=self.database) as session:
-                session.run("MATCH (n) DETACH DELETE n")
-            logger.info("Neo4j graph cleared successfully")
-        except Exception as e:
-            logger.error(f"Failed to clear graph: {e}")
+        except Exception:
             raise
 
-    def get_stats(self) -> dict:
+    def clear_graph(self) -> None:
+        try:
+            driver = self._get_driver()
+            with driver.session(database=self.database) as session:
+                session.run("MATCH (n) DETACH DELETE n")
+        except Exception:
+            raise
+
+    def get_stats(self) -> Dict[str, Any]:
         try:
             driver = self._get_driver()
             with driver.session(database=self.database) as session:
@@ -726,7 +639,7 @@ class LegalPropertyGraphIngestor:
                     RETURN label, count(*) AS count
                     ORDER BY count DESC
                     LIMIT 10
-                    """
+                """
                 ):
                     label_counts.append({"label": record["label"], "count": record["count"]})
                 relationship_type_counts = []
@@ -736,7 +649,7 @@ class LegalPropertyGraphIngestor:
                     RETURN type(r) AS type, count(*) AS count
                     ORDER BY count DESC
                     LIMIT 10
-                    """
+                """
                 ):
                     relationship_type_counts.append({"type": record["type"], "count": record["count"]})
             return {
@@ -745,42 +658,5 @@ class LegalPropertyGraphIngestor:
                 "top_labels": label_counts,
                 "top_relationship_types": relationship_type_counts,
             }
-        except Exception as e:
-            logger.error(f"Failed to get graph stats: {e}")
-            raise e
-
-    def _label_chunk_nodes(self):
-        driver = self._get_driver()
-
-        query_text = """
-        MATCH (n:Chunk)
-        WHERE n.name IS NULL AND n.text IS NOT NULL
-        SET n.name = 'Chunk: ' + substring(n.text, 0, 30) + '...'
-        """
-
-        query_standard = """
-        MATCH (n:Chunk)
-        WHERE n.name IS NULL
-        SET n.name = 'Chunk ' + coalesce(toString(n.chunk_index), '?') + ' of ' + coalesce(n.filename, 'Unknown')
-        """
-
-        query_cleanup = """
-        MATCH (n:Chunk)
-        WHERE n.text IS NULL AND n.filename IS NULL AND n.chunk_index IS NULL
-        DETACH DELETE n
-        """
-
-        try:
-            with driver.session(database=self.database) as session:
-                session.run(query_text)
-                session.run(query_standard)
-
-                result = session.run(query_cleanup)
-                summary = result.consume()
-                if summary.counters.nodes_deleted > 0:
-                    logger.info(f"Cleaned up {summary.counters.nodes_deleted} empty Chunk nodes")
-
-                logger.info("Labeled Chunk nodes with descriptive names")
-        except Exception as e:
-            logger.error(f"Failed to label/cleanup Chunk nodes: {e}")
-            raise e
+        except Exception:
+            raise

@@ -1,5 +1,4 @@
 import hashlib
-import logging
 import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -13,7 +12,6 @@ from src.service.ingestion_service.llamaindex.metadata_utils import _get_base_me
 from src.service.ingestion_service.llamaindex.node_parser import build_nodes_from_text
 from src.service.ingestion_service.loader.spreadsheet_utils import process_xlsx_intelligently
 
-logger = logging.getLogger(__name__)
 TRANSCRIPT_PATTERN = re.compile(r"\[(?P<ts>[\d:\.]+)s?\]\s*(?P<txt>.*)")
 
 CONTEXT_FORMAT = getattr(
@@ -154,7 +152,8 @@ def load_document_nodes(
         if tracker is not None:
             tracker.log_file_phase(message)
         else:
-            logger.debug(message)
+
+            pass
 
     try:
         if ext in {"xlsx", "xls", "csv"}:
@@ -204,45 +203,37 @@ def load_document_nodes(
                     try:
                         with open(path, "r", encoding="utf-8") as f:
                             whole_text = f.read()
-                    except Exception as e:
-                        logger.warning(f"Failed to read text file directly, falling back to partition: {e}")
+                    except Exception:
 
+                        pass
                 if not whole_text:
                     elements = u_partition(path_str)
                     whole_text = "\n\n".join(str(el).strip() for el in elements if str(el).strip())
 
                     if ext in {"html", "pdf"}:
-                        logger.info(f"{ext.upper()} Parsed: {path.name} | Elements: {len(elements)} | Text Length: {len(whole_text)} chars")
 
+                        pass
             if ext == "txt":
                 elem_info = len(elements) if "elements" in locals() else "1 (Direct)"
-                logger.info(f"TXT Parsed: {path.name} | Elements: {elem_info} | Text Length: {len(whole_text)} chars")
 
                 _log_phase("Parsing transcript timestamps")
-                logger.info(f"Attempting to parse timestamps for {path.name}. Text len: {len(whole_text)}")
                 clean_text, offset_map = parse_timestamps(whole_text)
-                logger.info(f"Parse result: clean_text len={len(clean_text)}, offset_map len={len(offset_map)}")
 
                 if clean_text.strip():
-                    logger.info("✅ Timestamps found! Using clean text.")
                     is_transcript = True
                     base_meta.update({"transcript_type": "youtube", "has_timestamps": True})
                     whole_text = clean_text
                 else:
-                    logger.warning("⚠️ No timestamps found in .txt file (parse returned empty), treating as plain text")
                     first_lines = whole_text[:500].splitlines()
                     for i, line in enumerate(first_lines[:5]):
-                        logger.info(f"Line {i}: {line!r}")
 
+                        pass
                     if len(whole_text) > 1000 and whole_text.count("\n") < len(whole_text) / 200:
-                        logger.warning("⚠️ Text file appears dense (few newlines). Applied pre-splitting to aid semantic chunking.")
                         pre_splitter = SentenceSplitter(chunk_size=200, chunk_overlap=0)
                         text_chunks = pre_splitter.split_text(whole_text)
                         whole_text = "\n\n".join(text_chunks)
-                        logger.info(f"Pre-splitting created {len(text_chunks)} segments.")
 
             if not whole_text or not whole_text.strip():
-                logger.warning(f"⚠️ No content extracted from {path.name}. Skipping.")
                 return [], 0, 0
 
             raw_nodes = build_nodes_from_text(whole_text, document_base_meta)

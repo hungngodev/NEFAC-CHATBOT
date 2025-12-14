@@ -1,14 +1,11 @@
 from __future__ import annotations
 
 import json
-import logging
 import time
 from collections import defaultdict
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
-
-logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -31,17 +28,14 @@ class PipelineTracker:
         self._failures: Dict[Tuple[str, str], FailureRecord] = {}
 
     def log_phase_start(self, phase: str):
-        logger.info(f"🚀 {phase}")
         self._phase_times[phase] = time.time()
 
     def log_phase_end(self, phase: str):
         if phase in self._phase_times:
-            duration = time.time() - self._phase_times[phase]
-            logger.info(f"✅ {phase} completed in {duration:.2f}s")
+            time.time() - self._phase_times[phase]
 
     def log_file_start(self, file_type: str, filename: str, index: int, total: int):
         self._current_file = filename
-        logger.info(f"  ├── [{index}/{total}] {filename}")
         self.stats[file_type]["files_loaded"] += 1
 
     def log_file_phase(self, phase: str, count: Optional[int] = None, model_name: Optional[str] = None):
@@ -51,39 +45,30 @@ class PipelineTracker:
         if model_name:
             parts.append(f" (🧠 {model_name})")
             self.model_usage[phase] = model_name
-        logger.info("".join(parts))
 
     def log_file_complete(self, filename: str, chunks: int, tokens: int):
-        logger.info(f"  │   └── ✅ {chunks} chunks, {tokens} tokens")
         if self._current_file == filename:
             self._current_file = None
 
     def log_pipeline_step(self, message: str, model_name: Optional[str] = None):
         if model_name:
-            logger.info(f"  ➡️ {message} (🧠 {model_name})")
             self.model_usage[message] = model_name
         else:
-            logger.info(f"  ➡️ {message}")
+
+            pass
 
     def track_db_upload(self, file_type: str, db_name: str, count: int):
-        logger.info(f"  │   └── {db_name}: {count} items uploaded")
         self.stats[file_type][f"{db_name.lower()}_uploaded"] += count
 
     def track_phase_stats(self, file_type: str, phase: str, count: int):
         self.stats[file_type][phase] += count
 
     def log_summary(self):
-        total_duration = time.time() - self.start_time
-        separator = "=" * 80
-        logger.info(f"\n{separator}")
-        logger.info("📊 INGESTION PIPELINE SUMMARY")
-        logger.info(separator)
-        logger.info(f"⏱️ Total execution time: {total_duration:.2f}s")
+        time.time() - self.start_time
 
         for file_type, phases in self.stats.items():
             if phases.get("files_loaded", 0) > 0:
-                logger.info(f"\n📁 {file_type.upper()}")
-                stats = [
+                [
                     f"  Files Processed: {phases.get('files_loaded', 0)}",
                     f"  Files Skipped: {phases.get('files_skipped', 0)}",
                     f"  Chunks Created: {phases.get('chunks_created', 0)}",
@@ -92,26 +77,15 @@ class PipelineTracker:
                     f"  Uploaded to Elasticsearch: {phases.get('elasticsearch_uploaded', 0)}",
                     f"  Uploaded to Neo4j: {phases.get('neo4j_uploaded', 0)}",
                 ]
-                logger.info("\n".join(stats))
 
         if self.model_usage:
-            logger.info("\n🤖 MODELS USED")
             for phase, model in self.model_usage.items():
-                logger.info(f"  {phase}: {model}")
 
+                pass
         if self._failures:
-            logger.info("\n⚠️ PENDING FAILURES")
             for record in self._failures.values():
-                logger.info(
-                    "  %s/%s -> phase=%s, attempts=%d, last_error=%s",
-                    record.file_type,
-                    record.filename,
-                    record.phase,
-                    record.attempts,
-                    record.error,
-                )
 
-        logger.info(separator)
+                pass
 
     def record_failure(self, file_type: str, filename: str, phase: str, error: Exception | str):
         key = (file_type, filename)

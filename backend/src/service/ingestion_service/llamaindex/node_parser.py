@@ -1,16 +1,13 @@
 from __future__ import annotations
 
 import copy
-import logging
-from typing import List
+from typing import List, Optional
 
 import spacy
 import spacy.cli
 from llama_index.core import Document as LIDocument
 from llama_index.core import Settings
-from llama_index.core.extractors import (
-    SummaryExtractor,
-)
+from llama_index.core.extractors import SummaryExtractor
 from llama_index.core.ingestion import IngestionPipeline
 from llama_index.core.llms import LLM, ChatMessage
 from llama_index.core.node_parser import (
@@ -40,75 +37,62 @@ from src.service.ingestion_service.settings import (
     SEMANTIC_SPLITTER_SPACY_MODEL,
 )
 
-logger = logging.getLogger(__name__)
+LANGUAGE_MAP = {
+    "en": "english",
+    "eng": "english",
+    "english": "english",
+    "es": "spanish",
+    "esp": "spanish",
+    "spa": "spanish",
+    "spanish": "spanish",
+    "de": "german",
+    "ger": "german",
+    "deu": "german",
+    "german": "german",
+    "fr": "french",
+    "fra": "french",
+    "fre": "french",
+    "french": "french",
+    "zh": "chinese",
+    "zho": "chinese",
+    "chi": "chinese",
+    "chinese": "chinese",
+}
+
+
+def _normalize_language(language: str) -> str:
+    lang = (language or "").strip().lower().replace("-", "_")
+    if not lang:
+        return "english"
+    primary = lang.split("_", 1)[0]
+    return LANGUAGE_MAP.get(lang, LANGUAGE_MAP.get(primary, lang))
 
 
 def _build_language_config(language: str, spacy_model: str) -> LanguageConfig:
     try:
         return LanguageConfig(language=language, spacy_model=spacy_model)
     except ValueError as exc:
-        mismatch = "model is not matching your language" in str(exc)
-        if not mismatch:
+        if "model is not matching your language" not in str(exc):
             raise
-
-        logger.warning(
-            "spaCy model %s is not in the approved list for %s, disabling validation",
-            spacy_model,
-            language,
-        )
         return LanguageConfig(language=language, spacy_model=spacy_model, model_validation=False)
 
 
-def _normalize_language(language: str) -> str:
-    lang = (language or "").strip().lower()
-    if not lang:
-        return "english"
-
-    lang = lang.replace("-", "_")
-    primary = lang.split("_", 1)[0]
-
-    language_map = {
-        "en": "english",
-        "eng": "english",
-        "english": "english",
-        "es": "spanish",
-        "esp": "spanish",
-        "spa": "spanish",
-        "spanish": "spanish",
-        "de": "german",
-        "ger": "german",
-        "deu": "german",
-        "german": "german",
-        "fr": "french",
-        "fra": "french",
-        "fre": "french",
-        "french": "french",
-        "zh": "chinese",
-        "zho": "chinese",
-        "chi": "chinese",
-        "chinese": "chinese",
-    }
-
-    return language_map.get(lang, language_map.get(primary, lang))
+def _ensure_spacy_model(model_name: str) -> None:
+    if SEMANTIC_SPLITTER_AUTO_DOWNLOAD:
+        try:
+            spacy.load(model_name)
+        except OSError:
+            spacy.cli.download(model_name)
+            spacy.load(model_name)
+    else:
+        spacy.load(model_name)
 
 
 def get_semantic_splitter() -> NodeParser:
     language = _normalize_language(SEMANTIC_SPLITTER_LANGUAGE)
     spacy_model = SEMANTIC_SPLITTER_SPACY_MODEL
-
-    # Ensure model is loaded
-    if SEMANTIC_SPLITTER_AUTO_DOWNLOAD:
-        try:
-            spacy.load(spacy_model)
-        except OSError:
-            logger.info("Downloading spaCy model %s...", spacy_model)
-            spacy.cli.download(spacy_model)
-            spacy.load(spacy_model)
-    else:
-        spacy.load(spacy_model)
-
+    _ensure_spacy_model(spacy_model)
     config = _build_language_config(language=language, spacy_model=spacy_model)
-
     return SemanticDoubleMergingSplitterNodeParser(
         language_config=config,
         initial_threshold=SEMANTIC_SPLITTER_INITIAL_THRESHOLD,
@@ -133,32 +117,64 @@ Here is the chunk we want to situate within the whole document:
 {chunk}
 </chunk>
 
-Please generate a short succinct context summary to situate this text chunk within the overall document \
-to enhance search retrieval, two or three sentences max. The chunk contains merged content from different \
-document sections, so focus on the main topics and concepts rather than sequential flow. \
+Please generate a short succinct context summary to situate this text chunk within the overall document
+to enhance search retrieval, two or three sentences max. The chunk contains merged content from different
+document sections, so focus on the main topics and concepts rather than sequential flow.
 Answer only with the succinct context and nothing else."""
 
     def __init__(
         self,
-        llm: LLM | None = None,
+        llm: Optional[LLM] = None,
         *,
         enable_contextual_retrieval: bool = True,
         enable_metadata_extraction: bool = False,
         enable_prompt_caching: bool = True,
         max_doc_context_length: int = 100_000,
     ) -> None:
-        self.llm: LLM | None = llm or Settings.llm
+        self.llm: Optional[LLM] = llm or Settings.llm
         self.enable_contextual = enable_contextual_retrieval and self.llm is not None
         self.enable_metadata = enable_metadata_extraction and self.llm is not None
         self.enable_prompt_caching = enable_prompt_caching
         self.max_doc_context_length = max_doc_context_length
         self.base_parser = get_semantic_splitter()
-
         self.extractors = []
         if self.enable_metadata:
-            self.extractors = [
-                SummaryExtractor(llm=self.llm, summaries=["prev", "self"]),
-            ]
+            self.extractors = [SummaryExtractor(llm=self.llm, summaries=["prev", "self"])]
+
+    def _get_llm_model_name(self) -> str:
+        if not self.llm:
+            return ""
+        return (getattr(self.llm, "model", "") or "").lower()
+
+    def _is_anthropic_model(self) -> bool:
+        model_name = self._get_llm_model_name()
+        return any(token in model_name for token in {"claude", "anthropic"})
+
+    def _generate_contextual_summary_anthropic(self, truncated_doc: str, chunk_text: str) -> str:
+        if self.llm is None:
+            raise RuntimeError("No LLM configured for contextual retrieval")
+        response = self.llm.chat(
+            [
+                ChatMessage(role="system", content="You are a helpful assistant."),
+                ChatMessage(
+                    role="user",
+                    content=f"<document>\n{truncated_doc}\n</document>",
+                    additional_kwargs={"cache_control": {"type": "ephemeral"}},
+                ),
+                ChatMessage(
+                    role="user",
+                    content=self.CONTEXT_PROMPT.format(doc=truncated_doc, chunk=chunk_text),
+                ),
+            ],
+            extra_headers={"anthropic-beta": "prompt-caching-2024-07-31"},
+        )
+        return str(response.message.content).strip()
+
+    def _generate_contextual_summary_default(self, truncated_doc: str, chunk_text: str) -> str:
+        if self.llm is None:
+            raise RuntimeError("No LLM configured for contextual retrieval")
+        prompt = self.CONTEXT_PROMPT.format(doc=truncated_doc, chunk=chunk_text)
+        return self.llm.complete(prompt).text.strip()
 
     def _add_context(self, node: BaseNode, document_text: str, document_meta: dict) -> BaseNode:
         if not self.enable_contextual:
@@ -168,35 +184,11 @@ Answer only with the succinct context and nothing else."""
         chunk_text = node.get_content()
 
         try:
-            llm_model = (getattr(self.llm, "model", "") or "").lower() if self.llm else ""
-            is_anthropic = any(token in llm_model for token in {"claude", "anthropic"})
-
-            if self.llm is None:
-                raise RuntimeError("No LLM configured for contextual retrieval")
-
-            if is_anthropic and self.enable_prompt_caching:
-                response = self.llm.chat(
-                    [
-                        ChatMessage(role="system", content="You are a helpful assistant."),
-                        ChatMessage(
-                            role="user",
-                            content=f"<document>\n{truncated_doc}\n</document>",
-                            additional_kwargs={"cache_control": {"type": "ephemeral"}},
-                        ),
-                        ChatMessage(
-                            role="user",
-                            content=self.CONTEXT_PROMPT.format(doc=truncated_doc, chunk=chunk_text),
-                        ),
-                    ],
-                    extra_headers={"anthropic-beta": "prompt-caching-2024-07-31"},
-                )
-                contextual_summary = str(response.message.content).strip()
+            if self._is_anthropic_model() and self.enable_prompt_caching:
+                contextual_summary = self._generate_contextual_summary_anthropic(truncated_doc, chunk_text)
             else:
-                prompt = self.CONTEXT_PROMPT.format(doc=truncated_doc, chunk=chunk_text)
-                contextual_summary = self.llm.complete(prompt).text.strip()
-
-        except Exception as exc:  # pragma: no cover - defensive
-            logger.warning("Contextual summary generation failed: %s", exc)
+                contextual_summary = self._generate_contextual_summary_default(truncated_doc, chunk_text)
+        except Exception:
             return node
 
         contextualised = copy.deepcopy(node)
@@ -207,73 +199,86 @@ Answer only with the succinct context and nothing else."""
             contextualised.text = f"Contextual Summary: {contextual_summary}\n\nOriginal Chunk:\n{chunk_text}"  # type: ignore[attr-defined]
         return contextualised
 
+    def _run_semantic_splitting(self, doc: LIDocument, show_progress: bool) -> List[BaseNode]:
+        split_doc = LIDocument(
+            text=doc.get_content(),
+            metadata={"title": doc.metadata.get("title", "")},
+        )
+        pipeline = IngestionPipeline(
+            transformations=[self.base_parser],
+            docstore=SimpleDocumentStore(),
+        )
+        nodes = pipeline.run(documents=[split_doc], show_progress=show_progress)
+        return nodes
+
+    def _run_safety_splitting(self, nodes: List[BaseNode], show_progress: bool) -> List[BaseNode]:
+        safety_splitter = SentenceSplitter(
+            chunk_size=SEMANTIC_SPLITTER_MAX_CHUNK,
+            chunk_overlap=200,
+        )
+        pipeline = IngestionPipeline(
+            transformations=[safety_splitter],
+            docstore=SimpleDocumentStore(),
+        )
+        result = pipeline.run(documents=nodes, show_progress=show_progress)
+        return result
+
+    def _apply_document_metadata(self, nodes: List[BaseNode], doc: LIDocument) -> None:
+        for node in nodes:
+            node.metadata.update(doc.metadata)
+            node.excluded_embed_metadata_keys = list(doc.excluded_embed_metadata_keys)
+            node.excluded_llm_metadata_keys = list(doc.excluded_llm_metadata_keys)
+
+    def _handle_txt_files(self, nodes: List[BaseNode], doc: LIDocument) -> None:
+        filename = doc.metadata.get("filename", "")
+        file_path = doc.metadata.get("file_path", "")
+        if filename.lower().endswith(".txt") or file_path.lower().endswith(".txt"):
+            for node in nodes:
+                if "description" in node.excluded_llm_metadata_keys:
+                    node.excluded_llm_metadata_keys.remove("description")
+
+    def _run_metadata_extraction(self, nodes: List[BaseNode], show_progress: bool) -> List[BaseNode]:
+        if not self.enable_metadata or not self.extractors:
+            return nodes
+        pipeline = IngestionPipeline(
+            transformations=self.extractors,  # type: ignore[arg-type]
+            docstore=SimpleDocumentStore(),
+        )
+        return pipeline.run(nodes=nodes, show_progress=show_progress)
+
+    def _normalize_nodes(self, nodes: List[BaseNode]) -> List[BaseNode]:
+        normalized = []
+        for idx, node in enumerate(nodes):
+            doc_id = _derive_doc_id(node)
+            chunk_id = build_chunk_id(doc_id, idx)
+            meta = dict(node.metadata or {})
+            meta["doc_id"] = doc_id
+            meta["chunk_index"] = idx
+            meta["chunk_id"] = chunk_id
+            node.metadata = sanitize_metadata(meta, include_text=False)
+            node.id_ = chunk_id or str(idx)
+            normalized.append(node)
+        return normalized
+
     def build_nodes_from_documents(
         self,
         documents: List[LIDocument],
         *,
         show_progress: bool = False,
     ) -> List[BaseNode]:
-        safety_splitter = SentenceSplitter(
-            chunk_size=SEMANTIC_SPLITTER_MAX_CHUNK,
-            chunk_overlap=200,
-        )
-
         all_nodes: List[BaseNode] = []
 
         for doc in documents:
-
-            split_doc = LIDocument(text=doc.get_content(), metadata={"title": doc.metadata.get("title", "")})
-
-            # Step 1: Run Semantic Splitter
-            semantic_pipeline = IngestionPipeline(
-                transformations=[self.base_parser],
-                docstore=SimpleDocumentStore(),
-            )
-            semantic_nodes = semantic_pipeline.run(documents=[split_doc], show_progress=show_progress)
-            logger.info(f"DEBUG: Semantic Splitter produced {len(semantic_nodes)} nodes")
-
-            # Step 2: Run Safety Splitter (SentenceSplitter)
-            safety_pipeline = IngestionPipeline(
-                transformations=[safety_splitter],
-                docstore=SimpleDocumentStore(),
-            )
-            nodes = safety_pipeline.run(documents=semantic_nodes, show_progress=show_progress)
-            logger.info(f"DEBUG: Safety Splitter produced {len(nodes)} nodes")
-            for node in nodes:
-                node.metadata.update(doc.metadata)
-                node.excluded_embed_metadata_keys = list(doc.excluded_embed_metadata_keys)
-                node.excluded_llm_metadata_keys = list(doc.excluded_llm_metadata_keys)
-
-            filename = doc.metadata.get("filename", "")
-            file_path = doc.metadata.get("file_path", "")
-            if filename.lower().endswith(".txt") or file_path.lower().endswith(".txt"):
-                for node in nodes:
-                    if "description" in node.excluded_llm_metadata_keys:
-                        node.excluded_llm_metadata_keys.remove("description")
+            semantic_nodes = self._run_semantic_splitting(doc, show_progress)
+            nodes = self._run_safety_splitting(semantic_nodes, show_progress)
+            self._apply_document_metadata(nodes, doc)
+            self._handle_txt_files(nodes, doc)
 
             if self.enable_contextual:
                 nodes = [self._add_context(node, doc.get_content(), doc.metadata) for node in tqdm(nodes, desc="Generating contextual summaries")]
 
-            if self.enable_metadata and self.extractors:
-                logger.info("Starting Metadata Extraction (Summary/Questions)...")
-                extraction_pipeline = IngestionPipeline(
-                    transformations=self.extractors,  # type: ignore[arg-type]
-                    docstore=SimpleDocumentStore(),
-                )
-                nodes = extraction_pipeline.run(nodes=nodes, show_progress=show_progress)
-
-            normalized_nodes = []
-            for idx, node in enumerate(nodes):
-                doc_id = _derive_doc_id(node)
-                chunk_id = build_chunk_id(doc_id, idx)
-                meta = dict(node.metadata or {})
-                meta["doc_id"] = doc_id
-                meta["chunk_index"] = idx
-                meta["chunk_id"] = chunk_id
-                node.metadata = sanitize_metadata(meta, include_text=False)
-                node.id_ = chunk_id or str(idx)
-                normalized_nodes.append(node)
-
+            nodes = self._run_metadata_extraction(nodes, show_progress)
+            normalized_nodes = self._normalize_nodes(nodes)
             all_nodes.extend(normalized_nodes)
 
         return all_nodes

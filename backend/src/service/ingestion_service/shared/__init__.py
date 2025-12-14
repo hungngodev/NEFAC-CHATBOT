@@ -1,7 +1,3 @@
-"""
-Shared utilities for ingestion service.
-"""
-
 from src.service.ingestion_service.shared.metadata_utils import (
     build_chunk_id,
     sanitize_metadata,
