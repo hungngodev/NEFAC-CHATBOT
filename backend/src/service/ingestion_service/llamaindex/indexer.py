@@ -10,10 +10,7 @@ from llama_index.core.ingestion import IngestionPipeline
 from llama_index.core.schema import BaseNode, TextNode
 from llama_index.core.storage.docstore import SimpleDocumentStore
 from llama_index.graph_stores.neo4j import Neo4jPropertyGraphStore
-from llama_index.vector_stores.elasticsearch import (
-    AsyncBM25Strategy,
-    ElasticsearchStore,
-)
+from llama_index.vector_stores.elasticsearch import AsyncBM25Strategy, ElasticsearchStore
 from llama_index.vector_stores.qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import FieldCondition, Filter, MatchValue
@@ -21,6 +18,7 @@ from qdrant_client.http.models import FieldCondition, Filter, MatchValue
 from src.service.ingestion_service import settings as ingestion_settings
 from src.service.ingestion_service.graph.property_graph_ingestor import LegalPropertyGraphIngestor
 from src.service.ingestion_service.llamaindex.metadata_utils import build_chunk_id, sanitize_metadata
+from src.service.ingestion_service.observability import log_debug
 
 
 def _ensure_text_node(node: BaseNode) -> TextNode:
@@ -56,19 +54,10 @@ def create_storage_context(
     neo4j_graph_store: Optional[Neo4jPropertyGraphStore] = None,
     docstore: Optional[SimpleDocumentStore] = None,
 ) -> StorageContext:
-
-    if docstore is None:
-        docstore = SimpleDocumentStore()
-
-    primary_vector_store = qdrant_store or elasticsearch_store
-
-    if primary_vector_store is None:
-
-        pass
     return StorageContext.from_defaults(
-        vector_store=primary_vector_store,
+        vector_store=qdrant_store or elasticsearch_store,
         graph_store=neo4j_graph_store,  # type: ignore[arg-type]
-        docstore=docstore,
+        docstore=docstore or SimpleDocumentStore(),
     )
 
 
@@ -86,15 +75,15 @@ def create_qdrant_store(
         client_kwargs["api_key"] = api_key
     client = QdrantClient(**client_kwargs)
 
-    if collection_name is None:
-        raise ValueError("collection_name must be provided or set via QDRANT_CLUSTER_ID env var")
-
-    if client and not client.collection_exists(collection_name):
+    if not client.collection_exists(collection_name):
         from qdrant_client.http import models
 
         client.create_collection(
             collection_name=collection_name,
-            vectors_config=models.VectorParams(size=ingestion_settings.EMBEDDING_DIMENSIONS, distance=models.Distance.COSINE),
+            vectors_config=models.VectorParams(
+                size=ingestion_settings.EMBEDDING_DIMENSIONS,
+                distance=models.Distance.COSINE,
+            ),
         )
 
     return QdrantVectorStore(
@@ -112,18 +101,11 @@ def create_elasticsearch_store(
 ) -> ElasticsearchStore:
     index_name = index_name or os.getenv("ES_INDEX", "documents")
     es_url = es_url or os.getenv("ES_HOST", "http://localhost:9200")
-
-    try:
-        if index_name is None:
-            raise ValueError("index_name must be provided or set via ES_INDEX env var")
-        return ElasticsearchStore(
-            index_name=index_name,
-            es_url=es_url,
-            retrieval_strategy=AsyncBM25Strategy(),
-        )
-
-    except ImportError:
-        raise
+    return ElasticsearchStore(
+        index_name=index_name,
+        es_url=es_url,
+        retrieval_strategy=AsyncBM25Strategy(),
+    )
 
 
 def _await_maybe(coro_or_val):
@@ -135,11 +117,11 @@ def _await_maybe(coro_or_val):
 def _close_maybe_async(resource):
     if resource is None:
         return
-    try:
-        if hasattr(resource, "close"):
+    if hasattr(resource, "close"):
+        try:
             _await_maybe(resource.close())
-    except Exception:
-        pass
+        except Exception as e:
+            log_debug("Failed to close resource", error=e)
 
 
 def index_nodes_to_qdrant(
@@ -151,48 +133,35 @@ def index_nodes_to_qdrant(
     if not nodes:
         return None
 
-    try:
-        vector_store = create_qdrant_store(collection_name=collection_name)
-        embedder = embed_model or Settings.embed_model
-
-        if embedder is None:
-            return None
-
-        if upsert_doc_id:
-            client = getattr(vector_store, "client", None)
-            if client:
-                try:
-                    client.delete(
-                        collection_name=vector_store.collection_name,
-                        points_selector=Filter(must=[FieldCondition(key="doc_id", match=MatchValue(value=upsert_doc_id))]),
-                    )
-                except Exception:
-
-                    pass
-        pipeline = IngestionPipeline(
-            transformations=[
-                embedder,  # type: ignore[list-item]
-            ],
-            docstore=SimpleDocumentStore(),
-            vector_store=vector_store,
-        )
-
-        cleaned_nodes = [_clean_text_node(node, include_text_field=True) for node in nodes]
-        batch_size = 20
-        total_nodes = len(cleaned_nodes)
-
-        for i in range(0, total_nodes, batch_size):
-            batch = cleaned_nodes[i : i + batch_size]
-            try:
-                pipeline.run(nodes=batch)
-            except Exception as e:
-                raise e
-
-        _close_maybe_async(getattr(vector_store, "client", None))
-        return vector_store
-
-    except Exception:
+    vector_store = create_qdrant_store(collection_name=collection_name)
+    embedder = embed_model or Settings.embed_model
+    if embedder is None:
         return None
+
+    if upsert_doc_id:
+        client = getattr(vector_store, "client", None)
+        if client:
+            try:
+                client.delete(
+                    collection_name=vector_store.collection_name,
+                    points_selector=Filter(must=[FieldCondition(key="doc_id", match=MatchValue(value=upsert_doc_id))]),
+                )
+            except Exception as e:
+                log_debug("Qdrant delete failed", error=e, doc_id=upsert_doc_id)
+
+    pipeline = IngestionPipeline(
+        transformations=[embedder],  # type: ignore[list-item]
+        docstore=SimpleDocumentStore(),
+        vector_store=vector_store,
+    )
+
+    cleaned_nodes = [_clean_text_node(node, include_text_field=True) for node in nodes]
+    batch_size = 20
+    for i in range(0, len(cleaned_nodes), batch_size):
+        pipeline.run(nodes=cleaned_nodes[i : i + batch_size])
+
+    _close_maybe_async(getattr(vector_store, "client", None))
+    return vector_store
 
 
 async def index_nodes_to_elasticsearch(
@@ -205,7 +174,6 @@ async def index_nodes_to_elasticsearch(
         return None
 
     vector_store = create_elasticsearch_store(index_name=index_name)
-
     client = getattr(vector_store, "client", None)
 
     if upsert_doc_id and client:
@@ -217,22 +185,17 @@ async def index_nodes_to_elasticsearch(
             )
             if hasattr(resp, "__await__"):
                 await resp
-        except Exception:
+        except Exception as e:
+            log_debug("Elasticsearch delete failed", error=e, doc_id=upsert_doc_id)
 
-            pass
-    try:
-        cleaned_nodes = [_clean_text_node(node, include_text_field=True) for node in nodes]
-        await vector_store.async_add(cleaned_nodes)  # type: ignore[arg-type]
-
-        _close_maybe_async(getattr(vector_store, "client", None))
-        return vector_store
-    except Exception:
-        return None
+    cleaned_nodes = [_clean_text_node(node, include_text_field=True) for node in nodes]
+    await vector_store.async_add(cleaned_nodes)  # type: ignore[arg-type]
+    _close_maybe_async(client)
+    return vector_store
 
 
 def index_nodes_to_neo4j(
     nodes: List[BaseNode],
-    use_property_graph: bool = True,
     upsert_doc_id: Optional[str] = None,
     run_semantic_linking: bool = True,
     run_community_detection: bool = False,
@@ -244,27 +207,20 @@ def index_nodes_to_neo4j(
     if not nodes:
         return 0
 
-    try:
-        if use_property_graph:
-            graph_llm = getattr(ingestion_settings, "graph_llm_model", None)
-            ingestor = LegalPropertyGraphIngestor(llm=graph_llm)
-            if upsert_doc_id:
-                ingestor.delete_by_doc_id(upsert_doc_id)
-            ingestor.ingest_nodes(
-                nodes,
-                run_semantic_linking=run_semantic_linking,
-                run_community_detection=run_community_detection,
-                run_topic_extraction=run_topic_extraction,
-                run_citation_linking=run_citation_linking,
-                run_temporal_linking=run_temporal_linking,
-                run_entity_cooccurrence=run_entity_cooccurrence,
-            )
-            return len(nodes)
-        else:
-            return 0
-
-    except Exception:
-        return 0
+    graph_llm = getattr(ingestion_settings, "graph_llm_model", None)
+    ingestor = LegalPropertyGraphIngestor(llm=graph_llm)
+    if upsert_doc_id:
+        ingestor.delete_by_doc_id(upsert_doc_id)
+    ingestor.ingest_nodes(
+        nodes,
+        run_semantic_linking=run_semantic_linking,
+        run_community_detection=run_community_detection,
+        run_topic_extraction=run_topic_extraction,
+        run_citation_linking=run_citation_linking,
+        run_temporal_linking=run_temporal_linking,
+        run_entity_cooccurrence=run_entity_cooccurrence,
+    )
+    return len(nodes)
 
 
 async def index_nodes(

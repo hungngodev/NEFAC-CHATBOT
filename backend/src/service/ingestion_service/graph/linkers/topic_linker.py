@@ -3,6 +3,8 @@ from typing import Any, Dict, List, Optional
 
 from llama_index.core.llms import LLM
 
+from src.service.ingestion_service.observability import log_warning
+
 from .base_linker import GraphLinker
 
 
@@ -15,13 +17,14 @@ class TopicLinker(GraphLinker):
 
             self.llm = Settings.llm
 
-        self.prompt_template = "Extract 3 to 5 key topics from the text. Return ONLY JSON array of strings. " "Text: {text}"
+        self.prompt_template = "Extract 3 to 5 key topics from the text. Return ONLY JSON array of strings. Text: {text}"
 
     def apply_links(self, document_ids: List[str]) -> Dict[str, Any]:
         if not self.llm:
             return {"status": "skipped_no_llm"}
 
         links_created = 0
+        errors: List[Dict[str, str]] = []
         for doc_id in document_ids:
             try:
                 query = "MATCH (d:Document {id: $doc_id}) RETURN d.text as text"
@@ -44,7 +47,7 @@ class TopicLinker(GraphLinker):
                     """
                     self._execute_query(cypher, {"doc_id": doc_id, "topics": topics})
                     links_created += len(topics)
-            except Exception:
-
-                pass
-        return {"links_created": links_created}
+            except Exception as e:
+                log_warning("Topic extraction failed", error=e, doc_id=doc_id, stage="topic_extraction")
+                errors.append({"doc_id": doc_id, "error": str(e)})
+        return {"links_created": links_created, "errors": errors}

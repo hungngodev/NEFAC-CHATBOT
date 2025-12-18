@@ -5,7 +5,7 @@ import time
 from collections import defaultdict
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Dict, Iterable, List, Tuple
 
 
 @dataclass
@@ -21,41 +21,33 @@ class FailureRecord:
 class PipelineTracker:
     def __init__(self):
         self.stats = defaultdict(lambda: defaultdict(int))
-        self.model_usage = {}
+        self.model_usage: Dict[str, str] = {}
         self.start_time = time.time()
-        self._phase_times = {}
-        self._current_file = None
+        self._phase_times: Dict[str, float] = {}
+        self._current_file: str | None = None
         self._failures: Dict[Tuple[str, str], FailureRecord] = {}
 
     def log_phase_start(self, phase: str):
         self._phase_times[phase] = time.time()
 
     def log_phase_end(self, phase: str):
-        if phase in self._phase_times:
-            time.time() - self._phase_times[phase]
+        pass
 
     def log_file_start(self, file_type: str, filename: str, index: int, total: int):
         self._current_file = filename
         self.stats[file_type]["files_loaded"] += 1
 
-    def log_file_phase(self, phase: str, count: Optional[int] = None, model_name: Optional[str] = None):
-        parts = [f"  │   ├── {phase}"]
-        if count is not None:
-            parts.append(f": {count} items")
+    def log_file_phase(self, phase: str, count: int | None = None, model_name: str | None = None):
         if model_name:
-            parts.append(f" (🧠 {model_name})")
             self.model_usage[phase] = model_name
 
     def log_file_complete(self, filename: str, chunks: int, tokens: int):
         if self._current_file == filename:
             self._current_file = None
 
-    def log_pipeline_step(self, message: str, model_name: Optional[str] = None):
+    def log_pipeline_step(self, message: str, model_name: str | None = None):
         if model_name:
             self.model_usage[message] = model_name
-        else:
-
-            pass
 
     def track_db_upload(self, file_type: str, db_name: str, count: int):
         self.stats[file_type][f"{db_name.lower()}_uploaded"] += count
@@ -64,28 +56,7 @@ class PipelineTracker:
         self.stats[file_type][phase] += count
 
     def log_summary(self):
-        time.time() - self.start_time
-
-        for file_type, phases in self.stats.items():
-            if phases.get("files_loaded", 0) > 0:
-                [
-                    f"  Files Processed: {phases.get('files_loaded', 0)}",
-                    f"  Files Skipped: {phases.get('files_skipped', 0)}",
-                    f"  Chunks Created: {phases.get('chunks_created', 0)}",
-                    f"  Chunks Contextualized: {phases.get('chunks_contextualized', 0)}",
-                    f"  Uploaded to Qdrant: {phases.get('qdrant_uploaded', 0)}",
-                    f"  Uploaded to Elasticsearch: {phases.get('elasticsearch_uploaded', 0)}",
-                    f"  Uploaded to Neo4j: {phases.get('neo4j_uploaded', 0)}",
-                ]
-
-        if self.model_usage:
-            for phase, model in self.model_usage.items():
-
-                pass
-        if self._failures:
-            for record in self._failures.values():
-
-                pass
+        pass
 
     def record_failure(self, file_type: str, filename: str, phase: str, error: Exception | str):
         key = (file_type, filename)
@@ -108,8 +79,7 @@ class PipelineTracker:
 
     def mark_success(self, file_type: str, filename: str):
         key = (file_type, filename)
-        if key in self._failures:
-            del self._failures[key]
+        self._failures.pop(key, None)
 
     def export_failures(self, output_path: Path) -> None:
         if not self._failures:
@@ -118,7 +88,7 @@ class PipelineTracker:
             return
 
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        serialised: List[dict] = [asdict(record) for record in self._failures.values()]
+        serialised = [asdict(record) for record in self._failures.values()]
         with output_path.open("w", encoding="utf-8") as handle:
             json.dump(serialised, handle, indent=2)
 
@@ -147,7 +117,7 @@ class PipelineTracker:
         return failures
 
 
-_global_tracker = None
+_global_tracker: PipelineTracker | None = None
 
 
 def get_tracker() -> PipelineTracker:

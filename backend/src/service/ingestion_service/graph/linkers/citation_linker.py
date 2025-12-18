@@ -1,12 +1,15 @@
 import re
 from typing import Any, Dict, List
 
+from src.service.ingestion_service.observability import log_warning
+
 from .base_linker import GraphLinker
 
 
 class CitationLinker(GraphLinker):
     def apply_links(self, document_ids: List[str]) -> Dict[str, Any]:
         links_created = 0
+        errors: List[Dict[str, str]] = []
         citation_pattern = r"(\d+)\s+U\.?S\.?\s+(\d+)"
 
         for doc_id in document_ids:
@@ -30,7 +33,7 @@ class CitationLinker(GraphLinker):
                     """
                     self._execute_query(cypher, {"doc_id": doc_id, "citations": citations})
                     links_created += len(citations)
-            except Exception:
-
-                pass
-        return {"links_created": links_created}
+            except Exception as e:
+                log_warning("Citation extraction failed", error=e, doc_id=doc_id, stage="citation_extraction")
+                errors.append({"doc_id": doc_id, "error": str(e)})
+        return {"links_created": links_created, "errors": errors}

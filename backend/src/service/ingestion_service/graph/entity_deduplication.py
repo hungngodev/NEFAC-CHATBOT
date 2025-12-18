@@ -50,23 +50,19 @@ class EntityDeduplicator:
         return driver
 
     def create_vector_index(self, embedding_dimension: int = 1536, name: str = "entity"):
-        try:
-            safe_name = "".join(c for c in name if c.isalnum() or c in "_")
+        safe_name = "".join(c for c in name if c.isalnum() or c in "_")
 
-            query = f"""
-            CREATE VECTOR INDEX {safe_name} IF NOT EXISTS
-            FOR (m:`__Entity__`)
-            ON m.embedding
-            OPTIONS {{indexConfig: {{
-                `vector.dimensions`: $dimensions,
-                `vector.similarity_function`: 'cosine'
-            }}}}
-            """
+        query = f"""
+        CREATE VECTOR INDEX {safe_name} IF NOT EXISTS
+        FOR (m:`__Entity__`)
+        ON m.embedding
+        OPTIONS {{indexConfig: {{
+            `vector.dimensions`: $dimensions,
+            `vector.similarity_function`: 'cosine'
+        }}}}
+        """
 
-            self.graph_store.structured_query(query, param_map={"dimensions": embedding_dimension})
-
-        except Exception as e:
-            raise e
+        self.graph_store.structured_query(query, param_map={"dimensions": embedding_dimension})
 
     def find_duplicate_entities(self, use_llm: bool = True) -> List[Dict[str, Any]]:
         """
@@ -74,39 +70,36 @@ class EntityDeduplicator:
         - 'group': List[str] of entity names
         - 'source': str (e.g., 'apoc', 'exact', 'abbreviation', 'llm', 'consolidated')
         """
-        try:
-            all_groups_with_source = []
+        all_groups_with_source = []
 
-            if self.enable_apoc:
-                apoc_groups = self._find_duplicates_with_apoc()
-                for g in apoc_groups:
-                    all_groups_with_source.append({"group": g, "source": "apoc_fuzzy"})
-            else:
-                non_apoc_groups = self._find_duplicates_without_apoc()
-                for g in non_apoc_groups:
-                    all_groups_with_source.append({"group": g, "source": "simple_fuzzy"})
+        if self.enable_apoc:
+            apoc_groups = self._find_duplicates_with_apoc()
+            for g in apoc_groups:
+                all_groups_with_source.append({"group": g, "source": "apoc_fuzzy"})
+        else:
+            non_apoc_groups = self._find_duplicates_without_apoc()
+            for g in non_apoc_groups:
+                all_groups_with_source.append({"group": g, "source": "simple_fuzzy"})
 
-            abbrev_groups = self._find_abbreviation_duplicates()
-            for g in abbrev_groups:
-                all_groups_with_source.append({"group": g, "source": "abbreviation_rule"})
+        abbrev_groups = self._find_abbreviation_duplicates()
+        for g in abbrev_groups:
+            all_groups_with_source.append({"group": g, "source": "abbreviation_rule"})
 
-            exact_groups = self._find_exact_duplicates()
-            for g in exact_groups:
-                all_groups_with_source.append({"group": g, "source": "exact_match"})
+        exact_groups = self._find_exact_duplicates()
+        for g in exact_groups:
+            all_groups_with_source.append({"group": g, "source": "exact_match"})
 
-            if self.llm and use_llm:
-                current_groups = [item["group"] for item in all_groups_with_source]
-                candidate_pairs = self._find_candidates_for_llm(existing_groups=[list(g) for g in current_groups])
+        if self.llm and use_llm:
+            current_groups = [item["group"] for item in all_groups_with_source]
+            candidate_pairs = self._find_candidates_for_llm(existing_groups=[list(g) for g in current_groups])
 
-                if candidate_pairs:
-                    llm_groups_with_source = self._verify_with_llm(candidate_pairs)
-                    all_groups_with_source.extend(llm_groups_with_source)
+            if candidate_pairs:
+                llm_groups_with_source = self._verify_with_llm(candidate_pairs)
+                all_groups_with_source.extend(llm_groups_with_source)
 
-            consolidated_groups = self._consolidate_groups_with_source(all_groups_with_source)
+        consolidated_groups = self._consolidate_groups_with_source(all_groups_with_source)
 
-            return consolidated_groups
-        except Exception as e:
-            raise e
+        return consolidated_groups
 
     def _consolidate_groups_with_source(self, groups_with_source: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         if not groups_with_source:
@@ -161,87 +154,78 @@ class EntityDeduplicator:
         WHERE size(nodes) > 1
         RETURN [node in nodes | node.name] as names
         """
-        try:
-            result = self.graph_store.structured_query(query)
-            groups = [row["names"] for row in result]
-            if groups:
-                pass
-            return groups
-        except Exception as e:
-            raise e
+        result = self.graph_store.structured_query(query)
+        return [row["names"] for row in result]
 
     def _find_abbreviation_duplicates(self) -> List[List[str]]:
-        try:
-            query = "MATCH (n:__Entity__) RETURN distinct n.name as name"
-            result = self.graph_store.structured_query(query)
-            all_names = [r["name"] for r in result if r["name"]]
+        query = "MATCH (n:__Entity__) RETURN distinct n.name as name"
+        result = self.graph_store.structured_query(query)
+        all_names = [r["name"] for r in result if r["name"]]
 
-            all_words = set()
-            for name in all_names:
-                words = re.split(r"[^a-zA-Z0-9]+", name)
-                all_words.update(words)
+        all_words = set()
+        for name in all_names:
+            words = re.split(r"[^a-zA-Z0-9]+", name)
+            all_words.update(words)
 
-            abbrev_tokens = {w for w in all_words if 2 <= len(w) <= 6 and w.isupper() and w.isalpha()}
+        abbrev_tokens = {w for w in all_words if 2 <= len(w) <= 6 and w.isupper() and w.isalpha()}
 
-            token_map: Dict[str, Set[str]] = {}
+        token_map: Dict[str, Set[str]] = {}
 
-            for name in all_names:
-                for token in abbrev_tokens:
-                    if f"({token})" in name:
-                        pre_part = name.split(f"({token})")[0].strip()
-                        if pre_part:
-                            if self._is_abbreviation_of(token, pre_part):
-                                if token not in token_map:
-                                    token_map[token] = set()
-                                token_map[token].add(pre_part)
-
-                words = name.split()
-                if len(words) < 2:
-                    continue
-
-                for token in abbrev_tokens:
-                    if len(words) < len(token):
-                        continue
-
-                    for i in range(len(words) - len(token) + 1):
-                        window = words[i : i + len(token)]
-                        initials = "".join(w[0].upper() for w in window if w[0].isalpha())
-                        if initials == token:
-                            phrase = " ".join(window)
-                            if phrase.upper() == token:
-                                continue
+        for name in all_names:
+            for token in abbrev_tokens:
+                if f"({token})" in name:
+                    pre_part = name.split(f"({token})")[0].strip()
+                    if pre_part:
+                        if self._is_abbreviation_of(token, pre_part):
                             if token not in token_map:
                                 token_map[token] = set()
-                            token_map[token].add(phrase)
+                            token_map[token].add(pre_part)
 
-            groups = []
-            processed = set()
+            words = name.split()
+            if len(words) < 2:
+                continue
 
-            for token, phrases in token_map.items():
-                for phrase in phrases:
-                    token_pattern = re.compile(rf"\b{re.escape(token)}\b")
-                    names_with_token = [n for n in all_names if token_pattern.search(n)]
-                    names_with_phrase = [n for n in all_names if phrase in n]
+            for token in abbrev_tokens:
+                if len(words) < len(token):
+                    continue
 
-                    for n_phrase in names_with_phrase:
-                        n_token_hypothetical = n_phrase.replace(phrase, token)
+                for i in range(len(words) - len(token) + 1):
+                    window = words[i : i + len(token)]
+                    initials = "".join(w[0].upper() for w in window if w[0].isalpha())
+                    if initials == token:
+                        phrase = " ".join(window)
+                        if phrase.upper() == token:
+                            continue
+                        if token not in token_map:
+                            token_map[token] = set()
+                        token_map[token].add(phrase)
 
-                        for n_token in names_with_token:
-                            if n_token == n_token_hypothetical:
-                                pair = sorted([n_phrase, n_token])
-                                if tuple(pair) not in processed:
-                                    groups.append(pair)
-                                    processed.add(tuple(pair))
+        groups = []
+        processed = set()
 
-                            elif self._is_close_match(n_token, n_token_hypothetical):
-                                pair = sorted([n_phrase, n_token])
-                                if tuple(pair) not in processed:
-                                    groups.append(pair)
-                                    processed.add(tuple(pair))
+        for token, phrases in token_map.items():
+            for phrase in phrases:
+                token_pattern = re.compile(rf"\b{re.escape(token)}\b")
+                names_with_token = [n for n in all_names if token_pattern.search(n)]
+                names_with_phrase = [n for n in all_names if phrase in n]
 
-            return groups
-        except Exception as e:
-            raise e
+                for n_phrase in names_with_phrase:
+                    n_token_hypothetical = n_phrase.replace(phrase, token)
+
+                    for n_token in names_with_token:
+                        if n_token == n_token_hypothetical:
+                            pair = sorted([n_phrase, n_token])
+                            if tuple(pair) not in processed:
+                                groups.append(pair)
+                                processed.add(tuple(pair))
+
+                        elif self._is_close_match(n_token, n_token_hypothetical):
+                            pair = sorted([n_phrase, n_token])
+                            if tuple(pair) not in processed:
+                                groups.append(pair)
+                                processed.add(tuple(pair))
+
+        return groups
 
     def _is_close_match(self, s1: str, s2: str) -> bool:
         def clean(s):
@@ -342,18 +326,8 @@ class EntityDeduplicator:
         RETURN combinedResult
         """
 
-        try:
-            data = self.graph_store.structured_query(query, param_map={"cutoff": self.similarity_threshold, "distance": self.word_edit_distance})
-
-            duplicate_groups = [row["combinedResult"] for row in data]
-
-            for group in duplicate_groups:
-
-                pass
-            return duplicate_groups
-
-        except Exception as e:
-            raise e
+        data = self.graph_store.structured_query(query, param_map={"cutoff": self.similarity_threshold, "distance": self.word_edit_distance})
+        return [row["combinedResult"] for row in data]
 
     def _find_duplicates_without_apoc(self) -> List[List[str]]:
         query = """
@@ -376,17 +350,13 @@ class EntityDeduplicator:
         RETURN names as combinedResult
         """
 
-        try:
-            data = self.graph_store.structured_query(query, param_map={"cutoff": self.similarity_threshold})
+        data = self.graph_store.structured_query(query, param_map={"cutoff": self.similarity_threshold})
 
-            duplicate_groups = [row["combinedResult"] for row in data]
+        duplicate_groups = [row["combinedResult"] for row in data]
 
-            filtered_groups = self._remove_subset_groups(duplicate_groups)
+        filtered_groups = self._remove_subset_groups(duplicate_groups)
 
-            return filtered_groups
-
-        except Exception as e:
-            raise e
+        return filtered_groups
 
     def _remove_subset_groups(self, groups: List[List[str]]) -> List[List[str]]:
         filtered = []
@@ -460,109 +430,102 @@ class EntityDeduplicator:
         RETURN node.name as merged_into, size(nodesToMerge) - 1 as merged_count
         """
 
-        try:
-            result = self.graph_store.structured_query(query, param_map={"canonical_name": canonical_name, "duplicates": duplicates})
+        result = self.graph_store.structured_query(query, param_map={"canonical_name": canonical_name, "duplicates": duplicates})
 
-            if result:
-                result[0].get("merged_count", 0)
-
-        except Exception as e:
-            raise e
+        if result:
+            result[0].get("merged_count", 0)
 
     def validate_duplicates(
         self,
         duplicate_groups: Optional[List[Dict[str, Any]]] = None,
     ) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
-        try:
-            if duplicate_groups is None:
-                duplicate_groups = self.find_duplicate_entities()
+        if duplicate_groups is None:
+            duplicate_groups = self.find_duplicate_entities()
 
-            def has_conflicting_years(names):
-                years = set()
-                for n in names:
-                    matches = re.findall(r"\b(?:19|20)\d{2}\b", str(n))
-                    years.update(matches)
-                return len(years) > 1
+        def has_conflicting_years(names):
+            years = set()
+            for n in names:
+                matches = re.findall(r"\b(?:19|20)\d{2}\b", str(n))
+                years.update(matches)
+            return len(years) > 1
 
-            def has_conflicting_numbers_group(names):
-                all_nums = []
-                for n in names:
-                    nums = set(re.findall(r"\d+(?:\.\d+)?", str(n)))
-                    if nums:
-                        all_nums.append(nums)
+        def has_conflicting_numbers_group(names):
+            all_nums = []
+            for n in names:
+                nums = set(re.findall(r"\d+(?:\.\d+)?", str(n)))
+                if nums:
+                    all_nums.append(nums)
 
-                if len(all_nums) < 2:
-                    return False
-
-                for i in range(len(all_nums)):
-                    for j in range(i + 1, len(all_nums)):
-                        if all_nums[i].isdisjoint(all_nums[j]):
-                            return True
+            if len(all_nums) < 2:
                 return False
 
-            def is_policy_vs_location(names):
-                keywords = {"policy", "act", "law", "regulation", "protocol", "procedure", "guideline"}
-                has_keyword = [any(k in str(n).lower() for k in keywords) for n in names]
+            for i in range(len(all_nums)):
+                for j in range(i + 1, len(all_nums)):
+                    if all_nums[i].isdisjoint(all_nums[j]):
+                        return True
+            return False
 
-                if all(has_keyword) or not any(has_keyword):
-                    return False
+        def is_policy_vs_location(names):
+            keywords = {"policy", "act", "law", "regulation", "protocol", "procedure", "guideline"}
+            has_keyword = [any(k in str(n).lower() for k in keywords) for n in names]
 
-                nlp = self._ensure_spacy_model()
-                if nlp:
-                    try:
-                        has_gpe = False
-                        has_law_or_work = False
-
-                        for n in names:
-                            doc = nlp(str(n))
-                            for ent in doc.ents:
-                                if ent.label_ == "GPE":
-                                    has_gpe = True
-                                elif ent.label_ in ["LAW", "WORK_OF_ART", "ORG"]:
-                                    has_law_or_work = True
-
-                        if has_gpe and has_law_or_work:
-                            return True
-                    except Exception:
-                        pass
-
-                location_indicators = {", rhode island", ", ri", "state of", "city of", "town of"}
-                for i, n in enumerate(names):
-                    if not has_keyword[i]:
-                        if any(loc in str(n).lower() for loc in location_indicators):
-                            return True
-                        if str(n).strip().lower() == "rhode island":
-                            return True
+            if all(has_keyword) or not any(has_keyword):
                 return False
 
-            false_positive_patterns = [
-                (has_conflicting_years, "Contains different years"),
-                (has_conflicting_numbers_group, "Contains conflicting numbers"),
-                (is_policy_vs_location, "Merges Policy/Doc with Location"),
-                (lambda names: any("draft" in str(n).lower() for n in names) and any("draft" not in str(n).lower() for n in names), "Mix of draft and non-draft"),
-                (lambda names: any("Amended" in str(n) for n in names) and len(set(str(n).replace("Amended", "").strip() for n in names)) > 1, "Different base documents with amendments"),
-            ]
+            nlp = self._ensure_spacy_model()
+            if nlp:
+                try:
+                    has_gpe = False
+                    has_law_or_work = False
 
-            validated = []
-            false_positives = []
+                    for n in names:
+                        doc = nlp(str(n))
+                        for ent in doc.ents:
+                            if ent.label_ == "GPE":
+                                has_gpe = True
+                            elif ent.label_ in ["LAW", "WORK_OF_ART", "ORG"]:
+                                has_law_or_work = True
 
-            for item in duplicate_groups:
-                group = item["group"]
-                is_false_positive = False
+                    if has_gpe and has_law_or_work:
+                        return True
+                except Exception:
+                    pass
 
-                for pattern_fn, pattern_reason in false_positive_patterns:
-                    if pattern_fn(group):
-                        is_false_positive = True
-                        break
+            location_indicators = {", rhode island", ", ri", "state of", "city of", "town of"}
+            for i, n in enumerate(names):
+                if not has_keyword[i]:
+                    if any(loc in str(n).lower() for loc in location_indicators):
+                        return True
+                    if str(n).strip().lower() == "rhode island":
+                        return True
+            return False
 
-                if is_false_positive:
-                    false_positives.append(item)
-                else:
-                    validated.append(item)
+        false_positive_patterns = [
+            (has_conflicting_years, "Contains different years"),
+            (has_conflicting_numbers_group, "Contains conflicting numbers"),
+            (is_policy_vs_location, "Merges Policy/Doc with Location"),
+            (lambda names: any("draft" in str(n).lower() for n in names) and any("draft" not in str(n).lower() for n in names), "Mix of draft and non-draft"),
+            (lambda names: any("Amended" in str(n) for n in names) and len(set(str(n).replace("Amended", "").strip() for n in names)) > 1, "Different base documents with amendments"),
+        ]
 
-            return validated, false_positives
-        except Exception as e:
-            raise e
+        validated = []
+        false_positives = []
+
+        for item in duplicate_groups:
+            group = item["group"]
+            is_false_positive = False
+
+            for pattern_fn, pattern_reason in false_positive_patterns:
+                if pattern_fn(group):
+                    is_false_positive = True
+                    break
+
+            if is_false_positive:
+                false_positives.append(item)
+            else:
+                validated.append(item)
+
+        return validated, false_positives
 
     def get_duplicate_stats(
         self,
@@ -571,35 +534,31 @@ class EntityDeduplicator:
         false_positives: Optional[List[Dict[str, Any]]] = None,
         use_llm: bool = True,
     ) -> Dict[str, Any]:
-        try:
-            count_query = "MATCH (e:__Entity__) RETURN count(e) as total"
-            result = self.graph_store.structured_query(count_query)
-            total_entities = result[0]["total"] if result else 0
+        count_query = "MATCH (e:__Entity__) RETURN count(e) as total"
+        result = self.graph_store.structured_query(count_query)
+        total_entities = result[0]["total"] if result else 0
 
-            if duplicate_groups is None:
-                duplicate_groups = self.find_duplicate_entities(use_llm=use_llm)
+        if duplicate_groups is None:
+            duplicate_groups = self.find_duplicate_entities(use_llm=use_llm)
 
-            if validated_groups is None:
-                validated_groups, false_positives = self.validate_duplicates(duplicate_groups)
+        if validated_groups is None:
+            validated_groups, false_positives = self.validate_duplicates(duplicate_groups)
 
-            if false_positives is None:
-                false_positives = []
+        if false_positives is None:
+            false_positives = []
 
-            total_duplicates = sum(len(item["group"]) - 1 for item in validated_groups)
+        total_duplicates = sum(len(item["group"]) - 1 for item in validated_groups)
 
-            stats = {
-                "total_entities": total_entities,
-                "duplicate_groups_found": len(duplicate_groups),
-                "validated_groups": len(validated_groups),
-                "false_positive_groups": len(false_positives),
-                "total_duplicate_entities": total_duplicates,
-                "deduplication_potential": f"{(total_duplicates / max(total_entities, 1) * 100):.1f}%",
-            }
+        stats = {
+            "total_entities": total_entities,
+            "duplicate_groups_found": len(duplicate_groups),
+            "validated_groups": len(validated_groups),
+            "false_positive_groups": len(false_positives),
+            "total_duplicate_entities": total_duplicates,
+            "deduplication_potential": f"{(total_duplicates / max(total_entities, 1) * 100):.1f}%",
+        }
 
-            return stats
-
-        except Exception as e:
-            raise e
+        return stats
 
     def _find_candidates_for_llm(self, existing_groups: List[List[str]]) -> List[List[str]]:
         query = """
@@ -616,28 +575,22 @@ class EntityDeduplicator:
         }
         RETURN e.name as name1, node.name as name2
         """
-        try:
-            result = self.graph_store.structured_query(query)
-            candidates = []
+        result = self.graph_store.structured_query(query)
+        candidates = []
 
-            existing_pairs: Set[Tuple[str, ...]] = set()
-            for group in existing_groups:
-                for i in range(len(group)):
-                    for j in range(i + 1, len(group)):
-                        existing_pair = tuple(sorted([group[i], group[j]]))
-                        existing_pairs.add(existing_pair)
+        existing_pairs: Set[Tuple[str, ...]] = set()
+        for group in existing_groups:
+            for i in range(len(group)):
+                for j in range(i + 1, len(group)):
+                    existing_pair = tuple(sorted([group[i], group[j]]))
+                    existing_pairs.add(existing_pair)
 
-            for row in result:
-                pair: List[str] = sorted([str(row["name1"]), str(row["name2"])])
-                if tuple(pair) not in existing_pairs:
-                    candidates.append(pair)
+        for row in result:
+            pair: List[str] = sorted([str(row["name1"]), str(row["name2"])])
+            if tuple(pair) not in existing_pairs:
+                candidates.append(pair)
 
-            if candidates:
-
-                pass
-            return candidates
-        except Exception as e:
-            raise e
+        return candidates
 
     def _has_conflicting_numbers(self, s1: str, s2: str) -> bool:
         """

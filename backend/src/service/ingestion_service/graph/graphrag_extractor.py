@@ -12,6 +12,7 @@ from llama_index.core.graph_stores.types import (
 from llama_index.core.schema import BaseNode, TransformComponent
 from llama_index.llms.openai import OpenAI
 
+from src.service.ingestion_service.observability import log_debug, log_warning
 from src.service.ingestion_service.settings import ALLOWED_NODES, ALLOWED_RELATIONSHIPS
 
 GRAPHRAG_EXTRACTION_PROMPT = """You are a knowledge graph extraction expert specializing in First Amendment, FOIA, and media law content.
@@ -104,7 +105,9 @@ class GraphRAGExtractor(TransformComponent):
                     kg_relations.append(relation)
                 node.metadata[KG_RELATIONS_KEY] = kg_relations
 
-            except Exception:
+            except Exception as e:
+                node_id = node.metadata.get("chunk_id") or node.metadata.get("doc_id") or node.id_
+                log_warning("GraphRAG extraction failed", error=e, node_id=str(node_id), stage="graphrag_extraction")
                 continue
 
         return list(nodes)
@@ -158,8 +161,12 @@ class GraphRAGExtractor(TransformComponent):
                 return valid_entities, valid_relationships
 
             except json.JSONDecodeError as e:
+                node_id = node.metadata.get("chunk_id") or node.metadata.get("doc_id") or node.id_
+                log_debug("JSON parse error", error=e, node_id=str(node_id), extra={"attempt": attempt + 1})
                 continue
-            except Exception:
+            except Exception as e:
+                node_id = node.metadata.get("chunk_id") or node.metadata.get("doc_id") or node.id_
+                log_debug("Extraction error", error=e, node_id=str(node_id), extra={"attempt": attempt + 1})
                 continue
 
         return [], []

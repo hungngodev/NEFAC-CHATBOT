@@ -34,6 +34,10 @@ from src.service.ingestion_service.graph.linkers import (
     TemporalLinker,
     TopicLinker,
 )
+from src.service.ingestion_service.llamaindex.metadata_utils import (
+    sanitize_metadata,
+)
+from src.service.ingestion_service.observability import log_debug, log_warning
 from src.service.ingestion_service.settings import (
     ALLOWED_NODES,
     ALLOWED_RELATIONSHIPS,
@@ -47,9 +51,6 @@ from src.service.ingestion_service.settings import (
     GRAPH_RATE_LIMIT_RETRIES,
     GRAPH_WORD_DISTANCE_THRESHOLD,
     KG_VALIDATION_SCHEMA,
-)
-from src.service.ingestion_service.shared.metadata_utils import (
-    sanitize_metadata,
 )
 
 logging.getLogger("openai").setLevel(logging.WARNING)
@@ -118,16 +119,13 @@ class LegalPropertyGraphIngestor:
         self._setup_graph_store()
 
     def _setup_graph_store(self):
-        try:
-            self.graph_store = Neo4jPropertyGraphStore(
-                username=self.neo4j_user,
-                password=self.neo4j_password,
-                url=self.neo4j_url,
-                database=self.database,
-            )
-            self._ensure_constraints()
-        except Exception as e:
-            raise e
+        self.graph_store = Neo4jPropertyGraphStore(
+            username=self.neo4j_user,
+            password=self.neo4j_password,
+            url=self.neo4j_url,
+            database=self.database,
+        )
+        self._ensure_constraints()
 
     def _ensure_constraints(self):
         driver = self._get_driver()
@@ -139,12 +137,9 @@ class LegalPropertyGraphIngestor:
             "CREATE INDEX org_name IF NOT EXISTS FOR (o:Organization) ON (o.name)",
             "CREATE INDEX location_name IF NOT EXISTS FOR (l:Location) ON (l.name)",
         ]
-        try:
-            with driver.session(database=self.database) as session:
-                for q in queries:
-                    session.run(q)
-        except Exception as e:
-            raise e
+        with driver.session(database=self.database) as session:
+            for q in queries:
+                session.run(q)
 
     def _create_schema_extractor(self):
         extraction_llm = LIOpenAI(
@@ -225,11 +220,8 @@ class LegalPropertyGraphIngestor:
         MATCH (n {chunk_id: rid})
         DETACH DELETE n
         """
-        try:
-            with driver.session(database=self.database) as session:
-                session.run(cypher, ids=list(ids))
-        except Exception as exc:
-            raise exc
+        with driver.session(database=self.database) as session:
+            session.run(cypher, ids=list(ids))
 
     def delete_by_doc_id(self, doc_id: str) -> None:
         if not doc_id:
@@ -239,11 +231,8 @@ class LegalPropertyGraphIngestor:
         MATCH (n {doc_id: $doc_id})
         DETACH DELETE n
         """
-        try:
-            with driver.session(database=self.database) as session:
-                session.run(cypher, doc_id=doc_id)
-        except Exception as exc:
-            raise exc
+        with driver.session(database=self.database) as session:
+            session.run(cypher, doc_id=doc_id)
 
     def _cleanup_empty_nodes(self):
         driver = self._get_driver()
@@ -252,14 +241,8 @@ class LegalPropertyGraphIngestor:
         WHERE n.id IS NULL OR toString(n.id) = '' OR n.name IS NULL OR toString(n.name) = ''
         DETACH DELETE n
         """
-        try:
-            with driver.session(database=self.database) as session:
-                result = session.run(query)
-                summary = result.consume()
-                if summary.counters.nodes_deleted > 0:
-                    pass
-        except Exception as e:
-            raise e
+        with driver.session(database=self.database) as session:
+            session.run(query)
 
     def _link_chunks_to_parent_document(self):
         driver = self._get_driver()
@@ -282,11 +265,8 @@ class LegalPropertyGraphIngestor:
             d.source_url = coalesce(d.source_url, c.source_url)
         MERGE (c)-[:PART_OF]->(d)
         """
-        try:
-            with driver.session(database=self.database) as session:
-                session.run(query)
-        except Exception as e:
-            raise e
+        with driver.session(database=self.database) as session:
+            session.run(query)
 
     def _link_entities_to_documents(self):
         driver = self._get_driver()
@@ -294,14 +274,8 @@ class LegalPropertyGraphIngestor:
         MATCH (e:__Entity__)-[:MENTIONED_IN|MENTIONS|MENTIONED]->(c:Chunk)-[:PART_OF]->(d:__Document__)
         MERGE (e)-[:APPEARS_IN]->(d)
         """
-        try:
-            with driver.session(database=self.database) as session:
-                result = session.run(query)
-                summary = result.consume()
-                if summary.counters.relationships_created > 0:
-                    pass
-        except Exception as e:
-            raise e
+        with driver.session(database=self.database) as session:
+            session.run(query)
 
     def _link_documents_by_shared_entities(self):
         driver = self._get_driver()
@@ -313,14 +287,8 @@ class LegalPropertyGraphIngestor:
         MERGE (d1)-[r:RELATED_TO]->(d2)
         SET r.weight = shared_count
         """
-        try:
-            with driver.session(database=self.database) as session:
-                result = session.run(query)
-                summary = result.consume()
-                if summary.counters.relationships_created > 0:
-                    pass
-        except Exception as e:
-            raise e
+        with driver.session(database=self.database) as session:
+            session.run(query)
 
     def _link_documents_to_years(self):
         driver = self._get_driver()
@@ -331,11 +299,8 @@ class LegalPropertyGraphIngestor:
         MERGE (y:Year {name: year})
         MERGE (d)-[:PUBLISHED_IN]->(y)
         """
-        try:
-            with driver.session(database=self.database) as session:
-                session.run(query)
-        except Exception as e:
-            raise e
+        with driver.session(database=self.database) as session:
+            session.run(query)
 
     def _sync_chunk_metadata(self, documents: List[LIDocument]):
         driver = self._get_driver()
@@ -363,14 +328,11 @@ class LegalPropertyGraphIngestor:
             c.filename = row.filename
         """
 
-        try:
-            with driver.session(database=self.database) as session:
-                batch_size = 1000
-                for i in range(0, len(data), batch_size):
-                    batch = data[i : i + batch_size]
-                    session.run(query, data=batch)
-        except Exception as e:
-            raise e
+        with driver.session(database=self.database) as session:
+            batch_size = 1000
+            for i in range(0, len(data), batch_size):
+                batch = data[i : i + batch_size]
+                session.run(query, data=batch)
 
     def _normalize_graph_labels(self):
         driver = self._get_driver()
@@ -386,7 +348,8 @@ class LegalPropertyGraphIngestor:
 
                 result = session.run("CALL db.relationshipTypes()")
                 existing_rel_types = {record["relationshipType"] for record in result}
-        except Exception:
+        except Exception as e:
+            log_debug("Failed to fetch labels/relationships for normalization", error=e)
             return
 
         def _clean_key(s: str) -> str:
@@ -430,21 +393,11 @@ class LegalPropertyGraphIngestor:
             with driver.session(database=self.database) as session:
                 for q in queries:
                     session.run(q)
-            if queries:
-                pass
-            else:
-                pass
-        except Exception:
-
-            pass
+        except Exception as e:
+            log_debug("Failed to normalize graph labels", error=e, stage="normalize")
 
     def _enforce_schema_compliance(self, nodes: List[BaseNode]) -> List[BaseNode]:
-        valid_nodes = []
-
-        for node in nodes:
-            valid_nodes.append(node)
-
-        return valid_nodes
+        return nodes
 
     def _cleanup_aggressive(self):
         driver = self._get_driver()
@@ -464,9 +417,8 @@ class LegalPropertyGraphIngestor:
             with driver.session(database=self.database) as session:
                 for q in queries:
                     session.run(q)
-        except Exception:
-
-            pass
+        except Exception as e:
+            log_debug("Aggressive cleanup failed", error=e, stage="cleanup")
 
     def ingest_nodes(
         self,
@@ -532,44 +484,38 @@ class LegalPropertyGraphIngestor:
                     try:
                         semantic_linker = SemanticLinker(self._get_driver())
                         semantic_linker.apply_links(ids)
-                    except Exception:
-
-                        pass
+                    except Exception as e:
+                        log_warning("Semantic linking failed", error=e, stage="semantic_linking")
                 if run_community_detection:
                     try:
                         community_linker = CommunityLinker(self._get_driver())
                         community_linker.apply_links(ids)
-                    except Exception:
-
-                        pass
+                    except Exception as e:
+                        log_warning("Community detection failed", error=e, stage="community_detection")
                 if run_topic_extraction:
                     try:
                         topic_linker = TopicLinker(self._get_driver(), llm=self.llm)
                         topic_linker.apply_links(ids)
-                    except Exception:
-
-                        pass
+                    except Exception as e:
+                        log_warning("Topic extraction failed", error=e, stage="topic_extraction")
                 if run_citation_linking:
                     try:
                         citation_linker = CitationLinker(self._get_driver())
                         citation_linker.apply_links(ids)
-                    except Exception:
-
-                        pass
+                    except Exception as e:
+                        log_warning("Citation linking failed", error=e, stage="citation_linking")
                 if run_temporal_linking:
                     try:
                         temporal_linker = TemporalLinker(self._get_driver())
                         temporal_linker.apply_links(ids)
-                    except Exception:
-
-                        pass
+                    except Exception as e:
+                        log_warning("Temporal linking failed", error=e, stage="temporal_linking")
                 if run_entity_cooccurrence:
                     try:
                         cooccurrence_linker = EntityCooccurrenceLinker(self._get_driver())
                         cooccurrence_linker.apply_links(ids)
-                    except Exception:
-
-                        pass
+                    except Exception as e:
+                        log_warning("Entity cooccurrence linking failed", error=e, stage="cooccurrence_linking")
                 if run_deduplication and GRAPH_ENABLE_ENTITY_DEDUPLICATION:
                     self.deduplicate_entities(
                         similarity_threshold=GRAPH_ENTITY_SIMILARITY_THRESHOLD,
@@ -593,37 +539,33 @@ class LegalPropertyGraphIngestor:
         enable_apoc: bool = True,
         dry_run: bool = False,
     ) -> dict:
-        try:
-            deduplicator = EntityDeduplicator(
-                graph_store=self.graph_store,
-                similarity_threshold=similarity_threshold,
-                word_edit_distance=word_edit_distance,
-                enable_apoc=enable_apoc,
-                llm=Settings.llm,
-            )
-            deduplicator.create_vector_index(embedding_dimension=EMBEDDING_DIMENSIONS, name="entity_vec_idx")
+        deduplicator = EntityDeduplicator(
+            graph_store=self.graph_store,
+            similarity_threshold=similarity_threshold,
+            word_edit_distance=word_edit_distance,
+            enable_apoc=enable_apoc,
+            llm=Settings.llm,
+        )
+        deduplicator.create_vector_index(embedding_dimension=EMBEDDING_DIMENSIONS, name="entity_vec_idx")
 
-            duplicate_groups = deduplicator.find_duplicate_entities()
+        duplicate_groups = deduplicator.find_duplicate_entities()
 
-            validated_groups, false_positives = deduplicator.validate_duplicates(duplicate_groups)
+        validated_groups, false_positives = deduplicator.validate_duplicates(duplicate_groups)
 
-            initial_stats = deduplicator.get_duplicate_stats(duplicate_groups=duplicate_groups, validated_groups=validated_groups, false_positives=false_positives)
+        initial_stats = deduplicator.get_duplicate_stats(duplicate_groups=duplicate_groups, validated_groups=validated_groups, false_positives=false_positives)
 
-            merge_stats = deduplicator.merge_duplicate_entities(
-                duplicate_groups=validated_groups,
-                dry_run=dry_run,
-            )
-            final_stats = deduplicator.get_duplicate_stats(use_llm=False)
-            result = {
-                **merge_stats,
-                "initial_stats": initial_stats,
-                "final_stats": final_stats,
-                "validated_groups": len(validated_groups),
-                "false_positives_filtered": len(false_positives),
-            }
-            return result
-        except Exception as e:
-            raise e
+        merge_stats = deduplicator.merge_duplicate_entities(
+            duplicate_groups=validated_groups,
+            dry_run=dry_run,
+        )
+        final_stats = deduplicator.get_duplicate_stats(use_llm=False)
+        return {
+            **merge_stats,
+            "initial_stats": initial_stats,
+            "final_stats": final_stats,
+            "validated_groups": len(validated_groups),
+            "false_positives_filtered": len(false_positives),
+        }
 
     def _get_driver(self):
         driver = getattr(self.graph_store, "driver", None) or getattr(self.graph_store, "_driver", None)
@@ -632,51 +574,45 @@ class LegalPropertyGraphIngestor:
         return driver
 
     def clear_graph(self):
-        try:
-            driver = self._get_driver()
-            with driver.session(database=self.database) as session:
-                session.run("MATCH (n) DETACH DELETE n")
-        except Exception:
-            raise
+        driver = self._get_driver()
+        with driver.session(database=self.database) as session:
+            session.run("MATCH (n) DETACH DELETE n")
 
     def get_stats(self) -> dict:
-        try:
-            driver = self._get_driver()
-            with driver.session(database=self.database) as session:
-                node_count_record = session.run("MATCH (n) RETURN count(n) AS count").single()
-                node_count = node_count_record["count"] if node_count_record else 0
-                relationship_count_record = session.run("MATCH ()-[r]->() RETURN count(r) AS count").single()
-                relationship_count = relationship_count_record["count"] if relationship_count_record else 0
-                label_counts = []
-                for record in session.run(
-                    """
-                    MATCH (n)
-                    WITH labels(n) AS labels
-                    UNWIND labels AS label
-                    RETURN label, count(*) AS count
-                    ORDER BY count DESC
-                    LIMIT 10
-                    """
-                ):
-                    label_counts.append({"label": record["label"], "count": record["count"]})
-                relationship_type_counts = []
-                for record in session.run(
-                    """
-                    MATCH ()-[r]->()
-                    RETURN type(r) AS type, count(*) AS count
-                    ORDER BY count DESC
-                    LIMIT 10
-                    """
-                ):
-                    relationship_type_counts.append({"type": record["type"], "count": record["count"]})
-            return {
-                "nodes": node_count,
-                "relationships": relationship_count,
-                "top_labels": label_counts,
-                "top_relationship_types": relationship_type_counts,
-            }
-        except Exception as e:
-            raise e
+        driver = self._get_driver()
+        with driver.session(database=self.database) as session:
+            node_count_record = session.run("MATCH (n) RETURN count(n) AS count").single()
+            node_count = node_count_record["count"] if node_count_record else 0
+            relationship_count_record = session.run("MATCH ()-[r]->() RETURN count(r) AS count").single()
+            relationship_count = relationship_count_record["count"] if relationship_count_record else 0
+            label_counts = []
+            for record in session.run(
+                """
+                MATCH (n)
+                WITH labels(n) AS labels
+                UNWIND labels AS label
+                RETURN label, count(*) AS count
+                ORDER BY count DESC
+                LIMIT 10
+                """
+            ):
+                label_counts.append({"label": record["label"], "count": record["count"]})
+            relationship_type_counts = []
+            for record in session.run(
+                """
+                MATCH ()-[r]->()
+                RETURN type(r) AS type, count(*) AS count
+                ORDER BY count DESC
+                LIMIT 10
+                """
+            ):
+                relationship_type_counts.append({"type": record["type"], "count": record["count"]})
+        return {
+            "nodes": node_count,
+            "relationships": relationship_count,
+            "top_labels": label_counts,
+            "top_relationship_types": relationship_type_counts,
+        }
 
     def _label_chunk_nodes(self):
         driver = self._get_driver()
@@ -699,15 +635,7 @@ class LegalPropertyGraphIngestor:
         DETACH DELETE n
         """
 
-        try:
-            with driver.session(database=self.database) as session:
-                session.run(query_text)
-                session.run(query_standard)
-
-                result = session.run(query_cleanup)
-                summary = result.consume()
-                if summary.counters.nodes_deleted > 0:
-
-                    pass
-        except Exception as e:
-            raise e
+        with driver.session(database=self.database) as session:
+            session.run(query_text)
+            session.run(query_standard)
+            session.run(query_cleanup)

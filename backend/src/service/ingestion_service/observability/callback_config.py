@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
@@ -177,3 +178,132 @@ def get_llm_events(handlers: Optional[Dict[str, Any]] = None) -> List[Dict[str, 
         except Exception:
             return []
     return []
+
+
+# --- Unified Error Logging with Langfuse ---
+
+_module_logger = logging.getLogger("ingestion_service")
+
+
+def _update_langfuse_span(metadata: Dict[str, Any], level: str = "DEFAULT") -> None:
+    """Update current Langfuse span with metadata if available."""
+    if not LANGFUSE_AVAILABLE:
+        return
+    try:
+        from langfuse import get_client
+
+        client = get_client()
+        if client:
+            client.update_current_span(metadata=metadata, level=level)
+    except Exception:
+        pass
+
+
+def log_error(
+    message: str,
+    *,
+    error: Optional[Exception] = None,
+    doc_id: Optional[str] = None,
+    node_id: Optional[str] = None,
+    stage: Optional[str] = None,
+    extra: Optional[Dict[str, Any]] = None,
+) -> None:
+    """
+    Log an error to both Python logger and Langfuse.
+
+    Args:
+        message: Human-readable error message
+        error: The exception that occurred
+        doc_id: Document ID for tracking
+        node_id: Node/chunk ID for tracking
+        stage: Pipeline stage where error occurred
+        extra: Additional metadata for Langfuse
+    """
+    context_parts = []
+    if doc_id:
+        context_parts.append(f"doc_id={doc_id}")
+    if node_id:
+        context_parts.append(f"node_id={node_id}")
+    if stage:
+        context_parts.append(f"stage={stage}")
+
+    context = f" [{', '.join(context_parts)}]" if context_parts else ""
+    error_str = f": {error}" if error else ""
+    full_message = f"{message}{context}{error_str}"
+
+    _module_logger.error(full_message)
+
+    metadata: Dict[str, Any] = {"error": message}
+    if doc_id:
+        metadata["doc_id"] = doc_id
+    if node_id:
+        metadata["node_id"] = node_id
+    if stage:
+        metadata["stage"] = stage
+    if error:
+        metadata["error_detail"] = str(error)
+    if extra:
+        metadata.update(extra)
+
+    _update_langfuse_span(metadata, level="ERROR")
+
+
+def log_warning(
+    message: str,
+    *,
+    error: Optional[Exception] = None,
+    doc_id: Optional[str] = None,
+    node_id: Optional[str] = None,
+    stage: Optional[str] = None,
+    extra: Optional[Dict[str, Any]] = None,
+) -> None:
+    """Log a warning to both Python logger and Langfuse."""
+    context_parts = []
+    if doc_id:
+        context_parts.append(f"doc_id={doc_id}")
+    if node_id:
+        context_parts.append(f"node_id={node_id}")
+    if stage:
+        context_parts.append(f"stage={stage}")
+
+    context = f" [{', '.join(context_parts)}]" if context_parts else ""
+    error_str = f": {error}" if error else ""
+    full_message = f"{message}{context}{error_str}"
+
+    _module_logger.warning(full_message)
+
+    metadata: Dict[str, Any] = {"warning": message}
+    if doc_id:
+        metadata["doc_id"] = doc_id
+    if node_id:
+        metadata["node_id"] = node_id
+    if stage:
+        metadata["stage"] = stage
+    if error:
+        metadata["error_detail"] = str(error)
+    if extra:
+        metadata.update(extra)
+
+    _update_langfuse_span(metadata, level="WARNING")
+
+
+def log_debug(
+    message: str,
+    *,
+    error: Optional[Exception] = None,
+    doc_id: Optional[str] = None,
+    node_id: Optional[str] = None,
+    extra: Optional[Dict[str, Any]] = None,
+) -> None:
+    """Log debug info to Python logger only (not sent to Langfuse)."""
+    context_parts = []
+    if doc_id:
+        context_parts.append(f"doc_id={doc_id}")
+    if node_id:
+        context_parts.append(f"node_id={node_id}")
+
+    context = f" [{', '.join(context_parts)}]" if context_parts else ""
+    error_str = f": {error}" if error else ""
+    full_message = f"{message}{context}{error_str}"
+
+    _module_logger.debug(full_message)

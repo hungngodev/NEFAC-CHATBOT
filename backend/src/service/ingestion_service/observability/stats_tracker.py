@@ -217,20 +217,7 @@ class IngestionStatsTracker:
     def print_summary(self) -> None:
         """Print a formatted summary of the ingestion run."""
         self.finalize()
-        summary = self.get_summary()
-
-        (summary.successful / summary.total_documents * 100) if summary.total_documents > 0 else 0
-
-        if summary.stage_stats:
-            for name, stats in summary.stage_stats.items():
-                if stats.duration_seconds > 0:
-
-                    pass
-        if summary.failed_documents:
-            for doc in summary.failed_documents[:10]:
-                pass
-            if len(summary.failed_documents) > 10:
-                pass
+        self.get_summary()
 
     def reset(self) -> None:
         """Reset all tracking data."""

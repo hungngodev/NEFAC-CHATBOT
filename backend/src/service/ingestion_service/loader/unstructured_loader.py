@@ -155,118 +155,104 @@ def load_document_nodes(
 
             pass
 
-    try:
-        if ext in {"xlsx", "xls", "csv"}:
-            _log_phase("Parsing spreadsheet structure")
-            xlsx_chunks = process_xlsx_intelligently(str(path), entry)
+    if ext in {"xlsx", "xls", "csv"}:
+        _log_phase("Parsing spreadsheet structure")
+        xlsx_chunks = process_xlsx_intelligently(str(path), entry)
 
-            for chunk_idx, (sheet_text, sheet_meta) in enumerate(xlsx_chunks):
-                chunk_base_meta = document_base_meta.copy()
-                chunk_base_meta.update(sheet_meta)
+        for chunk_idx, (sheet_text, sheet_meta) in enumerate(xlsx_chunks):
+            chunk_base_meta = document_base_meta.copy()
+            chunk_base_meta.update(sheet_meta)
 
-                sheet_nodes = build_nodes_from_text(sheet_text, chunk_base_meta)
-                total_file_chunks += len(sheet_nodes)
-                file_tokens += sum(len(raw_node.get_content().split()) for raw_node in sheet_nodes)
+            sheet_nodes = build_nodes_from_text(sheet_text, chunk_base_meta)
+            total_file_chunks += len(sheet_nodes)
+            file_tokens += sum(len(raw_node.get_content().split()) for raw_node in sheet_nodes)
 
-                for idx, raw_node in enumerate(sheet_nodes):
-                    chunk_text = raw_node.get_content()
-                    node_meta = dict(raw_node.metadata or {})
-                    chunk_meta = {
-                        **node_meta,
-                        "sheet_index": chunk_idx,
-                        "total_sheets": len(xlsx_chunks),
-                        "chunk_index": idx,
-                        "total_chunks": len(sheet_nodes),
-                        "chunk_size": len(chunk_text),
-                        "chunk_word_count": len(chunk_text.split()),
-                    }
-
-                    context_parts = [f"Document: {base_meta['title']}"]
-                    if sheet_meta.get("sheet_name"):
-                        context_parts.append(f"Sheet: {sheet_meta['sheet_name']}")
-                    summary = node_meta.get("section_summary") or node_meta.get("window")
-                    if summary:
-                        context_parts.append(str(summary))
-
-                    context = " | ".join(context_parts)
-                    nodes.append(_create_node(chunk_text, chunk_base_meta, chunk_meta, context, raw_node=raw_node))
-
-        else:
-            _log_phase("Extracting content")
-            whole_text = None
-
-            is_transcript = False
-            offset_map = None
-
-            if not whole_text:
-                if ext == "txt":
-                    try:
-                        with open(path, "r", encoding="utf-8") as f:
-                            whole_text = f.read()
-                    except Exception:
-
-                        pass
-                if not whole_text:
-                    elements = u_partition(path_str)
-                    whole_text = "\n\n".join(str(el).strip() for el in elements if str(el).strip())
-
-                    if ext in {"html", "pdf"}:
-
-                        pass
-            if ext == "txt":
-                elem_info = len(elements) if "elements" in locals() else "1 (Direct)"
-
-                _log_phase("Parsing transcript timestamps")
-                clean_text, offset_map = parse_timestamps(whole_text)
-
-                if clean_text.strip():
-                    is_transcript = True
-                    base_meta.update({"transcript_type": "youtube", "has_timestamps": True})
-                    whole_text = clean_text
-                else:
-                    first_lines = whole_text[:500].splitlines()
-                    for i, line in enumerate(first_lines[:5]):
-
-                        pass
-                    if len(whole_text) > 1000 and whole_text.count("\n") < len(whole_text) / 200:
-                        pre_splitter = SentenceSplitter(chunk_size=200, chunk_overlap=0)
-                        text_chunks = pre_splitter.split_text(whole_text)
-                        whole_text = "\n\n".join(text_chunks)
-
-            if not whole_text or not whole_text.strip():
-                return [], 0, 0
-
-            raw_nodes = build_nodes_from_text(whole_text, document_base_meta)
-            total_file_chunks = len(raw_nodes)
-            file_tokens = sum(len(raw_node.get_content().split()) for raw_node in raw_nodes)
-            curr_offset = 0
-
-            for idx, raw_node in enumerate(raw_nodes):
+            for idx, raw_node in enumerate(sheet_nodes):
                 chunk_text = raw_node.get_content()
                 node_meta = dict(raw_node.metadata or {})
                 chunk_meta = {
                     **node_meta,
+                    "sheet_index": chunk_idx,
+                    "total_sheets": len(xlsx_chunks),
                     "chunk_index": idx,
-                    "total_chunks": total_file_chunks,
+                    "total_chunks": len(sheet_nodes),
                     "chunk_size": len(chunk_text),
                     "chunk_word_count": len(chunk_text.split()),
                 }
 
-                if is_transcript and offset_map:
-                    start_time_ts, end_time_ts, curr_offset = get_chunk_times(chunk_text, whole_text, offset_map, curr_offset)
-                    duration = max(0, end_time_ts - start_time_ts)
-                    chunk_meta.update({"start_time": start_time_ts, "end_time": end_time_ts, "duration": duration})
-
                 context_parts = [f"Document: {base_meta['title']}"]
+                if sheet_meta.get("sheet_name"):
+                    context_parts.append(f"Sheet: {sheet_meta['sheet_name']}")
                 summary = node_meta.get("section_summary") or node_meta.get("window")
                 if summary:
                     context_parts.append(str(summary))
-                if is_transcript and offset_map:
-                    context_parts.append(f"Transcript segment ({start_time_ts:.1f}s-{end_time_ts:.1f}s)")
+
                 context = " | ".join(context_parts)
-                nodes.append(_create_node(chunk_text, document_base_meta, chunk_meta, context, raw_node=raw_node))
+                nodes.append(_create_node(chunk_text, chunk_base_meta, chunk_meta, context, raw_node=raw_node))
 
-        return nodes, total_file_chunks, file_tokens
+    else:
+        _log_phase("Extracting content")
+        whole_text = None
 
-    except Exception:
-        raise
+        is_transcript = False
+        offset_map = None
+
+        if not whole_text:
+            if ext == "txt":
+                try:
+                    with open(path, "r", encoding="utf-8") as f:
+                        whole_text = f.read()
+                except Exception:
+                    whole_text = None
+            if not whole_text:
+                elements = u_partition(path_str)
+                whole_text = "\n\n".join(str(el).strip() for el in elements if str(el).strip())
+
+        if ext == "txt":
+            _log_phase("Parsing transcript timestamps")
+            clean_text, offset_map = parse_timestamps(whole_text)
+
+            if clean_text.strip():
+                is_transcript = True
+                base_meta.update({"transcript_type": "youtube", "has_timestamps": True})
+                whole_text = clean_text
+            else:
+                if len(whole_text) > 1000 and whole_text.count("\n") < len(whole_text) / 200:
+                    pre_splitter = SentenceSplitter(chunk_size=200, chunk_overlap=0)
+                    text_chunks = pre_splitter.split_text(whole_text)
+                    whole_text = "\n\n".join(text_chunks)
+
+        if not whole_text or not whole_text.strip():
+            return [], 0, 0
+
+        raw_nodes = build_nodes_from_text(whole_text, document_base_meta)
+        total_file_chunks = len(raw_nodes)
+        file_tokens = sum(len(raw_node.get_content().split()) for raw_node in raw_nodes)
+        curr_offset = 0
+
+        for idx, raw_node in enumerate(raw_nodes):
+            chunk_text = raw_node.get_content()
+            node_meta = dict(raw_node.metadata or {})
+            chunk_meta = {
+                **node_meta,
+                "chunk_index": idx,
+                "total_chunks": total_file_chunks,
+                "chunk_size": len(chunk_text),
+                "chunk_word_count": len(chunk_text.split()),
+            }
+
+            if is_transcript and offset_map:
+                start_time_ts, end_time_ts, curr_offset = get_chunk_times(chunk_text, whole_text, offset_map, curr_offset)
+                duration = max(0, end_time_ts - start_time_ts)
+                chunk_meta.update({"start_time": start_time_ts, "end_time": end_time_ts, "duration": duration})
+
+            context_parts = [f"Document: {base_meta['title']}"]
+            summary = node_meta.get("section_summary") or node_meta.get("window")
+            if summary:
+                context_parts.append(str(summary))
+            if is_transcript and offset_map:
+                context_parts.append(f"Transcript segment ({start_time_ts:.1f}s-{end_time_ts:.1f}s)")
+            context = " | ".join(context_parts)
+            nodes.append(_create_node(chunk_text, document_base_meta, chunk_meta, context, raw_node=raw_node))
+
+    return nodes, total_file_chunks, file_tokens

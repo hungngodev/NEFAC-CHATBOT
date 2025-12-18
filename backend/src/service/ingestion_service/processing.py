@@ -43,10 +43,7 @@ def _ensure_startup_ready() -> None:
     if not _OBSERVABILITY_CONFIGURED:
         _configure_observability()
 
-    try:
-        _STARTUP_READY = True
-    except Exception:
-        raise
+    _STARTUP_READY = True
 
 
 SUPPORTED_FILE_TYPES = ["pdf", "html", "youtube", "xlsx"]
@@ -299,10 +296,9 @@ def process_all_file_types(
         clear_results = clear_all_databases()
         failed_dbs = [db for db, success in clear_results.items() if not success]
         if failed_dbs:
-            pass
-        else:
+            import logging
 
-            pass
+            logging.getLogger(__name__).warning(f"Failed to clear databases: {failed_dbs}")
     for file_type in SUPPORTED_FILE_TYPES:
         include_only = failure_targets.get(file_type) if retry_failures else None
         if retry_failures and not include_only:
@@ -463,10 +459,9 @@ def main() -> None:
         )
         failed_dbs = [db for db, success in clear_results.items() if not success]
         if failed_dbs:
-            pass
-        else:
+            import logging
 
-            pass
+            logging.getLogger(__name__).warning(f"Failed to clear databases: {failed_dbs}")
     failure_targets: Dict[str, Set[str]] = {}
     if args.retry_failures:
         seeded_failures = PipelineTracker.load_failures(args.failures_file)

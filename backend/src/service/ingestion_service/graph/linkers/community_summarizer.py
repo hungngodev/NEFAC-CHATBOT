@@ -121,9 +121,10 @@ class CommunitySummarizer:
                     FOR (c:Community) ON EACH [c.summary]
                 """
                 )
-            except Exception:
+            except Exception as e:
+                import logging
 
-                pass
+                logging.getLogger(__name__).debug(f"Failed to create fulltext index: {e}")
         return {
             "communities_summarized": len(summaries),
             "dry_run": dry_run,
