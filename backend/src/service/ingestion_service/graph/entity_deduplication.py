@@ -17,6 +17,8 @@ from llama_index.core.program import LLMTextCompletionProgram
 from llama_index.graph_stores.neo4j import Neo4jPropertyGraphStore
 from pydantic import BaseModel
 
+from src.service.ingestion_service.graph.neo4j_utils import get_neo4j_driver
+
 
 class EntityVerificationResult(BaseModel):
     index: int
@@ -44,10 +46,7 @@ class EntityDeduplicator:
         self.embed_model = Settings.embed_model
 
     def _get_driver(self):
-        driver = getattr(self.graph_store, "driver", None) or getattr(self.graph_store, "_driver", None)
-        if driver is None:
-            raise RuntimeError("Neo4j driver not available from property graph store")
-        return driver
+        return get_neo4j_driver(self.graph_store)
 
     def create_vector_index(self, embedding_dimension: int = 1536, name: str = "entity"):
         safe_name = "".join(c for c in name if c.isalnum() or c in "_")

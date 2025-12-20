@@ -1,13 +1,10 @@
 from __future__ import annotations
 
-import logging
 from typing import List, Optional
 
 from llama_index.core.schema import BaseNode
 
 from src.service.ingestion_service import settings as ingestion_settings
-
-logger = logging.getLogger(__name__)
 
 
 def index_nodes_to_neo4j(

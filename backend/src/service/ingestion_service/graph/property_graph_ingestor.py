@@ -34,6 +34,7 @@ from src.service.ingestion_service.graph.linkers import (
     TemporalLinker,
     TopicLinker,
 )
+from src.service.ingestion_service.graph.neo4j_utils import get_neo4j_driver
 from src.service.ingestion_service.llamaindex.metadata_utils import (
     sanitize_metadata,
 )
@@ -396,9 +397,6 @@ class LegalPropertyGraphIngestor:
         except Exception as e:
             log_debug("Failed to normalize graph labels", error=e, stage="normalize")
 
-    def _enforce_schema_compliance(self, nodes: List[BaseNode]) -> List[BaseNode]:
-        return nodes
-
     def _cleanup_aggressive(self):
         driver = self._get_driver()
         queries = [
@@ -568,10 +566,7 @@ class LegalPropertyGraphIngestor:
         }
 
     def _get_driver(self):
-        driver = getattr(self.graph_store, "driver", None) or getattr(self.graph_store, "_driver", None)
-        if driver is None:
-            raise RuntimeError("Neo4j driver not available from property graph store")
-        return driver
+        return get_neo4j_driver(self.graph_store)
 
     def clear_graph(self):
         driver = self._get_driver()

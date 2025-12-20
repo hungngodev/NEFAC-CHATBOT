@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import os
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, TypeVar
+from typing import Any, Dict, List, Optional
 
 from llama_index.core.schema import BaseNode
 from llama_index.core.storage.docstore import SimpleDocumentStore
@@ -18,71 +18,19 @@ from llama_index.core.workflow import (
 
 from src.service.ingestion_service.llamaindex.indexer import index_nodes
 from src.service.ingestion_service.loader.unstructured_loader import load_document_nodes
+from src.service.ingestion_service.observability import (
+    _update_langfuse_span,
+    observe,
+    propagate_attributes,
+)
 from src.service.ingestion_service.observability.stats_tracker import get_stats_tracker
 from src.service.ingestion_service.progress_tracker import get_tracker
 from src.service.ingestion_service.settings import GRAPH_MODE, WORKFLOW_ENABLE_VALIDATION
 
-F = TypeVar("F", bound=Callable[..., Any])
-
-LANGFUSE_AVAILABLE = False
-_langfuse_observe: Optional[Callable[..., Callable[[F], F]]] = None
-_langfuse_propagate: Optional[Callable[..., Any]] = None
-_langfuse_get_client: Optional[Callable[[], Any]] = None
-
-try:
-    from langfuse import get_client as _get_client
-    from langfuse import observe as _observe
-    from langfuse import propagate_attributes as _propagate
-
-    _test_client = _get_client()
-    if _test_client and _test_client.auth_check():
-        LANGFUSE_AVAILABLE = True
-        _langfuse_observe = _observe
-        _langfuse_propagate = _propagate
-        _langfuse_get_client = _get_client
-except ImportError:
-    pass
-except Exception:
-    pass
-
-
-def observe(name: Optional[str] = None, **kwargs: Any) -> Callable[[F], F]:
-    if LANGFUSE_AVAILABLE and _langfuse_observe:
-        return _langfuse_observe(name=name, **kwargs)
-
-    def decorator(func: F) -> F:
-        return func
-
-    return decorator
-
-
-class _NoOpContext:
-    def __enter__(self) -> "_NoOpContext":
-        return self
-
-    def __exit__(self, *args: Any) -> None:
-        pass
-
-
-def propagate_attributes(**kwargs: Any) -> Any:
-    if LANGFUSE_AVAILABLE and _langfuse_propagate:
-        return _langfuse_propagate(**kwargs)
-    return _NoOpContext()
-
-
-def _update_langfuse_span(metadata: Optional[Dict[str, Any]] = None, level: Optional[str] = None) -> None:
-    if LANGFUSE_AVAILABLE and _langfuse_get_client and metadata:
-        try:
-            client = _langfuse_get_client()
-            if client:
-                client.update_current_span(metadata=metadata, level=level)
-        except Exception:
-            pass
-
-
 STORAGE_DIR = Path(__file__).parent.parent / "storage"
 STORAGE_DIR.mkdir(parents=True, exist_ok=True)
 DOCSTORE_PATH = STORAGE_DIR / "docstore.json"
+
 
 _docstore: Optional[SimpleDocumentStore] = None
 

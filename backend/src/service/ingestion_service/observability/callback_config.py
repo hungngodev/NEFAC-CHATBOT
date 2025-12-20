@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, TypeVar
 
 from llama_index.core import Settings
 from llama_index.core.callbacks import CallbackManager, LlamaDebugHandler
@@ -184,17 +184,72 @@ def get_llm_events(handlers: Optional[Dict[str, Any]] = None) -> List[Dict[str, 
 
 _module_logger = logging.getLogger("ingestion_service")
 
+# Try to import Langfuse decorators and helpers
+_langfuse_observe = None
+_langfuse_propagate = None
+_langfuse_get_client = None
 
-def _update_langfuse_span(metadata: Dict[str, Any], level: str = "DEFAULT") -> None:
+if LANGFUSE_AVAILABLE:
+    try:
+        from langfuse import get_client as _get_langfuse
+        from langfuse import observe as _observe
+        from langfuse import propagate_attributes as _propagate
+
+        _test = _get_langfuse()
+        if _test and _test.auth_check():
+            _langfuse_observe = _observe
+            _langfuse_propagate = _propagate
+            _langfuse_get_client = _get_langfuse
+    except Exception:
+        pass
+
+
+F = TypeVar("F", bound=Callable[..., Any])
+
+
+def observe(name: Optional[str] = None, **kwargs: Any) -> Callable[[F], F]:
+    """Decorator to trace function execution with Langfuse.
+
+    Falls back to no-op if Langfuse is unavailable.
+    """
+    if _langfuse_observe:
+        return _langfuse_observe(name=name, **kwargs)
+
+    def decorator(func: F) -> F:
+        return func
+
+    return decorator
+
+
+class _NoOpContext:
+    """No-op context manager for when Langfuse is unavailable."""
+
+    def __enter__(self) -> "_NoOpContext":
+        return self
+
+    def __exit__(self, *args: Any) -> None:
+        pass
+
+
+def propagate_attributes(**kwargs: Any) -> Any:
+    """Context manager to propagate Langfuse attributes.
+
+    Falls back to no-op if Langfuse is unavailable.
+    """
+    if _langfuse_propagate:
+        return _langfuse_propagate(**kwargs)
+    return _NoOpContext()
+
+
+def _update_langfuse_span(metadata: Optional[Dict[str, Any]] = None, level: str = "DEFAULT") -> None:
     """Update current Langfuse span with metadata if available."""
-    if not LANGFUSE_AVAILABLE:
+    if not LANGFUSE_AVAILABLE or not metadata:
         return
     try:
-        from langfuse import get_client
-
-        client = get_client()
-        if client:
-            client.update_current_span(metadata=metadata, level=level)
+        if _langfuse_get_client:
+            client = _langfuse_get_client()
+            if client:
+                client.update_current_span(metadata=metadata, level=level)
     except Exception:
         pass
 
