@@ -8,7 +8,7 @@ class EntityCooccurrenceLinker(GraphLinker):
         min_weight = self.config.get("cooccurrence_min_weight", 2)
 
         query = """
-        MATCH (d1:Document)-[:MENTIONS]->(e:Entity)<-[:MENTIONS]-(d2:Document)
+        MATCH (d1:Document)-[:MENTIONS]->(e:__Entity__)<-[:MENTIONS]-(d2:Document)
         WHERE d1.id IN $doc_ids AND elementId(d1) < elementId(d2)
         WITH d1, d2, count(e) as shared_entities
         WHERE shared_entities >= $min_weight

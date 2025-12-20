@@ -6,7 +6,7 @@ from .base_linker import GraphLinker
 class DeduplicationLinker(GraphLinker):
     def apply_links(self, document_ids: List[str]) -> Dict[str, Any]:
         query = """
-        MATCH (e:Entity)
+        MATCH (e:__Entity__)
         WITH e.name as name, collect(e) as nodes
         WHERE size(nodes) > 1
         CALL apoc.refactor.mergeNodes(nodes, {properties: 'combine', mergeRels: true})
