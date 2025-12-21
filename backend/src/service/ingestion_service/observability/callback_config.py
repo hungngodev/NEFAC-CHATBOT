@@ -180,11 +180,8 @@ def get_llm_events(handlers: Optional[Dict[str, Any]] = None) -> List[Dict[str, 
     return []
 
 
-# --- Unified Error Logging with Langfuse ---
-
 _module_logger = logging.getLogger("ingestion_service")
 
-# Try to import Langfuse decorators and helpers
 _langfuse_observe = None
 _langfuse_propagate = None
 _langfuse_get_client = None

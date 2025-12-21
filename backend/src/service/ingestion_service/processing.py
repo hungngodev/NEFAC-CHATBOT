@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import logging
 import os
 import traceback
 from collections import defaultdict
@@ -296,8 +297,6 @@ def process_all_file_types(
         clear_results = clear_all_databases()
         failed_dbs = [db for db, success in clear_results.items() if not success]
         if failed_dbs:
-            import logging
-
             logging.getLogger(__name__).warning(f"Failed to clear databases: {failed_dbs}")
     for file_type in SUPPORTED_FILE_TYPES:
         include_only = failure_targets.get(file_type) if retry_failures else None
@@ -459,8 +458,6 @@ def main() -> None:
         )
         failed_dbs = [db for db, success in clear_results.items() if not success]
         if failed_dbs:
-            import logging
-
             logging.getLogger(__name__).warning(f"Failed to clear databases: {failed_dbs}")
     failure_targets: Dict[str, Set[str]] = {}
     if args.retry_failures:
