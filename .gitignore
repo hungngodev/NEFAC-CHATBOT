@@ -80,7 +80,7 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
-
+backup/
 # Log files
 *.log
 logs/

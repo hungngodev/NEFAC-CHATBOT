@@ -9,6 +9,7 @@ ADD . /deps/backend
 # -- Installing all local dependencies --
 RUN for dep in /deps/*; do             echo "Installing $dep";             if [ -d "$dep" ]; then                 echo "Installing $dep";                 (cd "$dep" && PYTHONDONTWRITEBYTECODE=1 uv pip install --system --no-cache-dir -c /api/constraints.txt -e .);             fi;         done
 # -- End of local dependencies install --
+
 ENV LANGGRAPH_HTTP='{"cors": {"allow_origins": ["http://localhost:3000"], "allow_methods": ["*"], "allow_headers": ["*"]}}'
 ENV LANGGRAPH_CHECKPOINTER='{"ttl": {"strategy": "delete", "sweep_interval_minutes": 10080, "default_ttl": 43200}}'
 ENV LANGSERVE_GRAPHS='{"agent": {"path": "src.app.server:deep_researcher", "config_schema": "src.config.settings:Configuration"}}'
@@ -19,6 +20,11 @@ ENV LANGSERVE_GRAPHS='{"agent": {"path": "src.app.server:deep_researcher", "conf
 RUN mkdir -p /api/langgraph_api /api/langgraph_runtime /api/langgraph_license && touch /api/langgraph_api/__init__.py /api/langgraph_runtime/__init__.py /api/langgraph_license/__init__.py
 RUN PYTHONDONTWRITEBYTECODE=1 uv pip install --system --no-cache-dir --no-deps -e /api
 # -- End of ensuring user deps didn't inadvertently overwrite langgraph-api --
+
+# Pin langchain-mcp-adapters to version compatible with base image's langchain-core 0.3.x
+# Version 0.0.x doesn't require the new ensure_id function
+RUN PYTHONDONTWRITEBYTECODE=1 uv pip install --system --no-cache-dir "langchain-mcp-adapters==0.0.9"
+
 # -- Removing build deps from the final image ~<:===~~~ --
 RUN pip uninstall -y pip setuptools wheel
 RUN rm -rf /usr/local/lib/python*/site-packages/pip* /usr/local/lib/python*/site-packages/setuptools* /usr/local/lib/python*/site-packages/wheel* && find /usr/local/bin -name "pip*" -delete || true

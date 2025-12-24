@@ -2,22 +2,23 @@ version: "3.8"
 
 volumes:
   esdata:
-    external: true
-    name: backend_es-data
+    name: nefac_es-data
   qdrant-data:
-    external: true
-    name: backend_qdrant-data
+    name: nefac_qdrant-data
   neo4j-data:
-    external: true
-    name: backend_neo4j-data
+    name: nefac_neo4j-data
   postgres-data:
-    name: backend_postgres-data
+    name: nefac_postgres-data
   redis-data:
-    name: backend_redis-data
+    name: nefac_redis-data
   kibana-data:
-    name: backend_kibana-data
+    name: nefac_kibana-data
   nginx-logs:
-    name: backend_nginx-logs
+    name: nefac_nginx-logs
+  neo4j-plugins:
+    name: nefac_neo4j-plugins
+  neo4j-logs:
+    name: nefac_neo4j-logs
 
 networks:
   nefacnet:
@@ -91,6 +92,8 @@ services:
       - "7687:7687" # Bolt
     volumes:
       - neo4j-data:/data
+      - neo4j-plugins:/plugins
+      - neo4j-logs:/logs
     environment:
       - NEO4J_AUTH=neo4j/password123
       - NEO4J_PLUGINS=["apoc", "graph-data-science"]
