@@ -57,6 +57,12 @@ class Configuration(
     research_mode: Literal["deep", "quick"] = Field(default="deep", description="The research mode to use: 'deep' for comprehensive research, 'quick' for fast answers.", json_schema_extra={"x_oap_ui_config": {"type": "select", "options": ["deep", "quick"], "label": "Research Mode"}})
     enable_graph_search: bool = Field(default=False, description="Enable or disable graph-based retrieval.", json_schema_extra={"x_oap_ui_config": {"type": "boolean", "label": "Enable Graph Search"}})
 
+    # Librarian Navigator Configuration
+    librarian_mode: bool = Field(default=False, description="Enable librarian mode: navigate to resources instead of generating answers.", json_schema_extra={"x_oap_ui_config": {"type": "boolean", "label": "Librarian Mode"}})
+    sitemap_url: str = Field(default="https://nefac.org/sitemap.xml", description="URL of the website sitemap for hierarchical navigation.", json_schema_extra={"x_oap_ui_config": {"type": "text", "label": "Sitemap URL"}})
+    sitemap_cache_ttl: int = Field(default=3600, description="Time-to-live in seconds for sitemap cache (default: 1 hour).", json_schema_extra={"x_oap_ui_config": {"type": "number", "label": "Sitemap Cache TTL"}})
+    wordpress_graphql_endpoint: str = Field(default="https://nefac.org/graphql", description="WordPress GraphQL endpoint for flexible content queries.", json_schema_extra={"x_oap_ui_config": {"type": "text", "label": "WordPress GraphQL Endpoint"}})
+
     @classmethod
     def from_runnable_config(cls, config: RunnableConfig | None = None) -> "Configuration":
         """Create a Configuration instance from a RunnableConfig."""

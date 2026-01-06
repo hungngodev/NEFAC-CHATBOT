@@ -14,6 +14,7 @@ from src.config.node_names import (
 )
 from src.config.settings import Configuration
 from src.core.agents.generation.final_report_generation import final_report_generation
+from src.core.agents.generation.generate_navigation_guide import generate_navigation_guide
 from src.core.agents.memory.summarizer import summarizer
 from src.core.agents.query_understanding.clarification import clarify_with_user
 from src.core.agents.query_understanding.write_research_brief import write_research_brief
@@ -21,6 +22,9 @@ from src.core.agents.quick_agent.quick_agent import quick_agent_subgraph
 from src.core.agents.supervisor.supervisor import supervisor_subgraph
 from src.schemas.state import AgentInputState, AgentState
 from src.utils.debug import get_debug_mode
+
+# Node name for librarian mode final output
+NAVIGATION_GUIDE_GENERATION = "navigation_guide_generation"
 
 deep_researcher_builder = StateGraph(state_schema=AgentState, input_schema=AgentInputState, output_schema=AgentState, context_schema=Configuration)
 
@@ -92,6 +96,26 @@ deep_researcher_builder.add_node(
         "expected_duration": "medium",
         "dependencies": ["research_results", "notes"],
         "outputs": ["final_report"],
+        "mode": "research",
+    },
+    retry_policy=None,
+    cache_policy=None,
+)
+
+# Librarian mode: Navigation guide generation instead of research report
+deep_researcher_builder.add_node(
+    node=NAVIGATION_GUIDE_GENERATION,
+    action=generate_navigation_guide,
+    metadata={
+        "description": "Creates a resource navigation guide instead of synthesizing answers (librarian mode)",
+        "type": "generation_node",
+        "interaction": "user_facing",
+        "criticality": "high",
+        "llm_powered": True,
+        "expected_duration": "medium",
+        "dependencies": ["research_results", "notes"],
+        "outputs": ["final_report"],
+        "mode": "librarian",
     },
     retry_policy=None,
     cache_policy=None,
@@ -157,10 +181,23 @@ deep_researcher_builder.add_node(
 
 
 def route_after_summarizer(state: AgentState, config: RunnableConfig) -> str:
+    """Route to quick agent or clarification based on research_mode."""
     configurable = Configuration.from_runnable_config(config)
     if configurable.research_mode == "quick":
         return QUICK_AGENT_NODE
     return RESEARCH_CLARIFY_WITH_USER
+
+
+def route_after_supervisor(state: AgentState, config: RunnableConfig) -> str:
+    """Route to appropriate final output based on librarian_mode.
+
+    In librarian_mode: route to navigation guide generation
+    In research_mode: route to final report generation
+    """
+    configurable = Configuration.from_runnable_config(config)
+    if configurable.librarian_mode:
+        return NAVIGATION_GUIDE_GENERATION
+    return RESEARCH_FINAL_REPORT_GENERATION
 
 
 deep_researcher_builder.add_edge(START, MEMORY_SUMMARIZER_NODE)
@@ -173,8 +210,20 @@ deep_researcher_builder.add_conditional_edges(
     },
 )
 deep_researcher_builder.add_edge(RESEARCH_WRITE_RESEARCH_BRIEF, RESEARCH_SUPERVISOR)
-deep_researcher_builder.add_edge(RESEARCH_SUPERVISOR, RESEARCH_FINAL_REPORT_GENERATION)
+
+# Conditional routing after supervisor: research mode -> report, librarian mode -> navigation guide
+deep_researcher_builder.add_conditional_edges(
+    RESEARCH_SUPERVISOR,
+    route_after_supervisor,
+    {
+        RESEARCH_FINAL_REPORT_GENERATION: RESEARCH_FINAL_REPORT_GENERATION,
+        NAVIGATION_GUIDE_GENERATION: NAVIGATION_GUIDE_GENERATION,
+    },
+)
+
+# Both output nodes lead to cleanup
 deep_researcher_builder.add_edge(RESEARCH_FINAL_REPORT_GENERATION, CLEANUP_NODE)
+deep_researcher_builder.add_edge(NAVIGATION_GUIDE_GENERATION, CLEANUP_NODE)
 deep_researcher_builder.add_edge(QUICK_AGENT_NODE, CLEANUP_NODE)
 deep_researcher_builder.add_edge(CLEANUP_NODE, END)
 
