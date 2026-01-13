@@ -46,3 +46,40 @@ class SystemPromptsConfig(BaseModel):
             "langgraph_type": "prompt",
         },
     )
+
+    # Navigator/Librarian Mode Prompts
+    navigator_system_prompt: str = Field(
+        default=prompts_module.DEFAULT_NAVIGATOR_SYSTEM_PROMPT,
+        description="System prompt for librarian mode - navigates to resources instead of generating answers.",
+        json_schema_extra={
+            "langgraph_type": "prompt",
+            "x_oap_ui_config": {"type": "textarea", "label": "Navigator System Prompt"},
+        },
+    )
+
+    format_navigation_prompt: str = Field(
+        default=prompts_module.DEFAULT_FORMAT_NAVIGATION_PROMPT,
+        description="Prompt for formatting navigation findings into resource cards.",
+        json_schema_extra={
+            "langgraph_type": "prompt",
+            "x_oap_ui_config": {"type": "textarea", "label": "Format Navigation Prompt"},
+        },
+    )
+
+    navigation_guide_prompt: str = Field(
+        default=prompts_module.DEFAULT_NAVIGATION_GUIDE_PROMPT,
+        description="Prompt for generating the final navigation guide output.",
+        json_schema_extra={
+            "langgraph_type": "prompt",
+            "x_oap_ui_config": {"type": "textarea", "label": "Navigation Guide Prompt"},
+        },
+    )
+
+    navigator_clarify_prompt: str = Field(
+        default=prompts_module.DEFAULT_NAVIGATOR_CLARIFY_PROMPT,
+        description="Prompt for clarifying user intent in librarian mode.",
+        json_schema_extra={
+            "langgraph_type": "prompt",
+            "x_oap_ui_config": {"type": "textarea", "label": "Navigator Clarify Prompt"},
+        },
+    )

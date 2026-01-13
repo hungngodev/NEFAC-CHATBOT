@@ -21,6 +21,11 @@ class StartResearch(BaseModel):
 
 
 async def clarify_with_user(state: AgentState, config: RunnableConfig):
+    """Clarify user intent before starting research or navigation.
+
+    In librarian_mode: Uses navigator_clarify_prompt for navigation-focused clarification
+    In research_mode: Uses clarify_with_user_prompt for research-focused clarification
+    """
     configurable = Configuration.from_runnable_config(config)
     if not configurable.allow_clarification:
         return Command(goto=RESEARCH_WRITE_RESEARCH_BRIEF)
@@ -33,15 +38,20 @@ async def clarify_with_user(state: AgentState, config: RunnableConfig):
 
     emit_custom_event(EVENT_FINAL_RESPONSE, {"is_final": True})
 
+    # Select appropriate clarification prompt based on mode
+    if configurable.librarian_mode:
+        clarify_prompt = configurable.navigator_clarify_prompt.format(
+            messages=get_buffer_string(messages),
+            date=get_today_str(),
+        )
+    else:
+        clarify_prompt = configurable.clarify_with_user_prompt.format(
+            messages=get_buffer_string(messages),
+            date=get_today_str(),
+        )
+
     response = await model.ainvoke(
-        [
-            HumanMessage(
-                content=configurable.clarify_with_user_prompt.format(
-                    messages=get_buffer_string(messages),
-                    date=get_today_str(),
-                )
-            )
-        ],
+        [HumanMessage(content=clarify_prompt)],
         config,
     )
 
@@ -50,6 +60,10 @@ async def clarify_with_user(state: AgentState, config: RunnableConfig):
 
         tool_call = response.tool_calls[0]
         verification_message = tool_call["args"].get("verification", "Starting research...")
+
+        # Adjust message for librarian mode
+        if configurable.librarian_mode:
+            verification_message = tool_call["args"].get("verification", "Searching for resources...")
 
         return Command(goto=RESEARCH_WRITE_RESEARCH_BRIEF, update={"messages": [AIMessage(content=verification_message)]})
 
