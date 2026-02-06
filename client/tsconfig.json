@@ -1,10 +1,14 @@
 {
   "compilerOptions": {
+<<<<<<< HEAD
+    "lib": ["dom", "dom.iterable", "esnext"],
+=======
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
+>>>>>>> main
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -14,7 +18,11 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
+<<<<<<< HEAD
+    "jsx": "preserve",
+=======
     "jsx": "react-jsx",
+>>>>>>> main
     "incremental": true,
     "plugins": [
       {
@@ -22,9 +30,13 @@
       }
     ],
     "paths": {
+<<<<<<< HEAD
+      "@/*": ["./src/*"]
+=======
       "@/*": [
         "./src/*"
       ]
+>>>>>>> main
     },
     "target": "ES2017"
   },
@@ -34,10 +46,16 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/hooks/use-threads",
+<<<<<<< HEAD
+    "src/app/thread/[threadId]"
+  ],
+  "exclude": ["node_modules"]
+=======
     "src/app/thread/[threadId]",
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
   ]
+>>>>>>> main
 }

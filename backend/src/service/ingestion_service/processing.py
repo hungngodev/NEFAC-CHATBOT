@@ -7,13 +7,13 @@ import logging
 import os
 import traceback
 from collections import defaultdict
-from datetime import datetime
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Set
 
 from src.service.ingestion_service.llamaindex.database_cleaner import clear_all_databases
 from src.service.ingestion_service.llamaindex.ingestion_workflow import run_ingestion_workflow
 from src.service.ingestion_service.llamaindex.metadata_utils import _get_base_metadata
+from src.service.ingestion_service.observability.callback_config import configure_observability
 from src.service.ingestion_service.progress_tracker import (
     FailureRecord,
     PipelineTracker,
@@ -24,30 +24,16 @@ from src.utils.env import load_env as load_env_from_root
 
 load_env_from_root()
 
-logger = logging.getLogger(__name__)
-_LOGGING_CONFIGURED = False
+_OBSERVABILITY_CONFIGURED = False
 _STARTUP_READY = False
 
 
-def _configure_logging() -> None:
-    global _LOGGING_CONFIGURED
-    if _LOGGING_CONFIGURED:
+def _configure_observability() -> None:
+    global _OBSERVABILITY_CONFIGURED
+    if _OBSERVABILITY_CONFIGURED:
         return
-
-    log_file = f"ingestion_pipeline_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
-    formatter = logging.Formatter("[%(asctime)s] %(levelname)s | %(message)s", "%H:%M:%S")
-    file_handler = logging.FileHandler(log_file)
-    file_handler.setFormatter(formatter)
-
-    root_logger = logging.getLogger()
-    if not root_logger.handlers:
-        stream_handler = logging.StreamHandler()
-        stream_handler.setFormatter(formatter)
-        root_logger.setLevel(logging.INFO)
-        root_logger.addHandler(stream_handler)
-
-    root_logger.addHandler(file_handler)
-    _LOGGING_CONFIGURED = True
+    configure_observability()
+    _OBSERVABILITY_CONFIGURED = True
 
 
 def _ensure_startup_ready() -> None:
@@ -55,15 +41,10 @@ def _ensure_startup_ready() -> None:
     if _STARTUP_READY:
         return
 
-    if not _LOGGING_CONFIGURED:
-        _configure_logging()
+    if not _OBSERVABILITY_CONFIGURED:
+        _configure_observability()
 
-    try:
-        # ensure_llamaindex_ready()
-        _STARTUP_READY = True
-    except Exception as exc:
-        logger.error("Startup diagnostics failed: %s", exc)
-        raise
+    _STARTUP_READY = True
 
 
 SUPPORTED_FILE_TYPES = ["pdf", "html", "youtube", "xlsx"]
@@ -133,53 +114,40 @@ def _ingest_with_workflow(
     run_entity_cooccurrence: bool = False,
     invalidate_cache: bool = False,
 ) -> None:
-    _configure_logging()
+    _configure_observability()
     tracker = get_tracker()
     entries = _load_metadata_entries(metadata_json_path, limit, offset, include_only)
 
     if not entries:
-        logger.warning(f"No documents found for {file_type} via workflow. Skipping.")
         return
 
-    # Default state: check env vars or default to True
     default_es = os.getenv("ES_LI_ENABLE", "true").lower() in _TRUTHY
     default_qdrant = True
     default_graph = os.getenv("GRAPH_LI_ENABLE", "true").lower() in _TRUTHY
 
-    # Initialize flags
     es_enabled = default_es
     qdrant_enabled = default_qdrant
     graph_enabled = default_graph
 
-    # Apply "ONLY" flags (exclusive)
     if graph_rag_only:
         es_enabled = False
         qdrant_enabled = False
         graph_enabled = True
-        logger.info("🚀 Running in GRAPH RAG ONLY mode")
     elif es_only:
         es_enabled = True
         qdrant_enabled = False
         graph_enabled = False
-        logger.info("🚀 Running in ELASTICSEARCH ONLY mode")
     elif qdrant_only:
         es_enabled = False
         qdrant_enabled = True
         graph_enabled = False
-        logger.info("🚀 Running in QDRANT ONLY mode")
     elif skip_graph:
         graph_enabled = False
-        logger.info("🚀 Running in VECTOR STORE ONLY mode (Graph RAG disabled)")
 
-    # Apply "SKIP" flags (subtractive)
     if skip_es:
         es_enabled = False
-        logger.info("🚫 Skipping Elasticsearch")
     if skip_qdrant:
         qdrant_enabled = False
-        logger.info("🚫 Skipping Qdrant")
-
-    logger.info(f"Configuration: ES={es_enabled}, Qdrant={qdrant_enabled}, Graph={graph_enabled}")
 
     total_nodes = 0
 
@@ -189,7 +157,6 @@ def _ingest_with_workflow(
 
         path = _resolve_file_path(documents_dir, filename)
         if not path.exists():
-            logger.warning(f"  │   └── ❌ File not found: {filename}")
             tracker.record_failure(file_type, filename, "missing_file", "file not found")
             continue
 
@@ -199,7 +166,6 @@ def _ingest_with_workflow(
         document_meta["file_type"] = file_type
 
         try:
-            logger.info(f"DEBUG: Calling workflow with invalidate_cache={invalidate_cache}")
             result = asyncio.run(
                 run_ingestion_workflow(
                     str(path),
@@ -233,11 +199,8 @@ def _ingest_with_workflow(
             tracker.mark_success(file_type, filename)
 
         except Exception as exc:
-            logger.error(f"Workflow ingestion failed for {filename}: {exc}")
             tracker.record_failure(file_type, filename, "workflow", exc)
             continue
-
-    logger.info(f"  └── ✅ Workflow processed {total_nodes} chunks for {file_type.upper()} files")
 
     tracker.track_phase_stats(file_type, "chunks_created", total_nodes)
     tracker.track_phase_stats(file_type, "chunks_contextualized", total_nodes)
@@ -265,7 +228,7 @@ def process_file_type(
     invalidate_cache: bool = False,
 ) -> None:
     _ensure_startup_ready()
-    _configure_logging()
+    _configure_observability()
     tracker = get_tracker()
     tracker.log_phase_start(f"Processing {file_type.upper()} files")
 
@@ -296,7 +259,6 @@ def process_file_type(
         )
 
     except Exception as e:
-        logger.error(f"Failed processing {file_type}: {e}")
         traceback.print_exc()
         tracker.record_failure(file_type, "__batch__", "pipeline", e)
     finally:
@@ -320,7 +282,7 @@ def process_all_file_types(
     invalidate_cache: bool = False,
 ) -> None:
     _ensure_startup_ready()
-    _configure_logging()
+    _configure_observability()
     reset_tracker()
     tracker = get_tracker()
     tracker.log_phase_start("NEFAC Document Ingestion Pipeline")
@@ -332,14 +294,10 @@ def process_all_file_types(
         tracker.seed_failures(seeded_failures)
 
     if clear_databases:
-        logger.info("🧹 Clearing existing database data...")
         clear_results = clear_all_databases()
         failed_dbs = [db for db, success in clear_results.items() if not success]
         if failed_dbs:
-            logger.warning(f"Failed to clear databases: {', '.join(failed_dbs)}")
-        else:
-            logger.info("All databases cleared successfully.")
-
+            logging.getLogger(__name__).warning(f"Failed to clear databases: {failed_dbs}")
     for file_type in SUPPORTED_FILE_TYPES:
         include_only = failure_targets.get(file_type) if retry_failures else None
         if retry_failures and not include_only:
@@ -366,7 +324,7 @@ def process_all_file_types(
 
 
 def main() -> None:
-    _configure_logging()
+    _configure_observability()
     parser = argparse.ArgumentParser(description="NEFAC Document Ingestion Pipeline")
     parser.add_argument(
         "--file-type",
@@ -459,7 +417,6 @@ def main() -> None:
     if args.graph_rag_only and args.skip_graph:
         parser.error("Cannot use both --graph-rag-only and --skip-graph at the same time")
 
-    # Normalize file_types input
     file_types = args.file_type
     if "all" in file_types:
         file_types = SUPPORTED_FILE_TYPES
@@ -468,17 +425,12 @@ def main() -> None:
     tracker = get_tracker()
     tracker.log_phase_start("NEFAC Document Ingestion Pipeline")
 
-    # 1. Clear databases ONCE if requested
     if args.clear:
-        logger.info("🧹 Clearing existing database data...")
 
-        # Determine what to clear based on flags
-        # Default: clear everything unless specific flags are set
         clear_es = True
         clear_qdrant = True
         clear_graph = True
 
-        # If "only" flags are used, restrict clearing
         if args.es_only:
             clear_es = True
             clear_qdrant = False
@@ -492,7 +444,6 @@ def main() -> None:
             clear_qdrant = False
             clear_graph = True
 
-        # If "skip" flags are used, disable specific clearing
         if args.skip_es:
             clear_es = False
         if args.skip_qdrant:
@@ -507,24 +458,17 @@ def main() -> None:
         )
         failed_dbs = [db for db, success in clear_results.items() if not success]
         if failed_dbs:
-            logger.warning(f"Failed to clear databases: {', '.join(failed_dbs)}")
-        else:
-            logger.info("All requested databases cleared successfully.")
-
-    # 2. Load failures if needed
+            logging.getLogger(__name__).warning(f"Failed to clear databases: {failed_dbs}")
     failure_targets: Dict[str, Set[str]] = {}
     if args.retry_failures:
         seeded_failures = PipelineTracker.load_failures(args.failures_file)
         failure_targets = _group_failures_by_type(seeded_failures)
         tracker.seed_failures(seeded_failures)
 
-    # 3. Process each requested file type
     for file_type in file_types:
         include_only = failure_targets.get(file_type) if args.retry_failures else None
 
-        # If retrying failures and this type has none, skip it
         if args.retry_failures and not include_only:
-            logger.info("No recorded failures for %s, skipping.", file_type)
             continue
 
         process_file_type(

@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-import logging
 from typing import Any, Dict, List, Tuple
 
 import pandas as pd
 from unstructured.partition.auto import partition as u_partition
-
-logger = logging.getLogger(__name__)
 
 
 def process_xlsx_intelligently(file_path: str, entry: Dict[str, Any]) -> List[Tuple[str, Dict[str, Any]]]:
@@ -61,8 +58,7 @@ def process_xlsx_intelligently(file_path: str, entry: Dict[str, Any]) -> List[Tu
             )
         ]
 
-    except Exception as exc:  # pragma: no cover - fallback path
-        logger.warning("Intelligent XLSX processing failed: %s, falling back", exc)
+    except Exception:
         try:
             elements = u_partition(file_path)
             text = "\n\n".join(str(el).strip() for el in elements if str(el).strip())
@@ -76,11 +72,7 @@ def process_xlsx_intelligently(file_path: str, entry: Dict[str, Any]) -> List[Tu
                     },
                 )
             ]
-        except Exception as fallback_error:  # pragma: no cover - worst case
-            logger.error(
-                "Both intelligent and fallback XLSX processing failed: %s",
-                fallback_error,
-            )
+        except Exception as fallback_error:
             return [
                 (
                     "Failed to process spreadsheet content.",

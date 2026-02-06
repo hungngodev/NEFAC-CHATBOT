@@ -19,7 +19,6 @@ def _get_base_metadata(path: str, entry: Dict[str, Any]) -> Dict[str, Any]:
     def to_iso(ts: float) -> str:
         return datetime.fromtimestamp(ts, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    # Resolve key metadata fields once to ensure consistency
     source_url = entry.get("source_url") or entry.get("link") or f"file://{abs_path}"
     date_val = entry.get("date") or to_iso(getattr(stat, "st_ctime", stat.st_mtime))
 
@@ -57,7 +56,7 @@ def sanitize_metadata(
     include_text: bool = False,
     keep_summary: bool = False,
 ) -> Dict[str, Any]:
-    cleaned = {}
+    cleaned: Dict[str, Any] = {}
     for key, value in meta.items():
         if key.startswith("_") or key == "relationships":
             continue
@@ -66,16 +65,16 @@ def sanitize_metadata(
                 continue
             cleaned[key] = _truncate(value) if isinstance(value, str) else value
         elif isinstance(value, list):
-            items = []
+            items: list[str] = []
             for item in value:
                 if isinstance(item, str):
                     items.append(_truncate(item))
                 elif isinstance(item, (int, float, bool)):
-                    items.append(item)
+                    items.append(str(item))
             if items:
                 cleaned[key] = items
         elif isinstance(value, dict):
-            sub = {}
+            sub: dict[str, Any] = {}
             for k, v in value.items():
                 if isinstance(v, str):
                     sub[k] = _truncate(v)
@@ -83,7 +82,9 @@ def sanitize_metadata(
                     sub[k] = v
             if sub:
                 cleaned[key] = sub
-    chunk_id = cleaned.get("chunk_id") or build_chunk_id(cleaned.get("doc_id"), cleaned.get("chunk_index"))
+    doc_id_val = cleaned.get("doc_id")
+    chunk_index_val = cleaned.get("chunk_index")
+    chunk_id = cleaned.get("chunk_id") or build_chunk_id(str(doc_id_val) if doc_id_val is not None else None, int(chunk_index_val) if isinstance(chunk_index_val, (int, float)) else None)
     if chunk_id:
         cleaned.setdefault("chunk_id", chunk_id)
     if "id" not in cleaned and chunk_id:
@@ -91,7 +92,6 @@ def sanitize_metadata(
     if include_text and "text" in meta and isinstance(meta["text"], str):
         cleaned["text"] = meta["text"]
 
-    # Preserve specific metadata fields from truncation
     for field in ["section_summary", "questions_this_excerpt_can_answer", "excerpt_keywords"]:
         if field in meta and isinstance(meta[field], str):
             cleaned[field] = meta[field]

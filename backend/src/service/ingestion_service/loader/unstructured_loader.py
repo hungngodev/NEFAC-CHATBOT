@@ -1,5 +1,4 @@
 import hashlib
-import logging
 import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -13,7 +12,6 @@ from src.service.ingestion_service.llamaindex.metadata_utils import _get_base_me
 from src.service.ingestion_service.llamaindex.node_parser import build_nodes_from_text
 from src.service.ingestion_service.loader.spreadsheet_utils import process_xlsx_intelligently
 
-logger = logging.getLogger(__name__)
 TRANSCRIPT_PATTERN = re.compile(r"\[(?P<ts>[\d:\.]+)s?\]\s*(?P<txt>.*)")
 
 CONTEXT_FORMAT = getattr(
@@ -24,7 +22,9 @@ CONTEXT_FORMAT = getattr(
 
 
 def parse_timestamps(transcript_text: str) -> Tuple[str, List[Dict[str, Any]]]:
-    segments, clean_text, offset_map = [], "", []
+    segments: List[Dict[str, Any]] = []
+    clean_text = ""
+    offset_map: List[Dict[str, Any]] = []
     for line in transcript_text.strip().splitlines():
         line = line.strip()
         if not line:
@@ -34,29 +34,40 @@ def parse_timestamps(transcript_text: str) -> Tuple[str, List[Dict[str, Any]]]:
             ts_str, text = match.groups()
             parts = ts_str.split(":")
             try:
-                seconds = float(parts[0]) if len(parts) == 1 else int(parts[0]) * 60 + float(parts[1]) if len(parts) == 2 else int(parts[0]) * 3600 + int(parts[1]) * 60 + float(parts[2])
+                seconds: float
+                if len(parts) == 1:
+                    seconds = float(parts[0])
+                elif len(parts) == 2:
+                    seconds = int(parts[0]) * 60 + float(parts[1])
+                else:
+                    seconds = int(parts[0]) * 3600 + int(parts[1]) * 60 + float(parts[2])
                 if text.strip():
                     segments.append({"start": seconds, "text": text.strip()})
             except ValueError:
                 continue
         elif segments:
-            segments[-1]["text"] += " " + line
+            prev_text = str(segments[-1]["text"])
+            segments[-1]["text"] = prev_text + " " + line
 
     for i, seg in enumerate(segments):
         start_char = len(clean_text)
         separator = "\n"
+        seg_start: float = float(seg["start"])
+        seg_text: str = str(seg["text"])
+
         if i + 1 < len(segments):
-            time_diff = segments[i + 1]["start"] - seg["start"]
+            next_start: float = float(segments[i + 1]["start"])
+            time_diff = next_start - seg_start
             probability = min(1.0, max(0.0, (time_diff - 0.5) / 2.0))
-            rand_val = int(hashlib.md5(seg["text"].encode()).hexdigest(), 16) % 1000 / 1000.0
+            rand_val = int(hashlib.md5(seg_text.encode()).hexdigest(), 16) % 1000 / 1000.0
 
             if rand_val < probability:
                 separator = "\n\n"
 
-        clean_text += seg["text"] + separator
+        clean_text += seg_text + separator
         end_char = len(clean_text) - 1
-        end_time = segments[i + 1]["start"] if i + 1 < len(segments) else None
-        offset_map.append({"start_char": start_char, "end_char": end_char, "start_time": seg["start"], "end_time": end_time})
+        end_time = float(segments[i + 1]["start"]) if i + 1 < len(segments) else None
+        offset_map.append({"start_char": start_char, "end_char": end_char, "start_time": seg_start, "end_time": end_time})
 
     return clean_text.strip(), offset_map
 
@@ -141,128 +152,107 @@ def load_document_nodes(
         if tracker is not None:
             tracker.log_file_phase(message)
         else:
-            logger.debug(message)
 
-    try:
-        if ext in {"xlsx", "xls", "csv"}:
-            _log_phase("Parsing spreadsheet structure")
-            xlsx_chunks = process_xlsx_intelligently(path, entry)
+            pass
 
-            for chunk_idx, (sheet_text, sheet_meta) in enumerate(xlsx_chunks):
-                chunk_base_meta = document_base_meta.copy()
-                chunk_base_meta.update(sheet_meta)
+    if ext in {"xlsx", "xls", "csv"}:
+        _log_phase("Parsing spreadsheet structure")
+        xlsx_chunks = process_xlsx_intelligently(str(path), entry)
 
-                sheet_nodes = build_nodes_from_text(sheet_text, chunk_base_meta)
-                total_file_chunks += len(sheet_nodes)
-                file_tokens += sum(len(raw_node.get_content().split()) for raw_node in sheet_nodes)
+        for chunk_idx, (sheet_text, sheet_meta) in enumerate(xlsx_chunks):
+            chunk_base_meta = document_base_meta.copy()
+            chunk_base_meta.update(sheet_meta)
 
-                for idx, raw_node in enumerate(sheet_nodes):
-                    chunk_text = raw_node.get_content()
-                    node_meta = dict(raw_node.metadata or {})
-                    chunk_meta = {
-                        **node_meta,
-                        "sheet_index": chunk_idx,
-                        "total_sheets": len(xlsx_chunks),
-                        "chunk_index": idx,
-                        "total_chunks": len(sheet_nodes),
-                        "chunk_size": len(chunk_text),
-                        "chunk_word_count": len(chunk_text.split()),
-                    }
+            sheet_nodes = build_nodes_from_text(sheet_text, chunk_base_meta)
+            total_file_chunks += len(sheet_nodes)
+            file_tokens += sum(len(raw_node.get_content().split()) for raw_node in sheet_nodes)
 
-                    context_parts = [f"Document: {base_meta['title']}"]
-                    if sheet_meta.get("sheet_name"):
-                        context_parts.append(f"Sheet: {sheet_meta['sheet_name']}")
-                    summary = node_meta.get("section_summary") or node_meta.get("window")
-                    if summary:
-                        context_parts.append(str(summary))
-
-                    context = " | ".join(context_parts)
-                    nodes.append(_create_node(chunk_text, chunk_base_meta, chunk_meta, context, raw_node=raw_node))
-
-        else:
-            _log_phase("Extracting content")
-            whole_text = None
-
-            is_transcript = False
-            offset_map = None
-
-            if not whole_text:
-                if ext == "txt":
-                    try:
-                        with open(path, "r", encoding="utf-8") as f:
-                            whole_text = f.read()
-                    except Exception as e:
-                        logger.warning(f"Failed to read text file directly, falling back to partition: {e}")
-
-                if not whole_text:
-                    elements = u_partition(path_str)
-                    whole_text = "\n\n".join(str(el).strip() for el in elements if str(el).strip())
-
-                    if ext in {"html", "pdf"}:
-                        logger.info(f"{ext.upper()} Parsed: {path.name} | Elements: {len(elements)} | Text Length: {len(whole_text)} chars")
-
-            if ext == "txt":
-                elem_info = len(elements) if "elements" in locals() else "1 (Direct)"
-                logger.info(f"TXT Parsed: {path.name} | Elements: {elem_info} | Text Length: {len(whole_text)} chars")
-
-                _log_phase("Parsing transcript timestamps")
-                logger.info(f"Attempting to parse timestamps for {path.name}. Text len: {len(whole_text)}")
-                clean_text, offset_map = parse_timestamps(whole_text)
-                logger.info(f"Parse result: clean_text len={len(clean_text)}, offset_map len={len(offset_map)}")
-
-                if clean_text.strip():
-                    logger.info("✅ Timestamps found! Using clean text.")
-                    is_transcript = True
-                    base_meta.update({"transcript_type": "youtube", "has_timestamps": True})
-                    whole_text = clean_text
-                else:
-                    logger.warning("⚠️ No timestamps found in .txt file (parse returned empty), treating as plain text")
-                    first_lines = whole_text[:500].splitlines()
-                    for i, line in enumerate(first_lines[:5]):
-                        logger.info(f"Line {i}: {line!r}")
-
-                    if len(whole_text) > 1000 and whole_text.count("\n") < len(whole_text) / 200:
-                        logger.warning("⚠️ Text file appears dense (few newlines). Applied pre-splitting to aid semantic chunking.")
-                        pre_splitter = SentenceSplitter(chunk_size=200, chunk_overlap=0)
-                        text_chunks = pre_splitter.split_text(whole_text)
-                        whole_text = "\n\n".join(text_chunks)
-                        logger.info(f"Pre-splitting created {len(text_chunks)} segments.")
-
-            if not whole_text or not whole_text.strip():
-                logger.warning(f"⚠️ No content extracted from {path.name}. Skipping.")
-                return [], 0, 0
-
-            raw_nodes = build_nodes_from_text(whole_text, document_base_meta)
-            total_file_chunks = len(raw_nodes)
-            file_tokens = sum(len(raw_node.get_content().split()) for raw_node in raw_nodes)
-            curr_offset = 0
-
-            for idx, raw_node in enumerate(raw_nodes):
+            for idx, raw_node in enumerate(sheet_nodes):
                 chunk_text = raw_node.get_content()
                 node_meta = dict(raw_node.metadata or {})
                 chunk_meta = {
                     **node_meta,
+                    "sheet_index": chunk_idx,
+                    "total_sheets": len(xlsx_chunks),
                     "chunk_index": idx,
-                    "total_chunks": total_file_chunks,
+                    "total_chunks": len(sheet_nodes),
                     "chunk_size": len(chunk_text),
                     "chunk_word_count": len(chunk_text.split()),
                 }
 
-                if is_transcript and offset_map:
-                    start_time_ts, end_time_ts, curr_offset = get_chunk_times(chunk_text, whole_text, offset_map, curr_offset)
-                    duration = max(0, end_time_ts - start_time_ts)
-                    chunk_meta.update({"start_time": start_time_ts, "end_time": end_time_ts, "duration": duration})
-
                 context_parts = [f"Document: {base_meta['title']}"]
+                if sheet_meta.get("sheet_name"):
+                    context_parts.append(f"Sheet: {sheet_meta['sheet_name']}")
                 summary = node_meta.get("section_summary") or node_meta.get("window")
                 if summary:
                     context_parts.append(str(summary))
-                if is_transcript and offset_map:
-                    context_parts.append(f"Transcript segment ({start_time_ts:.1f}s-{end_time_ts:.1f}s)")
+
                 context = " | ".join(context_parts)
-                nodes.append(_create_node(chunk_text, document_base_meta, chunk_meta, context, raw_node=raw_node))
+                nodes.append(_create_node(chunk_text, chunk_base_meta, chunk_meta, context, raw_node=raw_node))
 
-        return nodes, total_file_chunks, file_tokens
+    else:
+        _log_phase("Extracting content")
+        whole_text = None
 
-    except Exception:
-        raise
+        is_transcript = False
+        offset_map = None
+
+        if not whole_text:
+            if ext == "txt":
+                try:
+                    with open(path, "r", encoding="utf-8") as f:
+                        whole_text = f.read()
+                except Exception:
+                    whole_text = None
+            if not whole_text:
+                elements = u_partition(path_str)
+                whole_text = "\n\n".join(str(el).strip() for el in elements if str(el).strip())
+
+        if ext == "txt":
+            _log_phase("Parsing transcript timestamps")
+            clean_text, offset_map = parse_timestamps(whole_text)
+
+            if clean_text.strip():
+                is_transcript = True
+                base_meta.update({"transcript_type": "youtube", "has_timestamps": True})
+                whole_text = clean_text
+            else:
+                if len(whole_text) > 1000 and whole_text.count("\n") < len(whole_text) / 200:
+                    pre_splitter = SentenceSplitter(chunk_size=200, chunk_overlap=0)
+                    text_chunks = pre_splitter.split_text(whole_text)
+                    whole_text = "\n\n".join(text_chunks)
+
+        if not whole_text or not whole_text.strip():
+            return [], 0, 0
+
+        raw_nodes = build_nodes_from_text(whole_text, document_base_meta)
+        total_file_chunks = len(raw_nodes)
+        file_tokens = sum(len(raw_node.get_content().split()) for raw_node in raw_nodes)
+        curr_offset = 0
+
+        for idx, raw_node in enumerate(raw_nodes):
+            chunk_text = raw_node.get_content()
+            node_meta = dict(raw_node.metadata or {})
+            chunk_meta = {
+                **node_meta,
+                "chunk_index": idx,
+                "total_chunks": total_file_chunks,
+                "chunk_size": len(chunk_text),
+                "chunk_word_count": len(chunk_text.split()),
+            }
+
+            if is_transcript and offset_map:
+                start_time_ts, end_time_ts, curr_offset = get_chunk_times(chunk_text, whole_text, offset_map, curr_offset)
+                duration = max(0, end_time_ts - start_time_ts)
+                chunk_meta.update({"start_time": start_time_ts, "end_time": end_time_ts, "duration": duration})
+
+            context_parts = [f"Document: {base_meta['title']}"]
+            summary = node_meta.get("section_summary") or node_meta.get("window")
+            if summary:
+                context_parts.append(str(summary))
+            if is_transcript and offset_map:
+                context_parts.append(f"Transcript segment ({start_time_ts:.1f}s-{end_time_ts:.1f}s)")
+            context = " | ".join(context_parts)
+            nodes.append(_create_node(chunk_text, document_base_meta, chunk_meta, context, raw_node=raw_node))
+
+    return nodes, total_file_chunks, file_tokens

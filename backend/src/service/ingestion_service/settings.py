@@ -1,4 +1,3 @@
-import logging
 import os
 
 from llama_index.core import Settings
@@ -9,7 +8,6 @@ from src.config.models import EMBEDDING_DIMENSIONS, EMBEDDING_MODEL_NAME
 from src.utils.env import load_env as load_env_from_root
 
 load_env_from_root()
-logger = logging.getLogger(__name__)
 
 DEFAULT_MODEL_PROVIDER = "openai"
 ENABLE_CONTEXTUAL_RETRIEVAL = True
@@ -42,25 +40,32 @@ SEMANTIC_SPLITTER_MAX_CHUNK = 384
 
 SERVICE_TIER = "flex"
 
-Settings.llm = OpenAI(
-    model="gpt-5-nano",
-    max_retries=30,
-    timeout=900.0,
-    additional_kwargs={"service_tier": SERVICE_TIER},
-    api_key=os.getenv("OPENAI_API_KEY"),
-)
-graph_llm_model = OpenAI(
-    model="gpt-5-nano",
-    max_retries=30,
-    timeout=900.0,
-    additional_kwargs={"service_tier": SERVICE_TIER},
-    api_key=os.getenv("OPENAI_API_KEY"),
-)
+LLM_API_BASE = os.getenv("OPENAI_API_BASE")
+LLM_API_KEY = os.getenv("OPENAI_API_KEY")
+
+EMBEDDING_API_BASE = os.getenv("OPENAI_EMBEDDING_API_BASE", "https://api.openai.com/v1")
+EMBEDDING_API_KEY = os.getenv("OPENAI_EMBEDDING_API_KEY") or LLM_API_KEY
+
+llm_kwargs = {
+    "model": "gpt-4o-mini",
+    "max_retries": 30,
+    "timeout": 900.0,
+    "api_key": LLM_API_KEY,
+}
+if LLM_API_BASE:
+    llm_kwargs["api_base"] = LLM_API_BASE
+else:
+    llm_kwargs["additional_kwargs"] = {"service_tier": SERVICE_TIER}
+
+Settings.llm = OpenAI(**llm_kwargs)
+graph_llm_model = OpenAI(**llm_kwargs)
 
 
 Settings.embed_model = OpenAIEmbedding(
     model=EMBEDDING_MODEL_NAME,
     dimensions=EMBEDDING_DIMENSIONS,
+    api_key=EMBEDDING_API_KEY,
+    api_base=EMBEDDING_API_BASE,
 )
 
 
@@ -173,6 +178,9 @@ ALLOWED_NODES = [
     "LegislativeBill",
     "Court",
     "Judge",
+    "Journalist",
+    "MediaOutlet",
+    "GovernmentAgency",
 ]
 
 ALLOWED_RELATIONSHIPS = [
@@ -200,9 +208,42 @@ ALLOWED_RELATIONSHIPS = [
     "REGULATES",
     "ENFORCES",
     "OPPOSES",
-    "OPPOSES",
     "SUPPORTS",
+    "APPEALS_TO",
+    "AMENDS",
+    "SUPERSEDES",
+    "COVERS",
+    "REPRESENTS",
+    "ADVOCATES_FOR",
+    "FILED_BY",
 ]
+
+KG_VALIDATION_SCHEMA = {
+    "Person": ["WORKS_FOR", "SERVES_ON", "AUTHORED_BY", "WRITES", "REPRESENTS", "ADVOCATES_FOR", "FILED_BY", "LOCATED_IN"],
+    "Journalist": ["WORKS_FOR", "AUTHORED_BY", "WRITES", "COVERS", "LOCATED_IN"],
+    "Organization": ["WORKS_FOR", "PARTNERS_WITH", "HOSTED_BY", "FILES", "CITES", "ADVOCATES_FOR", "LOCATED_IN", "FUNDS", "PUBLISHES"],
+    "MediaOutlet": ["PUBLISHES", "COVERS", "LOCATED_IN", "WORKS_FOR"],
+    "GovernmentAgency": ["ENFORCES", "REGULATES", "LOCATED_IN", "FUNDS", "PARTNERS_WITH"],
+    "LegalCase": ["CITES", "CHALLENGES", "DECIDED_BY", "FILED_BY", "APPEALS_TO", "REFERENCES", "CONCERNS"],
+    "LawOrPolicy": ["ENFORCES", "REGULATES", "CHALLENGES", "CITES", "AMENDS", "SUPERSEDES", "REFERENCES", "CONCERNS"],
+    "Statute": ["ENFORCES", "REGULATES", "AMENDS", "SUPERSEDES", "REFERENCES"],
+    "LegislativeBill": ["CITES", "AMENDS", "CONCERNS", "REFERENCES"],
+    "Court": ["DECIDED_BY", "LOCATED_IN", "APPEALS_TO"],
+    "Judge": ["DECIDED_BY", "WORKS_FOR", "SERVES_ON"],
+    "Document": ["CITES", "AUTHORED_BY", "PUBLISHES", "REFERENCES", "COVERS", "CONCERNS"],
+    "Event": ["HOSTED_BY", "TAKES_PLACE_IN", "LOCATED_IN", "CONCERNS"],
+    "Program": ["HOSTED_BY", "FUNDS", "PARTNERS_WITH", "LOCATED_IN"],
+    "Location": ["LOCATED_IN", "TAKES_PLACE_IN"],
+    "Topic": ["CONCERNS", "COVERS"],
+    "Concept": ["CONCERNS", "REFERENCES"],
+    "WebPage": ["LINKS_TO", "HAS_PAGE", "HAS_SECTION", "REFERENCES"],
+    "MediaAsset": ["PUBLISHES", "REFERENCES", "COVERS"],
+    "Dataset": ["REFERENCES", "CONCERNS", "PUBLISHES"],
+    "FundingSource": ["FUNDS", "PARTNERS_WITH"],
+    "Board": ["SERVES_ON", "PARTNERS_WITH"],
+    "Committee": ["SERVES_ON", "PARTNERS_WITH", "CONCERNS"],
+    "SocialProfile": ["HAS_PROFILE", "LINKS_TO"],
+}
 
 EXCLUDED_METADATA_KEYS = [
     "file_path",

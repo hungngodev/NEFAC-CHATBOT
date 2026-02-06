@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 import difflib
-import logging
 import re
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 try:
     from rapidfuzz import fuzz
 except ImportError:
-    fuzz = None
+    fuzz = None  # type: ignore[assignment]
 
 import networkx as nx
 import spacy
@@ -18,7 +17,7 @@ from llama_index.core.program import LLMTextCompletionProgram
 from llama_index.graph_stores.neo4j import Neo4jPropertyGraphStore
 from pydantic import BaseModel
 
-logger = logging.getLogger(__name__)
+from src.service.ingestion_service.graph.neo4j_utils import get_neo4j_driver
 
 
 class EntityVerificationResult(BaseModel):
@@ -46,35 +45,23 @@ class EntityDeduplicator:
         self.llm = llm
         self.embed_model = Settings.embed_model
 
-        logger.info(f"EntityDeduplicator initialized: similarity_threshold={similarity_threshold}, word_edit_distance={word_edit_distance}")
-
     def _get_driver(self):
-        driver = getattr(self.graph_store, "driver", None) or getattr(self.graph_store, "_driver", None)
-        if driver is None:
-            raise RuntimeError("Neo4j driver not available from property graph store")
-        return driver
+        return get_neo4j_driver(self.graph_store)
 
     def create_vector_index(self, embedding_dimension: int = 1536, name: str = "entity"):
-        try:
-            safe_name = "".join(c for c in name if c.isalnum() or c in "_")
+        safe_name = "".join(c for c in name if c.isalnum() or c in "_")
 
-            query = f"""
-            CREATE VECTOR INDEX {safe_name} IF NOT EXISTS
-            FOR (m:`__Entity__`)
-            ON m.embedding
-            OPTIONS {{indexConfig: {{
-                `vector.dimensions`: $dimensions,
-                `vector.similarity_function`: 'cosine'
-            }}}}
-            """
+        query = f"""
+        CREATE VECTOR INDEX {safe_name} IF NOT EXISTS
+        FOR (m:`__Entity__`)
+        ON m.embedding
+        OPTIONS {{indexConfig: {{
+            `vector.dimensions`: $dimensions,
+            `vector.similarity_function`: 'cosine'
+        }}}}
+        """
 
-            self.graph_store.structured_query(query, param_map={"dimensions": embedding_dimension})
-
-            logger.info(f"Created vector index '{safe_name}' on __Entity__ with {embedding_dimension} dimensions")
-
-        except Exception as e:
-            logger.error(f"Could not create vector index: {e}")
-            raise e
+        self.graph_store.structured_query(query, param_map={"dimensions": embedding_dimension})
 
     def find_duplicate_entities(self, use_llm: bool = True) -> List[Dict[str, Any]]:
         """
@@ -82,47 +69,43 @@ class EntityDeduplicator:
         - 'group': List[str] of entity names
         - 'source': str (e.g., 'apoc', 'exact', 'abbreviation', 'llm', 'consolidated')
         """
-        try:
-            all_groups_with_source = []
+        all_groups_with_source = []
 
-            if self.enable_apoc:
-                apoc_groups = self._find_duplicates_with_apoc()
-                for g in apoc_groups:
-                    all_groups_with_source.append({"group": g, "source": "apoc_fuzzy"})
-            else:
-                non_apoc_groups = self._find_duplicates_without_apoc()
-                for g in non_apoc_groups:
-                    all_groups_with_source.append({"group": g, "source": "simple_fuzzy"})
+        if self.enable_apoc:
+            apoc_groups = self._find_duplicates_with_apoc()
+            for g in apoc_groups:
+                all_groups_with_source.append({"group": g, "source": "apoc_fuzzy"})
+        else:
+            non_apoc_groups = self._find_duplicates_without_apoc()
+            for g in non_apoc_groups:
+                all_groups_with_source.append({"group": g, "source": "simple_fuzzy"})
 
-            abbrev_groups = self._find_abbreviation_duplicates()
-            for g in abbrev_groups:
-                all_groups_with_source.append({"group": g, "source": "abbreviation_rule"})
+        abbrev_groups = self._find_abbreviation_duplicates()
+        for g in abbrev_groups:
+            all_groups_with_source.append({"group": g, "source": "abbreviation_rule"})
 
-            exact_groups = self._find_exact_duplicates()
-            for g in exact_groups:
-                all_groups_with_source.append({"group": g, "source": "exact_match"})
+        exact_groups = self._find_exact_duplicates()
+        for g in exact_groups:
+            all_groups_with_source.append({"group": g, "source": "exact_match"})
 
-            if self.llm and use_llm:
-                current_groups = [item["group"] for item in all_groups_with_source]
-                candidate_pairs = self._find_candidates_for_llm(existing_groups=current_groups)
+        if self.llm and use_llm:
+            current_groups = [item["group"] for item in all_groups_with_source]
+            candidate_pairs = self._find_candidates_for_llm(existing_groups=[list(g) for g in current_groups])
 
-                if candidate_pairs:
-                    llm_groups_with_source = self._verify_with_llm(candidate_pairs)
-                    all_groups_with_source.extend(llm_groups_with_source)
+            if candidate_pairs:
+                llm_groups_with_source = self._verify_with_llm(candidate_pairs)
+                all_groups_with_source.extend(llm_groups_with_source)
 
-            consolidated_groups = self._consolidate_groups_with_source(all_groups_with_source)
+        consolidated_groups = self._consolidate_groups_with_source(all_groups_with_source)
 
-            return consolidated_groups
-        except Exception as e:
-            logger.error(f"Error in deduplication: {e}")
-            raise e
+        return consolidated_groups
 
     def _consolidate_groups_with_source(self, groups_with_source: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         if not groups_with_source:
             return []
 
         G = nx.Graph()
-        node_sources = {}
+        node_sources: Dict[str, Set[str]] = {}
 
         for item in groups_with_source:
             group = item["group"]
@@ -150,7 +133,7 @@ class EntityDeduplicator:
 
         for component in nx.connected_components(G):
             if len(component) > 1:
-                sources_in_component = set()
+                sources_in_component: Set[str] = set()
                 for node in component:
                     sources_in_component.update(node_sources.get(node, set()))
 
@@ -170,90 +153,78 @@ class EntityDeduplicator:
         WHERE size(nodes) > 1
         RETURN [node in nodes | node.name] as names
         """
-        try:
-            result = self.graph_store.structured_query(query)
-            groups = [row["names"] for row in result]
-            if groups:
-                logger.info(f"Found {len(groups)} exact duplicate groups")
-            return groups
-        except Exception as e:
-            logger.error(f"Error finding exact duplicates: {e}")
-            raise e
+        result = self.graph_store.structured_query(query)
+        return [row["names"] for row in result]
 
     def _find_abbreviation_duplicates(self) -> List[List[str]]:
-        try:
-            query = "MATCH (n:__Entity__) RETURN distinct n.name as name"
-            result = self.graph_store.structured_query(query)
-            all_names = [r["name"] for r in result if r["name"]]
+        query = "MATCH (n:__Entity__) RETURN distinct n.name as name"
+        result = self.graph_store.structured_query(query)
+        all_names = [r["name"] for r in result if r["name"]]
 
-            all_words = set()
-            for name in all_names:
-                words = re.split(r"[^a-zA-Z0-9]+", name)
-                all_words.update(words)
+        all_words = set()
+        for name in all_names:
+            words = re.split(r"[^a-zA-Z0-9]+", name)
+            all_words.update(words)
 
-            abbrev_tokens = {w for w in all_words if 2 <= len(w) <= 6 and w.isupper() and w.isalpha()}
+        abbrev_tokens = {w for w in all_words if 2 <= len(w) <= 6 and w.isupper() and w.isalpha()}
 
-            token_map = {}
+        token_map: Dict[str, Set[str]] = {}
 
-            for name in all_names:
-                for token in abbrev_tokens:
-                    if f"({token})" in name:
-                        pre_part = name.split(f"({token})")[0].strip()
-                        if pre_part:
-                            if self._is_abbreviation_of(token, pre_part):
-                                if token not in token_map:
-                                    token_map[token] = set()
-                                token_map[token].add(pre_part)
-
-                words = name.split()
-                if len(words) < 2:
-                    continue
-
-                for token in abbrev_tokens:
-                    if len(words) < len(token):
-                        continue
-
-                    for i in range(len(words) - len(token) + 1):
-                        window = words[i : i + len(token)]
-                        initials = "".join(w[0].upper() for w in window if w[0].isalpha())
-                        if initials == token:
-                            phrase = " ".join(window)
-                            if phrase.upper() == token:
-                                continue
+        for name in all_names:
+            for token in abbrev_tokens:
+                if f"({token})" in name:
+                    pre_part = name.split(f"({token})")[0].strip()
+                    if pre_part:
+                        if self._is_abbreviation_of(token, pre_part):
                             if token not in token_map:
                                 token_map[token] = set()
-                            token_map[token].add(phrase)
+                            token_map[token].add(pre_part)
 
-            groups = []
-            processed = set()
+            words = name.split()
+            if len(words) < 2:
+                continue
 
-            for token, phrases in token_map.items():
-                for phrase in phrases:
-                    # Use regex for robust token matching (handles punctuation like "NEFAC,")
-                    token_pattern = re.compile(rf"\b{re.escape(token)}\b")
-                    names_with_token = [n for n in all_names if token_pattern.search(n)]
-                    names_with_phrase = [n for n in all_names if phrase in n]
+            for token in abbrev_tokens:
+                if len(words) < len(token):
+                    continue
 
-                    for n_phrase in names_with_phrase:
-                        n_token_hypothetical = n_phrase.replace(phrase, token)
+                for i in range(len(words) - len(token) + 1):
+                    window = words[i : i + len(token)]
+                    initials = "".join(w[0].upper() for w in window if w[0].isalpha())
+                    if initials == token:
+                        phrase = " ".join(window)
+                        if phrase.upper() == token:
+                            continue
+                        if token not in token_map:
+                            token_map[token] = set()
+                        token_map[token].add(phrase)
 
-                        for n_token in names_with_token:
-                            if n_token == n_token_hypothetical:
-                                pair = sorted([n_phrase, n_token])
-                                if tuple(pair) not in processed:
-                                    groups.append(pair)
-                                    processed.add(tuple(pair))
+        groups = []
+        processed = set()
 
-                            elif self._is_close_match(n_token, n_token_hypothetical):
-                                pair = sorted([n_phrase, n_token])
-                                if tuple(pair) not in processed:
-                                    groups.append(pair)
-                                    processed.add(tuple(pair))
+        for token, phrases in token_map.items():
+            for phrase in phrases:
+                token_pattern = re.compile(rf"\b{re.escape(token)}\b")
+                names_with_token = [n for n in all_names if token_pattern.search(n)]
+                names_with_phrase = [n for n in all_names if phrase in n]
 
-            return groups
-        except Exception as e:
-            logger.error(f"Error finding abbreviation duplicates: {e}")
-            raise e
+                for n_phrase in names_with_phrase:
+                    n_token_hypothetical = n_phrase.replace(phrase, token)
+
+                    for n_token in names_with_token:
+                        if n_token == n_token_hypothetical:
+                            pair = sorted([n_phrase, n_token])
+                            if tuple(pair) not in processed:
+                                groups.append(pair)
+                                processed.add(tuple(pair))
+
+                        elif self._is_close_match(n_token, n_token_hypothetical):
+                            pair = sorted([n_phrase, n_token])
+                            if tuple(pair) not in processed:
+                                groups.append(pair)
+                                processed.add(tuple(pair))
+
+        return groups
 
     def _is_close_match(self, s1: str, s2: str) -> bool:
         def clean(s):
@@ -347,27 +318,15 @@ class EntityDeduplicator:
         UNWIND range(0, size(allCombinedResults)-1, 1) as combinedResultIndex
         WITH allCombinedResults[combinedResultIndex] as combinedResult,
              combinedResultIndex, allCombinedResults
-        WHERE NOT any(x IN range(0,size(allCombinedResults)-1,1) 
+        WHERE NOT any(x IN range(0,size(allCombinedResults)-1,1)
             WHERE x <> combinedResultIndex
             AND apoc.coll.containsAll(allCombinedResults[x], combinedResult)
         )
         RETURN combinedResult
         """
 
-        try:
-            data = self.graph_store.structured_query(query, param_map={"cutoff": self.similarity_threshold, "distance": self.word_edit_distance})
-
-            duplicate_groups = [row["combinedResult"] for row in data]
-
-            logger.info(f"Found {len(duplicate_groups)} duplicate entity groups using APOC")
-            for group in duplicate_groups:
-                logger.debug(f"Duplicate group: {group}")
-
-            return duplicate_groups
-
-        except Exception as e:
-            logger.error(f"Error in APOC-based deduplication: {e}")
-            raise e
+        data = self.graph_store.structured_query(query, param_map={"cutoff": self.similarity_threshold, "distance": self.word_edit_distance})
+        return [row["combinedResult"] for row in data]
 
     def _find_duplicates_without_apoc(self) -> List[List[str]]:
         query = """
@@ -379,7 +338,7 @@ class EntityDeduplicator:
             WITH node, score
             WHERE score > toFloat($cutoff)
                 AND labels(e) = labels(node)
-                AND (toLower(node.name) CONTAINS toLower(e.name) 
+                AND (toLower(node.name) CONTAINS toLower(e.name)
                      OR toLower(e.name) CONTAINS toLower(node.name))
             WITH node, score
             ORDER BY node.name
@@ -390,19 +349,13 @@ class EntityDeduplicator:
         RETURN names as combinedResult
         """
 
-        try:
-            data = self.graph_store.structured_query(query, param_map={"cutoff": self.similarity_threshold})
+        data = self.graph_store.structured_query(query, param_map={"cutoff": self.similarity_threshold})
 
-            duplicate_groups = [row["combinedResult"] for row in data]
+        duplicate_groups = [row["combinedResult"] for row in data]
 
-            filtered_groups = self._remove_subset_groups(duplicate_groups)
+        filtered_groups = self._remove_subset_groups(duplicate_groups)
 
-            logger.info(f"Found {len(filtered_groups)} duplicate entity groups (no APOC)")
-            return filtered_groups
-
-        except Exception as e:
-            logger.error(f"Error in non-APOC deduplication: {e}")
-            raise e
+        return filtered_groups
 
     def _remove_subset_groups(self, groups: List[List[str]]) -> List[List[str]]:
         filtered = []
@@ -425,7 +378,6 @@ class EntityDeduplicator:
             duplicate_groups = self.find_duplicate_entities()
 
         if not duplicate_groups:
-            logger.info("No duplicate entities found to merge")
             return {"merged_groups": 0, "total_entities_merged": 0}
 
         merged_count = 0
@@ -433,15 +385,13 @@ class EntityDeduplicator:
 
         for item in duplicate_groups:
             group = item["group"]
-            source = item.get("source", "unknown")
+            item.get("source", "unknown")
 
             if len(group) < 2:
                 continue
 
             canonical_name = sorted(group, key=lambda x: (-len(x), x))[0]
             duplicates = [name for name in group if name != canonical_name]
-
-            logger.info(f"[Source: {source}] Merging {duplicates} into '{canonical_name}'")
 
             if not dry_run:
                 self._merge_entity_group(canonical_name, duplicates)
@@ -455,7 +405,6 @@ class EntityDeduplicator:
             "dry_run": dry_run,
         }
 
-        logger.info(f"Entity deduplication complete: {stats}")
         return stats
 
     def _merge_entity_group(self, canonical_name: str, duplicates: List[str]):
@@ -480,117 +429,102 @@ class EntityDeduplicator:
         RETURN node.name as merged_into, size(nodesToMerge) - 1 as merged_count
         """
 
-        try:
-            result = self.graph_store.structured_query(query, param_map={"canonical_name": canonical_name, "duplicates": duplicates})
+        result = self.graph_store.structured_query(query, param_map={"canonical_name": canonical_name, "duplicates": duplicates})
 
-            if result:
-                count = result[0].get("merged_count", 0)
-                logger.debug(f"Merged {count} entities into '{canonical_name}' using APOC")
-
-        except Exception as e:
-            logger.error(f"Error merging entity group: {e}")
-            raise e
+        if result:
+            result[0].get("merged_count", 0)
 
     def validate_duplicates(
         self,
         duplicate_groups: Optional[List[Dict[str, Any]]] = None,
     ) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
-        try:
-            if duplicate_groups is None:
-                duplicate_groups = self.find_duplicate_entities()
+        if duplicate_groups is None:
+            duplicate_groups = self.find_duplicate_entities()
 
-            def has_conflicting_years(names):
-                years = set()
-                for n in names:
-                    matches = re.findall(r"\b(?:19|20)\d{2}\b", str(n))
-                    years.update(matches)
-                return len(years) > 1
+        def has_conflicting_years(names):
+            years = set()
+            for n in names:
+                matches = re.findall(r"\b(?:19|20)\d{2}\b", str(n))
+                years.update(matches)
+            return len(years) > 1
 
-            def has_conflicting_numbers_group(names):
-                all_nums = []
-                for n in names:
-                    nums = set(re.findall(r"\d+(?:\.\d+)?", str(n)))
-                    if nums:
-                        all_nums.append(nums)
+        def has_conflicting_numbers_group(names):
+            all_nums = []
+            for n in names:
+                nums = set(re.findall(r"\d+(?:\.\d+)?", str(n)))
+                if nums:
+                    all_nums.append(nums)
 
-                if len(all_nums) < 2:
-                    return False
-
-                for i in range(len(all_nums)):
-                    for j in range(i + 1, len(all_nums)):
-                        if all_nums[i].isdisjoint(all_nums[j]):
-                            return True
+            if len(all_nums) < 2:
                 return False
 
-            def is_policy_vs_location(names):
-                keywords = {"policy", "act", "law", "regulation", "protocol", "procedure", "guideline"}
-                has_keyword = [any(k in str(n).lower() for k in keywords) for n in names]
+            for i in range(len(all_nums)):
+                for j in range(i + 1, len(all_nums)):
+                    if all_nums[i].isdisjoint(all_nums[j]):
+                        return True
+            return False
 
-                if all(has_keyword) or not any(has_keyword):
-                    return False
+        def is_policy_vs_location(names):
+            keywords = {"policy", "act", "law", "regulation", "protocol", "procedure", "guideline"}
+            has_keyword = [any(k in str(n).lower() for k in keywords) for n in names]
 
-                nlp = self._ensure_spacy_model()
-                if nlp:
-                    try:
-                        has_gpe = False
-                        has_law_or_work = False
-
-                        for n in names:
-                            doc = nlp(str(n))
-                            for ent in doc.ents:
-                                if ent.label_ == "GPE":
-                                    has_gpe = True
-                                elif ent.label_ in ["LAW", "WORK_OF_ART", "ORG"]:
-                                    has_law_or_work = True
-
-                        if has_gpe and has_law_or_work:
-                            return True
-                    except Exception:
-                        pass
-
-                location_indicators = {", rhode island", ", ri", "state of", "city of", "town of"}
-                for i, n in enumerate(names):
-                    if not has_keyword[i]:
-                        if any(loc in str(n).lower() for loc in location_indicators):
-                            return True
-                        if str(n).strip().lower() == "rhode island":
-                            return True
+            if all(has_keyword) or not any(has_keyword):
                 return False
 
-            false_positive_patterns = [
-                (has_conflicting_years, "Contains different years"),
-                (has_conflicting_numbers_group, "Contains conflicting numbers"),
-                (is_policy_vs_location, "Merges Policy/Doc with Location"),
-                (lambda names: any("draft" in str(n).lower() for n in names) and any("draft" not in str(n).lower() for n in names), "Mix of draft and non-draft"),
-                (lambda names: any("Amended" in str(n) for n in names) and len(set(str(n).replace("Amended", "").strip() for n in names)) > 1, "Different base documents with amendments"),
-            ]
+            nlp = self._ensure_spacy_model()
+            if nlp:
+                try:
+                    has_gpe = False
+                    has_law_or_work = False
 
-            validated = []
-            false_positives = []
+                    for n in names:
+                        doc = nlp(str(n))
+                        for ent in doc.ents:
+                            if ent.label_ == "GPE":
+                                has_gpe = True
+                            elif ent.label_ in ["LAW", "WORK_OF_ART", "ORG"]:
+                                has_law_or_work = True
 
-            for item in duplicate_groups:
-                group = item["group"]
-                is_false_positive = False
-                reason = None
+                    if has_gpe and has_law_or_work:
+                        return True
+                except Exception:
+                    pass
 
-                for pattern_fn, pattern_reason in false_positive_patterns:
-                    if pattern_fn(group):
-                        is_false_positive = True
-                        reason = pattern_reason
-                        break
+            location_indicators = {", rhode island", ", ri", "state of", "city of", "town of"}
+            for i, n in enumerate(names):
+                if not has_keyword[i]:
+                    if any(loc in str(n).lower() for loc in location_indicators):
+                        return True
+                    if str(n).strip().lower() == "rhode island":
+                        return True
+            return False
 
-                if is_false_positive:
-                    logger.debug(f"False positive detected: {group} - {reason}")
-                    false_positives.append(item)
-                else:
-                    validated.append(item)
+        false_positive_patterns = [
+            (has_conflicting_years, "Contains different years"),
+            (has_conflicting_numbers_group, "Contains conflicting numbers"),
+            (is_policy_vs_location, "Merges Policy/Doc with Location"),
+            (lambda names: any("draft" in str(n).lower() for n in names) and any("draft" not in str(n).lower() for n in names), "Mix of draft and non-draft"),
+            (lambda names: any("Amended" in str(n) for n in names) and len(set(str(n).replace("Amended", "").strip() for n in names)) > 1, "Different base documents with amendments"),
+        ]
 
-            logger.info(f"Validation complete: {len(validated)} valid groups, " f"{len(false_positives)} false positives")
+        validated = []
+        false_positives = []
 
-            return validated, false_positives
-        except Exception as e:
-            logger.error(f"Error validating duplicates: {e}")
-            raise e
+        for item in duplicate_groups:
+            group = item["group"]
+            is_false_positive = False
+
+            for pattern_fn, pattern_reason in false_positive_patterns:
+                if pattern_fn(group):
+                    is_false_positive = True
+                    break
+
+            if is_false_positive:
+                false_positives.append(item)
+            else:
+                validated.append(item)
+
+        return validated, false_positives
 
     def get_duplicate_stats(
         self,
@@ -599,36 +533,31 @@ class EntityDeduplicator:
         false_positives: Optional[List[Dict[str, Any]]] = None,
         use_llm: bool = True,
     ) -> Dict[str, Any]:
-        try:
-            count_query = "MATCH (e:__Entity__) RETURN count(e) as total"
-            result = self.graph_store.structured_query(count_query)
-            total_entities = result[0]["total"] if result else 0
+        count_query = "MATCH (e:__Entity__) RETURN count(e) as total"
+        result = self.graph_store.structured_query(count_query)
+        total_entities = result[0]["total"] if result else 0
 
-            if duplicate_groups is None:
-                duplicate_groups = self.find_duplicate_entities(use_llm=use_llm)
+        if duplicate_groups is None:
+            duplicate_groups = self.find_duplicate_entities(use_llm=use_llm)
 
-            if validated_groups is None:
-                validated_groups, false_positives = self.validate_duplicates(duplicate_groups)
+        if validated_groups is None:
+            validated_groups, false_positives = self.validate_duplicates(duplicate_groups)
 
-            if false_positives is None:
-                false_positives = []
+        if false_positives is None:
+            false_positives = []
 
-            total_duplicates = sum(len(item["group"]) - 1 for item in validated_groups)
+        total_duplicates = sum(len(item["group"]) - 1 for item in validated_groups)
 
-            stats = {
-                "total_entities": total_entities,
-                "duplicate_groups_found": len(duplicate_groups),
-                "validated_groups": len(validated_groups),
-                "false_positive_groups": len(false_positives),
-                "total_duplicate_entities": total_duplicates,
-                "deduplication_potential": f"{(total_duplicates / max(total_entities, 1) * 100):.1f}%",
-            }
+        stats = {
+            "total_entities": total_entities,
+            "duplicate_groups_found": len(duplicate_groups),
+            "validated_groups": len(validated_groups),
+            "false_positive_groups": len(false_positives),
+            "total_duplicate_entities": total_duplicates,
+            "deduplication_potential": f"{(total_duplicates / max(total_entities, 1) * 100):.1f}%",
+        }
 
-            return stats
-
-        except Exception as e:
-            logger.error(f"Error getting duplicate stats: {e}")
-            raise e
+        return stats
 
     def _find_candidates_for_llm(self, existing_groups: List[List[str]]) -> List[List[str]]:
         query = """
@@ -645,29 +574,22 @@ class EntityDeduplicator:
         }
         RETURN e.name as name1, node.name as name2
         """
-        try:
-            result = self.graph_store.structured_query(query)
-            candidates = []
+        result = self.graph_store.structured_query(query)
+        candidates = []
 
-            existing_pairs = set()
-            for group in existing_groups:
-                for i in range(len(group)):
-                    for j in range(i + 1, len(group)):
-                        pair = tuple(sorted([group[i], group[j]]))
-                        existing_pairs.add(pair)
+        existing_pairs: Set[Tuple[str, ...]] = set()
+        for group in existing_groups:
+            for i in range(len(group)):
+                for j in range(i + 1, len(group)):
+                    existing_pair = tuple(sorted([group[i], group[j]]))
+                    existing_pairs.add(existing_pair)
 
-            for row in result:
-                pair = sorted([row["name1"], row["name2"]])
-                if tuple(pair) not in existing_pairs:
-                    candidates.append(pair)
+        for row in result:
+            pair: List[str] = sorted([str(row["name1"]), str(row["name2"])])
+            if tuple(pair) not in existing_pairs:
+                candidates.append(pair)
 
-            if candidates:
-                logger.info(f"Found {len(candidates)} candidate pairs for LLM verification")
-
-            return candidates
-        except Exception as e:
-            logger.error(f"Error finding candidates for LLM: {e}")
-            raise e
+        return candidates
 
     def _has_conflicting_numbers(self, s1: str, s2: str) -> bool:
         """
@@ -697,7 +619,6 @@ class EntityDeduplicator:
         if fuzz:
             return fuzz.token_sort_ratio(s1, s2) > threshold
 
-        logger.warning("rapidfuzz not found, falling back to slower difflib implementation")
         return self._is_token_sort_match_fallback(s1, s2, threshold / 100.0)
 
     def _is_token_sort_match_fallback(self, s1: str, s2: str, threshold: float) -> bool:
@@ -724,15 +645,12 @@ class EntityDeduplicator:
 
         for pair in candidates:
             if self._is_token_sort_match(pair[0], pair[1]):
-                logger.debug(f"Fast-verified pair (token sort): {pair}")
                 verified_groups.append({"group": pair, "source": "rapidfuzz_token_sort"})
             else:
                 llm_candidates.append(pair)
 
         if not llm_candidates:
             return verified_groups
-
-        logger.info(f"Sending {len(llm_candidates)} pairs (out of {len(candidates)}) to LLM for verification")
 
         batch_size = 20
 
@@ -770,22 +688,17 @@ class EntityDeduplicator:
                         if res.is_same_entity and res.index < len(batch):
                             verified_groups.append({"group": batch[res.index], "source": "llm_verified"})
 
-                    # Success - break retry loop
                     break
 
                 except Exception as e:
                     is_rate_limit = "429" in str(e) or "ResourceExhausted" in str(e) or "rate limit" in str(e).lower()
                     if is_rate_limit and attempt < max_retries - 1:
                         sleep_time = 10 * (attempt + 1)
-                        logger.warning(f"Rate limit hit during deduplication. Retrying in {sleep_time}s (Attempt {attempt+1}/{max_retries})")
                         time.sleep(sleep_time)
                     else:
-                        logger.error(f"Error in LLM verification (Attempt {attempt+1}): {e}")
                         if attempt == max_retries - 1:
-                            logger.warning(f"Skipping batch due to persistent error: {e}")
 
-            # Proactive rate limiting for Flash-Lite (15 RPM = 1 req / 4s)
-            # Adding a small buffer to be safe
+                            pass
             time.sleep(4.5)
 
         return verified_groups
@@ -795,7 +708,6 @@ class EntityDeduplicator:
             try:
                 self._nlp = spacy.load("en_core_web_sm")
             except OSError:
-                logger.warning("Spacy model 'en_core_web_sm' not found. Downloading...")
                 from spacy.cli import download
 
                 download("en_core_web_sm")

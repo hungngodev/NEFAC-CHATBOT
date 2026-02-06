@@ -1,0 +1,78 @@
+# Standalone database services for ingestion pipeline
+# Volume names are prefixed with 'nefac_db_' to avoid conflicts with main docker-compose
+
+volumes:
+  nefac_db_elasticsearch:
+    name: nefac_db_elasticsearch
+  nefac_db_qdrant:
+    name: nefac_db_qdrant
+  nefac_db_neo4j:
+    name: nefac_db_neo4j
+
+networks:
+  nefac_db_net:
+    name: nefac_db_net
+    driver: bridge
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.1.2
+    container_name: nefac-db-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    ports:
+      - "9200:9200"
+    volumes:
+      - nefac_db_elasticsearch:/usr/share/elasticsearch/data
+    networks:
+      - nefac_db_net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200 >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: nefac-db-qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - nefac_db_qdrant:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__HTTP_PORT=6333
+      - QDRANT__SERVICE__GRPC_PORT=6334
+    networks:
+      - nefac_db_net
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'cat < /dev/tcp/localhost/6333'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  neo4j:
+    image: neo4j:latest
+    container_name: nefac-db-neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - nefac_db_neo4j:/data
+    environment:
+      - NEO4J_AUTH=neo4j/password123
+      - NEO4J_PLUGINS=["apoc", "graph-data-science"]
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*,gds.*
+      - NEO4J_dbms_security_procedures_allowlist=apoc.*,gds.*
+    networks:
+      - nefac_db_net
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:7474 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
